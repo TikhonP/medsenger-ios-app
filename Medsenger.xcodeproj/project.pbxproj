@@ -7,15 +7,69 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		43FF65822902D2DB00AB9BB1 /* MedsengerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FF65812902D2DB00AB9BB1 /* MedsengerApp.swift */; };
+		4322437E29069B9E00899442 /* PasswordFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4322437D29069B9E00899442 /* PasswordFieldView.swift */; };
+		432243872906C11B00899442 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432243862906C11B00899442 /* Constants.swift */; };
+		433E59752906C6D50069F8DF /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433E59742906C6D50069F8DF /* Account.swift */; };
+		433E59812906C8D70069F8DF /* Medsenger.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 433E597F2906C8D70069F8DF /* Medsenger.xcdatamodeld */; };
+		433E59832906C8F80069F8DF /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433E59822906C8F80069F8DF /* PersistenceController.swift */; };
+		433E59852906CA500069F8DF /* PersistenceController+User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433E59842906CA500069F8DF /* PersistenceController+User.swift */; };
+		433E598A2906DE6C0069F8DF /* NetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433E59892906DE6C0069F8DF /* NetworkRequest.swift */; };
+		433E598F2907EBB60069F8DF /* SignInRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433E598E2907EBB60069F8DF /* SignInRequest.swift */; };
+		433F0D0429069707008E1F42 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F0D0329069707008E1F42 /* ContentViewModel.swift */; };
+		433F0D0829069835008E1F42 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F0D0729069835008E1F42 /* SignInView.swift */; };
+		433F0D0A29069842008E1F42 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F0D0929069842008E1F42 /* SignInViewModel.swift */; };
+		43DB0E592909533800801296 /* LocalizedString+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E582909533800801296 /* LocalizedString+.swift */; };
+		43DB0E5C2909553F00801296 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43DB0E5E2909553F00801296 /* Localizable.strings */; };
+		43DB0E6029095B9800801296 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E5F29095B9800801296 /* KeyChain.swift */; };
+		43DB0E6329095E1500801296 /* ChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6229095E1500801296 /* ChatsView.swift */; };
+		43DB0E6629095E3200801296 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6529095E3200801296 /* SettingsView.swift */; };
+		43DB0E682909612B00801296 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E672909612B00801296 /* SettingsViewModel.swift */; };
+		43DB0E6A2909631C00801296 /* ProfileDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E692909631C00801296 /* ProfileDataView.swift */; };
+		43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */; };
+		43DB0E6E29097ABB00801296 /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */; };
+		43DB0E702909840C00801296 /* AccountRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6F2909840C00801296 /* AccountRequest.swift */; };
+		43E5EA0D290AAD97008754C5 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA0C290AAD97008754C5 /* ImagePicker.swift */; };
+		43E5EA0F290ABAD2008754C5 /* UploadAvatarRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA0E290ABAD2008754C5 /* UploadAvatarRequest.swift */; };
+		43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */; };
+		43E5EA15290AD121008754C5 /* updateAccountRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA14290AD121008754C5 /* updateAccountRequest.swift */; };
+		43E5EA18290AD89D008754C5 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 43E5EA17290AD89C008754C5 /* .gitignore */; };
+		43FF65822902D2DB00AB9BB1 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FF65812902D2DB00AB9BB1 /* App.swift */; };
 		43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FF65832902D2DB00AB9BB1 /* ContentView.swift */; };
 		43FF65862902D2DD00AB9BB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43FF65852902D2DD00AB9BB1 /* Assets.xcassets */; };
 		43FF65892902D2DD00AB9BB1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43FF65882902D2DD00AB9BB1 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4322437D29069B9E00899442 /* PasswordFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordFieldView.swift; sourceTree = "<group>"; };
+		432243812906AF8000899442 /* Medsenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Medsenger.entitlements; sourceTree = "<group>"; };
+		432243862906C11B00899442 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		433E59742906C6D50069F8DF /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		433E59802906C8D70069F8DF /* Medsenger.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Medsenger.xcdatamodel; sourceTree = "<group>"; };
+		433E59822906C8F80069F8DF /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		433E59842906CA500069F8DF /* PersistenceController+User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController+User.swift"; sourceTree = "<group>"; };
+		433E59892906DE6C0069F8DF /* NetworkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequest.swift; sourceTree = "<group>"; };
+		433E598E2907EBB60069F8DF /* SignInRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInRequest.swift; sourceTree = "<group>"; };
+		433F0D0329069707008E1F42 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		433F0D0729069835008E1F42 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
+		433F0D0929069842008E1F42 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
+		43DB0E582909533800801296 /* LocalizedString+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedString+.swift"; sourceTree = "<group>"; };
+		43DB0E5D2909553F00801296 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43DB0E5F29095B9800801296 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
+		43DB0E6229095E1500801296 /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
+		43DB0E6529095E3200801296 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		43DB0E672909612B00801296 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		43DB0E692909631C00801296 /* ProfileDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDataView.swift; sourceTree = "<group>"; };
+		43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
+		43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
+		43DB0E6F2909840C00801296 /* AccountRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountRequest.swift; sourceTree = "<group>"; };
+		43E5EA0C290AAD97008754C5 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		43E5EA0E290ABAD2008754C5 /* UploadAvatarRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAvatarRequest.swift; sourceTree = "<group>"; };
+		43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataView.swift; sourceTree = "<group>"; };
+		43E5EA14290AD121008754C5 /* updateAccountRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = updateAccountRequest.swift; sourceTree = "<group>"; };
+		43E5EA16290AD7D1008754C5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		43E5EA17290AD89C008754C5 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		43FF657E2902D2DB00AB9BB1 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		43FF65812902D2DB00AB9BB1 /* MedsengerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedsengerApp.swift; sourceTree = "<group>"; };
+		43FF65812902D2DB00AB9BB1 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		43FF65832902D2DB00AB9BB1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		43FF65852902D2DD00AB9BB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		43FF65882902D2DD00AB9BB1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -32,11 +86,114 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		432243822906C0FC00899442 /* MedsengerKit */ = {
+			isa = PBXGroup;
+			children = (
+				433E59732906C6C90069F8DF /* Account */,
+				432243862906C11B00899442 /* Constants.swift */,
+			);
+			path = MedsengerKit;
+			sourceTree = "<group>";
+		};
+		433E59732906C6C90069F8DF /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				433E59742906C6D50069F8DF /* Account.swift */,
+				43DB0E5F29095B9800801296 /* KeyChain.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		433E597E2906C8BC0069F8DF /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				433E597F2906C8D70069F8DF /* Medsenger.xcdatamodeld */,
+				433E59822906C8F80069F8DF /* PersistenceController.swift */,
+				433E59842906CA500069F8DF /* PersistenceController+User.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		433E59882906DDDB0069F8DF /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				433E598D2907EB9F0069F8DF /* ApiRequests */,
+				433E59892906DE6C0069F8DF /* NetworkRequest.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		433E598D2907EB9F0069F8DF /* ApiRequests */ = {
+			isa = PBXGroup;
+			children = (
+				433E598E2907EBB60069F8DF /* SignInRequest.swift */,
+				43DB0E6F2909840C00801296 /* AccountRequest.swift */,
+				43E5EA0E290ABAD2008754C5 /* UploadAvatarRequest.swift */,
+				43E5EA14290AD121008754C5 /* updateAccountRequest.swift */,
+			);
+			path = ApiRequests;
+			sourceTree = "<group>";
+		};
+		433F0D052906979D008E1F42 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				43DB0E6429095E2300801296 /* Settings */,
+				43DB0E6129095E0200801296 /* Chats */,
+				433F0D06290697B1008E1F42 /* SignIn */,
+				43FF65832902D2DB00AB9BB1 /* ContentView.swift */,
+				433F0D0329069707008E1F42 /* ContentViewModel.swift */,
+				43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		433F0D06290697B1008E1F42 /* SignIn */ = {
+			isa = PBXGroup;
+			children = (
+				433F0D0729069835008E1F42 /* SignInView.swift */,
+				433F0D0929069842008E1F42 /* SignInViewModel.swift */,
+				4322437D29069B9E00899442 /* PasswordFieldView.swift */,
+			);
+			path = SignIn;
+			sourceTree = "<group>";
+		};
+		43DB0E572909530900801296 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				43DB0E582909533800801296 /* LocalizedString+.swift */,
+				43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		43DB0E6129095E0200801296 /* Chats */ = {
+			isa = PBXGroup;
+			children = (
+				43DB0E6229095E1500801296 /* ChatsView.swift */,
+			);
+			path = Chats;
+			sourceTree = "<group>";
+		};
+		43DB0E6429095E2300801296 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				43DB0E6529095E3200801296 /* SettingsView.swift */,
+				43DB0E672909612B00801296 /* SettingsViewModel.swift */,
+				43DB0E692909631C00801296 /* ProfileDataView.swift */,
+				43E5EA0C290AAD97008754C5 /* ImagePicker.swift */,
+				43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		43FF65752902D2DB00AB9BB1 = {
 			isa = PBXGroup;
 			children = (
-				43FF65802902D2DB00AB9BB1 /* Medsenger */,
+				43E5EA17290AD89C008754C5 /* .gitignore */,
+				43E5EA16290AD7D1008754C5 /* README.md */,
+				43FF65802902D2DB00AB9BB1 /* App */,
 				43FF657F2902D2DB00AB9BB1 /* Products */,
+				43FF65922902D46200AB9BB1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -48,15 +205,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		43FF65802902D2DB00AB9BB1 /* Medsenger */ = {
+		43FF65802902D2DB00AB9BB1 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				43FF65812902D2DB00AB9BB1 /* MedsengerApp.swift */,
-				43FF65832902D2DB00AB9BB1 /* ContentView.swift */,
+				43DB0E572909530900801296 /* Utils */,
+				433E59882906DDDB0069F8DF /* Requests */,
+				432243812906AF8000899442 /* Medsenger.entitlements */,
+				433E597E2906C8BC0069F8DF /* CoreData */,
+				432243822906C0FC00899442 /* MedsengerKit */,
+				433F0D052906979D008E1F42 /* Views */,
+				43FF65812902D2DB00AB9BB1 /* App.swift */,
 				43FF65852902D2DD00AB9BB1 /* Assets.xcassets */,
 				43FF65872902D2DD00AB9BB1 /* Preview Content */,
+				43DB0E5E2909553F00801296 /* Localizable.strings */,
 			);
-			path = Medsenger;
+			path = App;
 			sourceTree = "<group>";
 		};
 		43FF65872902D2DD00AB9BB1 /* Preview Content */ = {
@@ -65,6 +228,13 @@
 				43FF65882902D2DD00AB9BB1 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		43FF65922902D46200AB9BB1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +253,8 @@
 			dependencies = (
 			);
 			name = Medsenger;
+			packageProductDependencies = (
+			);
 			productName = Medsenger;
 			productReference = 43FF657E2902D2DB00AB9BB1 /* Medsenger.app */;
 			productType = "com.apple.product-type.application";
@@ -96,6 +268,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1400;
+				ORGANIZATIONNAME = "TelePat ltd.";
 				TargetAttributes = {
 					43FF657D2902D2DB00AB9BB1 = {
 						CreatedOnToolsVersion = 14.0.1;
@@ -111,6 +284,8 @@
 				Base,
 			);
 			mainGroup = 43FF65752902D2DB00AB9BB1;
+			packageReferences = (
+			);
 			productRefGroup = 43FF657F2902D2DB00AB9BB1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -125,7 +300,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43E5EA18290AD89D008754C5 /* .gitignore in Resources */,
 				43FF65892902D2DD00AB9BB1 /* Preview Assets.xcassets in Resources */,
+				43DB0E5C2909553F00801296 /* Localizable.strings in Resources */,
 				43FF65862902D2DD00AB9BB1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -138,11 +315,46 @@
 			buildActionMask = 2147483647;
 			files = (
 				43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */,
-				43FF65822902D2DB00AB9BB1 /* MedsengerApp.swift in Sources */,
+				43E5EA0F290ABAD2008754C5 /* UploadAvatarRequest.swift in Sources */,
+				433E59832906C8F80069F8DF /* PersistenceController.swift in Sources */,
+				43DB0E592909533800801296 /* LocalizedString+.swift in Sources */,
+				433E598A2906DE6C0069F8DF /* NetworkRequest.swift in Sources */,
+				433E59852906CA500069F8DF /* PersistenceController+User.swift in Sources */,
+				43DB0E6029095B9800801296 /* KeyChain.swift in Sources */,
+				43FF65822902D2DB00AB9BB1 /* App.swift in Sources */,
+				433E598F2907EBB60069F8DF /* SignInRequest.swift in Sources */,
+				43DB0E6329095E1500801296 /* ChatsView.swift in Sources */,
+				43DB0E6629095E3200801296 /* SettingsView.swift in Sources */,
+				4322437E29069B9E00899442 /* PasswordFieldView.swift in Sources */,
+				43DB0E702909840C00801296 /* AccountRequest.swift in Sources */,
+				433F0D0829069835008E1F42 /* SignInView.swift in Sources */,
+				43E5EA0D290AAD97008754C5 /* ImagePicker.swift in Sources */,
+				43DB0E682909612B00801296 /* SettingsViewModel.swift in Sources */,
+				432243872906C11B00899442 /* Constants.swift in Sources */,
+				433E59752906C6D50069F8DF /* Account.swift in Sources */,
+				433F0D0429069707008E1F42 /* ContentViewModel.swift in Sources */,
+				43DB0E6A2909631C00801296 /* ProfileDataView.swift in Sources */,
+				43E5EA15290AD121008754C5 /* updateAccountRequest.swift in Sources */,
+				43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */,
+				43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */,
+				433F0D0A29069842008E1F42 /* SignInViewModel.swift in Sources */,
+				433E59812906C8D70069F8DF /* Medsenger.xcdatamodeld in Sources */,
+				43DB0E6E29097ABB00801296 /* ChooseRoleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		43DB0E5E2909553F00801296 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43DB0E5D2909553F00801296 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		43FF658A2902D2DD00AB9BB1 /* Debug */ = {
@@ -264,23 +476,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Medsenger/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.Medsenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -293,23 +509,27 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Medsenger/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
+				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.Medsenger;
+				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -339,6 +559,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		433E597F2906C8D70069F8DF /* Medsenger.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				433E59802906C8D70069F8DF /* Medsenger.xcdatamodel */,
+			);
+			currentVersion = 433E59802906C8D70069F8DF /* Medsenger.xcdatamodel */;
+			path = Medsenger.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 43FF65762902D2DB00AB9BB1 /* Project object */;
 }
