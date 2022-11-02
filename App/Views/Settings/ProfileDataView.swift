@@ -110,7 +110,7 @@ struct ProfileDataView: View {
                         }
                     }
                     .onAppear { userRole = UserRole(rawValue: user.role!) ?? .patient }
-                    .onChange(of: userRole) { newValue in PersistenceController.setUserRole(role: newValue) }
+                    .onChange(of: userRole) { newValue in User.setRole(role: newValue) }
                 }
                 
                 Section {

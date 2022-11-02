@@ -36,6 +36,7 @@ struct ContentView: View {
             .onAppear(perform: contentViewModel.checkIfApiTokeExists)
         } else {
             SignInView(account: contentViewModel.account)
+                .onAppear(perform: PersistenceController.clearDatabase)
         }
     }
 }

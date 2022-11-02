@@ -34,5 +34,17 @@ class PersistenceController: ObservableObject {
             print("Core Data failed to save model: \(error.localizedDescription)")
         }
     }
+    
+    class func clearDatabase() {
+        guard let url = PersistenceController.shared.container.persistentStoreDescriptions.first?.url else { return }
+        
+        let persistentStoreCoordinator = PersistenceController.shared.container.persistentStoreCoordinator
 
+         do {
+             try persistentStoreCoordinator.destroyPersistentStore(at:url, ofType: NSSQLiteStoreType, options: nil)
+             try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+         } catch {
+             print("Attempted to clear persistent store: " + error.localizedDescription)
+         }
+    }
 }

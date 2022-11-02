@@ -12,9 +12,9 @@ struct ChooseRoleView: View {
     var body: some View {
         VStack {
             Spacer()
-            Button("Sign in as patient") { PersistenceController.setUserRole(role: UserRole.patient) }
+            Button("Sign in as patient") { User.setRole(role: UserRole.patient) }
                 .padding()
-            Button("Sign in as doctor") { PersistenceController.setUserRole(role: UserRole.doctor) }
+            Button("Sign in as doctor") { User.setRole(role: UserRole.doctor) }
                 .padding()
             Spacer()
         }

@@ -18,17 +18,24 @@ final class SettingsViewModel: ObservableObject {
     func getAvatar() {
         getAvatarRequest = ImageRequest(path: "/photo/")
         getAvatarRequest?.execute { data, errorReponse, networkRequestError in
+            print("Data")
             guard let data = data else {
+                print("No data")
                 return
             }
-            PersistenceController.saveUserAvatar(data: data)
+            User.saveAvatar(data: data)
+            if let errorReponse = errorReponse {
+                print(errorReponse)
+            }
+            if let networkRequestError = networkRequestError {
+                print(networkRequestError)
+            }
         }
     }
     
     func signOut() {
         KeychainSwift.apiToken = nil
-//        PersistenceController.deleteUser()
-        objectWillChange.send()
+        User.delete()
     }
     
     func updateProfile() {
@@ -50,7 +57,7 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func uploadAvatar(image: Data) {
-        PersistenceController.saveUserAvatar(data: nil)
+        User.saveAvatar(data: nil)
         
         let uploadAvatarResource = UploadAvatarResource(image: image)
         uploadAvatarRequest = UploadImageRequest(resource: uploadAvatarResource)
@@ -70,8 +77,6 @@ final class SettingsViewModel: ObservableObject {
     }
     
     func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
-        
-        
         let updateAccountResource = UpdateAccountResource(name: name, email: email, phone: phone, birthday: birthday)
         updateAcountRequest = APIRequest(resource: updateAccountResource)
         updateAcountRequest?.execute { data, errorReponse, networkRequestError in

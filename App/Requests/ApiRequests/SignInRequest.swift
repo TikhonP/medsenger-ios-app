@@ -34,23 +34,51 @@ struct Login: QueryItems {
     }
 }
 
+struct ClinicDataResponse: Decodable {
+    struct Rule: Decodable {
+        let id: Int
+        let name: String
+    }
+    
+    struct Classifier: Decodable {
+        let id: Int
+        let name: String
+    }
+    
+    let name: String
+    let id: Int
+    let video_enabled: Bool
+    let esia_enabled: Bool
+    let delayed_contracts_enabled: Bool
+    
+    let rules: Array<Rule>
+    let classifiers: Array<Classifier>
+    
+    
+}
+
 struct SignInResponse: Decodable {
     let api_token: String
     let isDoctor: Bool
     let isPatient: Bool
     let name: String
-    //    let clinics: Array<getTokenResponseDataClinic>
+    let clinics: Array<ClinicDataResponse>
     let email: String?
     let birthday: String
     let phone: String?
     let short_name: String
     let hasPhoto: Bool
     let email_notifications: Bool
+    let hasApp: Bool
+    let last_health_sync: Date?
     
     func saveUser() {
         let dateFormatter = DateFormatter.ddMMyyyy
         let birthday = dateFormatter.date(from: birthday)!
-        PersistenceController.saveUser(isDoctor: isDoctor, isPatient: isPatient, name: name, email: email, birthday: birthday, phone: phone, shortName: short_name, hasPhoto: hasPhoto, emailNotifications: email_notifications)
+        User.save(isDoctor: isDoctor, isPatient: isPatient, name: name, email: email, birthday: birthday, phone: phone, shortName: short_name, hasPhoto: hasPhoto, emailNotifications: email_notifications)
+        for clinic in clinics {
+            Clinic.saveFromCheck(clinic)
+        }
     }
 }
 
@@ -60,6 +88,7 @@ struct SignInResource: APIResource {
 
     typealias ModelType = SignInResponse
     
+    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy?
     var parseResponse = true
     var httpBody: Data? = nil
     var httpMethod: String = "GET"
@@ -69,14 +98,5 @@ struct SignInResource: APIResource {
     var methodPath = "/auth"
     var queryItems: [URLQueryItem]? { Login(email: email, password: password).queryItems }
     var addApiKey = false
-}
-
-extension DateFormatter {
-    static let ddMMyyyy: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        formatter.calendar = Calendar(identifier: .iso8601)
-        return formatter
-    }()
 }
 

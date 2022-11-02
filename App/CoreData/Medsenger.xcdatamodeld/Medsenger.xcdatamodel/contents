@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="22A380" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Agent" representedClassName=" .Agent" syncable="YES" codeGenerationType="class">
+        <attribute name="caption" attributeType="String"/>
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="openSettingsInBlank" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agents" inverseEntity="AgentTask"/>
+        <relationship name="contract" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserDoctorContract" inverseName="agents" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="AgentAction" representedClassName="AgentAction" syncable="YES" codeGenerationType="class">
+        <attribute name="apiLink" optional="YES" attributeType="URI"/>
+        <attribute name="isSetup" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="link" attributeType="URI"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="agentActions" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="AgentTask" representedClassName="AgentTask" syncable="YES" codeGenerationType="class">
+        <attribute name="actionLink" attributeType="URI"/>
+        <attribute name="agentName" attributeType="String"/>
+        <attribute name="apiActionLink" attributeType="URI"/>
+        <attribute name="available" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="done" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isDone" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isImportant" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="number" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="targetNumber" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="text" attributeType="String"/>
+        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="agentTasks" inverseEntity="Agent"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDoctorContract" inverseName="agentTasks" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="BotAction" representedClassName="BotAction" syncable="YES" codeGenerationType="class">
+        <attribute name="apiLink" optional="YES" attributeType="URI"/>
+        <attribute name="isSetup" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="link" optional="YES" attributeType="URI"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="botActions" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="Clinic" representedClassName="Clinic" syncable="YES" codeGenerationType="class">
+        <attribute name="delayedContractsEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="esiaEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="fullLogoId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="logoId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="nonsquareLogoId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String"/>
+        <attribute name="phonePaid" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="timezone" optional="YES" attributeType="String"/>
+        <attribute name="videoEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="classifiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicClassifier" inverseName="clinic" inverseEntity="ClinicClassifier"/>
+        <relationship name="doctors" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="UserDoctorContract" inverseName="clinic" inverseEntity="UserDoctorContract"/>
+        <relationship name="rules" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicRule" inverseName="clinic" inverseEntity="ClinicRule"/>
+    </entity>
+    <entity name="ClinicClassifier" representedClassName="ClinicClassifier" syncable="YES" codeGenerationType="class">
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Clinic" inverseName="classifiers" inverseEntity="Clinic"/>
+    </entity>
+    <entity name="ClinicRule" representedClassName="ClinicRule" syncable="YES" codeGenerationType="class">
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Clinic" inverseName="rules" inverseEntity="Clinic"/>
+    </entity>
+    <entity name="ContractParam" representedClassName="ContractParam" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="medsengerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="value" optional="YES" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="params" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="DoctorHelper" representedClassName="DoctorHelper" syncable="YES" codeGenerationType="class">
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="role" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="doctorHelpers" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="InfoMaterial" representedClassName="InfoMaterial" syncable="YES" codeGenerationType="class">
+        <attribute name="link" optional="YES" attributeType="URI"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="infoMaterials" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="PatientHelper" representedClassName="PatientHelper" syncable="YES" codeGenerationType="class">
+        <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="role" attributeType="String"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="patientHelpers" inverseEntity="UserDoctorContract"/>
+    </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
         <attribute name="avatar" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" customClassName="UIImage"/>
         <attribute name="birthday" attributeType="Date" usesScalarValueType="NO"/>
@@ -12,5 +102,40 @@
         <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="role" optional="YES" attributeType="String" valueTransformerName="NSSecureUnarchiveFromData" customClassName="UserRole"/>
         <attribute name="shortName" attributeType="String"/>
+    </entity>
+    <entity name="UserDoctorContract" representedClassName="UserDoctorContract" syncable="YES" codeGenerationType="class">
+        <attribute name="activated" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="archive" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="canApplySubmissionToContractExtension" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="complianceAvailible" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="complianceDone" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="contract" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="infoUrl" optional="YES" attributeType="URI"/>
+        <attribute name="isOnline" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="mainDoctor" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="number" optional="YES" attributeType="String"/>
+        <attribute name="photoId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="received" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="role" optional="YES" attributeType="String"/>
+        <attribute name="scenarioDescription" optional="YES" attributeType="String"/>
+        <attribute name="scenarioName" optional="YES" attributeType="String"/>
+        <attribute name="scenarioPreset" optional="YES" attributeType="String"/>
+        <attribute name="sent" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shortName" optional="YES" attributeType="String"/>
+        <attribute name="specialty" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="unread" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
+        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="contract" inverseEntity="Agent"/>
+        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="contract" inverseEntity="AgentTask"/>
+        <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="doctors" inverseEntity="Clinic"/>
+        <relationship name="doctorHelpers" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
+        <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
+        <relationship name="params" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
+        <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
     </entity>
 </model>

@@ -14,7 +14,7 @@ final class ContentViewModel: ObservableObject {
     
     func checkIfApiTokeExists() {
         if !account.isSignedIn {
-            PersistenceController.deleteUser()
+            User.delete()
         }
     }
 }

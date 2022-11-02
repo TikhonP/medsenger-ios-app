@@ -16,6 +16,7 @@ struct UpdateAccountResource: APIResource {
     
     typealias ModelType = CheckResponse
     
+    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy?
     var parseResponse = false
     var httpBody: Data? {
         let params = [

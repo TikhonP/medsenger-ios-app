@@ -1,5 +1,5 @@
 //
-//  PersistenceController+User.swift
+//  User.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 24.10.2022.
@@ -8,8 +8,8 @@
 
 import CoreData
 
-extension PersistenceController {
-    private static func getUser(context: NSManagedObjectContext) -> User {
+extension User {
+    private static func get(context: NSManagedObjectContext) -> User {
         let objects: [User]? = {
             let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
             return try? context.fetch(fetchRequest)
@@ -20,9 +20,9 @@ extension PersistenceController {
         return user
     }
     
-    class func saveUser(isDoctor: Bool, isPatient: Bool, name: String, email: String?, birthday: Date, phone: String?, shortName: String, hasPhoto: Bool, emailNotifications: Bool, avatar: Data? = nil) {
+    class func save(isDoctor: Bool, isPatient: Bool, name: String, email: String?, birthday: Date, phone: String?, shortName: String, hasPhoto: Bool, emailNotifications: Bool, avatar: Data? = nil) {
         let context = PersistenceController.shared.container.viewContext
-        let user = getUser(context: context)
+        let user = get(context: context)
         
         user.isDoctor = isDoctor
         user.isPatient = isPatient
@@ -49,24 +49,24 @@ extension PersistenceController {
         PersistenceController.save(context: context)
     }
     
-    class func saveUserAvatar(data: Data?) {
+    class func saveAvatar(data: Data?) {
         let context = PersistenceController.shared.container.viewContext
-        let user = getUser(context: context)
+        let user = get(context: context)
         
         user.avatar = data
         
         PersistenceController.save(context: context)
     }
     
-    class func deleteUser() {
+    class func delete() {
         let context = PersistenceController.shared.container.viewContext
-        let user = getUser(context: context)
+        let user = get(context: context)
         context.delete(user)
     }
     
-    class func setUserRole(role: UserRole) {
+    class func setRole(role: UserRole) {
         let context = PersistenceController.shared.container.viewContext
-        let user = getUser(context: context)
+        let user = get(context: context)
         
         user.role = role.rawValue
         

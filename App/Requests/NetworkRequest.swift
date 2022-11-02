@@ -68,6 +68,9 @@ extension NetworkRequest {
             }
             if parseResponse {
                 guard let data = data, let value = self?.decode(data) else {
+                    if let data = data {
+                        print(String(decoding: data, as: UTF8.self))
+                    }
                     DispatchQueue.main.async { completion(nil, nil, .emptyDataOrFailedToDeserializeValue) }
                     return
                 }
@@ -118,19 +121,39 @@ class APIRequest<Resource: APIResource> {
 extension APIRequest: NetworkRequest {
     func decodeError(_ data: Data) -> ErrorReponse? {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
+        if let dateDecodingStrategy = resource.dateDecodingStrategy {
+            decoder.dateDecodingStrategy = dateDecodingStrategy
+        } else {
+            decoder.dateDecodingStrategy = .secondsSince1970
+        }
         let errorResponse = try? decoder.decode(ErrorReponse.self, from: data)
         return errorResponse
     }
     
     func decode(_ data: Data) -> Wrapper<Resource.ModelType>? {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
         do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+   
             let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
             return wrapper
+        } catch DecodingError.dataCorrupted(let context) {
+            print(context)
+            return nil
+        } catch DecodingError.keyNotFound(let key, let context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
+        } catch DecodingError.valueNotFound(let value, let context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
+        } catch DecodingError.typeMismatch(let type, let context) {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("error: ", error)
             return nil
         }
     }
@@ -147,6 +170,7 @@ protocol APIResource {
     
     associatedtype ErrorModelType: Decodable = ErrorReponse
     
+    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy? { get }
     var parseResponse: Bool { get }
     var httpBody: Data? { get }
     var httpMethod: String { get }
@@ -202,13 +226,29 @@ extension UploadImageRequest: NetworkRequest {
     }
     
     func decode(_ data: Data) -> Wrapper<Resource.ModelType>? {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
         do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            
             let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
             return wrapper
+        } catch DecodingError.dataCorrupted(let context) {
+            print(context)
+            return nil
+        } catch DecodingError.keyNotFound(let key, let context) {
+            print("Key '\(key)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
+        } catch DecodingError.valueNotFound(let value, let context) {
+            print("Value '\(value)' not found:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
+        } catch DecodingError.typeMismatch(let type, let context) {
+            print("Type '\(type)' mismatch:", context.debugDescription)
+            print("codingPath:", context.codingPath)
+            return nil
         } catch {
-            print("Error: \(error.localizedDescription)")
+            print("error: ", error)
             return nil
         }
     }

@@ -9,8 +9,11 @@
 import SwiftUI
 
 struct ChatsView: View {
+    @StateObject var chatsViewModel = ChatsViewModel()
+
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            .onAppear(perform: chatsViewModel.getDoctors)
     }
 }
 

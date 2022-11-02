@@ -18,7 +18,7 @@ struct SignInView: View {
     
     var body: some View {
         VStack {
-            logoIconLoginView
+            Spacer()
             titleLoginView
             Spacer()
             usernameField
