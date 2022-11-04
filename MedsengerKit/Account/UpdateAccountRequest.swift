@@ -16,8 +16,12 @@ struct UpdateAccountResource: APIResource {
     
     typealias ModelType = CheckResponse
     
-    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy?
-    var parseResponse = false
+    var birthdayString: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.YY"
+        return dateFormatter.string(from: birthday)
+    }
+    
     var httpBody: Data? {
         let params = [
             "name": name,
@@ -28,16 +32,11 @@ struct UpdateAccountResource: APIResource {
         let postString = UpdateAccountResource.getPostString(params: params)
         return postString.data(using: .utf8)
     }
-    var httpMethod: String = "GET"
-    var headers: [String : String]? = nil
+
     var methodPath = "/account"
-    var queryItems: [URLQueryItem]? = nil
-    var addApiKey = true
     
-    var birthdayString: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YY"
-        return dateFormatter.string(from: birthday)
+    var options: APIResourceOptions {
+        APIResourceOptions(httpBody: httpBody)
     }
 }
 

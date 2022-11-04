@@ -39,8 +39,8 @@ struct DoctorContract: Decodable {
     let activated: Bool
     let info_materials: Array<InfoMaterialResponse>?
     let can_apply: Bool
-    let info_url: URL?
-    //    let public_attachments:
+    let info_url: String?
+//    let public_attachments:
     let scenario: ScenarioResponse?
 }
 
@@ -57,7 +57,8 @@ struct ClinicDoctorContract: Decodable {
 }
 
 enum ContractState: String, Decodable {
-case noMessages = "no_messages" // FIXME: !!!
+    case noMessages = "no_messages" // FIXME: !!!
+    case unread = "unread"
 }
 
 struct AgentActionResponse: Decodable {
@@ -113,8 +114,8 @@ struct ParamResponse: Decodable {
     let id: Int
     let name: String
     let value: String
-    let createdAt: Date
-    let updatedAt: Date
+    let created_at: Date
+    let updated_at: Date
 }
 
 struct InfoMaterialResponse: Decodable {

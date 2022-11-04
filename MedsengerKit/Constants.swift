@@ -12,8 +12,3 @@ struct Constants {
     static let medsengerApiUrl = "https://medsenger.ru/api/client"
     
 }
-
-enum UserRole: String {
-    case patient = "patient"
-    case doctor = "doctor"
-}

@@ -17,7 +17,7 @@ struct UploadAvatarResource: UploadImageResource {
     let boundary = UUID().uuidString
     let fileName = UUID().uuidString
     
-    var data: Data {
+    var uploadData: Data {
         var data = Data()
 
         data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
@@ -29,12 +29,14 @@ struct UploadAvatarResource: UploadImageResource {
         
         return data
     }
-    var headers: [String : String]? {
-        ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
-    }
+    
     var methodPath = "/photo"
-    var queryItems: [URLQueryItem]? = nil
-    var addApiKey = true
+    
+    var options: UploadImageResourceOptions {
+        UploadImageResourceOptions(
+            headers: ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
+        )
+    }
 }
 
 

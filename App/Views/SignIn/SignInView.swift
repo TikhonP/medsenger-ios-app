@@ -9,12 +9,10 @@
 import SwiftUI
 
 struct SignInView: View {
-    @ObservedObject private var signInViewModel: SignInViewModel
-    @Environment(\.colorScheme) var colorScheme
     
-    init(account: Account) {
-        signInViewModel = SignInViewModel(account: account)
-    }
+    @StateObject private var signInViewModel = SignInViewModel()
+    
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack {
@@ -33,7 +31,7 @@ struct SignInView: View {
             if signInViewModel.showLoader {
                 ProgressView()
             } else {
-                Button(action: commitButtonAction, label: { buttonLoginView })
+                Button(action: signInViewModel.auth, label: { buttonLoginView })
                     .animation(.default)
             }
             
@@ -78,10 +76,6 @@ struct SignInView: View {
             .autocapitalization(.none)
             .disableAutocorrection(true)
     }
-    
-    func commitButtonAction() {
-        signInViewModel.auth()
-    }
 }
 
 struct CardView: View {
@@ -98,17 +92,7 @@ struct CardView: View {
 }
 
 struct SignInView_Previews: PreviewProvider {
-    let account = Account()
-    
-    struct Preview: View {
-        let account = Account()
-
-        var body: some View {
-            SignInView(account: self.account)
-        }
-    }
-    
     static var previews: some View {
-        Preview()
+        SignInView()
     }
 }

@@ -10,11 +10,5 @@ import SwiftUI
 import Foundation
 
 final class ContentViewModel: ObservableObject {
-    public var account = Account()
     
-    func checkIfApiTokeExists() {
-        if !account.isSignedIn {
-            User.delete()
-        }
-    }
 }

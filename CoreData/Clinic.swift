@@ -26,28 +26,29 @@ extension Clinic {
     }
     
     class func saveFromCheck(_ clinic: ClinicDataResponse) {
-        let context = PersistenceController.shared.container.viewContext
-        let clinicModel = getOrCreate(medsengerId: clinic.id, context: context)
-        
-        clinicModel.name = clinic.name
-        clinicModel.medsengerId = Int64(clinic.id)
-        clinicModel.videoEnabled = clinic.video_enabled
-        clinicModel.esiaEnabled = clinic.esia_enabled
-        clinicModel.delayedContractsEnabled = clinic.delayed_contracts_enabled
-        
-        for rule in clinic.rules {
-            let ruleModel = ClinicRule(context: context)
-            ruleModel.name = rule.name
-            ruleModel.medsengerId = Int64(rule.id)
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            let clinicModel = getOrCreate(medsengerId: clinic.id, context: context)
+            
+            clinicModel.name = clinic.name
+            clinicModel.medsengerId = Int64(clinic.id)
+            clinicModel.videoEnabled = clinic.video_enabled
+            clinicModel.esiaEnabled = clinic.esia_enabled
+            clinicModel.delayedContractsEnabled = clinic.delayed_contracts_enabled
+            
+            for rule in clinic.rules {
+                let ruleModel = ClinicRule(context: context)
+                ruleModel.name = rule.name
+                ruleModel.medsengerId = Int64(rule.id)
+            }
+            
+            for classifier in clinic.classifiers {
+                let classifierModel = ClinicClassifier(context: context)
+                classifierModel.name = classifier.name
+                classifierModel.medsengerId = Int64(classifier.id)
+            }
+            
+            PersistenceController.save(context: context)
         }
-        
-        for classifier in clinic.classifiers {
-            let classifierModel = ClinicClassifier(context: context)
-            classifierModel.name = classifier.name
-            classifierModel.medsengerId = Int64(classifier.id)
-        }
-        
-        PersistenceController.save(context: context)
     }
     
     class func saveFromContracts(_ clinic: ClinicDoctorContract, context: NSManagedObjectContext) -> Clinic {

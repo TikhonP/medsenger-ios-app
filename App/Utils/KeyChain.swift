@@ -10,15 +10,12 @@ import Security
 import Foundation
 
 /// Constants used by the library
-public struct KeychainSwiftConstants {
+public struct KeyСhainConstants {
+    
     /// Specifies a Keychain access group. Used for sharing Keychain items between apps.
     public static var accessGroup: String { return toString(kSecAttrAccessGroup) }
     
-    /**
-     
-     A value that indicates when your app needs access to the data in a keychain item. The default value is AccessibleWhenUnlocked. For a list of possible values, see KeychainSwiftAccessOptions.
-     
-     */
+    /// A value that indicates when your app needs access to the data in a keychain item. The default value is AccessibleWhenUnlocked. For a list of possible values, see KeychainSwiftAccessOptions.
     public static var accessible: String { return toString(kSecAttrAccessible) }
     
     /// Used for specifying a String key when setting/getting a Keychain value.
@@ -53,9 +50,7 @@ public struct KeychainSwiftConstants {
     }
 }
 
-/**
- These options are used to determine when a keychain item should be readable. The default value is AccessibleWhenUnlocked.
- */
+/// These options are used to determine when a keychain item should be readable. The default value is AccessibleWhenUnlocked.
 public enum KeychainSwiftAccessOptions {
     
     /**
@@ -129,14 +124,14 @@ public enum KeychainSwiftAccessOptions {
     }
     
     func toString(_ value: CFString) -> String {
-        return KeychainSwiftConstants.toString(value)
+        return KeyСhainConstants.toString(value)
     }
 }
 
 /**
  A collection of helper functions for saving text and data in the keychain.
  */
-open class KeychainSwift {
+class KeyСhain {
     
     var lastQueryParameters: [String: Any]? // Used by the unit tests
     
@@ -164,7 +159,7 @@ open class KeychainSwift {
     private let lock = NSLock()
     
     
-    /// Instantiate a KeychainSwift object
+    /// Instantiate a KeyСhain object
     public init() { }
     
     /**
@@ -222,10 +217,10 @@ open class KeychainSwift {
         let prefixedKey = keyWithPrefix(key)
         
         var query: [String : Any] = [
-            KeychainSwiftConstants.klass       : kSecClassGenericPassword,
-            KeychainSwiftConstants.attrAccount : prefixedKey,
-            KeychainSwiftConstants.valueData   : value,
-            KeychainSwiftConstants.accessible  : accessible
+            KeyСhainConstants.klass       : kSecClassGenericPassword,
+            KeyСhainConstants.attrAccount : prefixedKey,
+            KeyСhainConstants.valueData   : value,
+            KeyСhainConstants.accessible  : accessible
         ]
         
         query = addAccessGroupWhenPresent(query)
@@ -293,15 +288,15 @@ open class KeychainSwift {
         let prefixedKey = keyWithPrefix(key)
         
         var query: [String: Any] = [
-            KeychainSwiftConstants.klass       : kSecClassGenericPassword,
-            KeychainSwiftConstants.attrAccount : prefixedKey,
-            KeychainSwiftConstants.matchLimit  : kSecMatchLimitOne
+            KeyСhainConstants.klass       : kSecClassGenericPassword,
+            KeyСhainConstants.attrAccount : prefixedKey,
+            KeyСhainConstants.matchLimit  : kSecMatchLimitOne
         ]
         
         if asReference {
-            query[KeychainSwiftConstants.returnReference] = kCFBooleanTrue
+            query[KeyСhainConstants.returnReference] = kCFBooleanTrue
         } else {
-            query[KeychainSwiftConstants.returnData] =  kCFBooleanTrue
+            query[KeyСhainConstants.returnData] =  kCFBooleanTrue
         }
         
         query = addAccessGroupWhenPresent(query)
@@ -357,11 +352,11 @@ open class KeychainSwift {
      */
     public var allKeys: [String] {
         var query: [String: Any] = [
-            KeychainSwiftConstants.klass : kSecClassGenericPassword,
-            KeychainSwiftConstants.returnData : true,
-            KeychainSwiftConstants.returnAttributes: true,
-            KeychainSwiftConstants.returnReference: true,
-            KeychainSwiftConstants.matchLimit: KeychainSwiftConstants.secMatchLimitAll
+            KeyСhainConstants.klass : kSecClassGenericPassword,
+            KeyСhainConstants.returnData : true,
+            KeyСhainConstants.returnAttributes: true,
+            KeyСhainConstants.returnReference: true,
+            KeyСhainConstants.matchLimit: KeyСhainConstants.secMatchLimitAll
         ]
         
         query = addAccessGroupWhenPresent(query)
@@ -375,7 +370,7 @@ open class KeychainSwift {
         
         if lastResultCode == noErr {
             return (result as? [[String: Any]])?.compactMap {
-                $0[KeychainSwiftConstants.attrAccount] as? String } ?? []
+                $0[KeyСhainConstants.attrAccount] as? String } ?? []
         }
         
         return []
@@ -394,8 +389,8 @@ open class KeychainSwift {
         let prefixedKey = keyWithPrefix(key)
         
         var query: [String: Any] = [
-            KeychainSwiftConstants.klass       : kSecClassGenericPassword,
-            KeychainSwiftConstants.attrAccount : prefixedKey
+            KeyСhainConstants.klass       : kSecClassGenericPassword,
+            KeyСhainConstants.attrAccount : prefixedKey
         ]
         
         query = addAccessGroupWhenPresent(query)
@@ -440,7 +435,7 @@ open class KeychainSwift {
         guard let accessGroup = accessGroup else { return items }
         
         var result: [String: Any] = items
-        result[KeychainSwiftConstants.accessGroup] = accessGroup
+        result[KeyСhainConstants.accessGroup] = accessGroup
         return result
     }
     
@@ -457,24 +452,23 @@ open class KeychainSwift {
     func addSynchronizableIfRequired(_ items: [String: Any], addingItems: Bool) -> [String: Any] {
         if !synchronizable { return items }
         var result: [String: Any] = items
-        result[KeychainSwiftConstants.attrSynchronizable] = addingItems == true ? true : kSecAttrSynchronizableAny
+        result[KeyСhainConstants.attrSynchronizable] = addingItems == true ? true : kSecAttrSynchronizableAny
         return result
     }
 }
 
-
-extension KeychainSwift {
+extension KeyСhain {
     private enum Keys {
         static let apiTokenKey = "apiToken"
     }
     
     class var apiToken: String? {
         get {
-            let keyChain = KeychainSwift()
+            let keyChain = KeyСhain()
             return keyChain.get(Keys.apiTokenKey)
         }
         set {
-            let keyChain = KeychainSwift()
+            let keyChain = KeyСhain()
             if let newValue = newValue {
                 keyChain.set(newValue, forKey: Keys.apiTokenKey)
             } else {

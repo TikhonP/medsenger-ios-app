@@ -20,7 +20,7 @@ struct CheckResponse: Decodable {
     let hasPhoto: Bool
     let email_notifications: Bool
     let hasApp: Bool
-    let last_health_sync: Date
+    let last_health_sync: Date?
     
     func saveUser() {
         let dateFormatter = DateFormatter.ddMMyyyy
@@ -35,13 +35,11 @@ struct CheckResponse: Decodable {
 struct CheckResource: APIResource {
     typealias ModelType = CheckResponse
     
-    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy?
-    var parseResponse = true
-    var httpBody: Data? = nil
-    var httpMethod: String = "GET"
-    var headers: [String : String]? = nil
     var methodPath = "/check"
-    var queryItems: [URLQueryItem]? = nil
-    var addApiKey = true
+    
+    var options = APIResourceOptions(
+        dateDecodingStrategy: .secondsSince1970,
+        parseResponse: true
+    )
 }
 

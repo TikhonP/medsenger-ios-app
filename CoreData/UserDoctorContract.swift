@@ -10,21 +10,28 @@ import Foundation
 import CoreData
 
 extension UserDoctorContract {
+    private static func getContract(contractId: Int, context: NSManagedObjectContext) -> UserDoctorContract? {
+        do {
+            let fetchRequest = UserDoctorContract.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "contract == %ld", contractId)
+            let fetchedResults = try context.fetch(fetchRequest)
+            if let userDoctorContract = fetchedResults.first {
+                return userDoctorContract
+            }
+            return nil
+        }
+        catch {
+            print("Fetch core data task failed: ", error)
+            return nil
+        }
+    }
+    
     private static func updateOrCreate(doctorContract: DoctorContract, context: NSManagedObjectContext) -> UserDoctorContract {
         let userDoctorContract = {
-            do {
-                let fetchRequest = UserDoctorContract.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "contract == %ld", doctorContract.contract)
-                let fetchedResults = try context.fetch(fetchRequest)
-                if let userDoctorContract = fetchedResults.first {
-                    return userDoctorContract
-                }
+            guard let userDoctorContract = getContract(contractId: doctorContract.contract, context: context) else {
                 return UserDoctorContract(context: context)
             }
-            catch {
-                print("Fetch core data task failed: ", error)
-                return UserDoctorContract(context: context)
-            }
+            return userDoctorContract
         }()
         
         userDoctorContract.contract = Int64(doctorContract.contract)
@@ -50,8 +57,9 @@ extension UserDoctorContract {
         userDoctorContract.role = doctorContract.role
         userDoctorContract.activated = doctorContract.activated
         userDoctorContract.canApplySubmissionToContractExtension = doctorContract.can_apply
-        userDoctorContract.infoUrl = doctorContract.info_url
-        
+        if let urlString = doctorContract.info_url, let url = URL(string: urlString) {
+            userDoctorContract.infoUrl = url
+        }
         userDoctorContract.scenarioName = doctorContract.scenario?.name
         userDoctorContract.scenarioDescription = doctorContract.scenario?.description
         userDoctorContract.scenarioPreset = doctorContract.scenario?.preset
@@ -79,8 +87,9 @@ extension UserDoctorContract {
     }
     
     class func save(doctorContracts: [DoctorContract]) {
-        let context = PersistenceController.shared.container.viewContext
-        context.perform {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.reset()
+            
             // Store got contracts to check if some contractes deleted later
             var gotContractIds = [Int]()
             
@@ -89,6 +98,8 @@ extension UserDoctorContract {
                 let userDoctorContract = updateOrCreate(doctorContract: contract, context: context)
                 let clinic = Clinic.saveFromContracts(contract.clinic, context: context)
                 userDoctorContract.clinic = clinic
+                
+                PersistenceController.save(context: context)
                 
                 // Save Agents
                 var agentsIds = [Int]()
@@ -105,23 +116,33 @@ extension UserDoctorContract {
                     }
                 }
                 
-                AgentAction.save(agentActions: contract.agent_actions, contract: userDoctorContract, context: context)
-                BotAction.save(botActions: contract.bot_actions, contract: userDoctorContract, context: context)
+//                PersistenceController.save(context: context)
+                
+//                AgentAction.save(agentActions: contract.agent_actions, contract: userDoctorContract, context: context)
+//                BotAction.save(botActions: contract.bot_actions, contract: userDoctorContract, context: context)
                 
                 // TODO: save agent tasks
                 
-                PatientHelper.save(patientHelpers: contract.patient_helpers, contract: userDoctorContract, context: context)
-                DoctorHelper.save(doctorHelpers: contract.doctor_helpers, contract: userDoctorContract, context: context)
-                ContractParam.save(contractParams: contract.params, contract: userDoctorContract, context: context)
-                if let infoMaterials = contract.info_materials {
-                    InfoMaterial.save(infoMaterials: infoMaterials, contract: userDoctorContract, context: context)
-                }
+//                PatientHelper.save(patientHelpers: contract.patient_helpers, contract: userDoctorContract, context: context)
+//                DoctorHelper.save(doctorHelpers: contract.doctor_helpers, contract: userDoctorContract, context: context)
+//                ContractParam.save(contractParams: contract.params, contract: userDoctorContract, context: context)
+//                if let infoMaterials = contract.info_materials {
+//                    InfoMaterial.save(infoMaterials: infoMaterials, contract: userDoctorContract, context: context)
+//                }
             }
             
             if !gotContractIds.isEmpty {
                 cleanRemoved(validContractIds: gotContractIds, context: context)
             }
             
+            PersistenceController.save(context: context)
+        }
+    }
+    
+    class func saveAvatar(contractId: Int, image: Data) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            let userDoctorContract = getContract(contractId: contractId, context: context)
+            userDoctorContract?.avatar = image
             PersistenceController.save(context: context)
         }
     }

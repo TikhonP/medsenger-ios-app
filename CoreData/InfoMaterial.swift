@@ -55,5 +55,7 @@ extension InfoMaterial {
         if !gotInfoMaterialNames.isEmpty {
             cleanRemoved(validInfoMaterialNames: gotInfoMaterialNames, context: context, contract: contract)
         }
+        
+        PersistenceController.save(context: context)
     }
 }

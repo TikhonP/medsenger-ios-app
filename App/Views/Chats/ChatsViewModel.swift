@@ -9,27 +9,30 @@
 import Foundation
 
 final class ChatsViewModel: ObservableObject {
+    func getArchiveContracts() {
+        switch Account.shared.role {
+        case .patient:
+            Contracts.shared.getDoctorsArchive()
+        case .doctor:
+            break // FIXME: !!!
+        }
+    }
     
-    private var getDoctorsRequest: APIRequest<DoctorsResource>?
+    func getContracts() {
+        switch Account.shared.role {
+        case .patient:
+            Contracts.shared.getDoctors()
+        case .doctor:
+            break // FIXME: !!!
+        }
+    }
     
-    func getDoctors() {
-        let doctorsResourse = DoctorsResource()
-        getDoctorsRequest = APIRequest(resource: doctorsResourse)
-        getDoctorsRequest?.execute { data, errorReponse, networkRequestError in
-            if let data = data {
-                Task {
-                    UserDoctorContract.save(doctorContracts: data.data)
-                }
-            }
-            
-            if let errorReponse = errorReponse {
-                print(errorReponse)
-                return
-            }
-            if let networkRequestError = networkRequestError {
-                print(networkRequestError)
-                return
-            }
+    func getContractAvatar(contractId: Int) {
+        switch Account.shared.role {
+        case .patient:
+            Contracts.shared.getAndSaveDoctorAvatar(contractId)
+        case .doctor:
+            break // FIXME: !!!
         }
     }
 }

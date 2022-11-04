@@ -30,7 +30,7 @@ extension AgentAction {
     ///   - validAgentActionsNames: The agent actions Names that exists in JSON from Medsenger
     ///   - context: Core Data context
     ///   - contract: UserDoctorContract contract for data filtering
-    private static func cleanReamoved(validAgentActionsNames: [String], context: NSManagedObjectContext, contract: UserDoctorContract) {
+    private static func cleanRemoved(validAgentActionsNames: [String], context: NSManagedObjectContext, contract: UserDoctorContract) {
         do {
             let fetchRequest = AgentAction.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
@@ -63,7 +63,9 @@ extension AgentAction {
         }
         
         if !gotAgentActionsIds.isEmpty {
-            cleanReamoved(validAgentActionsNames: gotAgentActionsIds, context: context, contract: contract)
+            cleanRemoved(validAgentActionsNames: gotAgentActionsIds, context: context, contract: contract)
         }
+        
+        PersistenceController.save(context: context)
     }
 }

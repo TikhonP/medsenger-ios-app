@@ -65,5 +65,7 @@ extension BotAction {
         if !gotBotActionsIds.isEmpty {
             cleanRemoved(validBotActionsNames: gotBotActionsIds, context: context, contract: contract)
         }
+        
+        PersistenceController.save(context: context)
     }
 }

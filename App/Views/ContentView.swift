@@ -33,9 +33,9 @@ struct ContentView: View {
                     }
                 }
             }
-            .onAppear(perform: contentViewModel.checkIfApiTokeExists)
+            .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
         } else {
-            SignInView(account: contentViewModel.account)
+            SignInView()
                 .onAppear(perform: PersistenceController.clearDatabase)
         }
     }

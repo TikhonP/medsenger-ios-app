@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-struct Login: QueryItems {
+struct LoginData {
     let email: String
     let password: String
     
@@ -27,7 +27,7 @@ struct Login: QueryItems {
         [
             URLQueryItem(name: "email", value: email),
             URLQueryItem(name: "password", value: password),
-            URLQueryItem(name: "manufacturer", value: Login.manufacturer),
+            URLQueryItem(name: "manufacturer", value: LoginData.manufacturer),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "model", value: model),
         ]
@@ -87,16 +87,19 @@ struct SignInResource: APIResource {
     let password: String
 
     typealias ModelType = SignInResponse
-    
-    var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy?
-    var parseResponse = true
-    var httpBody: Data? = nil
-    var httpMethod: String = "GET"
-    var headers: [String : String]? = [
-        "Cache-Control": "no-store; no-cache; must-revalidate"
-    ]
+
     var methodPath = "/auth"
-    var queryItems: [URLQueryItem]? { Login(email: email, password: password).queryItems }
-    var addApiKey = false
+    
+    var options: APIResourceOptions {
+        APIResourceOptions(
+            dateDecodingStrategy: .secondsSince1970,
+            parseResponse: true,
+            headers: [
+                "Cache-Control": "no-store; no-cache; must-revalidate"
+            ],
+            queryItems: LoginData(email: email, password: password).queryItems,
+            addApiKey: false
+        )
+    }
 }
 

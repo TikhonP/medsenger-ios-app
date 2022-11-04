@@ -57,5 +57,7 @@ extension PatientHelper {
         if !gotPatientHelpersIds.isEmpty {
             cleanRemoved(validPatientHelperIds: gotPatientHelpersIds, context: context, contract: contract)
         }
+        
+        PersistenceController.save(context: context)
     }
 }

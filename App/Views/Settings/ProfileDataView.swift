@@ -33,7 +33,8 @@ struct ProfileDataView: View {
                     VStack {
                         ZStack {
                             if let avatarData = user.avatar {
-                                createImage(avatarData)
+                                Image(data: avatarData)?
+                                    .resizable()
                             } else {
                                 ProgressView()
                                     .onAppear(perform: settingsViewModel.getAvatar)
@@ -76,9 +77,11 @@ struct ProfileDataView: View {
                         Text(user.name ?? "Data reading error")
                             .bold()
                             .font(.title)
-                        Text(user.birthday!, style: .date)
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                        if let birthday = user.birthday {
+                            Text(birthday, style: .date)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
                     }
                     Spacer()
                 }
@@ -121,18 +124,6 @@ struct ProfileDataView: View {
                 }
             }
         }
-    }
-    
-    func createImage(_ value: Data) -> Image {
-#if canImport(UIKit)
-        let songArtwork: UIImage = UIImage(data: value) ?? UIImage()
-        return Image(uiImage: songArtwork)
-#elseif canImport(AppKit)
-        let songArtwork: NSImage = NSImage(data: value) ?? NSImage()
-        return Image(nsImage: songArtwork)
-#else
-        return Image(systemImage: "some_default")
-#endif
     }
 }
 

@@ -51,13 +51,15 @@ extension ContractParam {
             contractParamModel.medsengerId = Int64(contractParam.id)
             contractParamModel.name = contractParam.name
             contractParamModel.value = contractParam.value
-            contractParamModel.createdAt = contractParam.createdAt
-            contractParamModel.updatedAt = contractParam.updatedAt
+            contractParamModel.createdAt = contractParam.created_at
+            contractParamModel.updatedAt = contractParam.updated_at
             contractParamModel.contract = contract
         }
         
         if !gotContractParamIds.isEmpty {
             cleanRemoved(validContractParamIds: gotContractParamIds, context: context, contract: contract)
         }
+        
+        PersistenceController.save(context: context)
     }
 }
