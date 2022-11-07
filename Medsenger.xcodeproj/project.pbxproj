@@ -24,6 +24,14 @@
 		437DB153291405B100D847E7 /* Contracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB152291405B100D847E7 /* Contracts.swift */; };
 		437DB15529140D4E00D847E7 /* DoctorsArchiveRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB15429140D4E00D847E7 /* DoctorsArchiveRequest.swift */; };
 		437DB157291410B900D847E7 /* ArchivesChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB156291410B900D847E7 /* ArchivesChatsView.swift */; };
+		43953DFD29191A04006C8B3D /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953DFB29191A04006C8B3D /* Message+CoreDataClass.swift */; };
+		43953E0129191FCB006C8B3D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0029191FCB006C8B3D /* Messages.swift */; };
+		43953E0329191FF5006C8B3D /* MessagesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0229191FF5006C8B3D /* MessagesRequest.swift */; };
+		43953E0829192A6C006C8B3D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0729192A6C006C8B3D /* ChatView.swift */; };
+		43953E0A29192A76006C8B3D /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0929192A76006C8B3D /* ChatViewModel.swift */; };
+		43953E0C29192EF0006C8B3D /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0B29192EF0006C8B3D /* String+.swift */; };
+		43953E0F291931E3006C8B3D /* Attachment+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0D291931E3006C8B3D /* Attachment+CoreDataClass.swift */; };
+		43953E13291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E11291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift */; };
 		43DB0E592909533800801296 /* LocalizedString+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E582909533800801296 /* LocalizedString+.swift */; };
 		43DB0E5C2909553F00801296 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43DB0E5E2909553F00801296 /* Localizable.strings */; };
 		43DB0E6029095B9800801296 /* KeyChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E5F29095B9800801296 /* KeyChain.swift */; };
@@ -78,6 +86,14 @@
 		437DB152291405B100D847E7 /* Contracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contracts.swift; sourceTree = "<group>"; };
 		437DB15429140D4E00D847E7 /* DoctorsArchiveRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsArchiveRequest.swift; sourceTree = "<group>"; };
 		437DB156291410B900D847E7 /* ArchivesChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivesChatsView.swift; sourceTree = "<group>"; };
+		43953DFB29191A04006C8B3D /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43953E0029191FCB006C8B3D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		43953E0229191FF5006C8B3D /* MessagesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesRequest.swift; sourceTree = "<group>"; };
+		43953E0729192A6C006C8B3D /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		43953E0929192A76006C8B3D /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		43953E0B29192EF0006C8B3D /* String+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
+		43953E0D291931E3006C8B3D /* Attachment+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attachment+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43953E11291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageAttachment+CoreDataClass.swift"; sourceTree = "<group>"; };
 		43DB0E582909533800801296 /* LocalizedString+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocalizedString+.swift"; sourceTree = "<group>"; };
 		43DB0E5D2909553F00801296 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43DB0E5F29095B9800801296 /* KeyChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyChain.swift; sourceTree = "<group>"; };
@@ -129,6 +145,7 @@
 		432243822906C0FC00899442 /* MedsengerKit */ = {
 			isa = PBXGroup;
 			children = (
+				43953DFF29191FB8006C8B3D /* Messages */,
 				433E59892906DE6C0069F8DF /* NetworkRequest.swift */,
 				432243862906C11B00899442 /* Constants.swift */,
 				437DB151291405A300D847E7 /* Contracts */,
@@ -150,6 +167,9 @@
 		433E597E2906C8BC0069F8DF /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				43953E11291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift */,
+				43953E0D291931E3006C8B3D /* Attachment+CoreDataClass.swift */,
+				43953DFB29191A04006C8B3D /* Message+CoreDataClass.swift */,
 				433E597F2906C8D70069F8DF /* Medsenger.xcdatamodeld */,
 				433E59822906C8F80069F8DF /* PersistenceController.swift */,
 				43E5EA242910025A008754C5 /* UserDoctorContract.swift */,
@@ -170,6 +190,7 @@
 		433F0D052906979D008E1F42 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				43953E0429192A0B006C8B3D /* Chat */,
 				4344D47A2912866A0005E70F /* Utils */,
 				43DB0E6429095E2300801296 /* Settings */,
 				43DB0E6129095E0200801296 /* Chats */,
@@ -221,6 +242,24 @@
 			path = Contracts;
 			sourceTree = "<group>";
 		};
+		43953DFF29191FB8006C8B3D /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				43953E0029191FCB006C8B3D /* Messages.swift */,
+				43953E0229191FF5006C8B3D /* MessagesRequest.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
+		43953E0429192A0B006C8B3D /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				43953E0729192A6C006C8B3D /* ChatView.swift */,
+				43953E0929192A76006C8B3D /* ChatViewModel.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
 		43DB0E572909530900801296 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +267,7 @@
 				43E5EA1E290FF265008754C5 /* DateFormatter+.swift */,
 				43DB0E582909533800801296 /* LocalizedString+.swift */,
 				43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */,
+				43953E0B29192EF0006C8B3D /* String+.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -335,7 +375,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "TelePat ltd.";
 				TargetAttributes = {
 					43FF657D2902D2DB00AB9BB1 = {
@@ -383,6 +423,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43E5EA2729100EA3008754C5 /* AgentAction.swift in Sources */,
+				43953E0129191FCB006C8B3D /* Messages.swift in Sources */,
 				43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */,
 				43E5EA0F290ABAD2008754C5 /* UploadAvatarRequest.swift in Sources */,
 				43E5EA2929101754008754C5 /* BotAction.swift in Sources */,
@@ -391,7 +432,10 @@
 				433E598A2906DE6C0069F8DF /* NetworkRequest.swift in Sources */,
 				43E5EA252910025A008754C5 /* UserDoctorContract.swift in Sources */,
 				433E59852906CA500069F8DF /* User.swift in Sources */,
+				43953E0C29192EF0006C8B3D /* String+.swift in Sources */,
 				43E5EA1D290FE36C008754C5 /* ResponseModels.swift in Sources */,
+				43953E0F291931E3006C8B3D /* Attachment+CoreDataClass.swift in Sources */,
+				43953DFD29191A04006C8B3D /* Message+CoreDataClass.swift in Sources */,
 				43DB0E6029095B9800801296 /* KeyChain.swift in Sources */,
 				4344D47C291286750005E70F /* Image+Data.swift in Sources */,
 				43FF65822902D2DB00AB9BB1 /* App.swift in Sources */,
@@ -401,6 +445,7 @@
 				43E5EA3529114219008754C5 /* ContractParam.swift in Sources */,
 				43E5EA21290FF4B6008754C5 /* DoctorsRequest.swift in Sources */,
 				43DB0E6329095E1500801296 /* ChatsView.swift in Sources */,
+				43953E0329191FF5006C8B3D /* MessagesRequest.swift in Sources */,
 				43DB0E6629095E3200801296 /* SettingsView.swift in Sources */,
 				4322437E29069B9E00899442 /* PasswordFieldView.swift in Sources */,
 				43E5EA31291141EB008754C5 /* PatientHelper.swift in Sources */,
@@ -419,8 +464,11 @@
 				43E5EA23290FF568008754C5 /* ChatsViewModel.swift in Sources */,
 				43E5EA1F290FF265008754C5 /* DateFormatter+.swift in Sources */,
 				43E5EA15290AD121008754C5 /* UpdateAccountRequest.swift in Sources */,
+				43953E0A29192A76006C8B3D /* ChatViewModel.swift in Sources */,
 				43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */,
 				43E5EA2F291141AC008754C5 /* DoctorHelper.swift in Sources */,
+				43953E13291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift in Sources */,
+				43953E0829192A6C006C8B3D /* ChatView.swift in Sources */,
 				43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */,
 				433F0D0A29069842008E1F42 /* SignInViewModel.swift in Sources */,
 				43E5EA1A290BDF22008754C5 /* Clinic.swift in Sources */,
@@ -585,7 +633,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -624,7 +672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";

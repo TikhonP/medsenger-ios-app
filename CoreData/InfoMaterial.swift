@@ -20,7 +20,7 @@ extension InfoMaterial {
             return InfoMaterial(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return InfoMaterial(context: context)
         }
     }
@@ -37,7 +37,7 @@ extension InfoMaterial {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

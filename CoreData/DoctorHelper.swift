@@ -20,7 +20,7 @@ extension DoctorHelper {
             return DoctorHelper(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return DoctorHelper(context: context)
         }
     }
@@ -37,7 +37,7 @@ extension DoctorHelper {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

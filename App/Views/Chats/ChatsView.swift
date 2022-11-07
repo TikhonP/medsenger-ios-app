@@ -14,12 +14,18 @@ struct ChatsView: View {
     @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "archive == NO"), animation: .default)
     private var contracts: FetchedResults<UserDoctorContract>
     
+    @State private var showSettingsModal: Bool = false
+    
     var body: some View {
         NavigationView {
             List {
                 ForEach(contracts) { contract in
-                    ChatRow(name: contract.name ?? "Failed to fetch name", avatar: contract.avatar, contractId: Int(contract.contract))
-                        .environmentObject(chatsViewModel)
+                    NavigationLink(destination: {
+                        ChatView(contract: contract)
+                    }, label: {
+                        ChatRow(name: contract.name ?? "Failed to fetch name", avatar: contract.avatar, contractId: Int(contract.contract))
+                            .environmentObject(chatsViewModel)
+                    })
                 }
                 
                 NavigationLink(destination: {
@@ -29,8 +35,15 @@ struct ChatsView: View {
             }
             .listStyle(PlainListStyle())
             .navigationTitle("Chats")
+            .onAppear(perform: chatsViewModel.getContracts)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear.circle") })
+                        .id(UUID())
+                }
+            }
+            .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
         }
-        .onAppear(perform: chatsViewModel.getContracts)
     }
     
     var archiveRow: some View {

@@ -10,20 +10,30 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject var settingsViewModel = SettingsViewModel()
+    @Environment(\.presentationMode) private var presentationMode
     
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>
     
     var body: some View {
-        ZStack {
-            if users.first != nil {
-                ProfileDataView()
-                    .environmentObject(settingsViewModel)
-            } else {
-                Text("Failed to fetch user")
+        VStack {
+            HStack {
+                Button("Cancel") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+                .padding()
+                Spacer()
             }
+            ZStack {
+                if users.first != nil {
+                    ProfileDataView()
+                        .environmentObject(settingsViewModel)
+                } else {
+                    Text("Failed to fetch user")
+                }
+            }
+            .onAppear(perform: settingsViewModel.updateProfile)
         }
-        .onAppear(perform: settingsViewModel.updateProfile)
     }
 }
 

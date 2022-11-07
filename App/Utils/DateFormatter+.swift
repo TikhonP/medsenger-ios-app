@@ -23,9 +23,16 @@ extension DateFormatter {
         return formatter
     }()
     
-    static let ddMMyyyyAndTime: DateFormatter = {
+    static let ddMMyyyyAndTimeWithParentheses: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy (HH:mm)"
+        formatter.calendar = Calendar(identifier: .iso8601)
+        return formatter
+    }()
+    
+    static let ddMMyyyyAndTime: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
         formatter.calendar = Calendar(identifier: .iso8601)
         return formatter
     }()

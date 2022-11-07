@@ -20,7 +20,7 @@ extension AgentAction {
             return AgentAction(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return AgentAction(context: context)
         }
     }
@@ -42,7 +42,7 @@ extension AgentAction {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

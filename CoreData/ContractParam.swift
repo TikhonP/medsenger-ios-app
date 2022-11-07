@@ -20,7 +20,7 @@ extension ContractParam {
             return ContractParam(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return ContractParam(context: context)
         }
     }
@@ -37,7 +37,7 @@ extension ContractParam {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

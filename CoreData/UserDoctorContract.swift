@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 extension UserDoctorContract {
-    private static func getContract(contractId: Int, context: NSManagedObjectContext) -> UserDoctorContract? {
+    static func getContract(contractId: Int, context: NSManagedObjectContext) -> UserDoctorContract? {
         do {
             let fetchRequest = UserDoctorContract.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "contract == %ld", contractId)
@@ -21,7 +21,7 @@ extension UserDoctorContract {
             return nil
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return nil
         }
     }
@@ -82,7 +82,7 @@ extension UserDoctorContract {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

@@ -20,7 +20,7 @@ extension BotAction {
             return BotAction(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return BotAction(context: context)
         }
     }
@@ -42,7 +42,7 @@ extension BotAction {
             }
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
         }
     }
     

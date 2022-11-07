@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var contentViewModel = ContentViewModel()
-
+    
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>
     
@@ -19,18 +19,7 @@ struct ContentView: View {
                 if user.role == nil {
                     ChooseRoleView()
                 } else {
-                    TabView {
-                        ChatsView()
-                            .tabItem {
-                                Image(systemName: "message.fill")
-                                Text("Chats")
-                            }
-                        SettingsView()
-                            .tabItem {
-                                Image(systemName: "gearshape.fill")
-                                Text("Settings")
-                            }
-                    }
+                    ChatsView()
                 }
             }
             .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)

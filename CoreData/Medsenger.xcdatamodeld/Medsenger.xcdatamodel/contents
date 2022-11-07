@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="22A380" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A380" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Agent" representedClassName="Agent" syncable="YES" codeGenerationType="class">
         <attribute name="caption" attributeType="String"/>
         <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -30,6 +30,20 @@
         <attribute name="text" attributeType="String"/>
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="agentTasks" inverseEntity="Agent"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDoctorContract" inverseName="agentTasks" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="Attachment" representedClassName="Attachment" syncable="YES" codeGenerationType="category">
+        <attribute name="data" optional="YES" attributeType="Binary"/>
+        <attribute name="icon" attributeType="String"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="mime" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="size" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="attachments" inverseEntity="Message"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="BotAction" representedClassName="BotAction" syncable="YES" codeGenerationType="class">
         <attribute name="apiLink" optional="YES" attributeType="URI"/>
@@ -79,10 +93,61 @@
         <attribute name="role" attributeType="String"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="doctorHelpers" inverseEntity="UserDoctorContract"/>
     </entity>
+    <entity name="ImageAttachment" representedClassName="ImageAttachment" syncable="YES" codeGenerationType="category">
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="real" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="small" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="thumb" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="images" inverseEntity="Message"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="InfoMaterial" representedClassName="InfoMaterial" syncable="YES" codeGenerationType="class">
         <attribute name="link" optional="YES" attributeType="URI"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="UserDoctorContract" inverseName="infoMaterials" inverseEntity="UserDoctorContract"/>
+    </entity>
+    <entity name="Message" representedClassName="Message" syncable="YES" codeGenerationType="category">
+        <attribute name="actionBig" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="actionDeadline" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="actionLink" optional="YES" attributeType="URI"/>
+        <attribute name="actionName" optional="YES" attributeType="String"/>
+        <attribute name="actionOnetime" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="actionType" optional="YES" attributeType="String"/>
+        <attribute name="actionUsed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="apiActionLink" optional="YES" attributeType="URI"/>
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="authorRole" optional="YES" attributeType="String"/>
+        <attribute name="deadline" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="forwardToDoctor" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isAgent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isAnswered" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isAuto" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isDoctorAboutToExpire" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isDoctorMessage" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isFiltered" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isOvertime" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isUrgent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWarning" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="onlyDoctor" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="onlyPatient" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="replyToId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sent" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserDoctorContract" inverseName="messages" inverseEntity="UserDoctorContract"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="PatientHelper" representedClassName="PatientHelper" syncable="YES" codeGenerationType="class">
         <attribute name="medsengerId" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -136,6 +201,7 @@
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="doctors" inverseEntity="Clinic"/>
         <relationship name="doctorHelpers" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
         <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
         <relationship name="params" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
         <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
     </entity>

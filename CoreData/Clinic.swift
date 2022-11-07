@@ -20,7 +20,7 @@ extension Clinic {
             return Clinic(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return Clinic(context: context)
         }
     }

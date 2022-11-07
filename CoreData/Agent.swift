@@ -20,7 +20,7 @@ extension Agent {
             return Agent(context: context)
         }
         catch {
-            print("Fetch core data task failed: ", error)
+            print("Fetch core data task failed: ", error.localizedDescription)
             return Agent(context: context)
         }
     }

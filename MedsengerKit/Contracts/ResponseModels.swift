@@ -136,7 +136,7 @@ extension DoctorContract {
     }
     
     var endDateAsDate: Date? {
-        let formatter = DateFormatter.ddMMyyyyAndTime
+        let formatter = DateFormatter.ddMMyyyyAndTimeWithParentheses
         return formatter.date(from: endDate)
     }
 }
