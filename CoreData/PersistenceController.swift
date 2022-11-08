@@ -28,10 +28,19 @@ class PersistenceController: ObservableObject {
     }
     
     class func save(context: NSManagedObjectContext) {
-        do {
-            try context.save()
-        } catch {
-            print("Core Data failed to save model: \(error.localizedDescription)")
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch let nserror as NSError {
+                print("Core Data failed to save model: \(nserror.localizedDescription)")
+                if let detailed = nserror.userInfo["NSDetailedErrors"] as? NSMutableArray {
+                    for nserror in detailed {
+                        if let nserror = nserror as? NSError, let entity = nserror.userInfo["NSValidationErrorObject"] {
+                            print("Core Data Detailed: \(nserror.localizedDescription) Entity: `\(type(of: entity))`.")
+                        }
+                    }
+                }
+            }
         }
     }
     

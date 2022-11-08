@@ -8,11 +8,6 @@
 
 import Foundation
 
-enum UserRole: String {
-    case patient = "patient"
-    case doctor = "doctor"
-}
-
 class Account {
     static let shared = Account()
     
@@ -21,13 +16,13 @@ class Account {
     private var uploadAvatarRequest: UploadImageRequest<UploadAvatarResource>?
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
     
-    public func setRole(_ role: UserRole) {
-        User.setRole(role: role)
+    public func setRole(_ role: User.Role) {
+        User.role = role
     }
     
-    public var role: UserRole {
-        guard let role = User.getRole() else {
-            return UserRole.patient // FIXME: !!!
+    public var role: User.Role {
+        guard let role = User.role else {
+            return User.Role.patient // FIXME: !!!
         }
         return role
     }
@@ -54,7 +49,7 @@ class Account {
             case .success:
                 break
             case .SuccessData(let data):
-                data.saveUser()
+                User.saveUserFromJson(data: data)
                 self.getAvatar()
             case .Error(let error):
                 processRequestError(error, "get profile data")

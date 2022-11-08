@@ -23,7 +23,7 @@ struct ProfileDataView: View {
     
     @State private var selectedAvatarImage = Data()
     
-    @State private var userRole: UserRole = .doctor
+    @State private var userRole: User.Role = .doctor
     
     var body: some View {
         if let user = users.first {
@@ -108,12 +108,14 @@ struct ProfileDataView: View {
                 if user.isPatient && user.isDoctor {
                     Section {
                         Picker("Role", selection: $userRole) {
-                            Text("Patient").tag(UserRole.patient)
-                            Text("Doctor").tag(UserRole.doctor)
+                            Text("Patient").tag(User.Role.patient)
+                            Text("Doctor").tag(User.Role.doctor)
                         }
                     }
-                    .onAppear { userRole = UserRole(rawValue: user.role!) ?? .patient }
-                    .onChange(of: userRole) { newValue in User.setRole(role: newValue) }
+                    .onAppear { userRole = User.role ?? .patient }
+                    .onChange(of: userRole) { newValue in
+                        User.role = newValue
+                    }
                 }
                 
                 Section {

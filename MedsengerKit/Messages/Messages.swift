@@ -21,7 +21,7 @@ class Messages {
             case .success:
                 break
             case .SuccessData(let data):
-                Message.saveMessagesFromJson(data: data, contractId: contractId)
+                Message.saveFromJson(data: data, contractId: contractId)
                 print("Done messages")
             case .Error(let error):
                 processRequestError(error, "get messages for contract \(contractId)")

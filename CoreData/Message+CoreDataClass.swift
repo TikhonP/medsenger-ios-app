@@ -21,6 +21,24 @@ public class Message: NSManagedObject {
         }
     }
     
+    private class func get(id: Int, context: NSManagedObjectContext) -> Message? {
+        do {
+            let fetchRequest = Message.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+            let fetchedResults = try context.fetch(fetchRequest)
+            if let message = fetchedResults.first {
+                return message
+            }
+            return nil
+        }
+        catch {
+            print("Fetch core data task failed: ", error.localizedDescription)
+            return nil
+        }
+    }
+}
+
+extension Message {
     struct JsonDeserializer: Decodable {
         let id: Int
         let text: String
@@ -64,30 +82,18 @@ public class Message: NSManagedObject {
         }
     }
     
-    private class func getMessage(id: Int, context: NSManagedObjectContext) -> Message? {
-        do {
-            let fetchRequest = Message.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let message = fetchedResults.first {
-                return message
-            }
-            return nil
-        }
-        catch {
-            print("Fetch core data task failed: ", error.localizedDescription)
-            return nil
-        }
-    }
-    
-    private class func saveMessageFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Message {
+    private class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Message {
         let message = {
-            if let message = getMessage(id: data.id, context: context) {
+            if let message = get(id: data.id, context: context) {
                 return message
             } else {
                 return Message(context: context)
             }
         }()
+        
+        if data.isSimilar(message) {
+            return message
+        }
         
         message.id = Int64(data.id)
         message.text = data.text
@@ -130,15 +136,15 @@ public class Message: NSManagedObject {
         return message
     }
     
-    class func saveMessagesFromJson(data: [JsonDeserializer], contractId: Int) {
+    class func saveFromJson(data: [JsonDeserializer], contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let contract = UserDoctorContract.getContract(contractId: contractId, context: context) else {
+            guard let contract = Contract.get(id: contractId, context: context) else {
                 print("Failed to save messages: Core data failed to fetch contract")
                 return
             }
             
             for messageData in data {
-                let message = saveMessageFromJson(data: messageData, context: context)
+                let message = saveFromJson(data: messageData, context: context)
                 
                 for attachmentData in messageData.attachments {
                     let attachment = Attachment.saveFromJson(data: attachmentData, context: context)
@@ -157,9 +163,50 @@ public class Message: NSManagedObject {
                 if let isExist = contract.messages?.contains(message), !isExist {
                     contract.addToMessages(message)
                 }
-                
-                PersistenceController.save(context: context)
             }
         }
+    }
+}
+
+extension Message.JsonDeserializer {
+    func isSimilar(_ message: Message) -> Bool {
+        if message.id != Int64(id) ||
+            message.text != text ||
+            message.sent != sentAsDate ||
+            message.deadline != deadlineAsDate ||
+            message.isAnswered != isAnswered ||
+            message.isOvertime != isOvertime ||
+            message.isWarning != isWarning ||
+            message.isDoctorMessage != isDoctorMessage ||
+            message.author != author ||
+            message.authorRole != author_role ||
+            message.isAuto != is_auto ||
+            message.state != state ||
+            message.isAgent != is_agent ||
+            message.actionType != action_type ||
+            message.actionName != action_name ||
+            message.actionDeadline != action_deadline ||
+            message.actionOnetime != action_onetime ||
+            message.actionUsed != action_used ||
+            message.actionBig != action_big ||
+            message.forwardToDoctor != forward_to_doctor ||
+            message.onlyDoctor != only_doctor ||
+            message.onlyPatient != only_patient ||
+            message.isUrgent != is_urgent ||
+            message.isWarning != is_warning ||
+            message.isFiltered != is_filtered {
+            return false
+        }
+            
+        if let actionLink = action_link, let urlEncoded = actionLink.urlEncoded, message.actionLink != URL(string: urlEncoded) {
+            return false
+        }
+        if let apiActionLink = api_action_link, let urlEncoded = apiActionLink.urlEncoded, message.apiActionLink != URL(string: urlEncoded) {
+            return false
+        }
+        if let replyToId = reply_to_id, message.replyToId != Int64(replyToId) {
+            return false
+        }
+        return true
     }
 }

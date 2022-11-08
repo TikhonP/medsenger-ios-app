@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ChatView: View {
-    let contract: UserDoctorContract
+    let contract: Contract
     
     @StateObject var chatViewModel = ChatViewModel()
     
@@ -19,7 +19,7 @@ struct ChatView: View {
     
     @State private var messageIDToScroll: Int?
     
-    init(contract: UserDoctorContract) {
+    init(contract: Contract) {
         _messages = FetchRequest<Message>(
             entity: Message.entity(),
             sortDescriptors: [NSSortDescriptor(key: "sent", ascending: true)],
@@ -57,7 +57,7 @@ struct ChatView: View {
         .padding(.top, 1)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(leading: navigationVarLeading, trailing: navigationVarTrailing)
-        .onAppear(perform: { chatViewModel.fetchMessages(contractId: Int(contract.contract)) })
+        .onAppear(perform: { chatViewModel.fetchMessages(contractId: Int(contract.id)) })
     }
     
     let columns = [GridItem(.flexible(minimum: 10))]
@@ -71,7 +71,7 @@ struct ChatView: View {
                         .frame(width: 40, height: 40)
                         .clipShape(Circle())
                     
-                    Text(contract.name ?? "Unknown name")
+                    Text(contract.shortName ?? "Unknown name")
                         .bold()
                 }
             }

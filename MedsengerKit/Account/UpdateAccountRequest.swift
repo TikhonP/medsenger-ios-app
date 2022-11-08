@@ -14,7 +14,7 @@ struct UpdateAccountResource: APIResource {
     let phone: String
     let birthday: Date
     
-    typealias ModelType = CheckResponse
+    typealias ModelType = User.JsonDecoder
     
     var birthdayString: String {
         let dateFormatter = DateFormatter()

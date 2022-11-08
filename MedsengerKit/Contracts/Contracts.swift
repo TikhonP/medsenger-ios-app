@@ -23,7 +23,7 @@ class Contracts {
             case .success:
                 break
             case .SuccessData(let data):
-                UserDoctorContract.save(doctorContracts: data)
+                Contract.saveContractsFromJson(data: data)
             case .Error(let error):
                 processRequestError(error, "get contracts doctors")
             }
@@ -38,7 +38,7 @@ class Contracts {
             case .success:
                 break
             case .SuccessData(let data):
-                UserDoctorContract.save(doctorContracts: data)
+                Contract.saveContractsFromJson(data: data)
             case .Error(let error):
                 processRequestError(error, "get contracts doctors archive")
             }
@@ -53,7 +53,7 @@ class Contracts {
             case .success:
                 break
             case .SuccessData(let data):
-                UserDoctorContract.saveAvatar(contractId: contractId, image: data)
+                Contract.saveAvatar(id: contractId, image: data)
             case .Error(let error):
                 processRequestError(error, "get doctor avatar")
             }

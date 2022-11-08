@@ -9,7 +9,7 @@
 import Foundation
 
 struct DoctorsArchiveResource: APIResource {
-    typealias ModelType = Array<DoctorContract>
+    typealias ModelType = Array<Contract.JsonDecoderDoctor>
     
     var methodPath = "/archive/doctors"
     

@@ -12,7 +12,7 @@ struct ChatsView: View {
     @StateObject var chatsViewModel = ChatsViewModel()
     
     @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "archive == NO"), animation: .default)
-    private var contracts: FetchedResults<UserDoctorContract>
+    private var contracts: FetchedResults<Contract>
     
     @State private var showSettingsModal: Bool = false
     
@@ -23,7 +23,7 @@ struct ChatsView: View {
                     NavigationLink(destination: {
                         ChatView(contract: contract)
                     }, label: {
-                        ChatRow(name: contract.name ?? "Failed to fetch name", avatar: contract.avatar, contractId: Int(contract.contract))
+                        ChatRow(name: contract.name ?? "Failed to fetch name", avatar: contract.avatar, contractId: Int(contract.id))
                             .environmentObject(chatsViewModel)
                     })
                 }

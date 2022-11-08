@@ -11,7 +11,7 @@ import Foundation
 struct UploadAvatarResource: UploadImageResource {
     let image: Data
     
-    typealias ModelType = CheckResponse
+    typealias ModelType = User.JsonDecoder
     
     let paramName = "photo"
     let boundary = UUID().uuidString

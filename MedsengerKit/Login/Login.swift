@@ -32,7 +32,7 @@ class Login {
                 break
             case .SuccessData(let data):
                 KeyСhain.apiToken = data.api_token
-                data.saveUser()
+                User.saveUserFromJson(data: data)
                 completion(.success)
             case .Error(let requestError):
                 switch requestError {
