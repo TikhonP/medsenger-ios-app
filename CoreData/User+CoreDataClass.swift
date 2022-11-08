@@ -78,8 +78,12 @@ public class User: NSManagedObject {
     
     class func delete() {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let user = get(context: context) else { return }
+            guard let user = get(context: context) else {
+                print("Delete User failed: Not found")
+                return
+            }
             context.delete(user)
+            PersistenceController.save(context: context)
         }
     }
     

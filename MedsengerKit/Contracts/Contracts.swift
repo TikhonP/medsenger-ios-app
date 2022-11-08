@@ -23,7 +23,7 @@ class Contracts {
             case .success:
                 break
             case .SuccessData(let data):
-                Contract.saveContractsFromJson(data: data)
+                Contract.saveContractsFromJson(data: data, archive: false)
             case .Error(let error):
                 processRequestError(error, "get contracts doctors")
             }
@@ -38,7 +38,7 @@ class Contracts {
             case .success:
                 break
             case .SuccessData(let data):
-                Contract.saveContractsFromJson(data: data)
+                Contract.saveContractsFromJson(data: data, archive: true)
             case .Error(let error):
                 processRequestError(error, "get contracts doctors archive")
             }

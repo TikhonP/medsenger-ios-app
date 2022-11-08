@@ -1,14 +1,17 @@
 //
-//  ContractParam.swift
+//  ContractParam+CoreDataClass.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 01.11.2022.
+//  Created by Tikhon Petrishchev on 09.11.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
+//
 
+import Foundation
 import CoreData
 
-//extension ContractParam {
+@objc(ContractParam)
+public class ContractParam: NSManagedObject {
 //    private static func getOrCreate(medsengerId: Int, context: NSManagedObjectContext, contract: UserDoctorContract) -> ContractParam {
 //        do {
 //            let fetchRequest = ContractParam.fetchRequest()
@@ -62,4 +65,4 @@ import CoreData
 //        
 //        PersistenceController.save(context: context)
 //    }
-//}
+}

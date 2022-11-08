@@ -106,8 +106,15 @@ extension NetworkRequest {
                     completion(.SuccessData(result))
                     return
                 case .Error(let error):
-                    completion(.Error(.FailedToDeserialize(error)))
-                    return
+                    let decodedDataReslut = self.decodeError(data)
+                    switch decodedDataReslut {
+                    case .Success(let result):
+                        completion(.Error(.Api(result)))
+                        return
+                    case .Error(_):
+                        completion(.Error(.FailedToDeserialize(error)))
+                        return
+                    }
                 }
             } else {
                 completion(.success)
@@ -389,7 +396,15 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
     case .Request(let error):
         print("Request `\(requestName)` error: \(error.localizedDescription)")
     case .Api(let errorData):
-        print("Request `\(requestName)` error data: \(errorData)")
+        for error in errorData {
+            switch error {
+            case "Incorrect token":
+                Login.shared.signOut()
+                print("Incorrect token in request, sign out.")
+            default:
+                print("Request `\(requestName)` error: medsenger server message: \(error)")
+            }
+        }
     case .PageNotFound(let url):
         print("Request `\(requestName)` error: Page not found with url: \(url)")
     case .EmptyDataStatusCode(let statusCode):

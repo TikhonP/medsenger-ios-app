@@ -8,48 +8,6 @@
 
 import Foundation
 
-struct AgentActionResponse: Decodable {
-    let link: URL
-    let name: String
-    let type: String
-    let api_link: URL
-    let is_setup: Bool
-}
-
-struct BotActionResponse: Decodable {
-    let link: URL
-    let name: String
-    let type: String
-    let api_link: URL
-    let is_setup: Bool
-}
-
-struct AgentTaskResponse: Decodable {
-    let action_link: URL
-    let api_action_link: URL
-    let agent_name: String
-    let number: Int
-    let target_number: Int
-    let is_important: Bool
-    let is_done: Bool
-    let date: Date
-    let done: Date?
-    let text: String
-    let available: Int
-}
-
-struct PatientHelperResponse: Decodable {
-    let id: Int
-    let name: String
-    let role: String
-}
-
-struct DoctorHelperResponse: Decodable {
-    let id: Int
-    let name: String
-    let role: String
-}
-
 struct ParamResponse: Decodable {
     let id: Int
     let name: String

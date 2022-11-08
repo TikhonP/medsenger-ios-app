@@ -55,34 +55,12 @@ extension Agent {
         return agent
     }
     
-    private class func cleanRemoved(validIds: [Int], context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = Contract.fetchRequest()
-            let fetchedResults = try context.fetch(fetchRequest)
-            for agent in fetchedResults {
-                if !validIds.contains(Int(agent.id)) {
-                    context.delete(agent)
-                    PersistenceController.save(context: context)
-                }
-            }
-        }
-        catch {
-            print("Fetch `Agent` core data failed: \(error.localizedDescription)")
-        }
-    }
-    
     class func saveFromJson(data: [JsonDecoder], context: NSManagedObjectContext) -> [Agent] {
         var agents = [Agent]()
-        var validIds = [Int]()
         
         for agentData in data {
             let agent = saveFromJson(data: agentData, context: context)
             agents.append(agent)
-            validIds.append(agentData.id)
-        }
-        
-        if !validIds.isEmpty {
-            cleanRemoved(validIds: validIds, context: context)
         }
         
         return agents

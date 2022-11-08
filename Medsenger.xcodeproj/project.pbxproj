@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430F4C92291AA759001DA74C /* AgentAction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430F4C90291AA759001DA74C /* AgentAction+CoreDataClass.swift */; };
 		4322437E29069B9E00899442 /* PasswordFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4322437D29069B9E00899442 /* PasswordFieldView.swift */; };
 		432243872906C11B00899442 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432243862906C11B00899442 /* Constants.swift */; };
 		43227E97291A647600F368FA /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43227E95291A647600F368FA /* User+CoreDataClass.swift */; };
@@ -47,6 +48,12 @@
 		43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */; };
 		43DB0E6E29097ABB00801296 /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */; };
 		43DB0E702909840C00801296 /* CheckRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6F2909840C00801296 /* CheckRequest.swift */; };
+		43E33CD7291AE2BB000BE732 /* BotAction+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CD5291AE2BB000BE732 /* BotAction+CoreDataClass.swift */; };
+		43E33CDB291AE9E9000BE732 /* AgentTask+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CD9291AE9E9000BE732 /* AgentTask+CoreDataClass.swift */; };
+		43E33CE5291AFBE3000BE732 /* DoctorHelper+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CDD291AFBE3000BE732 /* DoctorHelper+CoreDataClass.swift */; };
+		43E33CE7291AFBE3000BE732 /* ContractParam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CDF291AFBE3000BE732 /* ContractParam+CoreDataClass.swift */; };
+		43E33CE9291AFBE3000BE732 /* PatientHelper+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CE1291AFBE3000BE732 /* PatientHelper+CoreDataClass.swift */; };
+		43E33CEB291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E33CE3291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift */; };
 		43E5EA0D290AAD97008754C5 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA0C290AAD97008754C5 /* ImagePicker.swift */; };
 		43E5EA0F290ABAD2008754C5 /* UploadAvatarRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA0E290ABAD2008754C5 /* UploadAvatarRequest.swift */; };
 		43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */; };
@@ -57,13 +64,6 @@
 		43E5EA21290FF4B6008754C5 /* DoctorsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA20290FF4B6008754C5 /* DoctorsRequest.swift */; };
 		43E5EA23290FF568008754C5 /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA22290FF568008754C5 /* ChatsViewModel.swift */; };
 		43E5EA252910025A008754C5 /* UserDoctorContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA242910025A008754C5 /* UserDoctorContract.swift */; };
-		43E5EA2729100EA3008754C5 /* AgentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA2629100EA3008754C5 /* AgentAction.swift */; };
-		43E5EA2929101754008754C5 /* BotAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA2829101754008754C5 /* BotAction.swift */; };
-		43E5EA2B29101E8C008754C5 /* AgentTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA2A29101E8C008754C5 /* AgentTask.swift */; };
-		43E5EA2F291141AC008754C5 /* DoctorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA2E291141AC008754C5 /* DoctorHelper.swift */; };
-		43E5EA31291141EB008754C5 /* PatientHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA30291141EB008754C5 /* PatientHelper.swift */; };
-		43E5EA33291141FD008754C5 /* InfoMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA32291141FC008754C5 /* InfoMaterial.swift */; };
-		43E5EA3529114219008754C5 /* ContractParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA3429114219008754C5 /* ContractParam.swift */; };
 		43FF65822902D2DB00AB9BB1 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FF65812902D2DB00AB9BB1 /* App.swift */; };
 		43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43FF65832902D2DB00AB9BB1 /* ContentView.swift */; };
 		43FF65862902D2DD00AB9BB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43FF65852902D2DD00AB9BB1 /* Assets.xcassets */; };
@@ -71,6 +71,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		430F4C90291AA759001DA74C /* AgentAction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AgentAction+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4322437D29069B9E00899442 /* PasswordFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordFieldView.swift; sourceTree = "<group>"; };
 		432243812906AF8000899442 /* Medsenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Medsenger.entitlements; sourceTree = "<group>"; };
 		432243862906C11B00899442 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -112,6 +113,12 @@
 		43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
 		43DB0E6F2909840C00801296 /* CheckRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckRequest.swift; sourceTree = "<group>"; };
+		43E33CD5291AE2BB000BE732 /* BotAction+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BotAction+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43E33CD9291AE9E9000BE732 /* AgentTask+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AgentTask+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43E33CDD291AFBE3000BE732 /* DoctorHelper+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DoctorHelper+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43E33CDF291AFBE3000BE732 /* ContractParam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContractParam+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43E33CE1291AFBE3000BE732 /* PatientHelper+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PatientHelper+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43E33CE3291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InfoMaterial+CoreDataClass.swift"; sourceTree = "<group>"; };
 		43E5EA0C290AAD97008754C5 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		43E5EA0E290ABAD2008754C5 /* UploadAvatarRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadAvatarRequest.swift; sourceTree = "<group>"; };
 		43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataView.swift; sourceTree = "<group>"; };
@@ -123,13 +130,6 @@
 		43E5EA20290FF4B6008754C5 /* DoctorsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsRequest.swift; sourceTree = "<group>"; };
 		43E5EA22290FF568008754C5 /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
 		43E5EA242910025A008754C5 /* UserDoctorContract.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDoctorContract.swift; sourceTree = "<group>"; };
-		43E5EA2629100EA3008754C5 /* AgentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentAction.swift; sourceTree = "<group>"; };
-		43E5EA2829101754008754C5 /* BotAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BotAction.swift; sourceTree = "<group>"; };
-		43E5EA2A29101E8C008754C5 /* AgentTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentTask.swift; sourceTree = "<group>"; };
-		43E5EA2E291141AC008754C5 /* DoctorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorHelper.swift; sourceTree = "<group>"; };
-		43E5EA30291141EB008754C5 /* PatientHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientHelper.swift; sourceTree = "<group>"; };
-		43E5EA32291141FC008754C5 /* InfoMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoMaterial.swift; sourceTree = "<group>"; };
-		43E5EA3429114219008754C5 /* ContractParam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractParam.swift; sourceTree = "<group>"; };
 		43FF657E2902D2DB00AB9BB1 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43FF65812902D2DB00AB9BB1 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		43FF65832902D2DB00AB9BB1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -173,6 +173,13 @@
 		433E597E2906C8BC0069F8DF /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				43E33CDD291AFBE3000BE732 /* DoctorHelper+CoreDataClass.swift */,
+				43E33CDF291AFBE3000BE732 /* ContractParam+CoreDataClass.swift */,
+				43E33CE1291AFBE3000BE732 /* PatientHelper+CoreDataClass.swift */,
+				43E33CE3291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift */,
+				43E33CD9291AE9E9000BE732 /* AgentTask+CoreDataClass.swift */,
+				43E33CD5291AE2BB000BE732 /* BotAction+CoreDataClass.swift */,
+				430F4C90291AA759001DA74C /* AgentAction+CoreDataClass.swift */,
 				43227EA9291A89D100F368FA /* Agent+CoreDataClass.swift */,
 				43227EA5291A761500F368FA /* Contract+CoreDataClass.swift */,
 				43227E95291A647600F368FA /* User+CoreDataClass.swift */,
@@ -185,13 +192,6 @@
 				433E597F2906C8D70069F8DF /* Medsenger.xcdatamodeld */,
 				433E59822906C8F80069F8DF /* PersistenceController.swift */,
 				43E5EA242910025A008754C5 /* UserDoctorContract.swift */,
-				43E5EA2629100EA3008754C5 /* AgentAction.swift */,
-				43E5EA2829101754008754C5 /* BotAction.swift */,
-				43E5EA2A29101E8C008754C5 /* AgentTask.swift */,
-				43E5EA2E291141AC008754C5 /* DoctorHelper.swift */,
-				43E5EA30291141EB008754C5 /* PatientHelper.swift */,
-				43E5EA32291141FC008754C5 /* InfoMaterial.swift */,
-				43E5EA3429114219008754C5 /* ContractParam.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -431,18 +431,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43E5EA2729100EA3008754C5 /* AgentAction.swift in Sources */,
 				43953E0129191FCB006C8B3D /* Messages.swift in Sources */,
 				43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */,
 				43E5EA0F290ABAD2008754C5 /* UploadAvatarRequest.swift in Sources */,
-				43E5EA2929101754008754C5 /* BotAction.swift in Sources */,
+				43E33CD7291AE2BB000BE732 /* BotAction+CoreDataClass.swift in Sources */,
 				433E59832906C8F80069F8DF /* PersistenceController.swift in Sources */,
 				43DB0E592909533800801296 /* LocalizedString+.swift in Sources */,
 				433E598A2906DE6C0069F8DF /* NetworkRequest.swift in Sources */,
 				43E5EA252910025A008754C5 /* UserDoctorContract.swift in Sources */,
 				43953E0C29192EF0006C8B3D /* String+.swift in Sources */,
 				43E5EA1D290FE36C008754C5 /* ResponseModels.swift in Sources */,
+				43E33CE5291AFBE3000BE732 /* DoctorHelper+CoreDataClass.swift in Sources */,
 				43227EA7291A761500F368FA /* Contract+CoreDataClass.swift in Sources */,
+				43E33CE9291AFBE3000BE732 /* PatientHelper+CoreDataClass.swift in Sources */,
 				43953E0F291931E3006C8B3D /* Attachment+CoreDataClass.swift in Sources */,
 				43953DFD29191A04006C8B3D /* Message+CoreDataClass.swift in Sources */,
 				43DB0E6029095B9800801296 /* KeyChain.swift in Sources */,
@@ -453,37 +454,36 @@
 				43227E9B291A6C3400F368FA /* Clinic+CoreDataClass.swift in Sources */,
 				43227E97291A647600F368FA /* User+CoreDataClass.swift in Sources */,
 				437DB157291410B900D847E7 /* ArchivesChatsView.swift in Sources */,
-				43E5EA3529114219008754C5 /* ContractParam.swift in Sources */,
 				43E5EA21290FF4B6008754C5 /* DoctorsRequest.swift in Sources */,
 				43DB0E6329095E1500801296 /* ChatsView.swift in Sources */,
 				43953E0329191FF5006C8B3D /* MessagesRequest.swift in Sources */,
 				43DB0E6629095E3200801296 /* SettingsView.swift in Sources */,
 				4322437E29069B9E00899442 /* PasswordFieldView.swift in Sources */,
-				43E5EA31291141EB008754C5 /* PatientHelper.swift in Sources */,
 				43DB0E702909840C00801296 /* CheckRequest.swift in Sources */,
 				433F0D0829069835008E1F42 /* SignInView.swift in Sources */,
 				43E5EA0D290AAD97008754C5 /* ImagePicker.swift in Sources */,
 				43DB0E682909612B00801296 /* SettingsViewModel.swift in Sources */,
 				437DB1502913FBF900D847E7 /* Account.swift in Sources */,
-				43E5EA33291141FD008754C5 /* InfoMaterial.swift in Sources */,
 				432243872906C11B00899442 /* Constants.swift in Sources */,
+				43E33CE7291AFBE3000BE732 /* ContractParam+CoreDataClass.swift in Sources */,
 				433E59752906C6D50069F8DF /* Login.swift in Sources */,
 				433F0D0429069707008E1F42 /* ContentViewModel.swift in Sources */,
 				43DB0E6A2909631C00801296 /* ProfileDataView.swift in Sources */,
+				43E33CDB291AE9E9000BE732 /* AgentTask+CoreDataClass.swift in Sources */,
 				437DB153291405B100D847E7 /* Contracts.swift in Sources */,
 				43E5EA23290FF568008754C5 /* ChatsViewModel.swift in Sources */,
 				43E5EA1F290FF265008754C5 /* DateFormatter+.swift in Sources */,
 				43E5EA15290AD121008754C5 /* UpdateAccountRequest.swift in Sources */,
 				43953E0A29192A76006C8B3D /* ChatViewModel.swift in Sources */,
 				43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */,
-				43E5EA2F291141AC008754C5 /* DoctorHelper.swift in Sources */,
+				43E33CEB291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift in Sources */,
 				43953E13291939AC006C8B3D /* ImageAttachment+CoreDataClass.swift in Sources */,
+				430F4C92291AA759001DA74C /* AgentAction+CoreDataClass.swift in Sources */,
 				43227EA3291A6F2D00F368FA /* ClinicClassifier+CoreDataClass.swift in Sources */,
 				43227EAB291A89D100F368FA /* Agent+CoreDataClass.swift in Sources */,
 				43953E0829192A6C006C8B3D /* ChatView.swift in Sources */,
 				43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */,
 				433F0D0A29069842008E1F42 /* SignInViewModel.swift in Sources */,
-				43E5EA2B29101E8C008754C5 /* AgentTask.swift in Sources */,
 				433E59812906C8D70069F8DF /* Medsenger.xcdatamodeld in Sources */,
 				434FD4A42912AD87005945B9 /* ChatRow.swift in Sources */,
 				43DB0E6E29097ABB00801296 /* ChooseRoleView.swift in Sources */,

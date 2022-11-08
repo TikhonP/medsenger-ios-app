@@ -40,6 +40,17 @@ public class Contract: NSManagedObject {
             PersistenceController.save(context: context)
         }
     }
+    
+    func addToAgents(_ values: [Agent], context: NSManagedObjectContext) {
+        for agent in values {
+            if let isExist = agents?.contains(agent), !isExist {
+                addToAgents(agent)
+                PersistenceController.save(context: context)
+            }
+        }
+    }
+    
+    
 }
 
 // MARK: - Contracts with Doctors
@@ -64,13 +75,13 @@ extension Contract {
         let number: String
         let unread: Int?
         let is_online: Bool
-        let agent_actions: Array<AgentActionResponse>
-        let bot_actions: Array<BotActionResponse>
-        let agent_tasks: Array<AgentTaskResponse>
+        let agent_actions: Array<AgentAction.JsonDecoder>
+        let bot_actions: Array<BotAction.JsonDecoder>
+        let agent_tasks: Array<AgentTask.JsonDecoder>
         let agents: Array<Agent.JsonDecoder>
         let role: String
-        let patient_helpers: Array<PatientHelperResponse>
-        let doctor_helpers: Array<DoctorHelperResponse>
+        let patient_helpers: Array<PatientHelper.JsonDecoder>
+        let doctor_helpers: Array<DoctorHelper.JsonDecoder>
         let compliance: Array<Int>
         let params: Array<ParamResponse>
         let activated: Bool
@@ -142,14 +153,16 @@ extension Contract {
     /// - Parameters:
     ///   - validContractIds: The contract ids that exists in JSON from Medsenger
     ///   - context: Core Data context
-    private class func cleanRemoved(validContractIds: [Int], context: NSManagedObjectContext) {
+    private class func cleanRemoved(validContractIds: [Int], archive: Bool, context: NSManagedObjectContext) {
         do {
             let fetchRequest = Contract.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "archive == %@", NSNumber(value: archive))
             let fetchedResults = try context.fetch(fetchRequest)
             for contract in fetchedResults {
                 if !validContractIds.contains(Int(contract.id)) {
                     context.delete(contract)
                     PersistenceController.save(context: context)
+                    print("Contract removed")
                 }
             }
         }
@@ -158,7 +171,7 @@ extension Contract {
         }
     }
     
-    class func saveContractsFromJson(data: [JsonDecoderDoctor]) {
+    class func saveContractsFromJson(data: [JsonDecoderDoctor], archive: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             
             // Store got contracts to check if some contractes deleted later
@@ -173,14 +186,34 @@ extension Contract {
                     clinic.addToContracts(contract)
                 }
                 PersistenceController.save(context: context)
-                
+
                 let agents = Agent.saveFromJson(data: contractData.agents, context: context)
                 contract.addToAgents(NSSet(array: agents))
+                PersistenceController.save(context: context)
+
+                let agentActions = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
+                contract.addToAgentActions(NSSet(array: agentActions))
+                PersistenceController.save(context: context)
+
+                let botActions = BotAction.saveFromJson(data: contractData.bot_actions, contract: contract, context: context)
+                contract.addToBotActions(NSSet(array: botActions))
+                PersistenceController.save(context: context)
+                
+                let agentTasks = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
+                contract.addToAgentTasks(NSSet(array: agentTasks))
+                PersistenceController.save(context: context)
+                
+                let doctorHelpers = DoctorHelper.saveFromJson(data: contractData.doctor_helpers, contract: contract, context: context)
+                contract.addToDoctorHelpers(NSSet(array: doctorHelpers))
+                PersistenceController.save(context: context)
+                
+                let patientHelpers = PatientHelper.saveFromJson(data: contractData.patient_helpers, contract: contract, context: context)
+                contract.addToPatientHelpers(NSSet(array: patientHelpers))
                 PersistenceController.save(context: context)
             }
             
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, context: context)
+                cleanRemoved(validContractIds: gotContractIds, archive: archive, context: context)
             }
         }
     }
