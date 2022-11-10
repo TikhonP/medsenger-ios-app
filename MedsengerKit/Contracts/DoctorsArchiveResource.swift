@@ -1,5 +1,5 @@
 //
-//  DoctorsArchiveRequest.swift
+//  DoctorsArchiveResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 03.11.2022.

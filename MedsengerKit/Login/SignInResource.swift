@@ -1,5 +1,5 @@
 //
-//  SignInRequest.swift
+//  SignInResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 25.10.2022.

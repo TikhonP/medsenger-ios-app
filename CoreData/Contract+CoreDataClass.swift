@@ -15,6 +15,9 @@ public class Contract: NSManagedObject {
     enum State: String, Decodable {
         case noMessages = "no_messages" // FIXME: !!!
         case unread = "unread"
+        case waiting = "waiting"
+        case warning = "warning"
+        case deadlined = "deadlined"
     }
     
     class func get(id: Int, context: NSManagedObjectContext) -> Contract? {
@@ -57,6 +60,12 @@ public class Contract: NSManagedObject {
 
 extension Contract {
     struct JsonDecoderDoctor: Decodable {
+        struct ScenarioResponse: Decodable {
+            let name: String
+            let description: String
+            let preset: String
+        }
+        
         let name: String
         let patient_name: String
         let doctor_name: String
@@ -83,9 +92,9 @@ extension Contract {
         let patient_helpers: Array<PatientHelper.JsonDecoder>
         let doctor_helpers: Array<DoctorHelper.JsonDecoder>
         let compliance: Array<Int>
-        let params: Array<ParamResponse>
+        let params: Array<ContractParam.JsonDecoder>
         let activated: Bool
-        let info_materials: Array<InfoMaterialResponse>?
+        let info_materials: Array<InfoMaterial.JsonDecoder>?
         let can_apply: Bool
         let info_url: String?
     //    let public_attachments:
@@ -143,6 +152,7 @@ extension Contract {
         contract.scenarioName = data.scenario?.name
         contract.scenarioDescription = data.scenario?.description
         contract.scenarioPreset = data.scenario?.preset
+        contract.sortRating = 0
         
         PersistenceController.save(context: context)
         
@@ -199,7 +209,7 @@ extension Contract {
                 contract.addToBotActions(NSSet(array: botActions))
                 PersistenceController.save(context: context)
                 
-                let agentTasks = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
+                let agentTasks = AgentTask.saveFromJson(data: contractData.agent_tasks, contract: contract, context: context)
                 contract.addToAgentTasks(NSSet(array: agentTasks))
                 PersistenceController.save(context: context)
                 
@@ -210,6 +220,16 @@ extension Contract {
                 let patientHelpers = PatientHelper.saveFromJson(data: contractData.patient_helpers, contract: contract, context: context)
                 contract.addToPatientHelpers(NSSet(array: patientHelpers))
                 PersistenceController.save(context: context)
+                
+                let contractParams = ContractParam.saveFromJson(data: contractData.params, contract: contract, context: context)
+                contract.addToParams(NSSet(array: contractParams))
+                PersistenceController.save(context: context)
+                
+                if let infoMaterialsData = contractData.info_materials {
+                    let infoMaterials = InfoMaterial.saveFromJson(data: infoMaterialsData, contract: contract, context: context)
+                    contract.addToInfoMaterials(NSSet(array: infoMaterials))
+                    PersistenceController.save(context: context)
+                }
             }
             
             if !gotContractIds.isEmpty {

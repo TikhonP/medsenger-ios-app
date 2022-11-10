@@ -1,5 +1,5 @@
 //
-//  DoctorsRequest.swift
+//  DoctorsResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 31.10.2022.

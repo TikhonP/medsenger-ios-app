@@ -5,7 +5,7 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="openSettingsInBlank" attributeType="Boolean" usesScalarValueType="YES"/>
-        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agents" inverseEntity="AgentTask"/>
+        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
         <relationship name="contract" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -28,13 +28,19 @@
         <attribute name="available" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="done" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isDone" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isImportant" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="number" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="targetNumber" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="text" attributeType="String"/>
-        <relationship name="agents" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Agent" inverseName="agentTasks" inverseEntity="Agent"/>
+        <relationship name="agent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Agent" inverseName="agentTasks" inverseEntity="Agent"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="agentTasks" inverseEntity="Contract"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Attachment" representedClassName="Attachment" syncable="YES" codeGenerationType="category">
         <attribute name="data" optional="YES" attributeType="Binary"/>
@@ -123,6 +129,7 @@
         <attribute name="scenarioPreset" optional="YES" attributeType="String"/>
         <attribute name="sent" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="shortName" optional="YES" attributeType="String"/>
+        <attribute name="sortRating" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="specialty" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="state" optional="YES" attributeType="String"/>
@@ -211,7 +218,7 @@
         <attribute name="onlyDoctor" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="onlyPatient" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="replyToId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="sent" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="sent" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="state" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment"/>

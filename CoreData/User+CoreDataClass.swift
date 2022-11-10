@@ -15,6 +15,15 @@ public class User: NSManagedObject {
     enum Role: String {
         case patient = "patient"
         case doctor = "doctor"
+        
+        var clientsForHttpRequest: String {
+            switch self {
+            case .patient:
+                return "doctors"
+            case .doctor:
+                return "patients"
+            }
+        }
     }
     
     var role: Role? {

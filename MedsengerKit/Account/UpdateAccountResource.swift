@@ -1,5 +1,5 @@
 //
-//  updateAccountRequest.swift
+//  UpdateAccountResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 27.10.2022.

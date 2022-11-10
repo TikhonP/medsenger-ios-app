@@ -12,57 +12,82 @@ import CoreData
 
 @objc(ContractParam)
 public class ContractParam: NSManagedObject {
-//    private static func getOrCreate(medsengerId: Int, context: NSManagedObjectContext, contract: UserDoctorContract) -> ContractParam {
-//        do {
-//            let fetchRequest = ContractParam.fetchRequest()
-//            fetchRequest.predicate = NSPredicate(format: "medsengerId == %ld && contract = %@", medsengerId, contract)
-//            let fetchedResults = try context.fetch(fetchRequest)
-//            if let contractParam = fetchedResults.first {
-//                return contractParam
-//            }
-//            return ContractParam(context: context)
-//        }
-//        catch {
-//            print("Fetch core data task failed: ", error.localizedDescription)
-//            return ContractParam(context: context)
-//        }
-//    }
-//    
-//    private static func cleanRemoved(validContractParamIds: [Int], context: NSManagedObjectContext, contract: UserDoctorContract) {
-//        do {
-//            let fetchRequest = ContractParam.fetchRequest()
-//            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-//            let fetchedResults = try context.fetch(fetchRequest)
-//            for contractParam in fetchedResults {
-//                if !validContractParamIds.contains(Int(contractParam.medsengerId)) {
-//                    context.delete(contractParam)
-//                }
-//            }
-//        }
-//        catch {
-//            print("Fetch core data task failed: ", error.localizedDescription)
-//        }
-//    }
-//    
-//    class func save(contractParams: [ParamResponse], contract: UserDoctorContract, context: NSManagedObjectContext) {
-//        
-//        var gotContractParamIds = [Int]()
-//        
-//        for contractParam in contractParams {
-//            gotContractParamIds.append(contractParam.id)
-//            let contractParamModel = getOrCreate(medsengerId: contractParam.id, context: context, contract: contract)
-//            contractParamModel.medsengerId = Int64(contractParam.id)
-//            contractParamModel.name = contractParam.name
-//            contractParamModel.value = contractParam.value
-//            contractParamModel.createdAt = contractParam.created_at
-//            contractParamModel.updatedAt = contractParam.updated_at
-//            contractParamModel.contract = contract
-//        }
-//        
-//        if !gotContractParamIds.isEmpty {
-//            cleanRemoved(validContractParamIds: gotContractParamIds, context: context, contract: contract)
-//        }
-//        
-//        PersistenceController.save(context: context)
-//    }
+    private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> ContractParam? {
+        do {
+            let fetchRequest = ContractParam.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %ld && contract = %@", id, contract)
+            let fetchedResults = try context.fetch(fetchRequest)
+            if let contractParam = fetchedResults.first {
+                return contractParam
+            }
+            return nil
+        } catch {
+            print("Fetch `ContractParam` core data task failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+}
+
+extension ContractParam {
+    struct JsonDecoder: Decodable {
+        let id: Int
+        let name: String
+        let value: String
+        let created_at: Date
+        let updated_at: Date
+    }
+    
+    private class func cleanRemoved(validIds: [Int], contract: Contract, context: NSManagedObjectContext) {
+        do {
+            let fetchRequest = ContractParam.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+            let fetchedResults = try context.fetch(fetchRequest)
+            for contractParam in fetchedResults {
+                if !validIds.contains(Int(contractParam.id)) {
+                    context.delete(contractParam)
+                    PersistenceController.save(context: context)
+                }
+            }
+        } catch {
+            print("Fetch `ContractParam` core data task failed: \(error.localizedDescription)")
+        }
+    }
+    
+    private class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> ContractParam {
+        let contractParam = {
+            guard let contractParam = get(id: data.id, contract: contract, context: context) else {
+                return ContractParam(context: context)
+            }
+            return contractParam
+        }()
+        
+        contractParam.id = Int64(data.id)
+        contractParam.name = data.name
+        contractParam.value = data.value
+        contractParam.createdAt = data.created_at
+        contractParam.updatedAt = data.updated_at
+        
+        PersistenceController.save(context: context)
+        
+        return contractParam
+    }
+    
+    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [ContractParam] {
+        
+        var gotIds = [Int]()
+        var contractParams = [ContractParam]()
+        
+        for contractParamData in data {
+            let contractParam = saveFromJson(data: contractParamData, contract: contract, context: context)
+            
+            gotIds.append(contractParamData.id)
+            contractParams.append(contractParam)
+        }
+        
+        if !gotIds.isEmpty {
+            cleanRemoved(validIds: gotIds, contract: contract, context: context)
+        }
+        
+        return contractParams
+    }
 }

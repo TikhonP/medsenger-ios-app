@@ -11,7 +11,14 @@ import SwiftUI
 struct ChatsView: View {
     @StateObject var chatsViewModel = ChatsViewModel()
     
-    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "archive == NO"), animation: .default)
+    @FetchRequest(
+        sortDescriptors: [
+            NSSortDescriptor(key: "unread", ascending: false),
+            NSSortDescriptor(key: "sortRating", ascending: false),
+            NSSortDescriptor(key: "endDate", ascending: false)
+        ],
+        predicate: NSPredicate(format: "archive == NO"),
+        animation: .default)
     private var contracts: FetchedResults<Contract>
     
     @State private var showSettingsModal: Bool = false

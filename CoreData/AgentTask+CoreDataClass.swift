@@ -12,23 +12,17 @@ import CoreData
 
 @objc(AgentTask)
 public class AgentTask: NSManagedObject {
-    private var customHash: String {
-        "\(available)\(String(describing: text))\(String(describing: date?.timeIntervalSince1970))\(available)"
-    }
-    
-    private class func get(customHash: String, contract: Contract, context: NSManagedObjectContext) -> AgentTask? {
+    private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> AgentTask? {
         do {
             let fetchRequest = AgentTask.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+            fetchRequest.predicate = NSPredicate(format: "id = %ld && contract = %@", id, contract)
             let fetchedResults = try context.fetch(fetchRequest)
-            for agentTask in fetchedResults {
-                if agentTask.customHash == customHash {
-                    return agentTask
-                }
+            if let agentTask = fetchedResults.first {
+                return agentTask
             }
             return nil
         } catch {
-            print("Fetch `AgentTask` with hash: \(customHash) core data task failed: \(error.localizedDescription)")
+            print("Fetch `AgentTask` with id: \(id) core data task failed: \(error.localizedDescription)")
             return nil
         }
     }
@@ -36,6 +30,7 @@ public class AgentTask: NSManagedObject {
 
 extension AgentTask {
     struct JsonDecoder: Decodable {
+        let id: Int
         let action_link: URL
         let api_action_link: URL
         let agent_name: String
@@ -47,10 +42,7 @@ extension AgentTask {
         let done: Date?
         let text: String
         let available: Int
-        
-        var customHash: String {
-            "\(available)\(String(describing: text))\(String(describing: date.timeIntervalSince1970))\(available)"
-        }
+        let agent_id: Int
     }
     
     /// Clean agent tasks that was not got in incoming JSON from Medsenger
@@ -58,13 +50,13 @@ extension AgentTask {
     ///   - validAgentActionsNames: The agent tasks medsenger ids that exists in JSON from Medsenger
     ///   - context: Core Data context
     ///   - contract: UserDoctorContract contract for data filtering
-    private class func cleanRemoved(validCustomHash: [String], contract: Contract, context: NSManagedObjectContext) {
+    private class func cleanRemoved(validIds: [Int], contract: Contract, context: NSManagedObjectContext) {
         do {
             let fetchRequest = AgentTask.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
             let fetchedResults = try context.fetch(fetchRequest)
             for agentTask in fetchedResults {
-                if validCustomHash.contains(agentTask.customHash) {
+                if validIds.contains(Int(agentTask.id)) {
                     context.delete(agentTask)
                     PersistenceController.save(context: context)
                 }
@@ -76,12 +68,13 @@ extension AgentTask {
     
     class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> AgentTask {
         let agentTask = {
-            guard let agentTask = get(customHash: data.customHash, contract: contract, context: context) else {
+            guard let agentTask = get(id: data.id, contract: contract, context: context) else {
                 return AgentTask(context: context)
             }
             return agentTask
         }()
         
+        agentTask.id = Int64(data.id)
         agentTask.actionLink = data.action_link
         agentTask.apiActionLink = data.api_action_link
         agentTask.agentName = data.agent_name
@@ -102,18 +95,18 @@ extension AgentTask {
     class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [AgentTask] {
         
         // Store got AgentActions to check if some contractes deleted later
-        var validCustomHashs = [String]()
+        var validIds = [Int]()
         var agentTasks = [AgentTask]()
         
         for agentTaskData in data {
             let agentTask = saveFromJson(data: agentTaskData, contract: contract, context: context)
-            
-            validCustomHashs.append(agentTask.customHash)
+            Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, context: context)
+            validIds.append(agentTaskData.id)
             agentTasks.append(agentTask)
         }
         
-        if !validCustomHashs.isEmpty {
-            cleanRemoved(validCustomHash: validCustomHashs, contract: contract, context: context)
+        if !validIds.isEmpty {
+            cleanRemoved(validIds: validIds, contract: contract, context: context)
         }
         
         return agentTasks

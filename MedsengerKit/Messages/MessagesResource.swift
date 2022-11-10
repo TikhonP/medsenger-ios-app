@@ -1,5 +1,5 @@
 //
-//  MessagesRequest.swift
+//  MessagesResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 07.11.2022.

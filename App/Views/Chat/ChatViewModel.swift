@@ -7,12 +7,34 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class ChatViewModel: ObservableObject {
+    let contract: Contract
+    
+    init(contract: Contract) {
+        self.contract = contract
+    }
     
     @Published var message: String = ""
+    @Published var messageIDToScroll: Int?
+    @Published var lastMessageId: Int?
     
-    func fetchMessages(contractId: Int) {
-        Messages.shared.getMessages(contractId: contractId)
+    func fetchMessages() {
+        Messages.shared.getMessages(contractId: Int(contract.id)) {
+            DispatchQueue.main.async {
+                if let lastMessageId = self.lastMessageId {
+                    self.messageIDToScroll = lastMessageId
+                }
+            }
+        }
+    }
+    
+    func sendMessage() {
+        Messages.shared.sendMessage(message, contractId: Int(contract.id)) { messageId in
+            DispatchQueue.main.async {
+                self.messageIDToScroll = messageId
+            }
+        }
     }
 }

@@ -32,7 +32,7 @@ extension DateFormatter {
     
     static let ddMMyyyyAndTime: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd-MM-yyyy HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         formatter.calendar = Calendar(identifier: .iso8601)
         return formatter
     }()

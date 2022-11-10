@@ -11,7 +11,7 @@ import SwiftUI
 struct ChatView: View {
     let contract: Contract
     
-    @StateObject var chatViewModel = ChatViewModel()
+    @StateObject private var chatViewModel: ChatViewModel
     
     @FetchRequest private var messages: FetchedResults<Message>
     
@@ -27,6 +27,7 @@ struct ChatView: View {
             animation: .easeIn
         )
         self.contract = contract
+        _chatViewModel = StateObject(wrappedValue: ChatViewModel(contract: contract))
     }
     
     var body: some View {
@@ -43,7 +44,7 @@ struct ChatView: View {
                             }
                             .onAppear {
                                 if let messageID = messages.last?.id {
-                                    scrollTo(messageID: Int(messageID), anchor: .bottom, shouldAnumate: false, scrollReader: scrollReader)
+                                    chatViewModel.lastMessageId = Int(messageID)
                                 }
                             }
                     }
@@ -57,7 +58,7 @@ struct ChatView: View {
         .padding(.top, 1)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarItems(leading: navigationVarLeading, trailing: navigationVarTrailing)
-        .onAppear(perform: { chatViewModel.fetchMessages(contractId: Int(contract.id)) })
+        .onAppear(perform: chatViewModel.fetchMessages)
     }
     
     let columns = [GridItem(.flexible(minimum: 10))]
@@ -79,7 +80,9 @@ struct ChatView: View {
     }
     
     var navigationVarTrailing: some View {
-        Button(action: {}) {
+        Button(action: {
+            
+        }) {
             Text("Lol")
         }
     }
@@ -96,7 +99,7 @@ struct ChatView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 13))
                     .focused($isTextFocused)
                 
-                Button(action: {}) {
+                Button(action: chatViewModel.sendMessage) {
                     Image(systemName: "arrow.up.circle")
                         .foregroundColor(.white)
                         .frame(width: height, height: height)

@@ -27,6 +27,14 @@ public class Agent: NSManagedObject {
             return nil
         }
     }
+    
+    class func addToAgentTasks(value: AgentTask, agentID: Int, context: NSManagedObjectContext) {
+        guard let agent = get(id: agentID, context: context) else { return }
+        if let isExist = agent.agentTasks?.contains(value), !isExist {
+            agent.addToAgentTasks(value)
+            PersistenceController.save(context: context)
+        }
+    }
 }
 
 extension Agent {

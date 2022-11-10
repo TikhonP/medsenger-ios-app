@@ -52,23 +52,23 @@ extension Message {
         let images: Array<ImageAttachment.JsonSerializer>
         let author: String
         let author_role: String?
-        let is_auto: Bool
+        let is_auto: Bool?
         let state: String
-        let is_agent: Bool
+        let is_agent: Bool?
         let action_type: String
         let action_link: String?
         let api_action_link: String?
         let action_name: String?
         let action_deadline: Date
         let action_onetime: Bool
-        let action_used: Bool
+        let action_used: Bool?
         let action_big: Bool
         let forward_to_doctor: Bool
         let only_doctor: Bool
         let only_patient: Bool
         let is_urgent: Bool
         let is_warning: Bool
-        let is_filtered: Bool
+        let is_filtered: Bool?
         let reply_to_id: Int?
         
         var sentAsDate: Date? {
@@ -105,9 +105,13 @@ extension Message {
         message.isDoctorMessage = data.isDoctorMessage
         message.author = data.author
         message.authorRole = data.author_role
-        message.isAuto = data.is_auto
+        if let isAuto = data.is_auto {
+            message.isAuto = isAuto
+        }
         message.state = data.state
-        message.isAgent = data.is_agent
+        if let isAgent = data.is_agent {
+            message.isAgent = isAgent
+        }
         message.actionType = data.action_type
         if let actionLink = data.action_link, let urlEncoded = actionLink.urlEncoded {
             message.actionLink = URL(string: urlEncoded)
@@ -118,14 +122,18 @@ extension Message {
         message.actionName = data.action_name
         message.actionDeadline = data.action_deadline
         message.actionOnetime = data.action_onetime
-        message.actionUsed = data.action_used
+        if let actionUsed = data.action_used {
+            message.actionUsed = actionUsed
+        }
         message.actionBig = data.action_big
         message.forwardToDoctor = data.forward_to_doctor
         message.onlyDoctor = data.only_doctor
         message.onlyPatient = data.only_patient
         message.isUrgent = data.is_urgent
         message.isWarning = data.is_warning
-        message.isFiltered = data.is_filtered
+        if let isFiltered = data.is_filtered {
+            message.isFiltered = isFiltered
+        }
         
         if let replyToId = data.reply_to_id {
             message.replyToId = Int64(replyToId)
@@ -134,6 +142,36 @@ extension Message {
         PersistenceController.save(context: context)
         
         return message
+    }
+    
+    class func saveFromJson(data: JsonDeserializer, contractId: Int) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            guard let contract = Contract.get(id: contractId, context: context) else {
+                print("Failed to save messages: Core data failed to fetch contract")
+                return
+            }
+            
+            let message = saveFromJson(data: data, context: context)
+            
+            for attachmentData in data.attachments {
+                let attachment = Attachment.saveFromJson(data: attachmentData, context: context)
+                if let isExist = message.attachments?.contains(attachment), !isExist {
+                    message.addToAttachments(attachment)
+                }
+            }
+            
+            for imageData in data.images {
+                let image = ImageAttachment.saveFromJson(data: imageData, context: context)
+                if let isExist = message.images?.contains(image), !isExist {
+                    message.addToImages(image)
+                }
+            }
+            
+            if let isExist = contract.messages?.contains(message), !isExist {
+                contract.addToMessages(message)
+                PersistenceController.save(context: context)
+            }
+        }
     }
     
     class func saveFromJson(data: [JsonDeserializer], contractId: Int) {
@@ -157,11 +195,13 @@ extension Message {
                     let image = ImageAttachment.saveFromJson(data: imageData, context: context)
                     if let isExist = message.images?.contains(image), !isExist {
                         message.addToImages(image)
+                        PersistenceController.save(context: context)
                     }
                 }
                 
                 if let isExist = contract.messages?.contains(message), !isExist {
                     contract.addToMessages(message)
+                    PersistenceController.save(context: context)
                 }
             }
         }
