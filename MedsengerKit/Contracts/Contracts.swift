@@ -13,6 +13,8 @@ class Contracts {
     
     private var getDoctorsRequest: APIRequest<DoctorsResource>?
     private var getDoctorsArchiveRequest: APIRequest<DoctorsArchiveResource>?
+    private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
+    private var concludeContractRequest: APIRequest<ConcludeContractResource>?
     private var getAvatarRequests = [ImageRequest]()
     
     public func getDoctors() {
@@ -20,11 +22,11 @@ class Contracts {
         getDoctorsRequest = APIRequest(resource: doctorsResourse)
         getDoctorsRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                Contract.saveContractsFromJson(data: data, archive: false)
-            case .Error(let error):
+            case .success(let data):
+                if let data = data {
+                    Contract.saveContractsFromJson(data: data, archive: false)
+                }
+            case .failure(let error):
                 processRequestError(error, "get contracts doctors")
             }
         }
@@ -35,11 +37,11 @@ class Contracts {
         getDoctorsArchiveRequest = APIRequest(resource: doctorsArchiveResource)
         getDoctorsArchiveRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                Contract.saveContractsFromJson(data: data, archive: true)
-            case .Error(let error):
+            case .success(let data):
+                if let data = data {
+                    Contract.saveContractsFromJson(data: data, archive: true)
+                }
+            case .failure(let error):
                 processRequestError(error, "get contracts doctors archive")
             }
         }
@@ -50,12 +52,38 @@ class Contracts {
         getAvatarRequests.append(getAvatarRequest)
         getAvatarRequest.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                Contract.saveAvatar(id: contractId, image: data)
-            case .Error(let error):
+            case .success(let data):
+                if let data = data {
+                    Contract.saveAvatar(id: contractId, image: data)
+                }
+            case .failure(let error):
                 processRequestError(error, "get doctor avatar")
+            }
+        }
+    }
+    
+    public func deactivateMessages(_ contractId: Int) {
+        let deactivateMessagesResource = DeactivateMessagesResource(contractId: contractId)
+        deactivateMessagesRequest = APIRequest(resource: deactivateMessagesResource)
+        deactivateMessagesRequest?.execute { result in
+            switch result {
+            case .success(_):
+                break
+            case .failure(let error):
+                processRequestError(error, "save profile data")
+            }
+        }
+    }
+    
+    public func concludeContract(_ contractId: Int) {
+        let concludeContract = ConcludeContractResource(contractId: contractId)
+        concludeContractRequest = APIRequest(resource: concludeContract)
+        concludeContractRequest?.execute { result in
+            switch result {
+            case .success(_):
+                break
+            case .failure(let error):
+                processRequestError(error, "save profile data")
             }
         }
     }

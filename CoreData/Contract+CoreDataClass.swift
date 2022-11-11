@@ -36,11 +36,44 @@ public class Contract: NSManagedObject {
         }
     }
     
+    class func get(id: Int) -> Contract? {
+        let context = PersistenceController.shared.container.viewContext
+        var contract: Contract?
+        context.performAndWait {
+            contract = get(id: id, context: context)
+        }
+        return contract
+    }
+    
     class func saveAvatar(id: Int, image: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let contract = get(id: id, context: context)
             contract?.avatar = image
             PersistenceController.save(context: context)
+        }
+    }
+    
+    class func updateOnlineStatus(id: Int, isOnline: Bool) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            let contract = get(id: id, context: context)
+            contract?.isOnline = isOnline
+            PersistenceController.save(context: context)
+        }
+    }
+    
+    class func updateOnlineStatusFromList(_ onlineIds: [Int]) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            do {
+                let fetchRequest = Contract.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "archive == NO")
+                let fetchedResults = try context.fetch(fetchRequest)
+                for contract in fetchedResults {
+                    contract.isOnline = onlineIds.contains(Int(contract.id))
+                    PersistenceController.save(context: context)
+                }
+            } catch {
+                print("Core Data: Failed to fetch contracts: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -52,8 +85,6 @@ public class Contract: NSManagedObject {
             }
         }
     }
-    
-    
 }
 
 // MARK: - Contracts with Doctors
@@ -97,7 +128,7 @@ extension Contract {
         let info_materials: Array<InfoMaterial.JsonDecoder>?
         let can_apply: Bool
         let info_url: String?
-    //    let public_attachments:
+        //    let public_attachments:
         let scenario: ScenarioResponse?
         
         var startDateAsDate: Date? {
@@ -142,7 +173,7 @@ extension Contract {
         if let unread = data.unread {
             contract.unread = Int64(unread)
         }
-        contract.isOnline = data.is_online
+//        contract.isOnline = data.is_online
         contract.role = data.role
         contract.activated = data.activated
         contract.canApplySubmissionToContractExtension = data.can_apply
@@ -196,15 +227,15 @@ extension Contract {
                     clinic.addToContracts(contract)
                 }
                 PersistenceController.save(context: context)
-
+                
                 let agents = Agent.saveFromJson(data: contractData.agents, context: context)
                 contract.addToAgents(NSSet(array: agents))
                 PersistenceController.save(context: context)
-
+                
                 let agentActions = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
                 contract.addToAgentActions(NSSet(array: agentActions))
                 PersistenceController.save(context: context)
-
+                
                 let botActions = BotAction.saveFromJson(data: contractData.bot_actions, contract: contract, context: context)
                 contract.addToBotActions(NSSet(array: botActions))
                 PersistenceController.save(context: context)

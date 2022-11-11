@@ -30,7 +30,7 @@ struct ChatsView: View {
                     NavigationLink(destination: {
                         ChatView(contract: contract)
                     }, label: {
-                        ChatRow(name: contract.name ?? "Failed to fetch name", avatar: contract.avatar, contractId: Int(contract.id))
+                        ChatRow(avatar: contract.avatar, contractId: Int(contract.id), name: contract.name, isOnline: contract.isOnline, isArchive: false)
                             .environmentObject(chatsViewModel)
                     })
                 }

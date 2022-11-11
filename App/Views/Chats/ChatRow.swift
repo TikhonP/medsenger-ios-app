@@ -9,30 +9,49 @@
 import SwiftUI
 
 struct ChatRow: View {
-    let name: String
     let avatar: Data?
     let contractId: Int
+    let name: String?
+    let isOnline: Bool
+    let isArchive: Bool
     
     @EnvironmentObject var chatsViewModel: ChatsViewModel
     
     var body: some View {
         HStack {
             ZStack {
-                if let avatar = avatar {
-                    Image(data: avatar)?
-                        .resizable()
-                } else {
-                    ProgressView()
-                        .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: contractId) })
+                ZStack {
+                    if let avatar = avatar {
+                        Image(data: avatar)?
+                            .resizable()
+                    } else {
+                        ProgressView()
+                            .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: contractId) })
+                    }
+                }
+                .frame(width: 70, height: 70)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                .padding()
+                if !isArchive {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Circle()
+                                .foregroundColor(isOnline ? .green : .red)
+                                .frame(width: 20, height: 20)
+                                .padding()
+                        }
+                    }
                 }
             }
             .frame(width: 70, height: 70)
-            .clipShape(Circle())
             
             ZStack {
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
-                        Text(name)
+                        Text(name ?? "Unknown name")
                             .bold()
                         Spacer()
                         Text("Date 123")
@@ -53,8 +72,8 @@ struct ChatRow: View {
     }
 }
 
-struct ChatRow_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatRow(name: "Andreij", avatar: nil, contractId: 1)
-    }
-}
+//struct ChatRow_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatRow(name: "Andreij", avatar: nil, contractId: 1)
+//    }
+//}

@@ -82,7 +82,7 @@ extension Message {
         }
     }
     
-    private class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Message {
+private class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Message {
         let message = {
             if let message = get(id: data.id, context: context) {
                 return message
@@ -181,6 +181,8 @@ extension Message {
                 return
             }
             
+            var maxMessageId: Int = 0
+            
             for messageData in data {
                 let message = saveFromJson(data: messageData, context: context)
                 
@@ -203,7 +205,14 @@ extension Message {
                     contract.addToMessages(message)
                     PersistenceController.save(context: context)
                 }
+                
+                if messageData.id > maxMessageId {
+                    maxMessageId = messageData.id
+                }
             }
+            
+            contract.lastFetchedMessageId = Int64(maxMessageId)
+            PersistenceController.save(context: context)
         }
     }
 }

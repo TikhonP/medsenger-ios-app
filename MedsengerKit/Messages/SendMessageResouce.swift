@@ -78,7 +78,7 @@ struct SendMessageResouce: APIResource {
     
     typealias ModelType = Message.JsonDeserializer
     
-    var methodPath: String { "/\(Account.shared.role.clientsForHttpRequest)/\(contractID)/messages" }
+    var methodPath: String { "/\(Account.shared.role.clientsForNetworkRequest)/\(contractID)/messages" }
     
     var options: APIResourceOptions {
         let httpBody: Data? = {
@@ -95,7 +95,7 @@ struct SendMessageResouce: APIResource {
             dateDecodingStrategy: .secondsSince1970,
             parseResponse: true,
             httpBody: httpBody,
-            httpMethod: "POST",
+            httpMethod: .POST,
             headers: [multipartFormData.header.name: multipartFormData.header.value]
         )
     }

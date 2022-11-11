@@ -16,7 +16,7 @@ public class User: NSManagedObject {
         case patient = "patient"
         case doctor = "doctor"
         
-        var clientsForHttpRequest: String {
+    var clientsForNetworkRequest: String {
             switch self {
             case .patient:
                 return "doctors"

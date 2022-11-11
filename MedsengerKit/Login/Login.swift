@@ -28,15 +28,17 @@ class Login {
         request = APIRequest(resource: resource)
         request?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                KeyСhain.apiToken = data.api_token
-                User.saveUserFromJson(data: data)
-                completion(.success)
-            case .Error(let requestError):
+            case .success(let data):
+                if let data = data {
+                    KeyСhain.apiToken = data.api_token
+                    User.saveUserFromJson(data: data)
+                    completion(.success)
+                } else {
+                    completion(.unknownError)
+                }
+            case .failure(let requestError):
                 switch requestError {
-                case .Api(let apiError):
+                case .api(let apiError):
                     switch apiError[0] {
                     case "User is not activated":
                         completion(.userIsNotActivated)

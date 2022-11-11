@@ -19,6 +19,7 @@ final class ChatsViewModel: ObservableObject {
     }
     
     func getContracts() {
+        Websockets.shared.createUrlSession()
         switch Account.shared.role {
         case .patient:
             Contracts.shared.getDoctors()

@@ -8,37 +8,61 @@
 
 import Foundation
 
-// MARK: - Network Request Results
+// MARK: Network Request
 
-enum NetworkRequestError {
-    case Request(Error)
-    case Api([String])
-    case PageNotFound(String) // URL
-    case EmptyDataStatusCode(Int)
-    case FailedToDeserializeError(DecodedDataError)
-    case FailedToDeserialize(DecodedDataError)
-    case failedToGetStatusCode
+/// Network request failure cases
+enum NetworkRequestError: Error {
+    
+    /// Error with `URLSession` request
+    /// - Parameter error: Error codes returned by URL loading APIs
+    case request(_ error: URLError)
+    
+    /// Failed to get `URLSession` error as `URLError`
+    /// - Parameter error: error
+    case failedToGetUrlError(_ error: Error)
+    
+    /// Error from medsenger server
+    /// - Parameter errors: Errors as string got from medsenger server
+    case api(_ errors: [String])
+    
+    /// 404 error from medsenger server
+    /// - Parameter url: requested url
+    case pageNotFound(_ url: URL)
+    
+    /// Empty data with HTTP error
+    /// - Parameter statusCode: HTTP status code
+    case emptyDataStatusCode(_ statusCode: Int)
+    
+    /// Failed to deserialize data with JSON, when got HTTP error
+    /// - Parameters:
+    ///  - statusCode: HTTP status code
+    ///  - decodeDataError: decode JSON from data failure cases
+    case failedToDeserializeError(_ statusCode: Int, _ decodeDataError: DecodeDataError)
+    
+    /// Failed to deserialize data with JSON
+    /// - Parameters:
+    ///  - decodeDataError: decode JSON from data failure cases
+    case failedToDeserialize(_ decodeDataError: DecodeDataError)
+    
+    /// Failed to get `URLSession` response as `HTTPURLResponse`
+    case failedToGetResponse
+    
+    /// Weak `self` is nil
     case selfIsNil
 }
 
-enum NetworkRequestResult<T> {
-    case success
-    case SuccessData(T)
-    case Error(NetworkRequestError)
+/// Decode JSON from data failure cases
+enum DecodeDataError: Error {
+    case dataCorrupted(DecodingError.Context)
+    case keyNotFound(CodingKey, DecodingError.Context)
+    case valueNotFound(Any, DecodingError.Context)
+    case typeMismatch(Any, DecodingError.Context)
+    case error(Error)
 }
 
-enum DecodedDataError {
-    case DataCorrupted(DecodingError.Context)
-    case KeyNotFound(CodingKey, DecodingError.Context)
-    case ValueNotFound(Any, DecodingError.Context)
-    case TypeMismatch(Any, DecodingError.Context)
-    case Error(Error)
-}
+typealias DecodedDataReslut<T> = Result<T, DecodeDataError>
 
-enum DecodedDataReslut<T> {
-    case Success(T)
-    case Error(DecodedDataError)
-}
+typealias NetworkRequestCompletion<T> = (_ result: Result<T?, NetworkRequestError>) -> Void
 
 // MARK: - Network Request
 
@@ -48,14 +72,14 @@ protocol NetworkRequest: AnyObject {
     func decode(_ data: Data) -> DecodedDataReslut<ModelType>
     func decodeError(_ data: Data) -> DecodedDataReslut<[String]>
     
-    func execute(withCompletion completion: @escaping (NetworkRequestResult<ModelType>) -> Void)
+    func execute(withCompletion completion: @escaping NetworkRequestCompletion<ModelType>)
 }
 
 extension NetworkRequest {
-    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: String = "GET", body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping (NetworkRequestResult<ModelType>) -> Void) {
+    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: HttpMethod = .GET, body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) {
         
         var request = URLRequest(url: url)
-        request.httpMethod = method
+        request.httpMethod = method.rawValue
         for header in headers {
             request.setValue(header.value, forHTTPHeaderField: header.key)
         }
@@ -65,59 +89,63 @@ extension NetworkRequest {
         
         let processResponse: (Data?, URLResponse?, Error?) -> Void = { [weak self] (data, response, error) -> Void in
             if let error = error {
-                completion(.Error(.Request(error)))
+                guard let urlError = error as? URLError else {
+                    completion(.failure(.failedToGetUrlError(error)))
+                    return
+                }
+                completion(.failure(.request(urlError)))
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.Error(.failedToGetStatusCode))
+                completion(.failure(.failedToGetResponse))
                 return
             }
             guard let self = self else {
-                completion(.Error(.selfIsNil))
+                completion(.failure(.selfIsNil))
                 return
             }
             guard (200...299).contains(httpResponse.statusCode) else {
                 if httpResponse.statusCode == 404 {
-                    completion(.Error(.PageNotFound(url.formatted())))
+                    completion(.failure(.pageNotFound(url)))
                     return
                 }
                 guard let data = data else {
-                    completion(.Error(.EmptyDataStatusCode(httpResponse.statusCode)))
+                    completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
                     return
                 }
                 let decodedDataReslut = self.decodeError(data)
                 switch decodedDataReslut {
-                case .Success(let result):
-                    completion(.Error(.Api(result)))
+                case .success(let result):
+                    completion(.failure(.api(result)))
                     return
-                case .Error(let error):
-                    completion(.Error(.FailedToDeserializeError(error)))
+                case .failure(let error):
+                    completion(.failure(.failedToDeserializeError(httpResponse.statusCode, error)))
                     return
                 }
             }
             if parseResponse {
                 guard let data = data else {
-                    completion(.Error(.EmptyDataStatusCode(httpResponse.statusCode)))
+                    completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
                     return
                 }
                 let decodedDataReslut = self.decode(data)
                 switch decodedDataReslut {
-                case .Success(let result):
-                    completion(.SuccessData(result))
+                case .success(let result):
+                    completion(.success(result))
                     return
-                case .Error(let error):
+                case .failure(let error):
                     let decodedDataReslut = self.decodeError(data)
                     switch decodedDataReslut {
-                    case .Success(let result):
-                        completion(.Error(.Api(result)))
+                    case .success(let result):
+                        completion(.failure(.api(result)))
                         return
-                    case .Error(_):
-                        completion(.Error(.FailedToDeserialize(error)))
+                    case .failure(_):
+                        completion(.failure(.failedToDeserialize(error)))
                         return
                     }
                 }
             } else {
-                completion(.success)
+                completion(.success(nil))
                 return
             }
         }
@@ -148,17 +176,17 @@ extension APIRequest: NetworkRequest {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
             let errorResponse = try decoder.decode(ErrorReponse.self, from: data)
-            return DecodedDataReslut<[String]>.Success(errorResponse.error)
+            return DecodedDataReslut<[String]>.success(errorResponse.error)
         } catch DecodingError.dataCorrupted(let context) {
-            return DecodedDataReslut<[String]>.Error(.DataCorrupted(context))
+            return DecodedDataReslut<[String]>.failure(.dataCorrupted(context))
         } catch DecodingError.keyNotFound(let key, let context) {
-            return DecodedDataReslut<[String]>.Error(.KeyNotFound(key, context))
+            return DecodedDataReslut<[String]>.failure(.keyNotFound(key, context))
         } catch DecodingError.valueNotFound(let value, let context) {
-            return DecodedDataReslut<[String]>.Error(.ValueNotFound(value, context))
+            return DecodedDataReslut<[String]>.failure(.valueNotFound(value, context))
         } catch DecodingError.typeMismatch(let type, let context) {
-            return DecodedDataReslut<[String]>.Error(.TypeMismatch(type, context))
+            return DecodedDataReslut<[String]>.failure(.typeMismatch(type, context))
         } catch {
-            return DecodedDataReslut<[String]>.Error(.Error(error))
+            return DecodedDataReslut<[String]>.failure(.error(error))
         }
     }
     
@@ -167,21 +195,21 @@ extension APIRequest: NetworkRequest {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
             let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
-            return DecodedDataReslut<Resource.ModelType>.Success(wrapper.data)
+            return DecodedDataReslut<Resource.ModelType>.success(wrapper.data)
         } catch DecodingError.dataCorrupted(let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.DataCorrupted(context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.dataCorrupted(context))
         } catch DecodingError.keyNotFound(let key, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.KeyNotFound(key, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.keyNotFound(key, context))
         } catch DecodingError.valueNotFound(let value, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.ValueNotFound(value, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.valueNotFound(value, context))
         } catch DecodingError.typeMismatch(let type, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.TypeMismatch(type, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.typeMismatch(type, context))
         } catch {
-            return DecodedDataReslut<Resource.ModelType>.Error(.Error(error))
+            return DecodedDataReslut<Resource.ModelType>.failure(.error(error))
         }
     }
     
-    func execute(withCompletion completion: @escaping (NetworkRequestResult<Resource.ModelType>) -> Void) {
+    func execute(withCompletion completion: @escaping NetworkRequestCompletion<Resource.ModelType>) {
         load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, body: resource.options.httpBody, parseResponse: resource.options.parseResponse, withCompletion: completion)
     }
 }
@@ -202,22 +230,26 @@ class ImageRequest {
 }
 
 extension ImageRequest: NetworkRequest {
-    func decodeError(_ data: Data) -> DecodedDataReslut<[String]> { return DecodedDataReslut<[String]>.Success([]) }
+    func decodeError(_ data: Data) -> DecodedDataReslut<[String]> { return DecodedDataReslut<[String]>.success([]) }
     
-    func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.Success(data) }
+    func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.success(data) }
     
-    func execute(withCompletion completion: @escaping (NetworkRequestResult<Data>) -> Void) {
-        load(url, method: "GET", parseResponse: true, withCompletion: completion)
+    func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
+        load(url, method: .GET, parseResponse: true, withCompletion: completion)
     }
 }
 
 // MARK: - API Resource
 
+enum HttpMethod: String {
+    case GET, POST
+}
+
 struct APIResourceOptions {
     let dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
     let parseResponse: Bool
     let httpBody: Data?
-    let httpMethod: String
+    let httpMethod: HttpMethod
     let headers: [String: String]
     let queryItems: [URLQueryItem]
     let addApiKey: Bool
@@ -225,7 +257,7 @@ struct APIResourceOptions {
     init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .formatted(DateFormatter.iso8601Full),
          parseResponse: Bool = false,
          httpBody: Data? = nil,
-         httpMethod: String = "GET",
+         httpMethod: HttpMethod = .GET,
          headers: [String: String] = [:],
          queryItems: [URLQueryItem] = [],
          addApiKey: Bool = true
@@ -246,6 +278,8 @@ protocol APIResource {
     var methodPath: String { get }
     var options: APIResourceOptions { get }
 }
+
+struct EmptyModel: Decodable {}
 
 extension APIResource {
     static func getPostString(params: [String: Any]) -> String {
@@ -284,17 +318,17 @@ extension UploadImageRequest: NetworkRequest {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
             let errorResponse = try decoder.decode(ErrorReponse.self, from: data)
-            return DecodedDataReslut<[String]>.Success(errorResponse.error)
+            return DecodedDataReslut<[String]>.success(errorResponse.error)
         } catch DecodingError.dataCorrupted(let context) {
-            return DecodedDataReslut<[String]>.Error(.DataCorrupted(context))
+            return DecodedDataReslut<[String]>.failure(.dataCorrupted(context))
         } catch DecodingError.keyNotFound(let key, let context) {
-            return DecodedDataReslut<[String]>.Error(.KeyNotFound(key, context))
+            return DecodedDataReslut<[String]>.failure(.keyNotFound(key, context))
         } catch DecodingError.valueNotFound(let value, let context) {
-            return DecodedDataReslut<[String]>.Error(.ValueNotFound(value, context))
+            return DecodedDataReslut<[String]>.failure(.valueNotFound(value, context))
         } catch DecodingError.typeMismatch(let type, let context) {
-            return DecodedDataReslut<[String]>.Error(.TypeMismatch(type, context))
+            return DecodedDataReslut<[String]>.failure(.typeMismatch(type, context))
         } catch {
-            return DecodedDataReslut<[String]>.Error(.Error(error))
+            return DecodedDataReslut<[String]>.failure(.error(error))
         }
     }
     
@@ -303,21 +337,21 @@ extension UploadImageRequest: NetworkRequest {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
             let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
-            return DecodedDataReslut<Resource.ModelType>.Success(wrapper.data)
+            return DecodedDataReslut<Resource.ModelType>.success(wrapper.data)
         } catch DecodingError.dataCorrupted(let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.DataCorrupted(context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.dataCorrupted(context))
         } catch DecodingError.keyNotFound(let key, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.KeyNotFound(key, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.keyNotFound(key, context))
         } catch DecodingError.valueNotFound(let value, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.ValueNotFound(value, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.valueNotFound(value, context))
         } catch DecodingError.typeMismatch(let type, let context) {
-            return DecodedDataReslut<Resource.ModelType>.Error(.TypeMismatch(type, context))
+            return DecodedDataReslut<Resource.ModelType>.failure(.typeMismatch(type, context))
         } catch {
-            return DecodedDataReslut<Resource.ModelType>.Error(.Error(error))
+            return DecodedDataReslut<Resource.ModelType>.failure(.error(error))
         }
     }
     
-    func execute(withCompletion completion: @escaping (NetworkRequestResult<Resource.ModelType>) -> Void) {
+    func execute(withCompletion completion: @escaping NetworkRequestCompletion<Resource.ModelType>) {
         load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, uploadData: resource.uploadData, withCompletion: completion)
     }
 }
@@ -327,7 +361,7 @@ extension UploadImageRequest: NetworkRequest {
 struct UploadImageResourceOptions {
     let dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
     let parseResponse: Bool
-    let httpMethod: String
+    let httpMethod: HttpMethod
     let headers: [String: String]
     let queryItems: [URLQueryItem]
     let addApiKey: Bool
@@ -335,7 +369,7 @@ struct UploadImageResourceOptions {
     init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .formatted(DateFormatter.iso8601Full),
          parseResponse: Bool = false,
          httpBody: Data? = nil,
-         httpMethod: String = "POST",
+         httpMethod: HttpMethod = .GET,
          headers: [String: String] = [:],
          queryItems: [URLQueryItem] = [],
          addApiKey: Bool = true
@@ -393,9 +427,14 @@ struct ErrorReponse: Decodable {
 ///   - requestName: name of request for logging
 func processRequestError(_ requestError: NetworkRequestError, _ requestName: String) {
     switch requestError {
-    case .Request(let error):
-        print("Request `\(requestName)` error: \(error.localizedDescription)")
-    case .Api(let errorData):
+    case .failedToGetUrlError(let error):
+        print("Request `\(requestName)` failed to get URLError error: \(error.localizedDescription)")
+    case .request(let urlError):
+        switch urlError.code {
+        default:
+            print("Request `\(requestName)` error: \(urlError.localizedDescription)")
+        }
+    case .api(let errorData):
         for error in errorData {
             switch error {
             case "Incorrect token":
@@ -405,37 +444,37 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
                 print("Request `\(requestName)` error: medsenger server message: \(error)")
             }
         }
-    case .PageNotFound(let url):
+    case .pageNotFound(let url):
         print("Request `\(requestName)` error: Page not found with url: \(url)")
-    case .EmptyDataStatusCode(let statusCode):
+    case .emptyDataStatusCode(let statusCode):
         print("Request `\(requestName)` error: Invalid status code (\(statusCode)) with empty data")
-    case .FailedToDeserializeError(let error):
-        switch error {
-        case .DataCorrupted(let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error: Data corrupted, context: \(context)")
-        case .KeyNotFound(let key, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error: Key `\(key)` not found, context: \(context)")
-        case .ValueNotFound(let value, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error: Value `\(value)` not found, context: \(context)")
-        case .TypeMismatch(let type, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error: Type `\(type)` Mismatch, context: \(context)")
-        case .Error(let error):
-            print("Request `\(requestName)` error: Failed to deserialize data from error: Unknown error: \(error.localizedDescription)")
+    case .failedToDeserializeError(let statusCode, let decodeDataError):
+        switch decodeDataError {
+        case .dataCorrupted(let context):
+            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Data corrupted, context: \(context)")
+        case .keyNotFound(let key, let context):
+            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Key `\(key)` not found, context: \(context)")
+        case .valueNotFound(let value, let context):
+            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Value `\(value)` not found, context: \(context)")
+        case .typeMismatch(let type, let context):
+            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Type `\(type)` Mismatch, context: \(context)")
+        case .error(let error):
+            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(error.localizedDescription)")
         }
-    case .FailedToDeserialize(let error):
-        switch error {
-        case .DataCorrupted(let context):
+    case .failedToDeserialize(let decodeDataError):
+        switch decodeDataError {
+        case .dataCorrupted(let context):
             print("Request `\(requestName)` error: Failed to deserialize data: Data corrupted, context: \(context)")
-        case .KeyNotFound(let key, let context):
+        case .keyNotFound(let key, let context):
             print("Request `\(requestName)` error: Failed to deserialize data: Key `\(key)` not found, context: \(context)")
-        case .ValueNotFound(let value, let context):
+        case .valueNotFound(let value, let context):
             print("Request `\(requestName)` error: Failed to deserialize data: Value `\(value)` not found, context: \(context)")
-        case .TypeMismatch(let type, let context):
+        case .typeMismatch(let type, let context):
             print("Request `\(requestName)` error: Failed to deserialize data: Type `\(type)` Mismatch, context: \(context)")
-        case .Error(let error):
+        case .error(let error):
             print("Request `\(requestName)` error: Failed to deserialize data: Unknown error: \(error.localizedDescription)")
         }
-    case .failedToGetStatusCode:
+    case .failedToGetResponse:
         print("Request `\(requestName)` error: Failed to get status code")
     case .selfIsNil:
         print("Request `\(requestName)` error: `self` is `nil`")

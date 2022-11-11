@@ -8,7 +8,9 @@
 import Foundation
 
 struct Constants {
-    
+
     static let medsengerApiUrl = "https://medsenger.ru/api/client"
+    
+    static let medsengerWebsocketUrl = URL(string: "wss://medsenger.ru:643")!
     
 }

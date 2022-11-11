@@ -15,18 +15,24 @@ class Messages {
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
     
     public func getMessages(contractId: Int, completion: (() -> Void)? = nil) {
-        let messagesResource = MessagesResource(contractId: contractId)
+        let messagesResource = {
+            guard let contract = Contract.get(id: contractId), contract.lastFetchedMessageId != 0 else {
+                return MessagesResource(contractId: contractId)
+            }
+            return MessagesResource(contractId: contractId, fromMessageId: Int(contract.lastFetchedMessageId))
+        }()
+        
         getMessagesRequest = APIRequest(resource: messagesResource)
         getMessagesRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                Message.saveFromJson(data: data, contractId: contractId)
-                if let completion = completion {
-                    completion()
+            case .success(let data):
+                if let data = data {
+                    Message.saveFromJson(data: data, contractId: contractId)
+                    if let completion = completion {
+                        completion()
+                    }
                 }
-            case .Error(let error):
+            case .failure(let error):
                 processRequestError(error, "get messages for contract \(contractId)")
             }
         }
@@ -37,14 +43,15 @@ class Messages {
         sendMessageRequest = APIRequest(resource: sendMessageResource)
         sendMessageRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                Message.saveFromJson(data: data, contractId: contractId)
-                if let completion = completion {
-                    completion(data.id)
+            case .success(let data):
+                if let data = data {
+                    Message.saveFromJson(data: data, contractId: contractId)
+                    Websockets.shared.messageUpdate(contractId: contractId)
+                    if let completion = completion {
+                        completion(data.id)
+                    }
                 }
-            case .Error(let error):
+            case .failure(let error):
                 processRequestError(error, "get messages for contract \(contractId)")
             }
         }

@@ -15,6 +15,7 @@ class Account {
     private var checkRequest: APIRequest<CheckResource>?
     private var uploadAvatarRequest: UploadImageRequest<UploadAvatarResource>?
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
+    private var notificationsRequest: APIRequest<NotificationsResource>?
     
     public func setRole(_ role: User.Role) {
         User.role = role
@@ -31,11 +32,11 @@ class Account {
         getAvatarRequest = ImageRequest(path: "/photo/")
         getAvatarRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                User.saveAvatar(data: data)
-            case .Error(let error):
+            case .success(let data):
+                if let data = data {
+                    User.saveAvatar(data: data)
+                }
+            case .failure(let error):
                 processRequestError(error, "get user avatar")
             }
         }
@@ -46,12 +47,12 @@ class Account {
         checkRequest = APIRequest(resource: checkResource)
         checkRequest?.execute { result in
             switch result {
-            case .success:
-                break
-            case .SuccessData(let data):
-                User.saveUserFromJson(data: data)
-                self.getAvatar()
-            case .Error(let error):
+            case .success(let data):
+                if let data = data {
+                    User.saveUserFromJson(data: data)
+                    self.getAvatar()
+                }
+            case .failure(let error):
                 processRequestError(error, "get profile data")
             }
         }
@@ -64,11 +65,9 @@ class Account {
         uploadAvatarRequest = UploadImageRequest(resource: uploadAvatarResource)
         uploadAvatarRequest?.execute { result in
             switch result {
-            case .success:
+            case .success(_):
                 self.getAvatar()
-            case .SuccessData(_):
-                break
-            case .Error(let error):
+            case .failure(let error):
                 processRequestError(error, "upload user avatar")
             }
         }
@@ -79,11 +78,22 @@ class Account {
         updateAcountRequest = APIRequest(resource: updateAccountResource)
         updateAcountRequest?.execute { result in
             switch result {
-            case .success:
+            case .success(_):
                 DispatchQueue.main.async { completion() }
-            case .SuccessData(_):
+            case .failure(let error):
+                processRequestError(error, "save profile data")
+            }
+        }
+    }
+    
+    public func updateEmailNotiofication(emailNotify: Bool) {
+        let notificationsResource = NotificationsResource(emailNotify: emailNotify)
+        notificationsRequest = APIRequest(resource: notificationsResource)
+        notificationsRequest?.execute { result in
+            switch result {
+            case .success(_):
                 break
-            case .Error(let error):
+            case .failure(let error):
                 processRequestError(error, "save profile data")
             }
         }
