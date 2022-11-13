@@ -46,6 +46,7 @@
 		437DB153291405B100D847E7 /* Contracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB152291405B100D847E7 /* Contracts.swift */; };
 		437DB15529140D4E00D847E7 /* DoctorsArchiveResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB15429140D4E00D847E7 /* DoctorsArchiveResource.swift */; };
 		437DB157291410B900D847E7 /* ArchivesChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437DB156291410B900D847E7 /* ArchivesChatsView.swift */; };
+		437F0774292141A600D7305E /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F0773292141A600D7305E /* ChangePasswordView.swift */; };
 		43953DFD29191A04006C8B3D /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953DFB29191A04006C8B3D /* Message+CoreDataClass.swift */; };
 		43953E0129191FCB006C8B3D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0029191FCB006C8B3D /* Messages.swift */; };
 		43953E0329191FF5006C8B3D /* MessagesResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43953E0229191FF5006C8B3D /* MessagesResource.swift */; };
@@ -60,7 +61,6 @@
 		43DB0E6329095E1500801296 /* ChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6229095E1500801296 /* ChatsView.swift */; };
 		43DB0E6629095E3200801296 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6529095E3200801296 /* SettingsView.swift */; };
 		43DB0E682909612B00801296 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E672909612B00801296 /* SettingsViewModel.swift */; };
-		43DB0E6A2909631C00801296 /* ProfileDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E692909631C00801296 /* ProfileDataView.swift */; };
 		43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */; };
 		43DB0E6E29097ABB00801296 /* ChooseRoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */; };
 		43DB0E702909840C00801296 /* CheckResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43DB0E6F2909840C00801296 /* CheckResource.swift */; };
@@ -129,6 +129,7 @@
 		437DB152291405B100D847E7 /* Contracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contracts.swift; sourceTree = "<group>"; };
 		437DB15429140D4E00D847E7 /* DoctorsArchiveResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsArchiveResource.swift; sourceTree = "<group>"; };
 		437DB156291410B900D847E7 /* ArchivesChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivesChatsView.swift; sourceTree = "<group>"; };
+		437F0773292141A600D7305E /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		43953DFB29191A04006C8B3D /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
 		43953E0029191FCB006C8B3D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		43953E0229191FF5006C8B3D /* MessagesResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesResource.swift; sourceTree = "<group>"; };
@@ -143,7 +144,6 @@
 		43DB0E6229095E1500801296 /* ChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsView.swift; sourceTree = "<group>"; };
 		43DB0E6529095E3200801296 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		43DB0E672909612B00801296 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
-		43DB0E692909631C00801296 /* ProfileDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDataView.swift; sourceTree = "<group>"; };
 		43DB0E6B2909747900801296 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		43DB0E6D29097ABB00801296 /* ChooseRoleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseRoleView.swift; sourceTree = "<group>"; };
 		43DB0E6F2909840C00801296 /* CheckResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckResource.swift; sourceTree = "<group>"; };
@@ -364,11 +364,11 @@
 		43DB0E6429095E2300801296 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				43DB0E6529095E3200801296 /* SettingsView.swift */,
 				43DB0E672909612B00801296 /* SettingsViewModel.swift */,
-				43DB0E692909631C00801296 /* ProfileDataView.swift */,
+				43DB0E6529095E3200801296 /* SettingsView.swift */,
 				43E5EA0C290AAD97008754C5 /* ImagePicker.swift */,
 				43E5EA12290ACAD8008754C5 /* EditPersonalDataView.swift */,
+				437F0773292141A600D7305E /* ChangePasswordView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -501,6 +501,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				43953E0129191FCB006C8B3D /* Messages.swift in Sources */,
+				437F0774292141A600D7305E /* ChangePasswordView.swift in Sources */,
 				43FF65842902D2DB00AB9BB1 /* ContentView.swift in Sources */,
 				435F7539291BDF29003278E1 /* Name.swift in Sources */,
 				43E5EA0F290ABAD2008754C5 /* UploadAvatarResource.swift in Sources */,
@@ -547,7 +548,6 @@
 				433E59752906C6D50069F8DF /* Login.swift in Sources */,
 				433F0D0429069707008E1F42 /* ContentViewModel.swift in Sources */,
 				435F753B291BDF29003278E1 /* ContentType.swift in Sources */,
-				43DB0E6A2909631C00801296 /* ProfileDataView.swift in Sources */,
 				43E33CDB291AE9E9000BE732 /* AgentTask+CoreDataClass.swift in Sources */,
 				43F44BF7291EB22A007CEDB5 /* DeactivateMessagesResource.swift in Sources */,
 				437DB153291405B100D847E7 /* Contracts.swift in Sources */,

@@ -290,6 +290,36 @@ extension APIResource {
         return data.map { String($0) }.joined(separator: "&")
     }
     
+    static func requestBodyData(params: [String: String]) -> Data? {
+        var data = [MultipartFormData.Part]()
+        
+        for (key, value) in params {
+            data.append(
+                MultipartFormData.Part(
+                    contentDisposition: ContentDisposition(
+                        name: Name(asPercentEncoded: key),
+                        filename: nil
+                    ),
+                    contentType: nil,
+                    content: value.data(using: .utf8)!
+                )
+            )
+        }
+
+        let multipartFormData = MultipartFormData(
+            uniqueAndValidLengthBoundary: "boundary",
+            body: data
+        )
+        
+        switch multipartFormData.asData() {
+        case let .valid(data):
+            return data
+        case let .invalid(error):
+            print("Serialize post request form data error: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     var url: URL {
         var components = URLComponents(string: Constants.medsengerApiUrl)!
         components.path = components.path + methodPath

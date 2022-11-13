@@ -11,6 +11,13 @@ import CoreData
 class PersistenceController: ObservableObject {
     static let shared = PersistenceController()
     
+    static var preview: PersistenceController = {
+        let persistenceController = PersistenceController(inMemory: true)
+        let viewContext = persistenceController.container.viewContext
+        Seed.prepareData(for: viewContext)
+        return persistenceController
+    }()
+    
     let container: NSPersistentContainer
     
     init(inMemory: Bool = false) {
@@ -27,7 +34,21 @@ class PersistenceController: ObservableObject {
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
     
-    class func save(context: NSManagedObjectContext) {
+    struct Seed {
+        static func prepareData(for viewContext: NSManagedObjectContext) {
+            // ** Prepare all sample data for previews here ** //
+            
+            _ = User.createSampleUser(for: viewContext)
+            
+            do {
+                try viewContext.save()
+            } catch {
+                print("Core Data failed to save model: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    public class func save(context: NSManagedObjectContext) {
         if context.hasChanges {
             do {
                 try context.save()
@@ -44,16 +65,16 @@ class PersistenceController: ObservableObject {
         }
     }
     
-    class func clearDatabase() {
+    public class func clearDatabase() {
         guard let url = PersistenceController.shared.container.persistentStoreDescriptions.first?.url else { return }
         
         let persistentStoreCoordinator = PersistenceController.shared.container.persistentStoreCoordinator
-
-         do {
-             try persistentStoreCoordinator.destroyPersistentStore(at:url, ofType: NSSQLiteStoreType, options: nil)
-             try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
-         } catch {
-             print("Attempted to clear persistent store: " + error.localizedDescription)
-         }
+        
+        do {
+            try persistentStoreCoordinator.destroyPersistentStore(at:url, ofType: NSSQLiteStoreType, options: nil)
+            try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
+        } catch {
+            print("Attempted to clear persistent store: " + error.localizedDescription)
+        }
     }
 }

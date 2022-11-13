@@ -28,15 +28,17 @@ struct UpdateAccountResource: APIResource {
             "email": email,
             "phone": phone,
             "birthday": birthdayString
-        ] as [String : Any]
-        let postString = UpdateAccountResource.getPostString(params: params)
-        return postString.data(using: .utf8)
+        ] as [String: String] 
+        return UpdateAccountResource.requestBodyData(params: params)
     }
 
     var methodPath = "/account"
     
     var options: APIResourceOptions {
-        APIResourceOptions(httpBody: httpBody)
+        APIResourceOptions(
+            httpBody: httpBody,
+            httpMethod: .POST
+        )
     }
 }
 
