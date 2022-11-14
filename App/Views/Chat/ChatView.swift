@@ -9,15 +9,15 @@
 import SwiftUI
 
 struct ChatView: View {
-    let contract: Contract
-    
     @StateObject private var chatViewModel: ChatViewModel
+    
+    @ObservedObject private var contract: Contract
     
     @FetchRequest private var messages: FetchedResults<Message>
     
     @FocusState private var isTextFocused
     
-    @State private var messageIDToScroll: Int?
+    @State private var autoScrollDown = true
     
     init(contract: Contract) {
         _messages = FetchRequest<Message>(
@@ -26,27 +26,27 @@ struct ChatView: View {
             predicate: NSPredicate(format: "contract == %@", contract),
             animation: .easeIn
         )
+        _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
         self.contract = contract
-        _chatViewModel = StateObject(wrappedValue: ChatViewModel(contract: contract))
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack {
             GeometryReader { reader in
                 ScrollView {
                     ScrollViewReader { scrollReader in
                         getMessagesView(viewWidth: reader.size.width)
                             .padding(.horizontal)
-                            .onChange(of: messageIDToScroll) { newValue in
-                                if let messageID = newValue {
-                                    scrollTo(messageID: messageID, shouldAnumate: true, scrollReader: scrollReader)
-                                }
-                            }
                             .onAppear {
                                 if let messageID = messages.last?.id {
-                                    chatViewModel.lastMessageId = Int(messageID)
+                                    scrollTo(messageID: Int(messageID), shouldAnumate: false, scrollReader: scrollReader)
                                 }
                             }
+                            .onChange(of: contract.lastFetchedMessageId, perform: { lastFetchedMessageId in
+                                if autoScrollDown {
+                                    scrollTo(messageID: Int(lastFetchedMessageId), shouldAnumate: true, scrollReader: scrollReader)
+                                }
+                            })
                     }
                 }
             }
@@ -57,13 +57,11 @@ struct ChatView: View {
         }
         .padding(.top, 1)
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(leading: navigationVarLeading, trailing: navigationVarTrailing)
+        .navigationBarItems(leading: navigationVarLeading(contract: contract), trailing: navigationVarTrailing)
         .onAppear(perform: chatViewModel.fetchMessages)
     }
     
-    let columns = [GridItem(.flexible(minimum: 10))]
-    
-    var navigationVarLeading: some View {
+    func navigationVarLeading(contract: Contract) -> some View {
         Button(action: {}) {
             HStack {
                 if let image = contract.avatar {
@@ -81,7 +79,9 @@ struct ChatView: View {
     
     var navigationVarTrailing: some View {
         Button(action: {
-            
+            if let messageId = messages.last?.id {
+                chatViewModel.messageIDToScroll = Int(messageId)
+            }
         }) {
             Text("Lol")
         }
@@ -121,25 +121,35 @@ struct ChatView: View {
     }
     
     func getMessagesView(viewWidth: CGFloat) -> some View {
-        LazyVGrid(columns: columns, spacing: 0) {
-            ForEach(messages) { message in
-                HStack {
-                    HStack {
-                        ZStack {
-                            Text(message.text ?? "Unknown text")
-                                .padding(.horizontal)
-                                .padding(.vertical, 12)
-                                .background(message.isMessageSent ? Color.green.opacity(0.9) : .black.opacity(0.2))
-                                .cornerRadius(13)
-                        }
-                        .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
-                        .padding(.vertical)
-                    }
-                    .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
-                    .id(message.id)
+        VStack {
+            LazyVStack {
+                ForEach(messages.dropLast(10)) { message in
+                    messageView(message: message, viewWidth: viewWidth)
+                }
+            }
+            
+            VStack {
+                ForEach(messages.suffix(10)) { message in
+                    messageView(message: message, viewWidth: viewWidth)
                 }
             }
         }
+    }
+    
+    func messageView(message: Message, viewWidth: CGFloat) -> some View {
+        HStack {
+            ZStack {
+                Text(message.text ?? "Unknown text")
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
+                    .background(message.isMessageSent ? Color.green.opacity(0.9) : .black.opacity(0.2))
+                    .cornerRadius(13)
+            }
+            .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+            .padding(.vertical)
+        }
+        .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
+        .id(Int(message.id))
     }
 }
 

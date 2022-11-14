@@ -15,6 +15,7 @@ public class ContractParam: NSManagedObject {
     private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> ContractParam? {
         do {
             let fetchRequest = ContractParam.fetchRequest()
+            fetchRequest.fetchLimit = 1
             fetchRequest.predicate = NSPredicate(format: "id == %ld && contract = %@", id, contract)
             let fetchedResults = try context.fetch(fetchRequest)
             if let contractParam = fetchedResults.first {

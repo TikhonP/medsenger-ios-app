@@ -18,26 +18,26 @@ struct UpdateAccountResource: APIResource {
     
     var birthdayString: String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YY"
+        dateFormatter.dateFormat = "dd.MM.YYYY"
         return dateFormatter.string(from: birthday)
     }
     
-    var httpBody: Data? {
-        let params = [
-            "name": name,
-            "email": email,
-            "phone": phone,
-            "birthday": birthdayString
-        ] as [String: String] 
-        return UpdateAccountResource.requestBodyData(params: params)
+    
+    var params: [String: String] {
+        ["name": name,
+         "email": email,
+         "phone": phone,
+         "birthday": birthdayString]
     }
-
+    
     var methodPath = "/account"
     
     var options: APIResourceOptions {
-        APIResourceOptions(
-            httpBody: httpBody,
-            httpMethod: .POST
+        let result = multipartFormData(params: params)
+        return APIResourceOptions(
+            httpBody: result.httpBody,
+            httpMethod: .POST,
+            headers: result.headers
         )
     }
 }

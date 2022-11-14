@@ -9,11 +9,12 @@
 import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var selectedImage: Data
+    
+    var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
     @Environment(\.presentationMode) private var presentationMode
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @Binding var selectedImage: Data
-
+    
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
 
         let imagePicker = UIImagePickerController()
@@ -52,8 +53,8 @@ struct ImagePicker: UIViewControllerRepresentable {
     }
 }
 
-//struct ImagePicker_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ImagePicker()
-//    }
-//}
+struct ImagePicker_Previews: PreviewProvider {
+    static var previews: some View {
+        ImagePicker(selectedImage: .constant(Data()))
+    }
+}

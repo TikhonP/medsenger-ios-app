@@ -10,7 +10,6 @@ import Foundation
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
-    
     @Published var isPushNotificationOn: Bool = false
     @Published var isEmailNotificationOn: Bool = false
     @Published var syncWithAppleHealth: Bool = false

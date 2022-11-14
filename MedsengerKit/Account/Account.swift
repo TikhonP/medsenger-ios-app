@@ -74,11 +74,9 @@ class Account {
     }
     
     public func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
-        print(name)
         let updateAccountResource = UpdateAccountResource(name: name, email: email, phone: phone, birthday: birthday)
         updateAcountRequest = APIRequest(resource: updateAccountResource)
         updateAcountRequest?.execute { result in
-            print(result)
             switch result {
             case .success(_):
                 DispatchQueue.main.async { completion() }

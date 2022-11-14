@@ -174,6 +174,10 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
         }
     }
     
+    /// Save messages objects from JSON decoded struct to Core Data
+    /// - Parameters:
+    ///   - data: struct decoded from JSON
+    ///   - contractId: contract id for messages
     class func saveFromJson(data: [JsonDeserializer], contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             guard let contract = Contract.get(id: contractId, context: context) else {

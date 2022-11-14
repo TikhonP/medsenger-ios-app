@@ -11,7 +11,7 @@ import SwiftUI
 struct PasswordFieldView: View {
     @Binding var password: String
     
-    @State var hidePassword: Bool = true
+    @State private var hidePassword: Bool = true
     
     var body: some View {
         ZStack {

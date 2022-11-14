@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ArchivesChatsView: View {
-    @EnvironmentObject var chatsViewModel: ChatsViewModel
+    @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
     @FetchRequest(
         sortDescriptors: [
@@ -26,9 +26,10 @@ struct ArchivesChatsView: View {
             NavigationLink(destination: {
                 ChatView(contract: contract)
             }, label: {
-                ChatRow(avatar: contract.avatar, contractId: Int(contract.id), name: contract.name, isOnline: contract.isOnline, isArchive: true)
+                ChatRow(contract: contract)
             })
         }
+        .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
         .listStyle(PlainListStyle())
         .navigationTitle("Archive Chats")
         .onAppear(perform: chatsViewModel.getArchiveContracts)

@@ -290,7 +290,7 @@ extension APIResource {
         return data.map { String($0) }.joined(separator: "&")
     }
     
-    static func requestBodyData(params: [String: String]) -> Data? {
+    private func getMultipartFormData(params: [String: String]) -> MultipartFormData {
         var data = [MultipartFormData.Part]()
         
         for (key, value) in params {
@@ -311,13 +311,22 @@ extension APIResource {
             body: data
         )
         
-        switch multipartFormData.asData() {
-        case let .valid(data):
-            return data
-        case let .invalid(error):
-            print("Serialize post request form data error: \(error.localizedDescription)")
-            return nil
-        }
+        return multipartFormData
+    }
+    
+    func multipartFormData(params: [String: String]) -> (httpBody: Data?, headers: [String: String]) {
+        let multipartFormData  = getMultipartFormData(params: params)
+        let httpBody: Data? = {
+            switch multipartFormData.asData() {
+            case let .valid(data):
+                return data
+            case let .invalid(error):
+                print("Serilize `send message` form data error: \(error.localizedDescription)")
+                return nil
+            }
+        }()
+        let headers = [multipartFormData.header.name: multipartFormData.header.value]
+        return (httpBody, headers)
     }
     
     var url: URL {

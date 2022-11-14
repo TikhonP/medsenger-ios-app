@@ -12,7 +12,7 @@ struct SignInView: View {
     
     @StateObject private var signInViewModel = SignInViewModel()
     
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         VStack {

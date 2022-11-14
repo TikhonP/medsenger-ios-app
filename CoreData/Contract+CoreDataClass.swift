@@ -77,6 +77,14 @@ public class Contract: NSManagedObject {
         }
     }
     
+    class func updateLastFetchedMessage(id: Int, lastFetchedMessageId: Int) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            let contract = get(id: id, context: context)
+            contract?.lastFetchedMessageId = Int64(lastFetchedMessageId)
+            PersistenceController.save(context: context)
+        }
+    }
+    
     func addToAgents(_ values: [Agent], context: NSManagedObjectContext) {
         for agent in values {
             if let isExist = agents?.contains(agent), !isExist {

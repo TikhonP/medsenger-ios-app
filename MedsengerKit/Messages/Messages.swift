@@ -38,7 +38,7 @@ class Messages {
         }
     }
     
-    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<(String, Data)> = [], completion: ((_ messageId: Int) -> Void)? = nil) {
+    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
         let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, images: images, attachments: attachments)
         sendMessageRequest = APIRequest(resource: sendMessageResource)
         sendMessageRequest?.execute { result in
@@ -46,9 +46,10 @@ class Messages {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data: data, contractId: contractId)
+                    Contract.updateLastFetchedMessage(id: contractId, lastFetchedMessageId: data.id)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     if let completion = completion {
-                        completion(data.id)
+                        completion()
                     }
                 }
             case .failure(let error):

@@ -101,10 +101,16 @@ class Websockets: NSObject, URLSessionWebSocketDelegate {
             @unknown default:
                 print("Websocket received: Unknown message")
             }
-        case .failure(let error):
-            print("Websocket receive error: \(error.localizedDescription)")
+        case .failure(let error as NSError):
+            switch error.code {
+            case 53: // Software caused connection abort
+                print("Websocket receive connection aborted")
+                isConnected = false
+                close()
+            default:
+                print("Websocket receive error: \(error.localizedDescription)")
+            }
         }
-        
     }
     
     private func close() {

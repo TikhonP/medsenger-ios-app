@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject var settingsViewModel = SettingsViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
     
     @Environment(\.presentationMode) private var presentationMode
     
@@ -25,6 +25,7 @@ struct SettingsView: View {
                         
                 } else {
                     profileView(user)
+                        .deprecatedRefreshable { await settingsViewModel.updateProfile() }
                         .transition(.opacity)
                         .onAppear(perform: settingsViewModel.updateProfile)
                         .navigationTitle("Settings")
@@ -59,12 +60,12 @@ struct SettingsView: View {
                         ])
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
-            ImagePicker(sourceType: .photoLibrary, selectedImage: $settingsViewModel.selectedAvatarImage)
+            ImagePicker(selectedImage: $settingsViewModel.selectedAvatarImage, sourceType: .photoLibrary)
         }
         .sheet(isPresented: $settingsViewModel.showTakeImageSheet) {
             ZStack {
                 Color.black
-                ImagePicker(sourceType: .camera, selectedImage: $settingsViewModel.selectedAvatarImage)
+                ImagePicker(selectedImage: $settingsViewModel.selectedAvatarImage, sourceType: .camera)
                     .padding(.bottom, 40)
                     .padding(.top)
             }
@@ -215,15 +216,19 @@ struct SettingsView: View {
                 .bold()
                 .multilineTextAlignment(.center)
             
-            Text(user.email ?? "Data reading error")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+            if let email = user.email {
+                Text(email)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
             
-            Text(user.phone ?? "Data reading error")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+            if let phone = user.phone {
+                Text(phone)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
     }
 }

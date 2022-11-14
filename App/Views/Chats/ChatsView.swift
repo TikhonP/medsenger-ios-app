@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ChatsView: View {
-    @StateObject var chatsViewModel = ChatsViewModel()
+    @StateObject private var chatsViewModel = ChatsViewModel()
     
     @FetchRequest(
         sortDescriptors: [
@@ -22,6 +22,7 @@ struct ChatsView: View {
     private var contracts: FetchedResults<Contract>
     
     @State private var showSettingsModal: Bool = false
+    @State private var showNewContractModal: Bool = false
     
     var body: some View {
         NavigationView {
@@ -30,7 +31,7 @@ struct ChatsView: View {
                     NavigationLink(destination: {
                         ChatView(contract: contract)
                     }, label: {
-                        ChatRow(avatar: contract.avatar, contractId: Int(contract.id), name: contract.name, isOnline: contract.isOnline, isArchive: false)
+                        ChatRow(contract: contract)
                             .environmentObject(chatsViewModel)
                     })
                 }
@@ -40,16 +41,23 @@ struct ChatsView: View {
                         .environmentObject(chatsViewModel)
                 }, label: { archiveRow })
             }
+            .deprecatedRefreshable { await chatsViewModel.getContracts() }
             .listStyle(PlainListStyle())
             .navigationTitle("Chats")
             .onAppear(perform: chatsViewModel.getContracts)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear") })
+                        .id(UUID())
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear.circle") })
+                    Button(action: { showNewContractModal.toggle() }, label: { Image(systemName: "square.and.pencil") })
                         .id(UUID())
                 }
             }
             .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
+            .sheet(isPresented: $showNewContractModal, content: { Text("Add new contract") })
         }
     }
     
@@ -66,17 +74,7 @@ struct ChatsView: View {
                         Text("Archive")
                             .bold()
                         Spacer()
-//                        Text("Date 123")
                     }
-                    
-//                    HStack {
-//                        Text("message  cdcdcdscsdcdscsdc dscdsfjdsnfksdjnjksdnkj  sdnfkjsdnkjsdnvkjdsnv kjdsnvkjsd jdfvnkjdfv fvnjkdfnvkjdf")
-//                            .foregroundColor(.gray)
-//                            .lineLimit(2)
-//                            .frame(height: 50, alignment: .top)
-//                            .frame(maxWidth: .infinity, alignment: .leading)
-//                            .padding(.trailing, 40)
-//                    }
                 }
             }
         }
@@ -86,6 +84,8 @@ struct ChatsView: View {
 
 struct ChatsView_Previews: PreviewProvider {
     static var previews: some View {
-        ChatsView()
+        let context = PersistenceController.preview.container.viewContext
+        return ChatsView()
+            .environment(\.managedObjectContext, context)
     }
 }

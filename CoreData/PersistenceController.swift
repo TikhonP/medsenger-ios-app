@@ -11,13 +11,6 @@ import CoreData
 class PersistenceController: ObservableObject {
     static let shared = PersistenceController()
     
-    static var preview: PersistenceController = {
-        let persistenceController = PersistenceController(inMemory: true)
-        let viewContext = persistenceController.container.viewContext
-        Seed.prepareData(for: viewContext)
-        return persistenceController
-    }()
-    
     let container: NSPersistentContainer
     
     init(inMemory: Bool = false) {
@@ -32,20 +25,6 @@ class PersistenceController: ObservableObject {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
-    }
-    
-    struct Seed {
-        static func prepareData(for viewContext: NSManagedObjectContext) {
-            // ** Prepare all sample data for previews here ** //
-            
-            _ = User.createSampleUser(for: viewContext)
-            
-            do {
-                try viewContext.save()
-            } catch {
-                print("Core Data failed to save model: \(error.localizedDescription)")
-            }
-        }
     }
     
     public class func save(context: NSManagedObjectContext) {

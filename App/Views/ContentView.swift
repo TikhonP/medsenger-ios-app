@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var contentViewModel = ContentViewModel()
+    @StateObject private var contentViewModel = ContentViewModel()
     
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>

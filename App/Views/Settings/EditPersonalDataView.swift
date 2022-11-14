@@ -9,9 +9,7 @@
 import SwiftUI
 
 struct EditPersonalDataView: View {
-    @EnvironmentObject var settingsViewModel: SettingsViewModel
-    
-    private let avatar: Data?
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     @State private var name: String
     @State private var email: String
@@ -19,6 +17,8 @@ struct EditPersonalDataView: View {
     @State private var birthday: Date
     
     @State private var showLoading = false
+    
+    private let avatar: Data?
     
     init(user: User) {
         _name = State(initialValue: user.name ?? "")
@@ -29,6 +29,15 @@ struct EditPersonalDataView: View {
     }
     
     var body: some View {
+        if #available(iOS 16.0, *) {
+            form
+                .scrollDismissesKeyboard(.interactively)
+        } else {
+            form
+        }
+    }
+    
+    var form: some View {
         Form {
             Section {
                 HStack {
@@ -62,15 +71,15 @@ struct EditPersonalDataView: View {
             
             Section(footer: Text("Email is a main identificator for your account, also you can recieve notifications to these adress")) {
                 TextField("E-mail", text: $email)
-//                    .textInputAutocapitalization(.never)
+                //                    .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .textContentType(.emailAddress)
-                    
+                
             }
             
             Section(footer: Text("Phone is optional value")) {
                 TextField("Phone", text: $phone)
-//                    .textInputAutocapitalization(.never)
+                //                    .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .textContentType(.telephoneNumber)
                     .keyboardType(.numberPad)
@@ -97,8 +106,6 @@ struct EditPersonalDataView: View {
             }
         }
     }
-    
-    
 }
 
 struct EditPersonalDataView_Previews: PreviewProvider {

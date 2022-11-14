@@ -78,6 +78,11 @@
 		43E5EA1F290FF265008754C5 /* DateFormatter+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA1E290FF265008754C5 /* DateFormatter+.swift */; };
 		43E5EA21290FF4B6008754C5 /* DoctorsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA20290FF4B6008754C5 /* DoctorsResource.swift */; };
 		43E5EA23290FF568008754C5 /* ChatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43E5EA22290FF568008754C5 /* ChatsViewModel.swift */; };
+		43EF43DB29217C1E005DF084 /* DeprecatedRefreshable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43DA29217C1E005DF084 /* DeprecatedRefreshable.swift */; };
+		43EF43DD2921874E005DF084 /* User+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43DC2921874E005DF084 /* User+Preview.swift */; };
+		43EF43DF292187B4005DF084 /* PersistenceController+preparePreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43DE292187B4005DF084 /* PersistenceController+preparePreviewData.swift */; };
+		43EF43E129218A47005DF084 /* Contract+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43E029218A47005DF084 /* Contract+Preview.swift */; };
+		43EF43E529227001005DF084 /* ChangePasswordResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43E429227001005DF084 /* ChangePasswordResource.swift */; };
 		43F44BF5291EAA77007CEDB5 /* NotificationsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F44BF4291EAA77007CEDB5 /* NotificationsResource.swift */; };
 		43F44BF7291EB22A007CEDB5 /* DeactivateMessagesResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F44BF6291EB22A007CEDB5 /* DeactivateMessagesResource.swift */; };
 		43F44BF9291EB545007CEDB5 /* ConcludeContractResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F44BF8291EB545007CEDB5 /* ConcludeContractResource.swift */; };
@@ -162,6 +167,11 @@
 		43E5EA1E290FF265008754C5 /* DateFormatter+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+.swift"; sourceTree = "<group>"; };
 		43E5EA20290FF4B6008754C5 /* DoctorsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsResource.swift; sourceTree = "<group>"; };
 		43E5EA22290FF568008754C5 /* ChatsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsViewModel.swift; sourceTree = "<group>"; };
+		43EF43DA29217C1E005DF084 /* DeprecatedRefreshable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedRefreshable.swift; sourceTree = "<group>"; };
+		43EF43DC2921874E005DF084 /* User+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Preview.swift"; sourceTree = "<group>"; };
+		43EF43DE292187B4005DF084 /* PersistenceController+preparePreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController+preparePreviewData.swift"; sourceTree = "<group>"; };
+		43EF43E029218A47005DF084 /* Contract+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+Preview.swift"; sourceTree = "<group>"; };
+		43EF43E429227001005DF084 /* ChangePasswordResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordResource.swift; sourceTree = "<group>"; };
 		43F44BF4291EAA77007CEDB5 /* NotificationsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsResource.swift; sourceTree = "<group>"; };
 		43F44BF6291EB22A007CEDB5 /* DeactivateMessagesResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateMessagesResource.swift; sourceTree = "<group>"; };
 		43F44BF8291EB545007CEDB5 /* ConcludeContractResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcludeContractResource.swift; sourceTree = "<group>"; };
@@ -200,8 +210,9 @@
 		433E59732906C6C90069F8DF /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				433E598E2907EBB60069F8DF /* SignInResource.swift */,
 				433E59742906C6D50069F8DF /* Login.swift */,
+				433E598E2907EBB60069F8DF /* SignInResource.swift */,
+				43EF43E429227001005DF084 /* ChangePasswordResource.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -260,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				4344D47B291286750005E70F /* Image+Data.swift */,
+				43EF43DA29217C1E005DF084 /* DeprecatedRefreshable.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -297,11 +309,11 @@
 		437DB14E2913FBEA00D847E7 /* Account */ = {
 			isa = PBXGroup;
 			children = (
+				437DB14F2913FBF900D847E7 /* Account.swift */,
 				43E5EA14290AD121008754C5 /* UpdateAccountResource.swift */,
 				43E5EA0E290ABAD2008754C5 /* UploadAvatarResource.swift */,
 				43F44BF4291EAA77007CEDB5 /* NotificationsResource.swift */,
 				43DB0E6F2909840C00801296 /* CheckResource.swift */,
-				437DB14F2913FBF900D847E7 /* Account.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -353,8 +365,8 @@
 		43DB0E6129095E0200801296 /* Chats */ = {
 			isa = PBXGroup;
 			children = (
-				43DB0E6229095E1500801296 /* ChatsView.swift */,
 				43E5EA22290FF568008754C5 /* ChatsViewModel.swift */,
+				43DB0E6229095E1500801296 /* ChatsView.swift */,
 				434FD4A32912AD87005945B9 /* ChatRow.swift */,
 				437DB156291410B900D847E7 /* ArchivesChatsView.swift */,
 			);
@@ -412,6 +424,9 @@
 			isa = PBXGroup;
 			children = (
 				43FF65882902D2DD00AB9BB1 /* Preview Assets.xcassets */,
+				43EF43DC2921874E005DF084 /* User+Preview.swift */,
+				43EF43DE292187B4005DF084 /* PersistenceController+preparePreviewData.swift */,
+				43EF43E029218A47005DF084 /* Contract+Preview.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -452,6 +467,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
+				CLASSPREFIX = "Я";
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "TelePat ltd.";
@@ -509,6 +525,7 @@
 				435F753A291BDF29003278E1 /* BoundaryGenerator.swift in Sources */,
 				433E59832906C8F80069F8DF /* PersistenceController.swift in Sources */,
 				435F753D291BDF29003278E1 /* ContentDisposition.swift in Sources */,
+				43EF43DD2921874E005DF084 /* User+Preview.swift in Sources */,
 				43DB0E592909533800801296 /* LocalizedString+.swift in Sources */,
 				433E598A2906DE6C0069F8DF /* NetworkRequest.swift in Sources */,
 				43953E0C29192EF0006C8B3D /* String+.swift in Sources */,
@@ -547,6 +564,7 @@
 				435F7536291BDF29003278E1 /* MIMEType.swift in Sources */,
 				433E59752906C6D50069F8DF /* Login.swift in Sources */,
 				433F0D0429069707008E1F42 /* ContentViewModel.swift in Sources */,
+				43EF43E129218A47005DF084 /* Contract+Preview.swift in Sources */,
 				435F753B291BDF29003278E1 /* ContentType.swift in Sources */,
 				43E33CDB291AE9E9000BE732 /* AgentTask+CoreDataClass.swift in Sources */,
 				43F44BF7291EB22A007CEDB5 /* DeactivateMessagesResource.swift in Sources */,
@@ -555,6 +573,8 @@
 				4327E063291CFDB200332FDD /* Websockets.swift in Sources */,
 				43E5EA1F290FF265008754C5 /* DateFormatter+.swift in Sources */,
 				43E5EA15290AD121008754C5 /* UpdateAccountResource.swift in Sources */,
+				43EF43DB29217C1E005DF084 /* DeprecatedRefreshable.swift in Sources */,
+				43EF43DF292187B4005DF084 /* PersistenceController+preparePreviewData.swift in Sources */,
 				43953E0A29192A76006C8B3D /* ChatViewModel.swift in Sources */,
 				43DB0E6C2909747900801296 /* UserDefaults+AppPrefs.swift in Sources */,
 				43E33CEB291AFBE3000BE732 /* InfoMaterial+CoreDataClass.swift in Sources */,
@@ -567,6 +587,7 @@
 				43227EAB291A89D100F368FA /* Agent+CoreDataClass.swift in Sources */,
 				435F753E291BDF29003278E1 /* ValidationResult.swift in Sources */,
 				43953E0829192A6C006C8B3D /* ChatView.swift in Sources */,
+				43EF43E529227001005DF084 /* ChangePasswordResource.swift in Sources */,
 				43E5EA13290ACAD8008754C5 /* EditPersonalDataView.swift in Sources */,
 				433F0D0A29069842008E1F42 /* SignInViewModel.swift in Sources */,
 				433E59812906C8D70069F8DF /* Medsenger.xcdatamodeld in Sources */,
