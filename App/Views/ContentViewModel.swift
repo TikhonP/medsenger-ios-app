@@ -6,7 +6,6 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
-import SwiftUI
 import Foundation
 
 final class ContentViewModel: ObservableObject {

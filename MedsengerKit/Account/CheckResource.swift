@@ -18,4 +18,3 @@ struct CheckResource: APIResource {
         parseResponse: true
     )
 }
-

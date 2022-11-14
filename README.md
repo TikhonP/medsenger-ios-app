@@ -10,5 +10,3 @@ _iOS/SwiftUI_ mobile application for telemedicine service Medsenger.
 Created by Tikhon Petrishchev
 
 Copyright © 2022 OOO Telepat. All rights reserved.
-
-

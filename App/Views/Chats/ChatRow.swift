@@ -2,7 +2,7 @@
 //  ChatRow.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 02.11.2022.
+//  Created by Tikhon Petrishchev on 14.11.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
@@ -68,8 +68,30 @@ struct ChatRow: View {
     }
 }
 
-//struct ChatRow_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChatRow(name: "Andreij", avatar: nil, contractId: 1)
-//    }
-//}
+struct ChatRow_Previews: PreviewProvider {
+    static let persistence = PersistenceController.preview
+    
+    static var contract1: Contract = {
+        let context = persistence.container.viewContext
+        return Contract.createSampleContract1(for: context)
+    }()
+    
+    static var contract2: Contract = {
+        let context = persistence.container.viewContext
+        return Contract.createSampleContract2(for: context)
+    }()
+    
+    static var previews: some View {
+        Group {
+            ChatRow(contract: contract1)
+                .environmentObject(ChatsViewModel())
+                .previewLayout(PreviewLayout.sizeThatFits)
+                .padding()
+            
+            ChatRow(contract: contract2)
+                .environmentObject(ChatsViewModel())
+                .previewLayout(PreviewLayout.sizeThatFits)
+                .padding()
+        }
+    }
+}

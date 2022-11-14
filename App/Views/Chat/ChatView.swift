@@ -153,8 +153,15 @@ struct ChatView: View {
     }
 }
 
-//struct ChatView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChatView(contractId: 1234)
-//    }
-//}
+struct ChatView_Previews: PreviewProvider {
+    static let persistence = PersistenceController.preview
+    
+    static var contract1: Contract = {
+        let context = persistence.container.viewContext
+        return Contract.createSampleContract1(for: context)
+    }()
+    
+    static var previews: some View {
+        ChatView(contract: contract1)
+    }
+}

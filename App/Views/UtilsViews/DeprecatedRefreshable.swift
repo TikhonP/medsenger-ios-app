@@ -2,7 +2,7 @@
 //  DeprecatedRefreshable.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 13.11.2022.
+//  Created by Tikhon Petrishchev on 14.11.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 

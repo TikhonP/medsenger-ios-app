@@ -10,56 +10,93 @@ import Foundation
 import CoreData
 import UIKit
 
-let sampleContract1 = Contract.JsonDecoderDoctor(
-    name: "Василий Ларионович Б",
-    patient_name: "Анатолий Маркович Я",
-    doctor_name: "Василий Ларионович Б",
-    specialty: "Практолог",
-    clinic: Clinic.JsonDecoderFromContract(
-        id: 23,
-        name: "Клиника практологии доктора изюмского",
-        timezone: "Europe/Moscow",
-        logo_id: nil,
-        full_logo_id: nil,
-        nonsquare_logo_id: nil,
-        video_enabled: false,
-        phone_paid: false,
-        phone: "+1232306969"),
-    mainDoctor: "Василий Ларионович Б",
-    startDate: "11.06.2020",
-    endDate: "31.09.2024 (4:20)",
-    contract: 1324,
-    photo_id: nil,
-    archive: false,
-    sent: 24, received: 24,
-    short_name: "БББ",
-    state: .noMessages,
-    number: "1",
-    unread: nil,
-    is_online: false,
-    agent_actions: [],
-    bot_actions: [],
-    agent_tasks: [],
-    agents: [],
-    role: "FFF",
-    patient_helpers: [],
-    doctor_helpers: [],
-    compliance: [11, 22],
-    params: [],
-    activated: true,
-    info_materials: nil,
-    can_apply: true,
-    info_url: nil,
-    scenario: nil
-)
-
 extension Contract {
-    static func createSampleContracts(for viewContext: NSManagedObjectContext) {
-        Contract.saveContractsFromJson(data: [sampleContract1], archive: false)
+    static func createSampleContract1(for viewContext: NSManagedObjectContext) -> Contract {
+        let contract = Contract(context: viewContext)
+        
+        contract.id = 24
+        contract.name = "Василий Ларионович Б"
+        contract.patientName = "Анатолий Маркович Я"
+        contract.doctorName = "Василий Ларионович Б"
+        contract.specialty = "Практолог"
+        contract.mainDoctor = "Василий Ларионович Б"
+        contract.startDate = Date()
+        contract.endDate = Date()
+//        if let photo_id = data.photo_id {
+//            contract.photoId = Int64(photo_id)
+//        }
+        contract.archive = false
+        contract.sent = 24
+        contract.received = 24
+        contract.shortName = "БББ"
+        contract.number = "1"
+//        if let unread = data.unread {
+//            contract.unread = Int64(unread)
+//        }
+//        contract.isOnline = data.is_online
+        contract.role = "FFF"
+        contract.activated = true
+        contract.canApplySubmissionToContractExtension = true
+//        if let urlString = data.info_url, let url = URL(string: urlString) {
+//            contract.infoUrl = url
+//        }
+//        contract.scenarioName = data.scenario?.name
+//        contract.scenarioDescription = data.scenario?.description
+//        contract.scenarioPreset = data.scenario?.preset
+        contract.sortRating = 0
         
         if let img = UIImage(named: "UserAvatarExample") {
-            guard let data = img.jpegData(compressionQuality: 1) else { return }
-            Contract.saveAvatar(id: sampleContract1.contract, image: data)
+            guard let data = img.jpegData(compressionQuality: 1) else { return contract }
+            contract.avatar = data
         }
+        
+        return contract
+    }
+    
+    static func createSampleContract2(for viewContext: NSManagedObjectContext) -> Contract {
+        let contract = Contract(context: viewContext)
+        
+        contract.id = 24
+        contract.name = "Василий Ларионович Б"
+        contract.patientName = "Анатолий Маркович Я"
+        contract.doctorName = "Василий Ларионович Б"
+        contract.specialty = "Практолог"
+        contract.mainDoctor = "Василий Ларионович Б"
+        contract.startDate = Date()
+        contract.endDate = Date()
+//        if let photo_id = data.photo_id {
+//            contract.photoId = Int64(photo_id)
+//        }
+        contract.archive = true
+        contract.sent = 24
+        contract.received = 24
+        contract.shortName = "БББ"
+        contract.number = "1"
+//        if let unread = data.unread {
+//            contract.unread = Int64(unread)
+//        }
+//        contract.isOnline = data.is_online
+        contract.role = "FFF"
+        contract.activated = true
+        contract.canApplySubmissionToContractExtension = true
+//        if let urlString = data.info_url, let url = URL(string: urlString) {
+//            contract.infoUrl = url
+//        }
+//        contract.scenarioName = data.scenario?.name
+//        contract.scenarioDescription = data.scenario?.description
+//        contract.scenarioPreset = data.scenario?.preset
+        contract.sortRating = 0
+        
+        if let img = UIImage(named: "UserAvatarExample") {
+            guard let data = img.jpegData(compressionQuality: 1) else { return contract }
+            contract.avatar = data
+        }
+        
+        return contract
+    }
+    
+    static func createSampleContracts(for viewContext: NSManagedObjectContext) {
+        _ = createSampleContract1(for: viewContext)
+        _ = createSampleContract2(for: viewContext)
     }
 }

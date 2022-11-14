@@ -6,8 +6,8 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
-import SwiftUI
 import Foundation
+import SwiftUI
 
 final class SignInViewModel: ObservableObject {
     @Published var error: String = LocalizedStringKey("Unknown Error").stringValue()

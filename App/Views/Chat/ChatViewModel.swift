@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 final class ChatViewModel: ObservableObject {
     @Published var message: String = ""

@@ -2,7 +2,7 @@
 //  ArchivesChatsView.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 03.11.2022.
+//  Created by Tikhon Petrishchev on 14.11.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
@@ -38,6 +38,10 @@ struct ArchivesChatsView: View {
 
 struct ArchivesChatsView_Previews: PreviewProvider {
     static var previews: some View {
-        ArchivesChatsView()
+        NavigationView {
+            ArchivesChatsView()
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(ChatsViewModel())
+        }
     }
 }
