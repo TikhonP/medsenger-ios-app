@@ -78,7 +78,7 @@ public class Contract: NSManagedObject {
     class func updateLastFetchedMessage(id: Int, lastFetchedMessageId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let contract = get(id: id, context: context)
-            contract?.lastFetchedMessageId = Int64(lastFetchedMessageId)
+            contract?.lastFetchedMessage = Message.get(id: lastFetchedMessageId, context: context)
             PersistenceController.save(context: context)
         }
     }

@@ -19,7 +19,7 @@ public class Message: NSManagedObject {
         }
     }
     
-    private class func get(id: Int, context: NSManagedObjectContext) -> Message? {
+    class func get(id: Int, context: NSManagedObjectContext) -> Message? {
         do {
             let fetchRequest = Message.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
@@ -213,7 +213,7 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
                 }
             }
             
-            contract.lastFetchedMessageId = Int64(maxMessageId)
+            contract.lastFetchedMessage = Message.get(id: maxMessageId, context: context)
             PersistenceController.save(context: context)
         }
     }

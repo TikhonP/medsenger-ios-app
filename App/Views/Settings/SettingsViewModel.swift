@@ -11,7 +11,7 @@ import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
     @Published var isPushNotificationOn: Bool = false
-    @Published var isEmailNotificationOn: Bool = false
+    @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
     @Published var syncWithAppleHealth: Bool = false
     
     @Published var showEditProfileData: Bool = false
@@ -39,6 +39,12 @@ final class SettingsViewModel: ObservableObject {
     
     func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
         Account.shared.saveProfileData(name: name, email: email, phone: phone, birthday: birthday, completion: completion)
+    }
+    
+    func updateEmailNotifications() {
+        Account.shared.updateEmailNotiofication(emailNotify: isEmailNotificationOn) {
+            Account.shared.updateProfile()
+        }
     }
     
     func toggleEditPersonalData() {

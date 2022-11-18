@@ -216,7 +216,7 @@ extension APIRequest: NetworkRequest {
 
 // MARK: - ImageRequest
 
-class ImageRequest {
+class FileRequest {
     let url: URL
     
     init(path: String) {
@@ -229,7 +229,7 @@ class ImageRequest {
     }
 }
 
-extension ImageRequest: NetworkRequest {
+extension FileRequest: NetworkRequest {
     func decodeError(_ data: Data) -> DecodedDataReslut<[String]> { return DecodedDataReslut<[String]>.success([]) }
     
     func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.success(data) }

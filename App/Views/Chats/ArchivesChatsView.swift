@@ -9,8 +9,10 @@
 import SwiftUI
 
 struct ArchivesChatsView: View {
-    @EnvironmentObject private var chatsViewModel: ChatsViewModel
+    @ObservedObject var user: User
     
+    @EnvironmentObject private var chatsViewModel: ChatsViewModel
+
     @FetchRequest(
         sortDescriptors: [
             NSSortDescriptor(key: "unread", ascending: false),
@@ -21,15 +23,35 @@ struct ArchivesChatsView: View {
         animation: .default)
     private var contracts: FetchedResults<Contract>
     
+    @State private var searchText = ""
+    var query: Binding<String> {
+        Binding {
+            searchText
+        } set: { newValue in
+            searchText = newValue
+            if #available(iOS 15.0, *) {
+                contracts.nsPredicate = newValue.isEmpty ? nil : NSPredicate(format: "name CONTAINS %@ AND archive == YES", newValue)
+            }
+        }
+    }
+    
     var body: some View {
         List(contracts) { contract in
             NavigationLink(destination: {
-                ChatView(contract: contract)
+                ChatView(contract: contract, user: user)
             }, label: {
-                ChatRow(contract: contract)
+                switch user.role {
+                case .patient:
+                    PatientChatRow(contract: contract)
+                case .doctor:
+                    DoctorChatRow(contract: contract)
+                default:
+                    Text("Unknown user role")
+                }
             })
         }
         .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
+        .deprecatedSearchable(text: query)
         .listStyle(PlainListStyle())
         .navigationTitle("Archive Chats")
         .onAppear(perform: chatsViewModel.getArchiveContracts)
@@ -37,9 +59,16 @@ struct ArchivesChatsView: View {
 }
 
 struct ArchivesChatsView_Previews: PreviewProvider {
+    static let persistence = PersistenceController.preview
+    
+    static var user: User = {
+        let context = persistence.container.viewContext
+        return User.createSampleUser(for: context)
+    }()
+    
     static var previews: some View {
         NavigationView {
-            ArchivesChatsView()
+            ArchivesChatsView(user: user)
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(ChatsViewModel())
         }

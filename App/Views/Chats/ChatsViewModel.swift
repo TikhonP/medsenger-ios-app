@@ -36,4 +36,8 @@ final class ChatsViewModel: ObservableObject {
             break // FIXME: !!!
         }
     }
+    
+    func getClinicLogo(contractId: Int) {
+        Contracts.shared.getAndSaveClinicLogo(contractId)
+    }
 }

@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ChatsView: View {
+    @ObservedObject var user: User
+    
     @StateObject private var chatsViewModel = ChatsViewModel()
     
     @FetchRequest(
@@ -24,41 +26,63 @@ struct ChatsView: View {
     @State private var showSettingsModal: Bool = false
     @State private var showNewContractModal: Bool = false
     
-    var body: some View {
-        NavigationView {
-            List {
-                ForEach(contracts) { contract in
-                    NavigationLink(destination: {
-                        ChatView(contract: contract)
-                    }, label: {
-                        ChatRow(contract: contract)
-                            .environmentObject(chatsViewModel)
-                    })
-                }
-                
-                NavigationLink(destination: {
-                    ArchivesChatsView()
-                        .environmentObject(chatsViewModel)
-                }, label: { archiveRow })
+    @State private var searchText = ""
+    var query: Binding<String> {
+        Binding {
+            searchText
+        } set: { newValue in
+            searchText = newValue
+            if #available(iOS 15.0, *) {
+                contracts.nsPredicate = newValue.isEmpty ? nil : NSPredicate(format: "name CONTAINS %@ AND archive == NO", newValue)
             }
-            .deprecatedRefreshable { await chatsViewModel.getContracts() }
-            .listStyle(PlainListStyle())
-            .navigationTitle("Chats")
-            .onAppear(perform: chatsViewModel.getContracts)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear") })
-                        .id(UUID())
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
+        }
+    }
+    
+    var body: some View {
+        List {
+            ForEach(contracts) { contract in
+                NavigationLink(destination: {
+                    ChatView(contract: contract, user: user)
+                }, label: {
+                    switch user.role {
+                    case .patient:
+                        PatientChatRow(contract: contract)
+                            .environmentObject(chatsViewModel)
+                    case .doctor:
+                        DoctorChatRow(contract: contract)
+                            .environmentObject(chatsViewModel)
+                    default:
+                        Text("Unknown user role")
+                    }
+                })
+            }
+            
+            NavigationLink(destination: {
+                ArchivesChatsView(user: user)
+                    .environmentObject(chatsViewModel)
+            }, label: { archiveRow })
+            .isDetailLink(false)
+        }
+        .deprecatedRefreshable { await chatsViewModel.getContracts() }
+        .deprecatedSearchable(text: query)
+        .listStyle(PlainListStyle())
+        .navigationTitle("Chats")
+        .onAppear(perform: chatsViewModel.getContracts)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if user.role == .doctor {
                     Button(action: { showNewContractModal.toggle() }, label: { Image(systemName: "square.and.pencil") })
                         .id(UUID())
                 }
             }
-            .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
-            .sheet(isPresented: $showNewContractModal, content: { Text("Add new contract") })
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear") })
+                    .id(UUID())
+            }
         }
+        .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
+        .sheet(isPresented: $showNewContractModal, content: { Text("Add new contract") })
     }
     
     var archiveRow: some View {
@@ -83,9 +107,18 @@ struct ChatsView: View {
 }
 
 struct ChatsView_Previews: PreviewProvider {
+    static let persistence = PersistenceController.preview
+    
+    static var user: User = {
+        let context = persistence.container.viewContext
+        return User.createSampleUser(for: context)
+    }()
+    
     static var previews: some View {
         let context = PersistenceController.preview.container.viewContext
-        return ChatsView()
-            .environment(\.managedObjectContext, context)
+        return NavigationView {
+            ChatsView(user: user)
+                .environment(\.managedObjectContext, context)
+        }
     }
 }

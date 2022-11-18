@@ -24,6 +24,16 @@ public class Clinic: NSManagedObject {
             return nil
         }
     }
+    
+    class func saveLogo(id: Int, image: Data) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            guard let clinic = get(id: id, context: context) else {
+                return
+            }
+            clinic.logo = image
+            PersistenceController.save(context: context)
+        }
+    }
 }
 
 // MARK: - Check JSON data logic

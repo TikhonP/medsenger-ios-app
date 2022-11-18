@@ -11,7 +11,7 @@ import Foundation
 class Account {
     static let shared = Account()
     
-    private var getAvatarRequest: ImageRequest?
+    private var getAvatarRequest: FileRequest?
     private var checkRequest: APIRequest<CheckResource>?
     private var uploadAvatarRequest: UploadImageRequest<UploadAvatarResource>?
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
@@ -29,7 +29,7 @@ class Account {
     }
     
     public func getAvatar() {
-        getAvatarRequest = ImageRequest(path: "/photo/")
+        getAvatarRequest = FileRequest(path: "/photo/")
         getAvatarRequest?.execute { result in
             switch result {
             case .success(let data):
@@ -86,13 +86,15 @@ class Account {
         }
     }
     
-    public func updateEmailNotiofication(emailNotify: Bool) {
+    public func updateEmailNotiofication(emailNotify: Bool, completion: (() -> Void)? = nil) {
         let notificationsResource = NotificationsResource(emailNotify: emailNotify)
         notificationsRequest = APIRequest(resource: notificationsResource)
         notificationsRequest?.execute { result in
             switch result {
             case .success(_):
-                break
+                if let completion = completion {
+                    completion()
+                }
             case .failure(let error):
                 processRequestError(error, "save profile data")
             }

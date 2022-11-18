@@ -13,13 +13,14 @@ class Messages {
     
     private var getMessagesRequest: APIRequest<MessagesResource>?
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
+    private var getAttachmentRequests = [FileRequest]()
     
     public func getMessages(contractId: Int, completion: (() -> Void)? = nil) {
         let messagesResource = {
-            guard let contract = Contract.get(id: contractId), contract.lastFetchedMessageId != 0 else {
+            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
                 return MessagesResource(contractId: contractId)
             }
-            return MessagesResource(contractId: contractId, fromMessageId: Int(contract.lastFetchedMessageId))
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id))
         }()
         
         getMessagesRequest = APIRequest(resource: messagesResource)
@@ -54,6 +55,24 @@ class Messages {
                 }
             case .failure(let error):
                 processRequestError(error, "get messages for contract \(contractId)")
+            }
+        }
+    }
+    
+    public func fetchAttachmentData(attachmentId: Int, completion: (() -> Void)? = nil) {
+        let getAttachmentRequest = FileRequest(path: "/attachments/\(attachmentId)")
+        getAttachmentRequests.append(getAttachmentRequest)
+        getAttachmentRequest.execute { result in
+            switch result {
+            case .success(let data):
+                if let data = data {
+                    Attachment.saveFile(id: attachmentId, data: data)
+                    if let completion = completion {
+                        completion()
+                    }
+                }
+            case .failure(let error):
+                processRequestError(error, "get doctor avatar")
             }
         }
     }

@@ -86,7 +86,6 @@ class Websockets: NSObject, URLSessionWebSocketDelegate {
                         }
                     })
                 } else {
-                    print("Websocket: \(string)")
                     do {
                         let decoder = JSONDecoder()
                         let status = try decoder.decode(WebsocketResponseStatusModel.self, from: Data(string.utf8))

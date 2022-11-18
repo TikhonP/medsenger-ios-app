@@ -20,7 +20,9 @@ struct ContentView: View {
                 if user.role == nil {
                     ChooseRoleView()
                 } else {
-                    ChatsView()
+                    NavigationView {
+                        ChatsView(user: user)
+                    }
                 }
             }
             .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)

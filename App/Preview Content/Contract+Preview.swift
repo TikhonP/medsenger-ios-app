@@ -45,15 +45,20 @@ extension Contract {
 //        contract.scenarioPreset = data.scenario?.preset
         contract.sortRating = 0
         
+        contract.lastFetchedMessage = Message.getSampleMessage(for: viewContext)
+        
         if let img = UIImage(named: "UserAvatarExample") {
             guard let data = img.jpegData(compressionQuality: 1) else { return contract }
             contract.avatar = data
         }
         
+        contract.addToMessages(Message.getSampleMessage(for: viewContext))
+        contract.addToMessages(Message.getSampleMessage(for: viewContext))
+        
         return contract
     }
     
-    static func createSampleContract2(for viewContext: NSManagedObjectContext) -> Contract {
+    static func createSampleContract2Archive(for viewContext: NSManagedObjectContext) -> Contract {
         let contract = Contract(context: viewContext)
         
         contract.id = 24
@@ -76,7 +81,7 @@ extension Contract {
 //            contract.unread = Int64(unread)
 //        }
 //        contract.isOnline = data.is_online
-        contract.role = "FFF"
+        contract.role = "Врач практолог"
         contract.activated = true
         contract.canApplySubmissionToContractExtension = true
 //        if let urlString = data.info_url, let url = URL(string: urlString) {
@@ -92,11 +97,16 @@ extension Contract {
             contract.avatar = data
         }
         
+        contract.lastFetchedMessage = Message.getSampleMessage(for: viewContext)
+        contract.clinic = Clinic.createSampleClinic(for: viewContext)
+        
+        contract.scenarioName = "Персональный сценарий"
+        
         return contract
     }
     
     static func createSampleContracts(for viewContext: NSManagedObjectContext) {
         _ = createSampleContract1(for: viewContext)
-        _ = createSampleContract2(for: viewContext)
+        _ = createSampleContract2Archive(for: viewContext)
     }
 }

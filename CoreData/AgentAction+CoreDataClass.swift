@@ -10,6 +10,32 @@ import CoreData
 
 @objc(AgentAction)
 public class AgentAction: NSManagedObject {
+    enum AgentActionType: String {
+        case url, action, `default`
+    }
+    
+    var type: AgentActionType {
+        guard let typeString = typeString else {
+            return AgentActionType.default
+        }
+        return AgentActionType(rawValue: typeString) ?? .default
+    }
+    
+    var modalLink: URL? {
+        guard let apiLink = apiLink else { return nil }
+        guard var components = URLComponents(url: apiLink, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        let apiTokenQueryItem = URLQueryItem(name: "api_token", value: KeyСhain.apiToken)
+        if var queryItems = components.queryItems {
+            queryItems.append(apiTokenQueryItem)
+            components.queryItems = queryItems
+        } else {
+            components.queryItems = [apiTokenQueryItem]
+        }
+        return components.url
+    }
+    
     private class func get(name: String, contract: Contract, context: NSManagedObjectContext) -> AgentAction? {
         do {
             let fetchRequest = AgentAction.fetchRequest()
@@ -45,7 +71,7 @@ extension AgentAction {
         
         agentAction.name = data.name
         agentAction.link = data.link
-        agentAction.type = data.type
+        agentAction.typeString = data.type
         agentAction.apiLink = data.api_link
         agentAction.isSetup = data.is_setup
         

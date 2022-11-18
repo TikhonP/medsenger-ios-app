@@ -51,7 +51,7 @@ struct ChangePasswordView: View {
         .navigationTitle("Edit personal data")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 if showLoading {
                     ProgressView()
                 } else {

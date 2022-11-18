@@ -15,7 +15,7 @@ class Contracts {
     private var getDoctorsArchiveRequest: APIRequest<DoctorsArchiveResource>?
     private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
     private var concludeContractRequest: APIRequest<ConcludeContractResource>?
-    private var getAvatarRequests = [ImageRequest]()
+    private var getImageRequests = [FileRequest]()
     
     public func getDoctors() {
         let doctorsResourse = DoctorsResource()
@@ -48,8 +48,8 @@ class Contracts {
     }
     
     public func getAndSaveDoctorAvatar(_ contractId: Int) {
-        let getAvatarRequest = ImageRequest(path: "/doctors/\(contractId)/photo")
-        getAvatarRequests.append(getAvatarRequest)
+        let getAvatarRequest = FileRequest(path: "/doctors/\(contractId)/photo")
+        getImageRequests.append(getAvatarRequest)
         getAvatarRequest.execute { result in
             switch result {
             case .success(let data):
@@ -84,6 +84,24 @@ class Contracts {
                 break
             case .failure(let error):
                 processRequestError(error, "save profile data")
+            }
+        }
+    }
+    
+    public func getAndSaveClinicLogo(_ contractId: Int) {
+        guard let contract = Contract.get(id: contractId), let clinic = contract.clinic else {
+            return
+        }
+        let getLogoRequest = FileRequest(path: "/\(contractId)/logo")
+        getImageRequests.append(getLogoRequest)
+        getLogoRequest.execute { result in
+            switch result {
+            case .success(let data):
+                if let data = data {
+                    Clinic.saveLogo(id: Int(clinic.id), image: data)
+                }
+            case .failure(let error):
+                processRequestError(error, "get clinic logo")
             }
         }
     }

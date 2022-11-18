@@ -88,11 +88,11 @@ struct EditPersonalDataView: View {
         .navigationTitle("Edit personal data")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button("Cancel", action: settingsViewModel.toggleEditPersonalData)
             }
             
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .confirmationAction) {
                 if showLoading {
                     ProgressView()
                 } else {

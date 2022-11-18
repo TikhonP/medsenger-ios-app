@@ -31,11 +31,11 @@ struct SettingsView: View {
                         .navigationTitle("Settings")
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
+                            ToolbarItem(placement: .confirmationAction) {
                                 Button("Edit", action: settingsViewModel.toggleEditPersonalData)
                             }
                             
-                            ToolbarItem(placement: .navigationBarTrailing) {
+                            ToolbarItem(placement: .cancellationAction) {
                                 Button("Done") {
                                     presentationMode.wrappedValue.dismiss()
                                 }
@@ -122,6 +122,13 @@ struct SettingsView: View {
                 Toggle(isOn: $settingsViewModel.isEmailNotificationOn, label: {
                     Label("Email Notifications", systemImage: "envelope.badge")
                 })
+                .onChange(of: settingsViewModel.isEmailNotificationOn, perform: { value in
+                    settingsViewModel.updateEmailNotifications()
+                })
+                .onChange(of: user.emailNotifications, perform: { value in
+                    settingsViewModel.isEmailNotificationOn = value
+                })
+                
                 Toggle(isOn: $settingsViewModel.isPushNotificationOn, label: {
                     Label("Push Notifications", systemImage: "bell.badge")
                 })
