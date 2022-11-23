@@ -3,10 +3,11 @@
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 07.11.2022.
-//  Copyright © 2022 TelePat ltd. All rights reserved.
+//  Copyright © 2022 TelePat ltd. All righchatViewModelts reserved.
 //
 
 import SwiftUI
+import QuickLook
 
 struct ChatView: View {
     @StateObject private var chatViewModel: ChatViewModel
@@ -57,6 +58,7 @@ struct ChatView: View {
                                         }
                                     })
                                     .padding(.bottom, 55)
+                                    .environmentObject(chatViewModel)
                             }
                         }
                     }
@@ -67,6 +69,7 @@ struct ChatView: View {
                             .environmentObject(chatViewModel)
                     }
                 }
+                .quickLookPreview($chatViewModel.quickLookDocumentUrl)
                 
                 NavigationLink(
                     destination: ContractView(contract: contract, user: user),

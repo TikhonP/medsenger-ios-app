@@ -13,9 +13,9 @@ struct SendMessageResouce: APIResource {
     let contractID: Int
     let replyToId: Int?
     let images: Array<(String, Data)>
-    let attachments: Array<(String, Data)>
+    let attachments: Array<URL>
     
-    init(_ text: String, contractID: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<(String, Data)> = []) {
+    init(_ text: String, contractID: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<URL> = []) {
         self.text = text
         self.contractID = contractID
         self.replyToId = replyToId
@@ -53,22 +53,27 @@ struct SendMessageResouce: APIResource {
                         name: Name(asPercentEncoded: "attachment[\(index)]"),
                         filename: Filename(asPercentEncoded: image.0)
                     ),
-                    contentType: nil,
+                    contentType: ContentType(representing: MIMEType(text: image.1.mimeType)),
                     content: image.1
                 )
             )
         }
-        for (index, attachment) in attachments.enumerated() {
-            data.append(
-                MultipartFormData.Part(
-                    contentDisposition: ContentDisposition(
-                        name: Name(asPercentEncoded: "attachment[\(index)]".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!),
-                        filename: Filename(asPercentEncoded: attachment.0)
-                    ),
-                    contentType: nil,
-                    content: attachment.1
+        for (index, url) in attachments.enumerated() {
+            do {
+                let fileValue = try Data(contentsOf: url)
+                data.append(
+                    MultipartFormData.Part(
+                        contentDisposition: ContentDisposition(
+                            name: Name(asPercentEncoded: "attachment[\(index)]".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!),
+                            filename: Filename(asPercentEncoded: url.lastPathComponent)
+                        ),
+                        contentType: ContentType(representing: MIMEType(text: url.mimeType())),
+                        content: fileValue
+                    )
                 )
-            )
+            } catch {
+                print("Send message resource: Failed to read data: \(error.localizedDescription)")
+            }
         }
         return MultipartFormData(
             uniqueAndValidLengthBoundary: "boundary",
@@ -81,6 +86,7 @@ struct SendMessageResouce: APIResource {
     var methodPath: String { "/\(Account.shared.role.clientsForNetworkRequest)/\(contractID)/messages" }
     
     var options: APIResourceOptions {
+        let multipartFormData = multipartFormData
         let httpBody: Data? = {
             switch multipartFormData.asData() {
             case let .valid(data):

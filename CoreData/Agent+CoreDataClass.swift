@@ -43,7 +43,7 @@ extension Agent {
         let open_settings_in_blank: Bool
     }
     
-    private class func saveFromJson(data: JsonDecoder, context: NSManagedObjectContext) -> Agent {
+    class func saveFromJson(data: JsonDecoder, context: NSManagedObjectContext) -> Agent {
         let agent = {
             guard let agent = get(id: data.id, context: context) else {
                 return Agent(context: context)

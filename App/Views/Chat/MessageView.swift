@@ -12,17 +12,19 @@ struct MessageView: View {
     @ObservedObject var message: Message
     let viewWidth: CGFloat
     
+    @EnvironmentObject private var chatViewModel: ChatViewModel
+    
     var body: some View {
         HStack {
             ZStack {
                 if message.isMessageSent {
-                    Text(message.text ?? "Unknown text")
+                    messageBody
                         .padding(11)
                         .background(Color(UIColor.systemBlue))
                         .clipShape(BubbleShape(myMessage: true))
                         .foregroundColor(.white)
                 } else {
-                    Text(message.text ?? "Unknown text")
+                    messageBody
                         .padding()
                         .foregroundColor(.primary)
                         .background(Color.secondary.opacity(0.2))
@@ -34,6 +36,29 @@ struct MessageView: View {
         }
         .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
         .id(Int(message.id))
+    }
+    
+    var messageBody: some View {
+        VStack {
+            Text(message.text ?? "Unknown text")
+            if let attachmentsSet = message.attachments as? Set<Attachment>, let attachments = Array(attachmentsSet), !attachments.isEmpty {
+                ForEach(attachments) { attachment in
+                    if let name = attachment.name {
+                        Button(action: {
+                            chatViewModel.showAttachmentPreview(attachment)
+                        }, label: {
+                            HStack {
+                                Label(name, systemImage: attachment.iconAsSystemImageName)
+                                if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
+                                    ProgressView()
+                                        .padding(.leading)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
     }
 }
 

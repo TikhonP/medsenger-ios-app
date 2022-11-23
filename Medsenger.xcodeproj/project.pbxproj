@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
 		434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */; };
 		434399F72927E831001D7C4F /* ContractView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F62927E831001D7C4F /* ContractView.swift */; };
 		434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F82927F366001D7C4F /* InfoMaterialsView.swift */; };
 		434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FA2927F6DC001D7C4F /* AttachmentsView.swift */; };
 		434399FD2928142A001D7C4F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FC2928142A001D7C4F /* WebView.swift */; };
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
+		43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A1E292E5F1500465281 /* URL+mimeType.swift */; };
+		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
+		43A18A23292E673500465281 /* PatientsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* PatientsResource.swift */; };
 		43C9D84F2927C89B003C15B8 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D84E2927C89B003C15B8 /* TextInputView.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
 		43EF43F329227F74005DF084 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F229227F74005DF084 /* App.swift */; };
@@ -104,12 +108,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
 		434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedScrollDismissesKeyboard.swift; sourceTree = "<group>"; };
 		434399F62927E831001D7C4F /* ContractView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractView.swift; sourceTree = "<group>"; };
 		434399F82927F366001D7C4F /* InfoMaterialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoMaterialsView.swift; sourceTree = "<group>"; };
 		434399FA2927F6DC001D7C4F /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
 		434399FC2928142A001D7C4F /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
+		43A18A1E292E5F1500465281 /* URL+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+mimeType.swift"; sourceTree = "<group>"; };
+		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
+		43A18A22292E673500465281 /* PatientsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsResource.swift; sourceTree = "<group>"; };
 		43C9D84E2927C89B003C15B8 /* TextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputView.swift; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		43EF43EF29227F74005DF084 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -311,6 +319,8 @@
 				43EF443F29228ABC005DF084 /* KeyChain.swift */,
 				43EF444C29228C11005DF084 /* String+.swift */,
 				43EF447229228DFD005DF084 /* LocalizedString+.swift */,
+				43A18A1E292E5F1500465281 /* URL+mimeType.swift */,
+				43A18A20292E61E500465281 /* Data+mimeType.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -371,6 +381,7 @@
 				43EF445E29228D04005DF084 /* DoctorsArchiveResource.swift */,
 				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
 				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
+				43A18A22292E673500465281 /* PatientsResource.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -459,6 +470,7 @@
 				434399F62927E831001D7C4F /* ContractView.swift */,
 				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
 				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
+				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -537,7 +549,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43A18A23292E673500465281 /* PatientsResource.swift in Sources */,
 				43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */,
+				43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */,
 				43EF4431292289DD005DF084 /* DateFormatter+.swift in Sources */,
 				43EF446F29228DCA005DF084 /* SignInView.swift in Sources */,
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
@@ -553,8 +567,10 @@
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
+				43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */,
 				43EF447129228DDF005DF084 /* PasswordFieldView.swift in Sources */,
 				43EF441A292286FC005DF084 /* InfoMaterial+CoreDataClass.swift in Sources */,
+				433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */,
 				43EF4426292287BC005DF084 /* ImageAttachment+CoreDataClass.swift in Sources */,
 				43EF442229228774005DF084 /* Agent+CoreDataClass.swift in Sources */,
 				43EF442E29228812005DF084 /* ClinicClassifier+CoreDataClass.swift in Sources */,
@@ -773,6 +789,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(MARKETING_VERSION)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -808,6 +825,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(MARKETING_VERSION)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

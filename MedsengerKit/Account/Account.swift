@@ -17,7 +17,8 @@ class Account {
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
     private var notificationsRequest: APIRequest<NotificationsResource>?
     
-    public func setRole(_ role: User.Role) {
+    public func changeRole(_ role: User.Role) {
+        Contract.clearAllContracts()
         User.role = role
     }
     

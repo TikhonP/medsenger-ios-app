@@ -14,17 +14,17 @@ final class ChatsViewModel: ObservableObject {
         case .patient:
             Contracts.shared.getDoctorsArchive()
         case .doctor:
-            break // FIXME: !!!
+            Contracts.shared.getPatients()
         }
     }
     
     func getContracts() {
-        Websockets.shared.createUrlSession()
+//        Websockets.shared.createUrlSession()
         switch Account.shared.role {
         case .patient:
             Contracts.shared.getDoctors()
         case .doctor:
-            break // FIXME: !!!
+            Contracts.shared.getPatients()
         }
     }
     
@@ -33,7 +33,7 @@ final class ChatsViewModel: ObservableObject {
         case .patient:
             Contracts.shared.getAndSaveDoctorAvatar(contractId)
         case .doctor:
-            break // FIXME: !!!
+            Contracts.shared.getPatients()
         }
     }
     

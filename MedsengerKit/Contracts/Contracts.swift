@@ -12,6 +12,7 @@ class Contracts {
     static let shared = Contracts()
     
     private var getDoctorsRequest: APIRequest<DoctorsResource>?
+    private var getPatientsRequest: APIRequest<PatientsResource>?
     private var getDoctorsArchiveRequest: APIRequest<DoctorsArchiveResource>?
     private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
     private var concludeContractRequest: APIRequest<ConcludeContractResource>?
@@ -28,6 +29,21 @@ class Contracts {
                 }
             case .failure(let error):
                 processRequestError(error, "get contracts doctors")
+            }
+        }
+    }
+    
+    public func getPatients() {
+        let patientsResource = PatientsResource()
+        getPatientsRequest = APIRequest(resource: patientsResource)
+        getPatientsRequest?.execute { result in
+            switch result {
+            case .success(let data):
+                if let data = data {
+                    Contract.saveContractsFromJson(data: data, archive: false)
+                }
+            case .failure(let error):
+                processRequestError(error, "get contracts patients")
             }
         }
     }

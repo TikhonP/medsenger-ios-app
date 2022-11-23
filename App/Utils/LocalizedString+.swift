@@ -15,13 +15,17 @@ extension LocalizedStringKey {
 }
 
 extension String {
-    static func localizedString(for key: String,
-                                locale: Locale = .current) -> String {
+    static func localizedString(for key: String, locale: Locale = .current) -> String {
         let language = locale.languageCode
-        let path = Bundle.main.path(forResource: language, ofType: "lproj")!
-        let bundle = Bundle(path: path)!
+        guard let path = Bundle.main.path(forResource: language, ofType: "lproj") else {
+            print("Failed to load localized string for key: \(key): Bundle path is nil")
+            return "Failed to load localized string"
+        }
+        guard let bundle = Bundle(path: path)  else {
+            print("Failed to load localized string for key: \(key): Failed to create bundle from path")
+            return "Failed to load localized string"
+        }
         let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
-        
         return localizedString
     }
 }

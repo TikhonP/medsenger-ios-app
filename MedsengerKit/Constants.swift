@@ -11,7 +11,11 @@ import Foundation
 struct Constants {
 
     static let medsengerApiUrl = "https://medsenger.ru/api/client"
-    
+//    static let medsengerApiUrl = "http://192.168.1.24:8000/api/client"
+
     static let medsengerWebsocketUrl = URL(string: "wss://medsenger.ru:643")!
+//    static let medsengerWebsocketUrl = URL(string: "wss://192.168.1.24:643")!
     
+    static let voiceMessageFileName = "voiceMessage.m4a"
+    static let voiceMessageText = "Голосовое сообщение"
 }

@@ -21,7 +21,7 @@ struct ContractView: View {
             .listRowInsets(EdgeInsets())
             
             Section {
-                if (contract.infoMaterials != nil) {
+                if let infoMaterials = contract.infoMaterials, infoMaterials.count != 0 {
                     NavigationLink(destination: {
                         InfoMaterialsView(contract: contract)
                     }, label: {
@@ -41,11 +41,7 @@ struct ContractView: View {
                             switch agentAction.type {
                             case .url:
                                 if let name = agentAction.name, let link = agentAction.apiLink {
-                                    NavigationLink(destination: {
-                                        WebView(url: link)
-                                            .navigationBarTitle(name)
-                                            .edgesIgnoringSafeArea(.bottom)
-                                    }, label: {
+                                    Link(destination: link, label: {
                                         Label(name, systemImage: "person.icloud.fill")
                                     })
                                 }
@@ -54,9 +50,8 @@ struct ContractView: View {
                             default:
                                 if let name = agentAction.name, let link = agentAction.modalLink {
                                     NavigationLink(destination: {
-                                        WebView(url: link)
-                                            .navigationBarTitle(name)
-                                            .edgesIgnoringSafeArea(.bottom)
+                                        AgentActionView(url: link, name: name)
+//                                        Text("sdfghj")
                                     }, label: {
                                         Label(name, systemImage: "person.icloud.fill")
                                     })

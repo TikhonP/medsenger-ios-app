@@ -138,11 +138,11 @@ struct SettingsView: View {
                 Section(footer: Text("You can login as doctor and as patient")) {
                     if user.role == .patient {
                         Button("Change role to doctor", action: {
-                            User.role = .doctor
+                            Account.shared.changeRole(.doctor)
                         })
                     } else if user.role == .doctor {
                         Button("Change role to patient", action: {
-                            User.role = .patient
+                            Account.shared.changeRole(.doctor)
                         })
                     }
                 }

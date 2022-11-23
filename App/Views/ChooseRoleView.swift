@@ -12,9 +12,9 @@ struct ChooseRoleView: View {
     var body: some View {
         VStack {
             Spacer()
-            Button("Sign in as patient") { Account.shared.setRole(.patient) }
+            Button("Sign in as patient") { Account.shared.changeRole(.patient) }
                 .padding()
-            Button("Sign in as doctor") { Account.shared.setRole(.doctor) }
+            Button("Sign in as doctor") { Account.shared.changeRole(.doctor) }
                 .padding()
             Spacer()
         }

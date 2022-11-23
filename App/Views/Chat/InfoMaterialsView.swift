@@ -13,6 +13,18 @@ struct InfoMaterialsView: View {
     
     @FetchRequest private var infoMaterials: FetchedResults<InfoMaterial>
     
+    @State private var searchText = ""
+    var query: Binding<String> {
+        Binding {
+            searchText
+        } set: { newValue in
+            searchText = newValue
+            if #available(iOS 15.0, *) {
+                infoMaterials.nsPredicate = newValue.isEmpty ? nil : NSPredicate(format: "name CONTAINS[cd] %@ AND contract == %@", newValue, contract)
+            }
+        }
+    }
+    
     init(contract: Contract) {
         _infoMaterials = FetchRequest<InfoMaterial>(
             entity: InfoMaterial.entity(),
@@ -36,6 +48,7 @@ struct InfoMaterialsView: View {
             }
         }
         .navigationTitle("Info materials")
+        .deprecatedSearchable(text: query)
     }
 }
 

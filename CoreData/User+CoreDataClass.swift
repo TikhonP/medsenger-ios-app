@@ -148,9 +148,9 @@ extension User {
             
             if user.roleString == nil {
                 if data.isDoctor && !data.isPatient {
-                    user.roleString = Role.patient.rawValue
-                } else if data.isPatient && !data.isDoctor {
                     user.roleString = Role.doctor.rawValue
+                } else if data.isPatient && !data.isDoctor {
+                    user.roleString = Role.patient.rawValue
                 }
             }
             

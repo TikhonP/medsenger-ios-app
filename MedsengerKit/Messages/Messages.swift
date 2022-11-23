@@ -39,7 +39,7 @@ class Messages {
         }
     }
     
-    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
+    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<URL> = [], completion: (() -> Void)? = nil) {
         let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, images: images, attachments: attachments)
         sendMessageRequest = APIRequest(resource: sendMessageResource)
         sendMessageRequest?.execute { result in
@@ -54,7 +54,7 @@ class Messages {
                     }
                 }
             case .failure(let error):
-                processRequestError(error, "get messages for contract \(contractId)")
+                processRequestError(error, "send message for contract \(contractId)")
             }
         }
     }

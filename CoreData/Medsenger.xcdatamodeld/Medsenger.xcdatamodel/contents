@@ -6,6 +6,7 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="openSettingsInBlank" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
+        <relationship name="clinics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clinic" inverseName="agents" inverseEntity="Clinic"/>
         <relationship name="contract" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -77,6 +78,7 @@
         <attribute name="phonePaid" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="timezone" optional="YES" attributeType="String"/>
         <attribute name="videoEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="clinics" inverseEntity="Agent"/>
         <relationship name="classifiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicClassifier" inverseName="clinic" inverseEntity="ClinicClassifier"/>
         <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="clinic" inverseEntity="Contract"/>
         <relationship name="rules" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicRule" inverseName="clinic" inverseEntity="ClinicRule"/>
@@ -110,21 +112,32 @@
         <attribute name="activated" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="archive" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="avatar" optional="YES" attributeType="Binary"/>
+        <attribute name="birthday" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="canApplySubmissionToContractExtension" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="canDecline" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="classifier" optional="YES" attributeType="String"/>
+        <attribute name="comments" optional="YES" attributeType="String"/>
         <attribute name="complianceAvailible" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="complianceDone" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="doctorName" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hasQuestions" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="hasWarnings" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="infoUrl" optional="YES" attributeType="URI"/>
         <attribute name="isOnline" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isWaitingForConclusion" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastReadMessageIdByPatient" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="mainDoctor" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="number" optional="YES" attributeType="String"/>
         <attribute name="patientName" optional="YES" attributeType="String"/>
+        <attribute name="phone" optional="YES" attributeType="String"/>
         <attribute name="photoId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="received" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="role" optional="YES" attributeType="String"/>
+        <attribute name="rule" optional="YES" attributeType="String"/>
         <attribute name="scenarioDescription" optional="YES" attributeType="String"/>
         <attribute name="scenarioName" optional="YES" attributeType="String"/>
         <attribute name="scenarioPreset" optional="YES" attributeType="String"/>
@@ -133,7 +146,8 @@
         <attribute name="sortRating" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="specialty" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="stateString" optional="YES" attributeType="String"/>
+        <attribute name="unanswered" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unread" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="contract" inverseEntity="Agent"/>
