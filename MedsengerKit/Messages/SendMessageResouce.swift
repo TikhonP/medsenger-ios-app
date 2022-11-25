@@ -81,9 +81,9 @@ struct SendMessageResouce: APIResource {
         )
     }
     
-    typealias ModelType = Message.JsonDeserializer
+    typealias ModelType = Message.JsonDecoder
     
-    var methodPath: String { "/\(Account.shared.role.clientsForNetworkRequest)/\(contractID)/messages" }
+    var methodPath: String { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }
     
     var options: APIResourceOptions {
         let multipartFormData = multipartFormData

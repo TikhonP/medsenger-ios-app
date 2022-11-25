@@ -10,6 +10,15 @@ import CoreData
 
 @objc(ImageAttachment)
 public class ImageAttachment: NSManagedObject {
+    private class func get(id: Int, for context: NSManagedObjectContext) -> ImageAttachment? {
+        let fetchRequest = ImageAttachment.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ImageAttachment get by id")
+        return fetchedResults?.first
+    }
+}
+
+extension ImageAttachment {
     struct JsonSerializer: Decodable {
         let id: Int
         let name: String
@@ -18,38 +27,14 @@ public class ImageAttachment: NSManagedObject {
         let thumb: Int
     }
     
-    private class func getImage(id: Int, context: NSManagedObjectContext) -> ImageAttachment? {
-        do {
-            let fetchRequest = ImageAttachment.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let imageAttachment = fetchedResults.first {
-                return imageAttachment
-            }
-            return nil
-        }
-        catch {
-            print("Fetch core data task failed: ", error.localizedDescription)
-            return nil
-        }
-    }
-    
-    class func saveFromJson(data: JsonSerializer, context: NSManagedObjectContext) -> ImageAttachment {
-        let image = {
-            if let image = getImage(id: data.id, context: context) {
-                return image
-            } else {
-                return ImageAttachment(context: context)
-            }
-        }()
+    class func saveFromJson(_ data: JsonSerializer, for context: NSManagedObjectContext) -> ImageAttachment {
+        let image = get(id: data.id, for: context) ?? ImageAttachment(context: context)
         
         image.id = Int64(data.id)
         image.name = data.name
         image.real = Int64(data.real)
         image.small = Int64(data.small)
         image.thumb = Int64(data.thumb)
-        
-        PersistenceController.save(context: context)
         
         return image
     }

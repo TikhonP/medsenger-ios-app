@@ -33,7 +33,7 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
     }
     
     func fetchMessages() {
-        Messages.shared.getMessages(contractId: contractId)
+        Messages.shared.fetchMessages(contractId: contractId)
     }
     
     func sendMessage() {

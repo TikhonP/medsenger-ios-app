@@ -10,19 +10,11 @@ import CoreData
 
 @objc(ClinicClassifier)
 public class ClinicClassifier: NSManagedObject {
-    private class func get(id: Int, context: NSManagedObjectContext) -> ClinicClassifier? {
-        do {
-            let fetchRequest = ClinicClassifier.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let clinicClassifier = fetchedResults.first {
-                return clinicClassifier
-            }
-            return nil
-        } catch {
-            print("Get `ClinicClassifier` with id: \(id), core data task failed: ", error.localizedDescription)
-            return nil
-        }
+    private class func get(id: Int, for context: NSManagedObjectContext) -> ClinicClassifier? {
+        let fetchRequest = ClinicClassifier.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ClinicClassifier get by id")
+        return fetchedResults?.first
     }
 }
 
@@ -32,18 +24,11 @@ extension ClinicClassifier {
         let name: String
     }
     
-    class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> ClinicClassifier {
-        let clinicClassifier = {
-            guard let clinicClassifier = get(id: data.id, context: context) else {
-                return ClinicClassifier(context: context)
-            }
-            return clinicClassifier
-        }()
+    class func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> ClinicClassifier {
+        let clinicClassifier = get(id: data.id, for: context) ?? ClinicClassifier(context: context)
         
         clinicClassifier.id = Int64(data.id)
         clinicClassifier.name = data.name
-        
-        PersistenceController.save(context: context)
         
         return clinicClassifier
     }

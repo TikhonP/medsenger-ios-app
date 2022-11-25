@@ -28,7 +28,7 @@ class Login {
             case .success(let data):
                 if let data = data {
                     KeyСhain.apiToken = data.api_token
-                    User.saveUserFromJson(data: data)
+                    User.saveUserFromJson(data)
                     completion(.success)
                 } else {
                     completion(.unknownError)

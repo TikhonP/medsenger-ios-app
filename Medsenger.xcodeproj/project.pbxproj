@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
+		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
 		434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */; };
 		434399F72927E831001D7C4F /* ContractView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F62927E831001D7C4F /* ContractView.swift */; };
 		434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F82927F366001D7C4F /* InfoMaterialsView.swift */; };
@@ -16,7 +17,7 @@
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
 		43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A1E292E5F1500465281 /* URL+mimeType.swift */; };
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
-		43A18A23292E673500465281 /* PatientsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* PatientsResource.swift */; };
+		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
 		43C9D84F2927C89B003C15B8 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D84E2927C89B003C15B8 /* TextInputView.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
 		43EF43F329227F74005DF084 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F229227F74005DF084 /* App.swift */; };
@@ -62,8 +63,8 @@
 		43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445529228C9C005DF084 /* DoctorChatRow.swift */; };
 		43EF445829228CAF005DF084 /* ArchivesChatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445729228CAF005DF084 /* ArchivesChatsView.swift */; };
 		43EF445B29228CE7005DF084 /* Contracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445A29228CE7005DF084 /* Contracts.swift */; };
-		43EF445D29228CF8005DF084 /* DoctorsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445C29228CF8005DF084 /* DoctorsResource.swift */; };
-		43EF445F29228D04005DF084 /* DoctorsArchiveResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445E29228D04005DF084 /* DoctorsArchiveResource.swift */; };
+		43EF445D29228CF8005DF084 /* ContractsRequestAsPatientResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445C29228CF8005DF084 /* ContractsRequestAsPatientResource.swift */; };
+		43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */; };
 		43EF446129228D13005DF084 /* DeactivateMessagesResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */; };
 		43EF446329228D25005DF084 /* ConcludeContractResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF446229228D25005DF084 /* ConcludeContractResource.swift */; };
 		43EF446629228D54005DF084 /* Websockets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF446529228D54005DF084 /* Websockets.swift */; };
@@ -109,6 +110,7 @@
 
 /* Begin PBXFileReference section */
 		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
+		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedScrollDismissesKeyboard.swift; sourceTree = "<group>"; };
 		434399F62927E831001D7C4F /* ContractView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractView.swift; sourceTree = "<group>"; };
 		434399F82927F366001D7C4F /* InfoMaterialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoMaterialsView.swift; sourceTree = "<group>"; };
@@ -117,7 +119,7 @@
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
 		43A18A1E292E5F1500465281 /* URL+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
-		43A18A22292E673500465281 /* PatientsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientsResource.swift; sourceTree = "<group>"; };
+		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		43C9D84E2927C89B003C15B8 /* TextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputView.swift; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		43EF43EF29227F74005DF084 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -167,8 +169,8 @@
 		43EF445529228C9C005DF084 /* DoctorChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorChatRow.swift; sourceTree = "<group>"; };
 		43EF445729228CAF005DF084 /* ArchivesChatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivesChatsView.swift; sourceTree = "<group>"; };
 		43EF445A29228CE7005DF084 /* Contracts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contracts.swift; sourceTree = "<group>"; };
-		43EF445C29228CF8005DF084 /* DoctorsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsResource.swift; sourceTree = "<group>"; };
-		43EF445E29228D04005DF084 /* DoctorsArchiveResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorsArchiveResource.swift; sourceTree = "<group>"; };
+		43EF445C29228CF8005DF084 /* ContractsRequestAsPatientResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsPatientResource.swift; sourceTree = "<group>"; };
+		43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsPatientResource.swift; sourceTree = "<group>"; };
 		43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeactivateMessagesResource.swift; sourceTree = "<group>"; };
 		43EF446229228D25005DF084 /* ConcludeContractResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcludeContractResource.swift; sourceTree = "<group>"; };
 		43EF446529228D54005DF084 /* Websockets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Websockets.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 				43EF447229228DFD005DF084 /* LocalizedString+.swift */,
 				43A18A1E292E5F1500465281 /* URL+mimeType.swift */,
 				43A18A20292E61E500465281 /* Data+mimeType.swift */,
+				433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -377,11 +380,11 @@
 			isa = PBXGroup;
 			children = (
 				43EF445A29228CE7005DF084 /* Contracts.swift */,
-				43EF445C29228CF8005DF084 /* DoctorsResource.swift */,
-				43EF445E29228D04005DF084 /* DoctorsArchiveResource.swift */,
+				43EF445C29228CF8005DF084 /* ContractsRequestAsPatientResource.swift */,
+				43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */,
 				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
 				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
-				43A18A22292E673500465281 /* PatientsResource.swift */,
+				43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -549,7 +552,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43A18A23292E673500465281 /* PatientsResource.swift in Sources */,
+				43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */,
 				43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */,
 				43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */,
 				43EF4431292289DD005DF084 /* DateFormatter+.swift in Sources */,
@@ -557,7 +560,7 @@
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
 				434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */,
 				43EF447829228E59005DF084 /* MessagesResource.swift in Sources */,
-				43EF445D29228CF8005DF084 /* DoctorsResource.swift in Sources */,
+				43EF445D29228CF8005DF084 /* ContractsRequestAsPatientResource.swift in Sources */,
 				43EF448E29228EB1005DF084 /* BoundaryGenerator.swift in Sources */,
 				43EF4408292281F4005DF084 /* Medsenger.xcdatamodeld in Sources */,
 				43EF44A929228FB9005DF084 /* ChangePasswordView.swift in Sources */,
@@ -594,7 +597,7 @@
 				434399F72927E831001D7C4F /* ContractView.swift in Sources */,
 				43EF446D29228DB8005DF084 /* SignInViewModel.swift in Sources */,
 				43EF44202922875D005DF084 /* AgentAction+CoreDataClass.swift in Sources */,
-				43EF445F29228D04005DF084 /* DoctorsArchiveResource.swift in Sources */,
+				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
 				43C9D84F2927C89B003C15B8 /* TextInputView.swift in Sources */,
@@ -608,6 +611,7 @@
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,
 				43EF44B029229057005DF084 /* User+Preview.swift in Sources */,
 				43EF4418292286E6005DF084 /* PatientHelper+CoreDataClass.swift in Sources */,
+				433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */,
 				43EF443A29228A62005DF084 /* SignInResource.swift in Sources */,
 				43EF44B42922908B005DF084 /* Contract+Preview.swift in Sources */,
 				43EF447A29228E66005DF084 /* SendMessageResouce.swift in Sources */,

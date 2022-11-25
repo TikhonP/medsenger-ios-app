@@ -15,7 +15,7 @@ class Messages {
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
     private var getAttachmentRequests = [FileRequest]()
     
-    public func getMessages(contractId: Int, completion: (() -> Void)? = nil) {
+    public func fetchMessages(contractId: Int, completion: (() -> Void)? = nil) {
         let messagesResource = {
             guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
                 return MessagesResource(contractId: contractId)
@@ -28,7 +28,7 @@ class Messages {
             switch result {
             case .success(let data):
                 if let data = data {
-                    Message.saveFromJson(data: data, contractId: contractId)
+                    Message.saveFromJson(data, contractId: contractId)
                     if let completion = completion {
                         completion()
                     }
@@ -46,7 +46,7 @@ class Messages {
             switch result {
             case .success(let data):
                 if let data = data {
-                    Message.saveFromJson(data: data, contractId: contractId)
+                    Message.saveFromJson(data, contractId: contractId)
                     Contract.updateLastFetchedMessage(id: contractId, lastFetchedMessageId: data.id)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     if let completion = completion {

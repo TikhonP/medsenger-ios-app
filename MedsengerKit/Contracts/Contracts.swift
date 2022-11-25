@@ -11,60 +11,70 @@ import Foundation
 class Contracts {
     static let shared = Contracts()
     
-    private var getDoctorsRequest: APIRequest<DoctorsResource>?
-    private var getPatientsRequest: APIRequest<PatientsResource>?
-    private var getDoctorsArchiveRequest: APIRequest<DoctorsArchiveResource>?
+    private var contractsRequestAsPatientRequest: APIRequest<ContractsRequestAsPatientResource>?
+    private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
+    private var contractsArchiveRequestAsPatientRequest: APIRequest<ContractsArchiveRequestAsPatientResource>?
     private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
     private var concludeContractRequest: APIRequest<ConcludeContractResource>?
     private var getImageRequests = [FileRequest]()
     
-    public func getDoctors() {
-        let doctorsResourse = DoctorsResource()
-        getDoctorsRequest = APIRequest(resource: doctorsResourse)
-        getDoctorsRequest?.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    Contract.saveContractsFromJson(data: data, archive: false)
+    public func fetchContracts() {
+        switch UserDefaults.userRole {
+        case .patient:
+            let contractsRequestAsPatientResource = ContractsRequestAsPatientResource()
+            contractsRequestAsPatientRequest = APIRequest(resource: contractsRequestAsPatientResource)
+            contractsRequestAsPatientRequest?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: false)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get contracts request as patient")
                 }
-            case .failure(let error):
-                processRequestError(error, "get contracts doctors")
             }
+        case .doctor:
+            let contractsRequestAsDoctorResource = ContractsRequestAsDoctorResource()
+            contractsRequestAsDoctorRequest = APIRequest(resource: contractsRequestAsDoctorResource)
+            contractsRequestAsDoctorRequest?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: false)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get contracts request as doctor")
+                }
+            }
+        case .unknown:
+            print("Failed to fetch contracts: User role unknown")
         }
     }
     
-    public func getPatients() {
-        let patientsResource = PatientsResource()
-        getPatientsRequest = APIRequest(resource: patientsResource)
-        getPatientsRequest?.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    Contract.saveContractsFromJson(data: data, archive: false)
+    public func fetchArchiveContracts() {
+        switch UserDefaults.userRole {
+        case .patient:
+            let contractsArchiveRequestAsPatientResource = ContractsArchiveRequestAsPatientResource()
+            contractsArchiveRequestAsPatientRequest = APIRequest(resource: contractsArchiveRequestAsPatientResource)
+            contractsArchiveRequestAsPatientRequest?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: true)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get contracts doctors archive")
                 }
-            case .failure(let error):
-                processRequestError(error, "get contracts patients")
             }
+        case .doctor:
+            print("Failed to fetch archive contracts: Request as doctor is not definded")
+        case .unknown:
+            print("Failed to fetch archive contracts: User role unknown")
         }
     }
     
-    public func getDoctorsArchive() {
-        let doctorsArchiveResource = DoctorsArchiveResource()
-        getDoctorsArchiveRequest = APIRequest(resource: doctorsArchiveResource)
-        getDoctorsArchiveRequest?.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    Contract.saveContractsFromJson(data: data, archive: true)
-                }
-            case .failure(let error):
-                processRequestError(error, "get contracts doctors archive")
-            }
-        }
-    }
-    
-    public func getAndSaveDoctorAvatar(_ contractId: Int) {
-        let getAvatarRequest = FileRequest(path: "/doctors/\(contractId)/photo")
+    public func fetchContractAvatar(_ contractId: Int) {
+        let getAvatarRequest = FileRequest(path: "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractId)/photo")
         getImageRequests.append(getAvatarRequest)
         getAvatarRequest.execute { result in
             switch result {
@@ -73,7 +83,7 @@ class Contracts {
                     Contract.saveAvatar(id: contractId, image: data)
                 }
             case .failure(let error):
-                processRequestError(error, "get doctor avatar")
+                processRequestError(error, "get contract avatar")
             }
         }
     }
@@ -104,7 +114,7 @@ class Contracts {
         }
     }
     
-    public func getAndSaveClinicLogo(_ contractId: Int) {
+    public func fetchClinicLogo(_ contractId: Int) {
         guard let contract = Contract.get(id: contractId), let clinic = contract.clinic else {
             return
         }

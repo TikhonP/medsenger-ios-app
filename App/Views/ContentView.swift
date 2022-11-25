@@ -14,10 +14,12 @@ struct ContentView: View {
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
     var body: some View {
         if let user = users.first {
             ZStack {
-                if user.role == nil {
+                if userRole == .unknown {
                     ChooseRoleView()
                 } else {
                     NavigationView {

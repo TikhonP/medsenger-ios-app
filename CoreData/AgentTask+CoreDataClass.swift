@@ -10,19 +10,11 @@ import CoreData
 
 @objc(AgentTask)
 public class AgentTask: NSManagedObject {
-    private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> AgentTask? {
-        do {
-            let fetchRequest = AgentTask.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id = %ld && contract = %@", id, contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let agentTask = fetchedResults.first {
-                return agentTask
-            }
-            return nil
-        } catch {
-            print("Fetch `AgentTask` with id: \(id) core data task failed: \(error.localizedDescription)")
-            return nil
-        }
+    private class func get(id: Int, for context: NSManagedObjectContext) -> AgentTask? {
+        let fetchRequest = AgentTask.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id = %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "AgentTask get by id")
+        return fetchedResults?.first
     }
 }
 
@@ -48,29 +40,21 @@ extension AgentTask {
     ///   - validAgentActionsNames: The agent tasks medsenger ids that exists in JSON from Medsenger
     ///   - context: Core Data context
     ///   - contract: UserDoctorContract contract for data filtering
-    private class func cleanRemoved(validIds: [Int], contract: Contract, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = AgentTask.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            for agentTask in fetchedResults {
-                if validIds.contains(Int(agentTask.id)) {
-                    context.delete(agentTask)
-                    PersistenceController.save(context: context)
-                }
+    private class func cleanRemoved(validIds: [Int], contract: Contract, for context: NSManagedObjectContext) {
+        let fetchRequest = AgentTask.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "AgentTask fetch by contract for removing") else {
+            return
+        }
+        for agentTask in fetchedResults {
+            if validIds.contains(Int(agentTask.id)) {
+                context.delete(agentTask)
             }
-        } catch {
-            print("Fetch `AgentTask` core data task failed: \(error.localizedDescription)")
         }
     }
     
-    class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> AgentTask {
-        let agentTask = {
-            guard let agentTask = get(id: data.id, contract: contract, context: context) else {
-                return AgentTask(context: context)
-            }
-            return agentTask
-        }()
+    class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentTask {
+        let agentTask = get(id: data.id, for: context) ?? AgentTask(context: context)
         
         agentTask.id = Int64(data.id)
         agentTask.actionLink = data.action_link
@@ -84,27 +68,26 @@ extension AgentTask {
         agentTask.done = data.done
         agentTask.text = data.text
         agentTask.available = Int64(data.available)
-        
-        PersistenceController.save(context: context)
+        agentTask.contract = contract
         
         return agentTask
     }
     
-    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [AgentTask] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [AgentTask] {
         
         // Store got AgentActions to check if some contractes deleted later
         var validIds = [Int]()
         var agentTasks = [AgentTask]()
         
         for agentTaskData in data {
-            let agentTask = saveFromJson(data: agentTaskData, contract: contract, context: context)
-            Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, context: context)
+            let agentTask = saveFromJson(agentTaskData, contract: contract, for: context)
+            Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, for: context)
             validIds.append(agentTaskData.id)
             agentTasks.append(agentTask)
         }
         
         if !validIds.isEmpty {
-            cleanRemoved(validIds: validIds, contract: contract, context: context)
+            cleanRemoved(validIds: validIds, contract: contract, for: context)
         }
         
         return agentTasks

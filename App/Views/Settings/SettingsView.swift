@@ -16,6 +16,8 @@ struct SettingsView: View {
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
     var body: some View {
         NavigationView {
             if let user = users.first {
@@ -136,13 +138,13 @@ struct SettingsView: View {
             
             if user.isPatient && user.isDoctor {
                 Section(footer: Text("You can login as doctor and as patient")) {
-                    if user.role == .patient {
+                    if userRole == .patient {
                         Button("Change role to doctor", action: {
                             Account.shared.changeRole(.doctor)
                         })
-                    } else if user.role == .doctor {
+                    } else if userRole == .doctor {
                         Button("Change role to patient", action: {
-                            Account.shared.changeRole(.doctor)
+                            Account.shared.changeRole(.patient)
                         })
                     }
                 }

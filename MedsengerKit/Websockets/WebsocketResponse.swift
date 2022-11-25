@@ -114,7 +114,7 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     
     func processResponse(_ data: Model) {
 //        Contracts.shared.getDoctors()
-        Messages.shared.getMessages(contractId: data.contract_id)
+        Messages.shared.fetchMessages(contractId: data.contract_id)
     }
 }
 

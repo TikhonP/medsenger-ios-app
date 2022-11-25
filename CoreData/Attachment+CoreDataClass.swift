@@ -35,28 +35,19 @@ public class Attachment: NSManagedObject {
         }
     }
     
-    private class func get(id: Int, context: NSManagedObjectContext) -> Attachment? {
-        do {
-            let fetchRequest = Attachment.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let attachment = fetchedResults.first {
-                return attachment
-            }
-            return nil
-        }
-        catch {
-            print("Fetch core data task failed: ", error.localizedDescription)
-            return nil
-        }
+    private class func get(id: Int, for context: NSManagedObjectContext) -> Attachment? {
+        let fetchRequest = Attachment.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Attachment get by id")
+        return fetchedResults?.first
     }
     
-    private static func writeToFile(data: Data, fileName: String) -> URL? {
+    private class func writeToFile(_ data: Data, fileName: String) -> URL? {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
             return nil
         }
         let fileurl = directory.appendingPathComponent(fileName)
-
+        
         if FileManager.default.fileExists(atPath: fileurl.path) {
             if let fileHandle = FileHandle(forWritingAtPath: fileurl.path) {
                 fileHandle.seekToEndOfFile()
@@ -80,10 +71,10 @@ public class Attachment: NSManagedObject {
     
     class func saveFile(id: Int, data: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            let attachment = get(id: id, context: context)
+            let attachment = get(id: id, for: context)
             guard let fileName = attachment?.name else { return }
-            attachment?.dataPath = writeToFile(data: data, fileName: fileName)
-            PersistenceController.save(context: context)
+            attachment?.dataPath = writeToFile(data, fileName: fileName)
+            PersistenceController.save(for: context, detailsForLogging: "Attachment save file")
         }
     }
     
@@ -91,7 +82,7 @@ public class Attachment: NSManagedObject {
         let context = PersistenceController.shared.container.viewContext
         var attachment: Attachment?
         context.performAndWait {
-            attachment = get(id: id, context: context)
+            attachment = get(id: id, for: context)
         }
         return attachment
     }
@@ -106,22 +97,14 @@ extension Attachment {
         let size: Int
     }
     
-    class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Attachment {
-        let attachment = {
-            if let attachment = get(id: data.id, context: context) {
-                return attachment
-            } else {
-                return Attachment(context: context)
-            }
-        }()
+    class func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> Attachment {
+        let attachment = get(id: data.id, for: context) ?? Attachment(context: context)
         
         attachment.id = Int64(data.id)
         attachment.name = data.name
         attachment.icon = data.icon
         attachment.mime = data.mime
         attachment.size = Int64(data.size)
-        
-        PersistenceController.save(context: context)
         
         return attachment
     }

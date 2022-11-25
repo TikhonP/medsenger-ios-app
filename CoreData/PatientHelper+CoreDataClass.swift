@@ -10,19 +10,11 @@ import CoreData
 
 @objc(PatientHelper)
 public class PatientHelper: NSManagedObject {
-    private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> PatientHelper? {
-        do {
-            let fetchRequest = PatientHelper.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld && contract = %@", id, contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let patientHelper = fetchedResults.first {
-                return patientHelper
-            }
-            return nil
-        } catch {
-            print("Fetch `PatientHelper` with id: \(id) core data failed: \(error.localizedDescription)")
-            return nil
-        }
+    private class func get(id: Int, for context: NSManagedObjectContext) -> PatientHelper? {
+        let fetchRequest = PatientHelper.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "PatientHelper get by id")
+        return fetchedResults?.first
     }
 }
 
@@ -33,52 +25,43 @@ extension PatientHelper {
         let role: String
     }
     
-    private class func cleanRemoved(validIds: [Int], contract: Contract, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = PatientHelper.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            for patientHelper in fetchedResults {
-                if !validIds.contains(Int(patientHelper.id)) {
-                    context.delete(patientHelper)
-                    PersistenceController.save(context: context)
-                }
+    private class func cleanRemoved(validIds: [Int], contract: Contract, for context: NSManagedObjectContext) {
+        let fetchRequest = PatientHelper.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "PatientHelper fetch by contract for removing") else {
+            return
+        }
+        for patientHelper in fetchedResults {
+            if !validIds.contains(Int(patientHelper.id)) {
+                context.delete(patientHelper)
             }
-        } catch {
-            print("Fetch `PatientHelper` core data failed: \(error.localizedDescription)")
         }
     }
     
-    private class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> PatientHelper {
-        let patientHelper = {
-            guard let patientHelper = get(id: data.id, contract: contract, context: context) else {
-                return PatientHelper(context: context)
-            }
-            return patientHelper
-        }()
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> PatientHelper {
+        let patientHelper = get(id: data.id, for: context) ?? PatientHelper(context: context)
         
         patientHelper.id = Int64(data.id)
         patientHelper.name = data.name
         patientHelper.role = data.role
-        
-        PersistenceController.save(context: context)
+        patientHelper.contract = contract
         
         return patientHelper
     }
     
-    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [PatientHelper] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [PatientHelper] {
         var validIds = [Int]()
         var patientHelpers = [PatientHelper]()
         
         for patientHelperData in data {
-            let patientHelper = saveFromJson(data: patientHelperData, contract: contract, context: context)
+            let patientHelper = saveFromJson(patientHelperData, contract: contract, for: context)
             
             validIds.append(patientHelperData.id)
             patientHelpers.append(patientHelper)
         }
         
         if !validIds.isEmpty {
-            cleanRemoved(validIds: validIds, contract: contract, context: context)
+            cleanRemoved(validIds: validIds, contract: contract, for: context)
         }
         
         return patientHelpers

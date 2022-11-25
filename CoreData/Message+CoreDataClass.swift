@@ -11,33 +11,38 @@ import CoreData
 @objc(Message)
 public class Message: NSManagedObject {
     var isMessageSent: Bool {
-        switch Account.shared.role {
+        switch UserDefaults.userRole {
         case .patient:
             return !isDoctorMessage
         case .doctor:
             return isDoctorMessage
+        case .unknown:
+            return true
         }
     }
     
-    class func get(id: Int, context: NSManagedObjectContext) -> Message? {
-        do {
-            let fetchRequest = Message.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let message = fetchedResults.first {
-                return message
-            }
-            return nil
-        }
-        catch {
-            print("Fetch core data task failed: ", error.localizedDescription)
-            return nil
-        }
+    class func get(id: Int, for context: NSManagedObjectContext) -> Message? {
+        let fetchRequest = Message.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Message get by id")
+        return fetchedResults?.first
     }
 }
 
 extension Message {
-    struct JsonDeserializer: Decodable {
+    public var attachmentsArray: [Attachment] {
+        let set = attachments as? Set<Attachment> ?? []
+        return Array(set)
+    }
+    
+    public var imagesArray: [ImageAttachment] {
+        let set = images as? Set<ImageAttachment> ?? []
+        return Array(set)
+    }
+}
+
+extension Message {
+    struct JsonDecoder: Decodable {
         let id: Int
         let text: String
         let sent: String
@@ -80,14 +85,8 @@ extension Message {
         }
     }
     
-private class func saveFromJson(data: JsonDeserializer, context: NSManagedObjectContext) -> Message {
-        let message = {
-            if let message = get(id: data.id, context: context) {
-                return message
-            } else {
-                return Message(context: context)
-            }
-        }()
+    private class func saveFromJson(_ data: JsonDecoder, for context: NSManagedObjectContext) -> Message {
+        let message = get(id: data.id, for: context) ?? Message(context: context)
         
         if data.isSimilar(message) {
             return message
@@ -137,37 +136,36 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
             message.replyToId = Int64(replyToId)
         }
         
-        PersistenceController.save(context: context)
-        
         return message
     }
     
-    class func saveFromJson(data: JsonDeserializer, contractId: Int) {
+    class func saveFromJson(_ data: JsonDecoder, contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let contract = Contract.get(id: contractId, context: context) else {
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            
+            guard let contract = Contract.get(id: contractId, for: context) else {
                 print("Failed to save messages: Core data failed to fetch contract")
                 return
             }
             
-            let message = saveFromJson(data: data, context: context)
+            let message = saveFromJson(data, for: context)
             
             for attachmentData in data.attachments {
-                let attachment = Attachment.saveFromJson(data: attachmentData, context: context)
-                if let isExist = message.attachments?.contains(attachment), !isExist {
+                let attachment = Attachment.saveFromJson(attachmentData, for: context)
+                if !message.attachmentsArray.contains(attachment) {
                     message.addToAttachments(attachment)
                 }
             }
             
             for imageData in data.images {
-                let image = ImageAttachment.saveFromJson(data: imageData, context: context)
-                if let isExist = message.images?.contains(image), !isExist {
+                let image = ImageAttachment.saveFromJson(imageData, for: context)
+                if !message.imagesArray.contains(image) {
                     message.addToImages(image)
                 }
             }
             
-            if let isExist = contract.messages?.contains(message), !isExist {
+            if !contract.messagesArray.contains(message) {
                 contract.addToMessages(message)
-                PersistenceController.save(context: context)
             }
         }
     }
@@ -176,9 +174,9 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
     /// - Parameters:
     ///   - data: struct decoded from JSON
     ///   - contractId: contract id for messages
-    class func saveFromJson(data: [JsonDeserializer], contractId: Int) {
+    class func saveFromJson(_ data: [JsonDecoder], contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let contract = Contract.get(id: contractId, context: context) else {
+            guard let contract = Contract.get(id: contractId, for: context) else {
                 print("Failed to save messages: Core data failed to fetch contract")
                 return
             }
@@ -186,26 +184,24 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
             var maxMessageId: Int = 0
             
             for messageData in data {
-                let message = saveFromJson(data: messageData, context: context)
+                let message = saveFromJson(messageData, for: context)
                 
                 for attachmentData in messageData.attachments {
-                    let attachment = Attachment.saveFromJson(data: attachmentData, context: context)
-                    if let isExist = message.attachments?.contains(attachment), !isExist {
+                    let attachment = Attachment.saveFromJson(attachmentData, for: context)
+                    if !message.attachmentsArray.contains(attachment) {
                         message.addToAttachments(attachment)
                     }
                 }
                 
                 for imageData in messageData.images {
-                    let image = ImageAttachment.saveFromJson(data: imageData, context: context)
-                    if let isExist = message.images?.contains(image), !isExist {
+                    let image = ImageAttachment.saveFromJson(imageData, for: context)
+                    if !message.imagesArray.contains(image) {
                         message.addToImages(image)
-                        PersistenceController.save(context: context)
                     }
                 }
                 
-                if let isExist = contract.messages?.contains(message), !isExist {
+                if !contract.messagesArray.contains(message) {
                     contract.addToMessages(message)
-                    PersistenceController.save(context: context)
                 }
                 
                 if messageData.id > maxMessageId {
@@ -213,13 +209,14 @@ private class func saveFromJson(data: JsonDeserializer, context: NSManagedObject
                 }
             }
             
-            contract.lastFetchedMessage = Message.get(id: maxMessageId, context: context)
-            PersistenceController.save(context: context)
+            contract.lastFetchedMessage = Message.get(id: maxMessageId, for: context)
+            
+            PersistenceController.save(for: context, detailsForLogging: "Message from JsonDeserializer")
         }
     }
 }
 
-extension Message.JsonDeserializer {
+extension Message.JsonDecoder {
     func isSimilar(_ message: Message) -> Bool {
         if message.id != Int64(id) ||
             message.text != text ||
@@ -248,7 +245,7 @@ extension Message.JsonDeserializer {
             message.isFiltered != is_filtered {
             return false
         }
-            
+        
         if let actionLink = action_link, let urlEncoded = actionLink.urlEncoded, message.actionLink != URL(string: urlEncoded) {
             return false
         }

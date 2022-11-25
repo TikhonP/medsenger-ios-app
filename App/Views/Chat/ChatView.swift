@@ -22,6 +22,8 @@ struct ChatView: View {
     @State private var autoScrollDown = true
     @State var showContractView = false
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
     init(contract: Contract, user: User) {
         _messages = FetchRequest<Message>(
             entity: Message.entity(),
@@ -92,7 +94,7 @@ struct ChatView: View {
                         Text(contract.shortName ?? "Unknown name")
                             .foregroundColor(.primary)
                             .bold()
-                        if user.role == .patient {
+                        if userRole == .patient {
                             Text(contract.role ?? "Unknown role")
                                 .foregroundColor(.secondary)
                                 .font(.caption)

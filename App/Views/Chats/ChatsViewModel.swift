@@ -9,35 +9,23 @@
 import Foundation
 
 final class ChatsViewModel: ObservableObject {
+    func initilizeWebsockets() {
+        Websockets.shared.createUrlSession()
+    }
+    
     func getArchiveContracts() {
-        switch Account.shared.role {
-        case .patient:
-            Contracts.shared.getDoctorsArchive()
-        case .doctor:
-            Contracts.shared.getPatients()
-        }
+        Contracts.shared.fetchArchiveContracts()
     }
     
     func getContracts() {
-//        Websockets.shared.createUrlSession()
-        switch Account.shared.role {
-        case .patient:
-            Contracts.shared.getDoctors()
-        case .doctor:
-            Contracts.shared.getPatients()
-        }
+        Contracts.shared.fetchContracts()
     }
     
     func getContractAvatar(contractId: Int) {
-        switch Account.shared.role {
-        case .patient:
-            Contracts.shared.getAndSaveDoctorAvatar(contractId)
-        case .doctor:
-            Contracts.shared.getPatients()
-        }
+        Contracts.shared.fetchContractAvatar(contractId)
     }
     
     func getClinicLogo(contractId: Int) {
-        Contracts.shared.getAndSaveClinicLogo(contractId)
+        Contracts.shared.fetchClinicLogo(contractId)
     }
 }

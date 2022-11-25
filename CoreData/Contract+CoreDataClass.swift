@@ -25,76 +25,68 @@ public class Contract: NSManagedObject {
         return State(rawValue: stateString) ?? .noMessages
     }
     
-    class func get(id: Int, context: NSManagedObjectContext) -> Contract? {
-        do {
-            let fetchRequest = Contract.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let contract = fetchedResults.first {
-                return contract
-            }
-            return nil
-        }
-        catch {
-            print("Get core data `Contract` with id: \(id) failed: \(error.localizedDescription)")
-            return nil
-        }
+    class func get(id: Int, for context: NSManagedObjectContext) -> Contract? {
+        let fetchRequest = Contract.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract get by id")
+        return fetchedResults?.first
     }
     
     class func get(id: Int) -> Contract? {
         let context = PersistenceController.shared.container.viewContext
         var contract: Contract?
         context.performAndWait {
-            contract = get(id: id, context: context)
+            contract = get(id: id, for: context)
         }
         return contract
     }
     
     class func saveAvatar(id: Int, image: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            let contract = get(id: id, context: context)
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
             contract?.avatar = image
-            PersistenceController.save(context: context)
+            PersistenceController.save(for: context, detailsForLogging: "Contract save avatar")
         }
     }
     
     class func updateOnlineStatus(id: Int, isOnline: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            let contract = get(id: id, context: context)
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
             contract?.isOnline = isOnline
-            PersistenceController.save(context: context)
+            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
         }
     }
     
     class func updateOnlineStatusFromList(_ onlineIds: [Int]) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            do {
-                let fetchRequest = Contract.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "archive == NO")
-                let fetchedResults = try context.fetch(fetchRequest)
-                for contract in fetchedResults {
-                    contract.isOnline = onlineIds.contains(Int(contract.id))
-                    PersistenceController.save(context: context)
-                }
-            } catch {
-                print("Core Data: Failed to fetch contracts: \(error.localizedDescription)")
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let fetchRequest = Contract.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "archive == NO")
+            guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive == NO for updating online status") else {
+                return
             }
+            for contract in fetchedResults {
+                contract.isOnline = onlineIds.contains(Int(contract.id))
+            }
+            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
         }
     }
     
     class func updateLastFetchedMessage(id: Int, lastFetchedMessageId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            let contract = get(id: id, context: context)
-            contract?.lastFetchedMessage = Message.get(id: lastFetchedMessageId, context: context)
-            PersistenceController.save(context: context)
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.lastFetchedMessage = Message.get(id: lastFetchedMessageId, for: context)
+            PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
         }
     }
     
-    func addToAgents(_ values: [Agent], context: NSManagedObjectContext) {
+    func addToAgents(_ values: [Agent], for context: NSManagedObjectContext) {
         for agent in values {
             if let isExist = agents?.contains(agent), !isExist {
                 addToAgents(agent)
-                PersistenceController.save(context: context)
             }
         }
     }
@@ -103,9 +95,10 @@ public class Contract: NSManagedObject {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Contract")
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
+            
             do {
                 try PersistenceController.shared.container.persistentStoreCoordinator.execute(deleteRequest, with: context)
+                PersistenceController.save(for: context, detailsForLogging: "Contract delete all")
             } catch {
                 print("Core Data failed to cleanup contracts: \(error.localizedDescription)")
             }
@@ -116,29 +109,32 @@ public class Contract: NSManagedObject {
     /// - Parameters:
     ///   - validContractIds: The contract ids that exists in JSON from Medsenger
     ///   - context: Core Data context
-    private class func cleanRemoved(validContractIds: [Int], archive: Bool, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = Contract.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "archive == %@", NSNumber(value: archive))
-            let fetchedResults = try context.fetch(fetchRequest)
-            for contract in fetchedResults {
-                if !validContractIds.contains(Int(contract.id)) {
-                    context.delete(contract)
-                    PersistenceController.save(context: context)
-                    print("Contract removed")
-                }
+    private class func cleanRemoved(validContractIds: [Int], archive: Bool, for context: NSManagedObjectContext) {
+        let fetchRequest = Contract.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "archive == %@", NSNumber(value: archive))
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive for removing") else {
+            return
+        }
+        for contract in fetchedResults {
+            if !validContractIds.contains(Int(contract.id)) {
+                context.delete(contract)
+                print("Contract removed")
             }
         }
-        catch {
-            print("Fetch `Contract` core data failed: \(error.localizedDescription)")
-        }
+    }
+}
+
+extension Contract {
+    public var messagesArray: [Message] {
+        let set = messages as? Set<Message> ?? []
+        return Array(set)
     }
 }
 
 // MARK: - Contracts with Doctors
 
 extension Contract {
-    struct JsonDecoderDoctor: Decodable {
+    struct JsonDecoderRequestAsPatient: Decodable {
         struct ScenarioResponse: Decodable {
             let name: String
             let description: String
@@ -149,7 +145,7 @@ extension Contract {
         let patient_name: String
         let doctor_name: String
         let specialty: String
-        let clinic: Clinic.JsonDecoderFromDoctorContract
+        let clinic: Clinic.JsonDecoderRequestAsPatient
         let mainDoctor: String
         let startDate: String
         let endDate: String
@@ -166,7 +162,7 @@ extension Contract {
         let agent_actions: Array<AgentAction.JsonDecoder>
         let bot_actions: Array<BotAction.JsonDecoder>
         let agent_tasks: Array<AgentTask.JsonDecoder>
-        let agents: Array<Agent.JsonDecoder>
+        let agents: Array<Agent.JsonDecoderRequestAsPatient>
         let role: String
         let patient_helpers: Array<PatientHelper.JsonDecoder>
         let doctor_helpers: Array<DoctorHelper.JsonDecoder>
@@ -190,13 +186,8 @@ extension Contract {
         }
     }
     
-    private class func saveContractFromJson(data: JsonDecoderDoctor, context: NSManagedObjectContext) -> Contract {
-        let contract = {
-            guard let contract = get(id: data.contract, context: context) else {
-                return Contract(context: context)
-            }
-            return contract
-        }()
+    private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Contract {
+        let contract = get(id: data.contract, for: context) ?? Contract(context: context)
         
         if data.isSimilar(contract) {
             return contract
@@ -221,7 +212,7 @@ extension Contract {
         if let unread = data.unread {
             contract.unread = Int64(unread)
         }
-//        contract.isOnline = data.is_online
+        //        contract.isOnline = data.is_online
         contract.role = data.role
         contract.activated = data.activated
         contract.canApplySubmissionToContractExtension = data.can_apply
@@ -233,70 +224,48 @@ extension Contract {
         contract.scenarioPreset = data.scenario?.preset
         contract.sortRating = 0
         
-        PersistenceController.save(context: context)
-        
         return contract
     }
     
-    class func saveContractsFromJson(data: [JsonDecoderDoctor], archive: Bool) {
+    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
             // Store got contracts to check if some contractes deleted later
             var gotContractIds = [Int]()
+            
             for contractData in data {
                 gotContractIds.append(contractData.contract)
                 
-                let contract = saveContractFromJson(data: contractData, context: context)
+                let contract = saveFromJson(contractData, for: context)
                 
-                let clinic = Clinic.saveFromJson(data: contractData.clinic, context: context)
-                if let isExist = clinic.contracts?.contains(contract), !isExist {
-                    clinic.addToContracts(contract)
-                }
-                PersistenceController.save(context: context)
-                
-                let agents = Agent.saveFromJson(data: contractData.agents, context: context)
+                contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
+
+                let agents = Agent.saveFromJson(contractData.agents, for: context)
                 contract.addToAgents(NSSet(array: agents))
-                PersistenceController.save(context: context)
-                
-                let agentActions = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
-                contract.addToAgentActions(NSSet(array: agentActions))
-                PersistenceController.save(context: context)
-                
-                let botActions = BotAction.saveFromJson(data: contractData.bot_actions, contract: contract, context: context)
-                contract.addToBotActions(NSSet(array: botActions))
-                PersistenceController.save(context: context)
-                
-                let agentTasks = AgentTask.saveFromJson(data: contractData.agent_tasks, contract: contract, context: context)
-                contract.addToAgentTasks(NSSet(array: agentTasks))
-                PersistenceController.save(context: context)
-                
-                let doctorHelpers = DoctorHelper.saveFromJson(data: contractData.doctor_helpers, contract: contract, context: context)
-                contract.addToDoctorHelpers(NSSet(array: doctorHelpers))
-                PersistenceController.save(context: context)
-                
-                let patientHelpers = PatientHelper.saveFromJson(data: contractData.patient_helpers, contract: contract, context: context)
-                contract.addToPatientHelpers(NSSet(array: patientHelpers))
-                PersistenceController.save(context: context)
-                
-                let contractParams = ContractParam.saveFromJson(data: contractData.params, contract: contract, context: context)
-                contract.addToParams(NSSet(array: contractParams))
-                PersistenceController.save(context: context)
+
+                _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
+                _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)
+                _ = AgentTask.saveFromJson(contractData.agent_tasks, contract: contract, for: context)
+                _ = DoctorHelper.saveFromJson(contractData.doctor_helpers, contract: contract, for: context)
+                _ = PatientHelper.saveFromJson(contractData.patient_helpers, contract: contract, for: context)
+                _ = ContractParam.saveFromJson(contractData.params, contract: contract, for: context)
                 
                 if let infoMaterialsData = contractData.info_materials {
-                    let infoMaterials = InfoMaterial.saveFromJson(data: infoMaterialsData, contract: contract, context: context)
-                    contract.addToInfoMaterials(NSSet(array: infoMaterials))
-                    PersistenceController.save(context: context)
+                    _ = InfoMaterial.saveFromJson(infoMaterialsData, contract: contract, for: context)
                 }
             }
-            
+                                       
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, archive: archive, context: context)
+                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context)
             }
+            
+            PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
         }
     }
 }
 
-extension Contract.JsonDecoderDoctor {
+extension Contract.JsonDecoderRequestAsPatient {
     func isSimilar(_ contract: Contract) -> Bool {
         if contract.id != Int64(self.contract) ||
             contract.name != name ||
@@ -318,7 +287,6 @@ extension Contract.JsonDecoderDoctor {
             contract.received != Int64(received) ||
             contract.shortName != short_name ||
             contract.number != number ||
-            contract.isOnline != is_online ||
             contract.role != role ||
             contract.activated != activated ||
             contract.canApplySubmissionToContractExtension != can_apply ||
@@ -341,7 +309,7 @@ extension Contract.JsonDecoderDoctor {
 }
 
 extension Contract {
-    struct JsonDecoderPatient: Decodable {
+    struct JsonDecoderRequestAsDoctor: Decodable {
         struct ScenarioResponse: Decodable {
             let name: String
             let description: String
@@ -354,8 +322,8 @@ extension Contract {
         let birthday: String
         let email: String
         let phone: String?
-//        let diagnosis: String? // ??
-        let clinic: Clinic.JsonDecoderFromPatientContract
+        //        let diagnosis: String? // ??
+        let clinic: Clinic.JsonDecoderRequestAsDoctor
         let mainDoctor: String
         let startDate: String
         let endDate: String
@@ -372,14 +340,14 @@ extension Contract {
         let sent: Int
         let received: Int
         let short_name: String
-//        let description
+        //        let description
         let is_online: Bool
         let video: Bool
         let agent_actions: Array<AgentAction.JsonDecoder>
         let bot_actions: Array<BotAction.JsonDecoder>
-//        let agent_params
+        //        let agent_params
         let agent_tasks: Array<AgentTask.JsonDecoder>
-        let agents: Array<Agent.JsonDecoder>
+        let agents: Array<Agent.JsonDecoderRequestAsDoctor>
         let role: String
         let patient_helpers: Array<PatientHelper.JsonDecoder>
         let doctor_helpers: Array<DoctorHelper.JsonDecoder>
@@ -391,7 +359,7 @@ extension Contract {
         let has_questions: Bool
         let has_warnings: Bool
         let last_read_id: Int
-//        let related_contracts
+        //        let related_contracts
         let is_waiting_for_conclusion: Bool
         
         var birthdayAsDate: Date? {
@@ -410,17 +378,12 @@ extension Contract {
         }
     }
     
-    private class func saveContractFromJson(data: JsonDecoderPatient, context: NSManagedObjectContext) -> Contract {
-        let contract = {
-            guard let contract = get(id: data.contract, context: context) else {
-                return Contract(context: context)
-            }
-            return contract
-        }()
+    private class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Contract {
+        let contract = get(id: data.contract, for: context) ?? Contract(context: context)
         
-//        if data.isSimilar(contract) {
-//            return contract
-//        }
+        if data.isSimilar(contract) {
+            return contract
+        }
         
         contract.id = Int64(data.contract)
         contract.name = data.name
@@ -448,7 +411,8 @@ extension Contract {
         contract.sent = Int64(data.sent)
         contract.received = Int64(data.received)
         contract.shortName = data.short_name
-//        contract.isOnline = data.is_online
+        contract.video = data.video
+        //        contract.isOnline = data.is_online
         contract.role = data.role
         contract.scenarioName = data.scenario?.name
         contract.scenarioDescription = data.scenario?.description
@@ -483,59 +447,90 @@ extension Contract {
             return Int64(sortRating)
         }()
         
-        PersistenceController.save(context: context)
-        
         return contract
     }
     
-    class func saveContractsFromJson(data: [JsonDecoderPatient], archive: Bool) {
+    class func saveFromJson(_ data: [JsonDecoderRequestAsDoctor], archive: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
             // Store got contracts to check if some contractes deleted later
             var gotContractIds = [Int]()
             for contractData in data {
                 gotContractIds.append(contractData.contract)
                 
-                let contract = saveContractFromJson(data: contractData, context: context)
+                let contract = saveFromJson(contractData, for: context)
                 
-                let clinic = Clinic.saveFromJson(data: contractData.clinic, context: context)
-                if let isExist = clinic.contracts?.contains(contract), !isExist {
-                    clinic.addToContracts(contract)
-                }
-                PersistenceController.save(context: context)
-                
-                let agents = Agent.saveFromJson(data: contractData.agents, context: context)
+                contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
+
+                let agents = Agent.saveFromJson(contractData.agents, for: context)
                 contract.addToAgents(NSSet(array: agents))
-                PersistenceController.save(context: context)
-                
-                let agentActions = AgentAction.saveFromJson(data: contractData.agent_actions, contract: contract, context: context)
-                contract.addToAgentActions(NSSet(array: agentActions))
-                PersistenceController.save(context: context)
-                
-                let botActions = BotAction.saveFromJson(data: contractData.bot_actions, contract: contract, context: context)
-                contract.addToBotActions(NSSet(array: botActions))
-                PersistenceController.save(context: context)
-                
-                let agentTasks = AgentTask.saveFromJson(data: contractData.agent_tasks, contract: contract, context: context)
-                contract.addToAgentTasks(NSSet(array: agentTasks))
-                PersistenceController.save(context: context)
-                
-                let doctorHelpers = DoctorHelper.saveFromJson(data: contractData.doctor_helpers, contract: contract, context: context)
-                contract.addToDoctorHelpers(NSSet(array: doctorHelpers))
-                PersistenceController.save(context: context)
-                
-                let patientHelpers = PatientHelper.saveFromJson(data: contractData.patient_helpers, contract: contract, context: context)
-                contract.addToPatientHelpers(NSSet(array: patientHelpers))
-                PersistenceController.save(context: context)
-                
-                let contractParams = ContractParam.saveFromJson(data: contractData.params, contract: contract, context: context)
-                contract.addToParams(NSSet(array: contractParams))
-                PersistenceController.save(context: context)
+
+                _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
+                _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)
+                _ = AgentTask.saveFromJson(contractData.agent_tasks, contract: contract, for: context)
+                _ = DoctorHelper.saveFromJson(contractData.doctor_helpers, contract: contract, for: context)
+                _ = PatientHelper.saveFromJson(contractData.patient_helpers, contract: contract, for: context)
+                _ = ContractParam.saveFromJson(contractData.params, contract: contract, for: context)
             }
             
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, archive: archive, context: context)
+                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context)
             }
+            
+            PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsDoctor")
         }
+    }
+}
+
+extension Contract.JsonDecoderRequestAsDoctor {
+    func isSimilar(_ contract: Contract) -> Bool {
+        if contract.id != Int64(self.contract) ||
+            contract.name != name ||
+            contract.patientName != patient_name ||
+            contract.doctorName != doctor_name ||
+            contract.birthday != birthdayAsDate ||
+            contract.email != email ||
+            contract.phone != phone ||
+            contract.mainDoctor != mainDoctor ||
+            contract.startDate != startDateAsDate ||
+            contract.classifier != classifier ||
+            contract.rule != rule ||
+            contract.comments != comments ||
+            contract.unanswered != unanswered ||
+            contract.stateString != state ||
+            contract.archive != archive ||
+            contract.video != video ||
+            contract.canDecline != can_decline ||
+            contract.hasQuestions != has_questions ||
+            contract.hasWarnings != has_warnings ||
+            contract.lastReadMessageIdByPatient != last_read_id ||
+            contract.isWaitingForConclusion != is_waiting_for_conclusion ||
+            contract.endDate != endDateAsDate {
+            return false
+        }
+        
+        if let photo_id = photo_id, contract.photoId != Int64(photo_id){
+            return false
+        }
+        
+        if contract.archive != archive ||
+            contract.sent != Int64(sent) ||
+            contract.received != Int64(received) ||
+            contract.shortName != short_name ||
+            contract.number != number ||
+            contract.role != role ||
+            contract.activated != activated ||
+            contract.scenarioName != scenario?.name ||
+            contract.scenarioDescription != scenario?.description ||
+            contract.scenarioPreset != scenario?.preset {
+            return false
+        }
+        
+        if let unread = unread, contract.unread != Int64(unread) {
+            return false
+        }
+        
+        return true
     }
 }

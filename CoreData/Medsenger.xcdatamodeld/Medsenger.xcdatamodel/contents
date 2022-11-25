@@ -3,8 +3,10 @@
     <entity name="Agent" representedClassName="Agent" syncable="YES" codeGenerationType="category">
         <attribute name="caption" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="openSettingsInBlank" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="openSettingsInBlank" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="settingsLink" optional="YES" attributeType="URI"/>
         <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
         <relationship name="clinics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clinic" inverseName="agents" inverseEntity="Clinic"/>
         <relationship name="contract" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
@@ -20,7 +22,13 @@
         <attribute name="link" attributeType="URI"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="typeString" optional="YES" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="agentActions" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="agentActions" inverseEntity="Contract"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+                <constraint value="contract"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="AgentTask" representedClassName="AgentTask" syncable="YES" codeGenerationType="category">
         <attribute name="actionLink" attributeType="URI"/>
@@ -63,7 +71,13 @@
         <attribute name="link" optional="YES" attributeType="URI"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="botActions" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="botActions" inverseEntity="Contract"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+                <constraint value="contract"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Clinic" representedClassName="Clinic" syncable="YES" codeGenerationType="category">
         <attribute name="delayedContractsEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -91,7 +105,7 @@
     <entity name="ClinicClassifier" representedClassName="ClinicClassifier" syncable="YES" codeGenerationType="category">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Clinic" inverseName="classifiers" inverseEntity="Clinic"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="classifiers" inverseEntity="Clinic"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -101,7 +115,7 @@
     <entity name="ClinicRule" representedClassName="ClinicRule" syncable="YES" codeGenerationType="category">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Clinic" inverseName="rules" inverseEntity="Clinic"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="rules" inverseEntity="Clinic"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -149,15 +163,16 @@
         <attribute name="stateString" optional="YES" attributeType="String"/>
         <attribute name="unanswered" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unread" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
+        <attribute name="video" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="contract" inverseEntity="Agent"/>
-        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="contract" inverseEntity="AgentTask"/>
-        <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
+        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentTask" inverseName="contract" inverseEntity="AgentTask"/>
+        <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="contracts" inverseEntity="Clinic"/>
         <relationship name="doctorHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
-        <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
+        <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
         <relationship name="lastFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="lastFetchContract" inverseEntity="Message"/>
-        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
         <relationship name="params" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
         <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
         <uniquenessConstraints>
@@ -172,7 +187,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="value" optional="YES" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="params" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="params" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -183,7 +198,7 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="role" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="doctorHelpers" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="doctorHelpers" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -206,7 +221,14 @@
     <entity name="InfoMaterial" representedClassName="InfoMaterial" syncable="YES" codeGenerationType="category">
         <attribute name="link" optional="YES" attributeType="URI"/>
         <attribute name="name" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="infoMaterials" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="infoMaterials" inverseEntity="Contract"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+                <constraint value="link"/>
+                <constraint value="contract"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Message" representedClassName="Message" syncable="YES" codeGenerationType="category">
         <attribute name="actionBig" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -251,7 +273,7 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="role" attributeType="String"/>
-        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Contract" inverseName="patientHelpers" inverseEntity="Contract"/>
+        <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="patientHelpers" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -270,7 +292,11 @@
         <attribute name="lastHealthSync" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
-        <attribute name="roleString" optional="YES" attributeType="String" valueTransformerName="NSSecureUnarchiveFromData" customClassName="UserRole"/>
         <attribute name="shortName" attributeType="String"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
 </model>

@@ -10,66 +10,14 @@ import CoreData
 
 @objc(User)
 public class User: NSManagedObject {
-    enum Role: String {
-        case patient = "patient"
-        case doctor = "doctor"
-        
-    var clientsForNetworkRequest: String {
-            switch self {
-            case .patient:
-                return "doctors"
-            case .doctor:
-                return "patients"
-            }
-        }
-    }
-    
-    var role: Role? {
-        get {
-            guard let roleString = roleString else {
-                return nil
-            }
-            return Role(rawValue: roleString)
-        }
-        set {
-            guard let newValue = newValue else { return }
-            roleString = newValue.rawValue
-        }
-    }
-    
-    class var role: Role? {
-        get {
-            guard let user = User.get(), let roleString = user.roleString else {
-                return nil
-            }
-            return Role(rawValue: roleString)
-        }
-        set {
-            PersistenceController.shared.container.performBackgroundTask { (context) in
-                guard let user = User.get(context: context), let newValue = newValue else { return }
-                user.roleString = newValue.rawValue
-                PersistenceController.save(context: context)
-            }
-        }
-    }
     
     /// Get user form context
     /// - Parameter context: Core Data context
     /// - Returns: optional user instance
-    private class func get(context: NSManagedObjectContext) -> User? {
-        let objects: [User]? = {
-            let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-            do {
-                return try context.fetch(fetchRequest)
-            } catch {
-                print("Faild to get `User` from core data: \(error.localizedDescription)")
-                return nil
-            }
-        }()
-        guard let user = objects?.first else {
-            return nil
-        }
-        return user
+    private class func get(for context: NSManagedObjectContext) -> User? {
+        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
+        let objects = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "User all")
+        return objects?.first
     }
     
     /// Get user from any task
@@ -78,27 +26,29 @@ public class User: NSManagedObject {
         let context = PersistenceController.shared.container.viewContext
         var user: User?
         context.performAndWait {
-            user = get(context: context)
+            user = get(for: context)
         }
         return user
     }
     
     class func delete() {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let user = get(context: context) else {
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            guard let user = get(for: context) else {
                 print("Delete User failed: Not found")
                 return
             }
             context.delete(user)
-            PersistenceController.save(context: context)
+            PersistenceController.save(for: context, detailsForLogging: "User delete")
         }
     }
     
-    class func saveAvatar(data: Data?) {
+    class func saveAvatar(_ image: Data?) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let user = get(context: context) else { return }
-            user.avatar = data
-            PersistenceController.save(context: context)
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            guard let user = get(for: context) else { return }
+            user.avatar = image
+            PersistenceController.save(for: context, detailsForLogging: "User save avatar")
         }
     }
 }
@@ -125,40 +75,42 @@ extension User {
         }
     }
     
-    class func saveUserFromJson(data: JsonDecoder) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            let user = {
-                guard let user = get(context: context) else {
-                    return User(context: context)
-                }
-                return user
-            }()
-            
-            user.isDoctor = data.isDoctor
-            user.isPatient = data.isPatient
-            user.name = data.name
-            user.email = data.email
-            user.birthday = data.birthdayAsDate
-            user.phone = data.phone
-            user.shortName = data.short_name
-            user.hasPhoto = data.hasPhoto
-            user.emailNotifications = data.email_notifications
-            user.hasApp = data.hasApp
-            user.lastHealthSync = data.last_health_sync
-            
-            if user.roleString == nil {
-                if data.isDoctor && !data.isPatient {
-                    user.roleString = Role.doctor.rawValue
-                } else if data.isPatient && !data.isDoctor {
-                    user.roleString = Role.patient.rawValue
-                }
+    class func saveFromJson(_ data: JsonDecoder, for context: NSManagedObjectContext) -> User {
+        let user = get(for: context) ?? User(context: context)
+        
+        user.isDoctor = data.isDoctor
+        user.isPatient = data.isPatient
+        user.name = data.name
+        user.email = data.email
+        user.birthday = data.birthdayAsDate
+        user.phone = data.phone
+        user.shortName = data.short_name
+        user.hasPhoto = data.hasPhoto
+        user.emailNotifications = data.email_notifications
+        user.hasApp = data.hasApp
+        user.lastHealthSync = data.last_health_sync
+        
+        if UserDefaults.userRole == .unknown {
+            if data.isDoctor && !data.isPatient {
+                UserDefaults.userRole = .doctor
+            } else if data.isPatient && !data.isDoctor {
+                UserDefaults.userRole = .patient
             }
-            
-            PersistenceController.save(context: context)
+        }
+        
+        return user
+    }
+    
+    static func saveUserFromJson(_ data: JsonDecoder) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            _ = saveFromJson(data, for: context)
             
             for clinicData in data.clinics {
-                let _ = Clinic.saveFromJson(data: clinicData, context: context)
+                _ = Clinic.saveFromJson(clinicData, for: context)
             }
+            
+            PersistenceController.save(for: context, detailsForLogging: "User save from JsonDecoder")
         }
     }
 }

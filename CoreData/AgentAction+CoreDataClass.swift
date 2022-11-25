@@ -36,18 +36,31 @@ public class AgentAction: NSManagedObject {
         return components.url
     }
     
-    private class func get(name: String, contract: Contract, context: NSManagedObjectContext) -> AgentAction? {
-        do {
-            let fetchRequest = AgentAction.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let agentAction = fetchedResults.first {
-                return agentAction
+    private class func get(name: String, contract: Contract, for context: NSManagedObjectContext) -> AgentAction? {
+        let fetchRequest = AgentAction.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "AgentAction get by name and contract")
+        if let agentAction = fetchedResults?.first {
+            return agentAction
+        }
+        return nil
+    }
+    
+    /// Clean agent actions that was not got in incoming JSON from Medsenger
+    /// - Parameters:
+    ///   - validAgentActionsNames: The agent actions Names that exists in JSON from Medsenger
+    ///   - contract: UserDoctorContract contract for data filtering
+    ///   - context: Core Data context
+    private class func cleanRemoved(validNames: [String], contract: Contract, context: NSManagedObjectContext) {
+        let fetchRequest = AgentAction.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "AgentAction fetch by contract for removing") else {
+            return
+        }
+        for agentAction in fetchedResults {
+            if let name = agentAction.name, validNames.contains(name) {
+                context.delete(agentAction)
             }
-            return nil
-        } catch {
-            print("Get `AgentAction` with name: \(name): core data failed: \(error.localizedDescription)")
-            return nil
         }
     }
 }
@@ -56,14 +69,35 @@ extension AgentAction {
     struct JsonDecoder: Decodable {
         let link: URL
         let name: String
-        let type: String
+        let type: String?
         let api_link: URL
         let is_setup: Bool
+        
+        enum CodingKeys: String, CodingKey {
+            case apiLink = "api_link"
+            case isSetup = "is_setup"
+            case link, name, type
+        }
+        
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            self.link = try values.decode(URL.self, forKey: .link)
+            self.name = try values.decode(String.self, forKey: .name)
+            self.api_link = try values.decode(URL.self, forKey: .apiLink)
+            self.is_setup = try values.decode(Bool.self, forKey: .isSetup)
+            
+            
+            if values.contains(.type) {
+                self.type = try values.decode(String.self, forKey: .type)
+            } else {
+                self.type = nil
+            }
+        }
     }
     
-    private class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> AgentAction {
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentAction {
         let agentAction = {
-            guard let agentAction = get(name: data.name, contract: contract, context: context) else {
+            guard let agentAction = get(name: data.name, contract: contract, for: context) else {
                 return AgentAction(context: context)
             }
             return agentAction
@@ -74,49 +108,27 @@ extension AgentAction {
         agentAction.typeString = data.type
         agentAction.apiLink = data.api_link
         agentAction.isSetup = data.is_setup
-        
-        PersistenceController.save(context: context)
+        agentAction.contract = contract
         
         return agentAction
     }
     
-    /// Clean agent actions that was not got in incoming JSON from Medsenger
-    /// - Parameters:
-    ///   - validAgentActionsNames: The agent actions Names that exists in JSON from Medsenger
-    ///   - contract: UserDoctorContract contract for data filtering
-    ///   - context: Core Data context
-    private class func cleanRemoved(validNames: [String], contract: Contract, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = AgentAction.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            for agentAction in fetchedResults {
-                if let name = agentAction.name, validNames.contains(name) {
-                    context.delete(agentAction)
-                    PersistenceController.save(context: context)
-                }
-            }
-        } catch {
-            print("Fetch `AgentAction`: core data failed: \(error.localizedDescription)")
-        }
-    }
-    
-    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [AgentAction] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [AgentAction] {
         
         // Store got AgentActions to check if some contractes deleted later
         var validNames = [String]()
         var agentActions = [AgentAction]()
         
         for agentActionData in data {
-            let agentAction = saveFromJson(data: agentActionData, contract: contract, context: context)
+            let agentAction = saveFromJson(agentActionData, contract: contract, for: context)
             
             agentActions.append(agentAction)
             validNames.append(agentActionData.name)
         }
         
-//        if !validNames.isEmpty {
-//            cleanRemoved(validNames: validNames, contract: contract, context: context)
-//        }
+        if !validNames.isEmpty {
+            cleanRemoved(validNames: validNames, contract: contract, context: context)
+        }
         
         return agentActions
     }

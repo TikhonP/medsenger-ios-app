@@ -23,6 +23,8 @@ struct ChatsView: View {
         animation: .default)
     private var contracts: FetchedResults<Contract>
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
     @State private var showSettingsModal: Bool = false
     @State private var showNewContractModal: Bool = false
     
@@ -44,7 +46,7 @@ struct ChatsView: View {
                 NavigationLink(destination: {
                     ChatView(contract: contract, user: user)
                 }, label: {
-                    switch user.role {
+                    switch userRole {
                     case .patient:
                         PatientChatRow(contract: contract)
                             .environmentObject(chatsViewModel)
@@ -67,10 +69,13 @@ struct ChatsView: View {
         .deprecatedSearchable(text: query)
         .listStyle(PlainListStyle())
         .navigationTitle("Chats")
-        .onAppear(perform: chatsViewModel.getContracts)
+        .onAppear(perform: {
+            chatsViewModel.initilizeWebsockets()
+            chatsViewModel.getContracts()
+        })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if user.role == .doctor {
+                if userRole == .doctor {
                     Button(action: { showNewContractModal.toggle() }, label: { Image(systemName: "square.and.pencil") })
                         .id(UUID())
                 }

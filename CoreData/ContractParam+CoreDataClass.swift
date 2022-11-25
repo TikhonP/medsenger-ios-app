@@ -10,20 +10,12 @@ import CoreData
 
 @objc(ContractParam)
 public class ContractParam: NSManagedObject {
-    private class func get(id: Int, contract: Contract, context: NSManagedObjectContext) -> ContractParam? {
-        do {
-            let fetchRequest = ContractParam.fetchRequest()
-            fetchRequest.fetchLimit = 1
-            fetchRequest.predicate = NSPredicate(format: "id == %ld && contract = %@", id, contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let contractParam = fetchedResults.first {
-                return contractParam
-            }
-            return nil
-        } catch {
-            print("Fetch `ContractParam` core data task failed: \(error.localizedDescription)")
-            return nil
-        }
+    private class func get(id: Int, for context: NSManagedObjectContext) -> ContractParam? {
+        let fetchRequest = ContractParam.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ContractParam get by id")
+        return fetchedResults?.first
     }
 }
 
@@ -36,55 +28,46 @@ extension ContractParam {
         let updated_at: Date
     }
     
-    private class func cleanRemoved(validIds: [Int], contract: Contract, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = ContractParam.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            for contractParam in fetchedResults {
-                if !validIds.contains(Int(contractParam.id)) {
-                    context.delete(contractParam)
-                    PersistenceController.save(context: context)
-                }
+    private class func cleanRemoved(validIds: [Int], contract: Contract, for context: NSManagedObjectContext) {
+        let fetchRequest = ContractParam.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ContractParam fetch by contract for removing") else {
+            return
+        }
+        for contractParam in fetchedResults {
+            if !validIds.contains(Int(contractParam.id)) {
+                context.delete(contractParam)
             }
-        } catch {
-            print("Fetch `ContractParam` core data task failed: \(error.localizedDescription)")
         }
     }
     
-    private class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> ContractParam {
-        let contractParam = {
-            guard let contractParam = get(id: data.id, contract: contract, context: context) else {
-                return ContractParam(context: context)
-            }
-            return contractParam
-        }()
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> ContractParam {
+        let contractParam = get(id: data.id, for: context) ?? ContractParam(context: context)
         
         contractParam.id = Int64(data.id)
         contractParam.name = data.name
         contractParam.value = data.value
         contractParam.createdAt = data.created_at
         contractParam.updatedAt = data.updated_at
-        
-        PersistenceController.save(context: context)
+        contractParam.contract = contract
         
         return contractParam
     }
     
-    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [ContractParam] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [ContractParam] {
         
         var gotIds = [Int]()
         var contractParams = [ContractParam]()
         
         for contractParamData in data {
-            let contractParam = saveFromJson(data: contractParamData, contract: contract, context: context)
+            let contractParam = saveFromJson(contractParamData, contract: contract, for: context)
             
             gotIds.append(contractParamData.id)
             contractParams.append(contractParam)
         }
         
         if !gotIds.isEmpty {
-            cleanRemoved(validIds: gotIds, contract: contract, context: context)
+            cleanRemoved(validIds: gotIds, contract: contract, for: context)
         }
         
         return contractParams

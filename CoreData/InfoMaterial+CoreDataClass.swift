@@ -10,19 +10,11 @@ import CoreData
 
 @objc(InfoMaterial)
 public class InfoMaterial: NSManagedObject {
-    private class func get(name: String, contract: Contract, context: NSManagedObjectContext) -> InfoMaterial? {
-        do {
-            let fetchRequest = InfoMaterial.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let infoMaterial = fetchedResults.first {
-                return infoMaterial
-            }
-            return nil
-        } catch {
-            print("Fetch `InfoMaterial` core data failed: \(error.localizedDescription)")
-            return nil
-        }
+    private class func get(name: String, contract: Contract, for context: NSManagedObjectContext) -> InfoMaterial? {
+        let fetchRequest = InfoMaterial.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "InfoMaterial get by name and contract")
+        return fetchedResults?.first
     }
 }
 
@@ -32,51 +24,42 @@ extension InfoMaterial {
         let link: URL
     }
     
-    private class func cleanRemoved(validNames: [String], contract: Contract, context: NSManagedObjectContext) {
-        do {
-            let fetchRequest = InfoMaterial.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-            let fetchedResults = try context.fetch(fetchRequest)
-            for infoMaterial in fetchedResults {
-                if let name = infoMaterial.name, !validNames.contains(name) {
-                    context.delete(infoMaterial)
-                    PersistenceController.save(context: context)
-                }
+    private class func cleanRemoved(validNames: [String], contract: Contract, for context: NSManagedObjectContext) {
+        let fetchRequest = InfoMaterial.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "InfoMaterial fetch by contract for removing") else {
+            return
+        }
+        for infoMaterial in fetchedResults {
+            if let name = infoMaterial.name, !validNames.contains(name) {
+                context.delete(infoMaterial)
             }
-        } catch {
-            print("Fetch `InfoMaterial` core data failed: \(error.localizedDescription)")
         }
     }
     
-    private class func saveFromJson(data: JsonDecoder, contract: Contract, context: NSManagedObjectContext) -> InfoMaterial {
-        let infoMaterial = {
-            guard let infoMaterial = get(name: data.name, contract: contract, context: context) else {
-                return InfoMaterial(context: context)
-            }
-            return infoMaterial
-        }()
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> InfoMaterial {
+        let infoMaterial = get(name: data.name, contract: contract, for: context) ?? InfoMaterial(context: context)
         
         infoMaterial.name = data.name
         infoMaterial.link = data.link
-        
-        PersistenceController.save(context: context)
+        infoMaterial.contract = contract
         
         return infoMaterial
     }
     
-    class func saveFromJson(data: [JsonDecoder], contract: Contract, context: NSManagedObjectContext) -> [InfoMaterial] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [InfoMaterial] {
         var gotNames = [String]()
         var infoMaterials = [InfoMaterial]()
         
         for infoMaterialData in data {
-            let infoMaterial = saveFromJson(data: infoMaterialData, contract: contract, context: context)
+            let infoMaterial = saveFromJson(infoMaterialData, contract: contract, for: context)
             
             gotNames.append(infoMaterialData.name)
             infoMaterials.append(infoMaterial)
         }
         
         if !gotNames.isEmpty {
-            cleanRemoved(validNames: gotNames, contract: contract, context: context)
+            cleanRemoved(validNames: gotNames, contract: contract, for: context)
         }
         
         return infoMaterials

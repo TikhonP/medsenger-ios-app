@@ -12,6 +12,10 @@ import SwiftUI
 struct MedsengerApp: App {
     let persistenceController = PersistenceController.shared
     
+    init() {
+        UserDefaults.registerDefaultValues()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

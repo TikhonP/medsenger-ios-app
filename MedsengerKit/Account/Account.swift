@@ -17,25 +17,18 @@ class Account {
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
     private var notificationsRequest: APIRequest<NotificationsResource>?
     
-    public func changeRole(_ role: User.Role) {
+    public func changeRole(_ role: UserRole) {
         Contract.clearAllContracts()
-        User.role = role
+        UserDefaults.userRole = role
     }
     
-    public var role: User.Role {
-        guard let role = User.role else {
-            return User.Role.patient // FIXME: !!!
-        }
-        return role
-    }
-    
-    public func getAvatar() {
+    public func fetchAvatar() {
         getAvatarRequest = FileRequest(path: "/photo/")
         getAvatarRequest?.execute { result in
             switch result {
             case .success(let data):
                 if let data = data {
-                    User.saveAvatar(data: data)
+                    User.saveAvatar(data)
                 }
             case .failure(let error):
                 processRequestError(error, "get user avatar")
@@ -50,8 +43,8 @@ class Account {
             switch result {
             case .success(let data):
                 if let data = data {
-                    User.saveUserFromJson(data: data)
-                    self.getAvatar()
+                    User.saveUserFromJson(data)
+                    self.fetchAvatar()
                 }
             case .failure(let error):
                 processRequestError(error, "get profile data")
@@ -60,14 +53,14 @@ class Account {
     }
     
     public func uploadAvatar(_ image: Data) {
-        User.saveAvatar(data: nil)
+        User.saveAvatar(nil)
         
         let uploadAvatarResource = UploadAvatarResource(image: image)
         uploadAvatarRequest = UploadImageRequest(resource: uploadAvatarResource)
         uploadAvatarRequest?.execute { result in
             switch result {
             case .success(_):
-                self.getAvatar()
+                self.fetchAvatar()
             case .failure(let error):
                 processRequestError(error, "upload user avatar")
             }

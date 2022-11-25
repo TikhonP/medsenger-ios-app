@@ -19,7 +19,6 @@ extension User {
         user.name = "Караулькин Игорь Васильевич"
         user.email = "aboba57@mail.ru"
         user.phone = "+74203216969"
-        user.role = Role.patient
         user.shortName = "Игорь"
         user.emailNotifications = true
         user.hasApp = true

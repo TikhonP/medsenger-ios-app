@@ -22,7 +22,7 @@ final class SettingsViewModel: ObservableObject {
     @Published var selectedAvatarImage = Data()
     
     func getAvatar() {
-        Account.shared.getAvatar()
+        Account.shared.fetchAvatar()
     }
     
     func signOut() {

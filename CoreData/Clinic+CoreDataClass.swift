@@ -10,29 +10,43 @@ import CoreData
 
 @objc(Clinic)
 public class Clinic: NSManagedObject {
-    class func get(id: Int, context: NSManagedObjectContext) -> Clinic? {
-        do {
-            let fetchRequest = Clinic.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-            let fetchedResults = try context.fetch(fetchRequest)
-            if let clinic = fetchedResults.first {
-                return clinic
-            }
-            return nil
-        } catch {
-            print("Get `Clinic` with id: \(id), core data task failed: ", error.localizedDescription)
-            return nil
-        }
+    class func get(id: Int, for context: NSManagedObjectContext) -> Clinic? {
+        let fetchRequest = Clinic.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic get by id")
+        return fetchedResults?.first
     }
     
     class func saveLogo(id: Int, image: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let clinic = get(id: id, context: context) else {
+            guard let clinic = get(id: id, for: context) else {
                 return
             }
             clinic.logo = image
-            PersistenceController.save(context: context)
+            PersistenceController.save(for: context, detailsForLogging: "Clinic save logo")
         }
+    }
+}
+
+extension Clinic {
+    public var contractsArray: [Contract] {
+        let set = contracts as? Set<Contract> ?? []
+        return Array(set)
+    }
+    
+    public var agentsArray: [Agent] {
+        let set = agents as? Set<Agent> ?? []
+        return Array(set)
+    }
+    
+    public var rulesArray: [ClinicRule] {
+        let set = rules as? Set<ClinicRule> ?? []
+        return Array(set)
+    }
+    
+    public var classifiersArray: [ClinicClassifier] {
+        let set = classifiers as? Set<ClinicClassifier> ?? []
+        return Array(set)
     }
 }
 
@@ -50,13 +64,8 @@ extension Clinic {
         let classifiers: Array<ClinicClassifier.JsonDeserializer>
     }
     
-    class func saveFromJson(data: JsonDecoderFromCheck, context: NSManagedObjectContext) -> Clinic {
-        let clinic = {
-            guard let clinic = get(id: data.id, context: context) else {
-                return Clinic(context: context)
-            }
-            return clinic
-        }()
+    class func saveFromJson(_ data: JsonDecoderFromCheck, for context: NSManagedObjectContext) -> Clinic {
+        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.name = data.name
         clinic.id = Int64(data.id)
@@ -64,25 +73,21 @@ extension Clinic {
         clinic.esiaEnabled = data.esia_enabled
         clinic.delayedContractsEnabled = data.delayed_contracts_enabled
         
-        PersistenceController.save(context: context)
-        
         for ruleData in data.rules {
-            let rule = ClinicRule.saveFromJson(data: ruleData, context: context)
+            let rule = ClinicRule.saveFromJson(ruleData, for: context)
             
-            if let isExist = clinic.rules?.contains(rule), !isExist {
+            if !clinic.rulesArray.contains(rule) {
                 clinic.addToRules(rule)
             }
         }
         
         for classifierData in data.classifiers {
-            let classifier = ClinicClassifier.saveFromJson(data: classifierData, context: context)
+            let classifier = ClinicClassifier.saveFromJson(classifierData, for: context)
             
-            if let isExist = clinic.classifiers?.contains(classifier), !isExist {
+            if !clinic.classifiersArray.contains(classifier) {
                 clinic.addToClassifiers(classifier)
             }
         }
-        
-        PersistenceController.save(context: context)
         
         return clinic
     }
@@ -91,7 +96,7 @@ extension Clinic {
 // MARK: - Clinic from doctor contracts JSON data logic
 
 extension Clinic {
-    struct JsonDecoderFromDoctorContract: Decodable {
+    struct JsonDecoderRequestAsPatient: Decodable {
         let id: Int
         let name: String
         let timezone: String
@@ -103,13 +108,8 @@ extension Clinic {
         let phone: String
     }
     
-    class func saveFromJson(data: JsonDecoderFromDoctorContract, context: NSManagedObjectContext) -> Clinic {
-        let clinic = {
-            guard let clinic = get(id: data.id, context: context) else {
-                return Clinic(context: context)
-            }
-            return clinic
-        }()
+    class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Clinic {
+        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name
@@ -126,8 +126,6 @@ extension Clinic {
         clinic.videoEnabled = data.video_enabled
         clinic.phonePaid = data.phone_paid
         clinic.phone = data.phone
-        
-        PersistenceController.save(context: context)
         
         return clinic
     }
@@ -137,7 +135,7 @@ extension Clinic {
 
 
 extension Clinic {
-    struct JsonDecoderFromPatientContract: Decodable {
+    struct JsonDecoderRequestAsDoctor: Decodable {
         let id: Int
         let name: String
         let timezone: String
@@ -148,18 +146,13 @@ extension Clinic {
         let phone_paid: Bool
         let phone: String
         
-        let agents: Array<Agent.JsonDecoder>
+        let agents: Array<Agent.JsonDecoderFromClinic>
 //        let devices
 //        let scenarios:
     }
     
-    class func saveFromJson(data: JsonDecoderFromPatientContract, context: NSManagedObjectContext) -> Clinic {
-        let clinic = {
-            guard let clinic = get(id: data.id, context: context) else {
-                return Clinic(context: context)
-            }
-            return clinic
-        }()
+    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Clinic {
+        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name
@@ -177,12 +170,9 @@ extension Clinic {
         clinic.phonePaid = data.phone_paid
         clinic.phone = data.phone
         
-        PersistenceController.save(context: context)
-        
         for agentData in data.agents {
-            let agent = Agent.saveFromJson(data: agentData, context: context)
-            
-            if let isExist = clinic.agents?.contains(agent), !isExist {
+            let agent = Agent.saveFromJson(agentData, for: context)
+            if !clinic.agentsArray.contains(agent) {
                 clinic.addToAgents(agent)
             }
         }

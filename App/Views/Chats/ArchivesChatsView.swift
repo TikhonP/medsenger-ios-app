@@ -23,6 +23,8 @@ struct ArchivesChatsView: View {
         animation: .default)
     private var contracts: FetchedResults<Contract>
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
     @State private var searchText = ""
     var query: Binding<String> {
         Binding {
@@ -40,7 +42,7 @@ struct ArchivesChatsView: View {
             NavigationLink(destination: {
                 ChatView(contract: contract, user: user)
             }, label: {
-                switch user.role {
+                switch userRole {
                 case .patient:
                     PatientChatRow(contract: contract)
                 case .doctor:
