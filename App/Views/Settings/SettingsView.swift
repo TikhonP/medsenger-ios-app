@@ -34,13 +34,13 @@ struct SettingsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .confirmationAction) {
-                                Button("Edit", action: settingsViewModel.toggleEditPersonalData)
-                            }
-                            
-                            ToolbarItem(placement: .cancellationAction) {
                                 Button("Done") {
                                     presentationMode.wrappedValue.dismiss()
                                 }
+                            }
+                            
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button("Edit", action: settingsViewModel.toggleEditPersonalData)
                             }
                         }
                 }

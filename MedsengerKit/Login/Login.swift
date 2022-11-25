@@ -92,11 +92,12 @@ class Login {
     public func signOut() {
         KeyСhain.apiToken = nil
         User.delete()
+        UserDefaults.userRole = .unknown
     }
     
     public func deauthIfTokenIsNotExists() {
         if !Login.isSignedIn {
-            User.delete()
+            signOut()
         }
     }
 }

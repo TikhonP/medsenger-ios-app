@@ -47,7 +47,7 @@ extension AgentTask {
             return
         }
         for agentTask in fetchedResults {
-            if validIds.contains(Int(agentTask.id)) {
+            if !validIds.contains(Int(agentTask.id)) {
                 context.delete(agentTask)
             }
         }

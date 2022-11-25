@@ -13,8 +13,21 @@ struct TextInputView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "camera.fill")
-                .font(.title)
+            if chatViewModel.isImageAdded {
+                Button(action: {
+                    chatViewModel.isImageAdded = false
+                }, label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                })
+            } else {
+                Button(action: {
+                    chatViewModel.showSelectImageOptions = true
+                }, label: {
+                    Image(systemName: "camera.fill")
+                        .font(.title)
+                })
+            }
             ZStack {
                 RoundedRectangle(cornerRadius: 18)
                     .stroke()
@@ -56,7 +69,7 @@ struct TextInputView: View {
                         }
                         Spacer()
                         ZStack {
-                            if chatViewModel.message.isEmpty {
+                            if chatViewModel.message.isEmpty && !chatViewModel.isImageAdded {
                                 if chatViewModel.isRecordingVoiceMessage {
                                     Button(action: { chatViewModel.finishRecording(success: true) }, label: {
                                         Image(systemName: "stop.circle.fill")
@@ -99,6 +112,33 @@ struct TextInputView: View {
             Color(UIColor.systemBackground).opacity(0.95).edgesIgnoringSafeArea(.bottom)
         )
         .deprecatedScrollDismissesKeyboard()
+        .actionSheet(isPresented: $chatViewModel.showSelectImageOptions) {
+            ActionSheet(title: Text("Choose a photo"),
+                        buttons: [
+                            .default(Text("Pick from library")) {
+                                chatViewModel.showSelectPhotosSheet = true
+                            },
+                            .default(Text("Take a photo")) {
+                                chatViewModel.showTakeImageSheet = true
+                            },
+                            .cancel()
+                        ])
+        }
+        .sheet(isPresented: $chatViewModel.showSelectPhotosSheet) {
+            ImagePicker(selectedImage: $chatViewModel.selectedImage, sourceType: .photoLibrary)
+        }
+        .sheet(isPresented: $chatViewModel.showTakeImageSheet) {
+            ZStack {
+                Color.black
+                ImagePicker(selectedImage: $chatViewModel.selectedImage, sourceType: .camera)
+                    .padding(.bottom, 40)
+                    .padding(.top)
+            }
+            .edgesIgnoringSafeArea(.bottom)
+        }
+        .onChange(of: chatViewModel.selectedImage) { newValue in
+            chatViewModel.isImageAdded = true
+        }
     }
 }
 

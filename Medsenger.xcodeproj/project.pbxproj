@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
+		434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */; };
 		434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */; };
 		434399F72927E831001D7C4F /* ContractView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F62927E831001D7C4F /* ContractView.swift */; };
 		434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F82927F366001D7C4F /* InfoMaterialsView.swift */; };
@@ -111,6 +112,7 @@
 /* Begin PBXFileReference section */
 		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
+		434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedScrollDismissesKeyboard.swift; sourceTree = "<group>"; };
 		434399F62927E831001D7C4F /* ContractView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractView.swift; sourceTree = "<group>"; };
 		434399F82927F366001D7C4F /* InfoMaterialsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoMaterialsView.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
 				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
 				43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */,
+				434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -573,6 +576,7 @@
 				43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */,
 				43EF447129228DDF005DF084 /* PasswordFieldView.swift in Sources */,
 				43EF441A292286FC005DF084 /* InfoMaterial+CoreDataClass.swift in Sources */,
+				434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */,
 				433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */,
 				43EF4426292287BC005DF084 /* ImageAttachment+CoreDataClass.swift in Sources */,
 				43EF442229228774005DF084 /* Agent+CoreDataClass.swift in Sources */,

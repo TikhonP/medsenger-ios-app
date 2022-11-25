@@ -28,6 +28,12 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
     @Published var quickLookDocumentUrl: URL?
     @Published var loadingAttachmentIds = [Int]()
     
+    @Published var showSelectImageOptions: Bool = false
+    @Published var showSelectPhotosSheet = false
+    @Published var showTakeImageSheet = false
+    @Published var selectedImage = Data()
+    @Published var isImageAdded = false
+    
     init(contractId: Int) {
         self.contractId = contractId
     }
@@ -37,10 +43,25 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
     }
     
     func sendMessage() {
-        if !self.message.isEmpty {
-            let message = self.message
-            self.message = ""
-            Messages.shared.sendMessage(message, contractId: contractId)
+        guard !message.isEmpty || isImageAdded else {
+            return
+        }
+        if isImageAdded {
+            Messages.shared.sendMessage(
+                message,
+                contractId: contractId,
+                attachments: [("image.png", selectedImage)]) {
+                    DispatchQueue.main.async {
+                        self.isImageAdded = false
+                        self.message = ""
+                    }
+                }
+        } else {
+            Messages.shared.sendMessage(message, contractId: contractId) {
+                DispatchQueue.main.async {
+                    self.message = ""
+                }
+            }
         }
     }
     
@@ -147,11 +168,11 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
     func sendVoiceMessage() {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        
+        guard let data = try? Data(contentsOf: voiceMessageFilePath) else { return }
         Messages.shared.sendMessage(
             Constants.voiceMessageText,
             contractId: contractId,
-            attachments: [voiceMessageFilePath]) {
+            attachments: [(Constants.voiceMessageFileName, data)]) {
                 DispatchQueue.main.async {
                     self.isRecordingVoiceMessage = false
                     self.showRecordedMessage = false

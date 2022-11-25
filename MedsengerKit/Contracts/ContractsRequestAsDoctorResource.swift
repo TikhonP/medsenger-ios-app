@@ -17,7 +17,6 @@ struct ContractsRequestAsDoctorResource: APIResource {
         parseResponse: true,
         queryItems: [
             URLQueryItem(name: "with_inactive", value: "true"),
-//            URLQueryItem(name: "separate_clinics", value: "true")
         ]
     )
 }

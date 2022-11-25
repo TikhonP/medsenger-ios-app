@@ -40,23 +40,26 @@ struct MessageView: View {
     
     var messageBody: some View {
         VStack {
-            Text(message.text ?? "Unknown text")
-            if let attachmentsSet = message.attachments as? Set<Attachment>, let attachments = Array(attachmentsSet), !attachments.isEmpty {
-                ForEach(attachments) { attachment in
-                    if let name = attachment.name {
-                        Button(action: {
-                            chatViewModel.showAttachmentPreview(attachment)
-                        }, label: {
-                            HStack {
-                                Label(name, systemImage: attachment.iconAsSystemImageName)
-                                if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
-                                    ProgressView()
-                                        .padding(.leading)
-                                }
+            Text(message.wrappedText)
+            
+            ForEach(message.attachmentsArray) { attachment in
+                if let name = attachment.name {
+                    Button(action: {
+                        chatViewModel.showAttachmentPreview(attachment)
+                    }, label: {
+                        HStack {
+                            Label(name, systemImage: attachment.iconAsSystemImageName)
+                            if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
+                                ProgressView()
+                                    .padding(.leading)
                             }
-                        })
-                    }
+                        }
+                    })
                 }
+            }
+            
+            ForEach(message.imagesArray) { image in
+                Text(image.wrappedName)
             }
         }
     }

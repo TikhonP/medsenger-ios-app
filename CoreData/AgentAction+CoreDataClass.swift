@@ -58,7 +58,7 @@ public class AgentAction: NSManagedObject {
             return
         }
         for agentAction in fetchedResults {
-            if let name = agentAction.name, validNames.contains(name) {
+            if let name = agentAction.name, !validNames.contains(name) {
                 context.delete(agentAction)
             }
         }
@@ -96,12 +96,7 @@ extension AgentAction {
     }
     
     private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentAction {
-        let agentAction = {
-            guard let agentAction = get(name: data.name, contract: contract, for: context) else {
-                return AgentAction(context: context)
-            }
-            return agentAction
-        }()
+        let agentAction = get(name: data.name, contract: contract, for: context) ?? AgentAction(context: context)
         
         agentAction.name = data.name
         agentAction.link = data.link

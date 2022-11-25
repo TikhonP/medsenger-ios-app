@@ -42,7 +42,7 @@ public class Attachment: NSManagedObject {
         return fetchedResults?.first
     }
     
-    private class func writeToFile(_ data: Data, fileName: String) -> URL? {
+    class func writeToFile(_ data: Data, fileName: String) -> URL? {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
             return nil
         }

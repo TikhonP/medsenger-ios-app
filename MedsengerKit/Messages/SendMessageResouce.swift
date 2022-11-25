@@ -12,14 +12,13 @@ struct SendMessageResouce: APIResource {
     let text: String
     let contractID: Int
     let replyToId: Int?
-    let images: Array<(String, Data)>
-    let attachments: Array<URL>
+    let attachments: Array<(String, Data)>
+//    let attachments: Array<URL>
     
-    init(_ text: String, contractID: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<URL> = []) {
+    init(_ text: String, contractID: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = []) {
         self.text = text
         self.contractID = contractID
         self.replyToId = replyToId
-        self.images = images
         self.attachments = attachments
     }
     
@@ -46,35 +45,35 @@ struct SendMessageResouce: APIResource {
                 )
             )
         }
-        for (index, image) in images.enumerated() {
+        for (index, attachment) in attachments.enumerated() {
             data.append(
                 MultipartFormData.Part(
                     contentDisposition: ContentDisposition(
                         name: Name(asPercentEncoded: "attachment[\(index)]"),
-                        filename: Filename(asPercentEncoded: image.0)
+                        filename: Filename(asPercentEncoded: attachment.0)
                     ),
-                    contentType: ContentType(representing: MIMEType(text: image.1.mimeType)),
-                    content: image.1
+                    contentType: ContentType(representing: MIMEType(text: attachment.1.mimeType)),
+                    content: attachment.1
                 )
             )
         }
-        for (index, url) in attachments.enumerated() {
-            do {
-                let fileValue = try Data(contentsOf: url)
-                data.append(
-                    MultipartFormData.Part(
-                        contentDisposition: ContentDisposition(
-                            name: Name(asPercentEncoded: "attachment[\(index)]".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!),
-                            filename: Filename(asPercentEncoded: url.lastPathComponent)
-                        ),
-                        contentType: ContentType(representing: MIMEType(text: url.mimeType())),
-                        content: fileValue
-                    )
-                )
-            } catch {
-                print("Send message resource: Failed to read data: \(error.localizedDescription)")
-            }
-        }
+//        for (index, url) in attachments.enumerated() {
+//            do {
+//                let fileValue = try Data(contentsOf: url)
+//                data.append(
+//                    MultipartFormData.Part(
+//                        contentDisposition: ContentDisposition(
+//                            name: Name(asPercentEncoded: "attachment[\(index)]".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!),
+//                            filename: Filename(asPercentEncoded: url.lastPathComponent)
+//                        ),
+//                        contentType: ContentType(representing: MIMEType(text: url.mimeType())),
+//                        content: fileValue
+//                    )
+//                )
+//            } catch {
+//                print("Send message resource: Failed to read data: \(error.localizedDescription)")
+//            }
+//        }
         return MultipartFormData(
             uniqueAndValidLengthBoundary: "boundary",
             body: data

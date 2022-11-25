@@ -11,6 +11,7 @@ import SwiftUI
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: Data
     
+    var edit: Bool = true
     var sourceType: UIImagePickerController.SourceType = .photoLibrary
     
     @Environment(\.presentationMode) private var presentationMode
@@ -18,7 +19,7 @@ struct ImagePicker: UIViewControllerRepresentable {
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
 
         let imagePicker = UIImagePickerController()
-        imagePicker.allowsEditing = true
+        imagePicker.allowsEditing = edit
         imagePicker.sourceType = sourceType
         imagePicker.mediaTypes = ["public.image"]
         imagePicker.delegate = context.coordinator
@@ -44,10 +45,16 @@ struct ImagePicker: UIViewControllerRepresentable {
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             
-            if let image = info[.editedImage] as? UIImage, let data = image.pngData() {
-                parent.selectedImage = data
+            if parent.edit {
+                if let image = info[.editedImage] as? UIImage, let data = image.pngData() {
+                    parent.selectedImage = data
+                }
+            } else {
+                if let image = info[.originalImage] as? UIImage, let data = image.pngData() {
+                    parent.selectedImage = data
+                }
             }
-
+            
             parent.presentationMode.wrappedValue.dismiss()
         }
 

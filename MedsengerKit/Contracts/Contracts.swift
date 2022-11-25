@@ -14,6 +14,7 @@ class Contracts {
     private var contractsRequestAsPatientRequest: APIRequest<ContractsRequestAsPatientResource>?
     private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
     private var contractsArchiveRequestAsPatientRequest: APIRequest<ContractsArchiveRequestAsPatientResource>?
+    private var contractsArchiveRequestAsDoctorRequest: APIRequest<ContractsArchiveRequestAsDoctorResource>?
     private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
     private var concludeContractRequest: APIRequest<ConcludeContractResource>?
     private var getImageRequests = [FileRequest]()
@@ -63,11 +64,22 @@ class Contracts {
                         Contract.saveFromJson(data, archive: true)
                     }
                 case .failure(let error):
-                    processRequestError(error, "get contracts doctors archive")
+                    processRequestError(error, "get contracts archive request as patient")
                 }
             }
         case .doctor:
-            print("Failed to fetch archive contracts: Request as doctor is not definded")
+            let contractsArchiveRequestAsDoctorResource = ContractsArchiveRequestAsDoctorResource()
+            contractsArchiveRequestAsDoctorRequest = APIRequest(resource: contractsArchiveRequestAsDoctorResource)
+            contractsArchiveRequestAsDoctorRequest?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: true)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get contracts archive request as doctor")
+                }
+            }
         case .unknown:
             print("Failed to fetch archive contracts: User role unknown")
         }

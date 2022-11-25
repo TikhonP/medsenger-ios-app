@@ -21,7 +21,7 @@ struct ContractView: View {
             .listRowInsets(EdgeInsets())
             
             Section {
-                if let infoMaterials = contract.infoMaterials, infoMaterials.count != 0 {
+                if !contract.infoMaterialsArray.isEmpty {
                     NavigationLink(destination: {
                         InfoMaterialsView(contract: contract)
                     }, label: {
@@ -35,9 +35,9 @@ struct ContractView: View {
                 })
             }
             
-            if let agentActionsSet = contract.agentActions as? Set<AgentAction>, let agentActions = Array(agentActionsSet), !agentActions.isEmpty {
+            if !contract.agentActionsArray.isEmpty {
                 Section(header: Text("Agent Actions")) {
-                    ForEach(agentActions) { agentAction in
+                    ForEach(contract.agentActionsArray) { agentAction in
                             switch agentAction.type {
                             case .url:
                                 if let name = agentAction.name, let link = agentAction.apiLink {

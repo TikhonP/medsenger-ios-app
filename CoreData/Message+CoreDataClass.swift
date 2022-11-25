@@ -30,6 +30,10 @@ public class Message: NSManagedObject {
 }
 
 extension Message {
+    public var wrappedText: String {
+        text ?? "Unknown text"
+    }
+    
     public var attachmentsArray: [Attachment] {
         let set = attachments as? Set<Attachment> ?? []
         return Array(set)

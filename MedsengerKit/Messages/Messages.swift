@@ -39,8 +39,8 @@ class Messages {
         }
     }
     
-    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, images: Array<(String, Data)> = [], attachments: Array<URL> = [], completion: (() -> Void)? = nil) {
-        let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, images: images, attachments: attachments)
+    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
+        let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, attachments: attachments)
         sendMessageRequest = APIRequest(resource: sendMessageResource)
         sendMessageRequest?.execute { result in
             switch result {

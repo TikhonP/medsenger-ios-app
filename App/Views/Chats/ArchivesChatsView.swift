@@ -15,8 +15,6 @@ struct ArchivesChatsView: View {
 
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(key: "unread", ascending: false),
-            NSSortDescriptor(key: "sortRating", ascending: false),
             NSSortDescriptor(key: "endDate", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == YES"),

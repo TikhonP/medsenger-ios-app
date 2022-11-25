@@ -129,6 +129,16 @@ extension Contract {
         let set = messages as? Set<Message> ?? []
         return Array(set)
     }
+    
+    public var infoMaterialsArray: [InfoMaterial] {
+        let set = infoMaterials as? Set<InfoMaterial> ?? []
+        return Array(set)
+    }
+    
+    public var agentActionsArray: [AgentAction] {
+        let set = agentActions as? Set<AgentAction> ?? []
+        return Array(set)
+    }
 }
 
 // MARK: - Contracts with Doctors
@@ -243,7 +253,7 @@ extension Contract {
 
                 let agents = Agent.saveFromJson(contractData.agents, for: context)
                 contract.addToAgents(NSSet(array: agents))
-
+                
                 _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
                 _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)
                 _ = AgentTask.saveFromJson(contractData.agent_tasks, contract: contract, for: context)
@@ -320,7 +330,7 @@ extension Contract {
         let patient_name: String
         let doctor_name: String
         let birthday: String
-        let email: String
+        let email: String?
         let phone: String?
         //        let diagnosis: String? // ??
         let clinic: Clinic.JsonDecoderRequestAsDoctor

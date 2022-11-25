@@ -19,6 +19,12 @@ public class ImageAttachment: NSManagedObject {
 }
 
 extension ImageAttachment {
+    public var wrappedName: String {
+        name ?? "Unknown name"
+    }
+}
+
+extension ImageAttachment {
     struct JsonSerializer: Decodable {
         let id: Int
         let name: String
