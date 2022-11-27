@@ -22,8 +22,16 @@ struct ContentView: View {
                 if userRole == .unknown {
                     ChooseRoleView()
                 } else {
-                    NavigationView {
-                        ChatsView(user: user)
+                    ZStack {
+                        NavigationView {
+                            ChatsView(user: user)
+                        }
+                        .environmentObject(contentViewModel)
+                        
+                        if contentViewModel.isCalling, let videoCallContractId = contentViewModel.videoCallContractId {
+                            VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)
+                                .environmentObject(contentViewModel)
+                        }
                     }
                 }
             }

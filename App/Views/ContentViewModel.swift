@@ -9,5 +9,6 @@
 import Foundation
 
 final class ContentViewModel: ObservableObject {
-    
+    @Published var isCalling: Bool = false
+    @Published var videoCallContractId: Int?
 }

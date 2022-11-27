@@ -7,12 +7,17 @@
 //
 
 import Foundation
+import WebRTC
 
 // MARK: Websocket Request protocol
 
 enum WebsocketCommands: String, Encodable {
     case iAm = "I_AM"
     case messageUpdate = "MESSAGE_UPDATE"
+    case call = "CALL"
+    case sdp = "SDP"
+    case ice = "ICE"
+    case hangUp = "HANG_UP"
 }
 
 protocol WebsocketModel: Encodable {
@@ -35,7 +40,7 @@ extension WebsocketRequest {
     var data: String? {
         do {
             var modelDictionary = model.asDictionary
-            modelDictionary["clientType"] = UserDefaults.userRole.clientsForNetworkRequest
+            modelDictionary["clientType"] = UserDefaults.userRole.rawValue
             modelDictionary["clientToken"] = KeyСhain.apiToken
             let jsonData = try JSONSerialization.data(withJSONObject: modelDictionary)
             let jsonString = String(data: jsonData, encoding: .utf8)
@@ -63,6 +68,60 @@ struct MessageUpdateWebsocketRequest: WebsocketRequest {
     
     struct Model: WebsocketModel {
         var mType = WebsocketCommands.messageUpdate
+        let contract: Int
+    }
+    
+    var model: Model { Model(contract: contractId) }
+}
+
+struct CallWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.call
+        let contract: Int
+    }
+    
+    var model: Model { Model(contract: contractId) }
+}
+
+struct SdpWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    let rtcSdp: RTCSessionDescription
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.sdp
+        let contract: Int
+        let sdp: SessionDescription
+    }
+    
+    var model: Model { Model(
+        contract: contractId,
+        sdp: SessionDescription(from: rtcSdp)
+    ) }
+}
+
+struct IceWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    let rtcIceCandidate: RTCIceCandidate
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.ice
+        let contract: Int
+        let ice: IceCandidate
+    }
+    
+    var model: Model { Model(
+        contract: contractId,
+        ice: IceCandidate(from: rtcIceCandidate)
+    ) }
+}
+
+struct HangUpWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.hangUp
         let contract: Int
     }
     

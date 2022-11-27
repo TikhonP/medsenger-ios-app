@@ -41,7 +41,7 @@ extension UserDefaults {
             UserDefaults.standard.set(newValue.rawValue, forKey: Keys.userRoleKey)
         }
     }
-    
+
     class func registerDefaultValues() {
         UserDefaults.standard.register(defaults: [
             Keys.userRoleKey: UserRole.unknown.rawValue,

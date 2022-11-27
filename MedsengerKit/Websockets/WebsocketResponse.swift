@@ -11,11 +11,23 @@ import Foundation
 // MARK: Websocket Request protocol
 
 enum WebsocketResponseStatus: String, Decodable {
-    case notAuthorized = "ERR_NOT_AUTHORIZED"
     case authSuccess = "AUTH_SUCCESS"
+    case notAuthorized = "ERR_NOT_AUTHORIZED"
     case onlineList = "CURRENT_ONLINE_LIST"
     case userOnline = "USER_ONLINE"
     case userOffline = "USER_OFFLINE"
+    case ice = "ICE"
+    case invalidIce = "INVALID_ICE"
+    case invalidStream = "INVALID_STREAM"
+    case sdp = "SDP"
+    case call = "CALL"
+    case callContinued = "CALL_CONTINUED"
+    case answered = "ANSWERED"
+    case answeredFromAnotherDevice = "ANSWERED_FROM_ANOTHER_DEVICE"
+    case hangUp = "HANG_UP"
+    case errOffline = "ERR_OFFLINE"
+    case errConnection = "ERR_CONNECTION"
+    case errConnectionServer = "ERR_CONNECTION_SERVER"
     case newMessage, allRead, updateInterface
     
     static func getWebsocketResponse(_ status: Self) -> any WebsocketResponse {
@@ -23,7 +35,7 @@ enum WebsocketResponseStatus: String, Decodable {
         case .notAuthorized:
             return NotAuthorizedWebsocketResponse()
         case .authSuccess:
-            return authSuccessWebsocketResponse()
+            return AuthSuccessWebsocketResponse()
         case .onlineList:
             return OnlineListWebsocketResponse()
         case .newMessage:
@@ -36,6 +48,30 @@ enum WebsocketResponseStatus: String, Decodable {
             return UserOfflineWebsocketResponse()
         case .updateInterface:
             return NewMessageWebsocketResponse()
+        case .ice:
+            return IceWebsocketResponse()
+        case .invalidIce:
+            return InvalidIceWebsocketResponse()
+        case .invalidStream:
+            return InvalidStreamWebsocketResponse()
+        case .sdp:
+            return SdpWebsocketResponse()
+        case .call:
+            return CallWebsocketResponse()
+        case .callContinued:
+            return CallContinuedWebsocketResponse()
+        case .answered:
+            return AnsweredWebsocketResponse()
+        case .answeredFromAnotherDevice:
+            return AnsweredFromAnotherDeviceWebsocketResponse()
+        case .hangUp:
+            return HangUpWebsocketResponse()
+        case .errOffline:
+            return ErrorOfflineWebsocketResponse()
+        case .errConnection:
+            return ErrorConnectionWebsocketResponse()
+        case .errConnectionServer:
+            return ErrorConnectionServerWebsocketResponse()
         }
     }
 }
@@ -84,16 +120,16 @@ struct NotAuthorizedWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("Websocket not authorized")
+        print("WebsocketResponse: NotAuthorizedWebsocketResponse")
         // FIXME: !!!
     }
 }
 
-struct authSuccessWebsocketResponse: WebsocketResponse {
+struct AuthSuccessWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("Websocket authorization success")
+        print("WebsocketResponse: AuthSuccessWebsocketResponse")
     }
 }
 
@@ -126,7 +162,7 @@ struct AllReadWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("All resd: \(data)")
+        print("WebsocketResponse: AllReadWebsocketResponse: \(data)")
     }
 }
 
@@ -136,7 +172,7 @@ struct UserOnlineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("User Online: \(data)")
+        print("WebsocketResponse: UserOnlineWebsocketResponse: \(data)")
     }
 }
 
@@ -146,6 +182,108 @@ struct UserOfflineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("User Offline: \(data)")
+        print("WebsocketResponse: UserOfflineWebsocketResponse: \(data)")
+    }
+}
+
+struct CallWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: CallWebsocketResponse")
+    }
+}
+
+struct CallContinuedWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: CallContinuedWebsocketResponse")
+    }
+}
+
+struct ErrorOfflineWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: ErrorOfflineWebsocketResponse")
+    }
+}
+
+struct HangUpWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: HangUpWebsocketResponse")
+    }
+}
+
+struct AnsweredWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: AnsweredWebsocketResponse")
+    }
+}
+
+struct AnsweredFromAnotherDeviceWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: AnsweredFromAnotherDeviceWebsocketResponse")
+    }
+}
+
+struct ErrorConnectionWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: AnsweredFromAnotherDeviceWebsocketResponse")
+    }
+}
+
+struct ErrorConnectionServerWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: ErrorConnectionServerWebsocketResponse")
+    }
+}
+
+struct SdpWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {
+        let contract: Int
+        let sdp: SessionDescription
+    }
+    
+    func processResponse(_ data: Model) {
+        print("WebsocketResponse: ErrorConnectionServerWebsocketResponse")
+    }
+}
+
+struct IceWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {
+        let contract: Int
+        let ice: IceCandidate
+    }
+    
+    func processResponse(_ data: Model) {
+        
+    }
+}
+
+struct InvalidIceWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: InvalidIceWebsocketResponse")
+    }
+}
+
+struct InvalidStreamWebsocketResponse: WebsocketResponse {
+    struct Model: Decodable {}
+    
+    func processResponse(_: Model) {
+        print("WebsocketResponse: InvalidStreamWebsocketResponse")
     }
 }

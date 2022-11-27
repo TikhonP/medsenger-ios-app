@@ -12,6 +12,8 @@ struct ContractView: View {
     @ObservedObject var contract: Contract
     @ObservedObject var user: User
     
+    @EnvironmentObject private var contentViewModel: ContentViewModel
+    
     var body: some View {
         Form {
             Section {
@@ -19,6 +21,14 @@ struct ContractView: View {
             }
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
+            
+            if contract.video {
+                Section {
+                    Button(action: startCall, label: {
+                        Label("Video call", systemImage: "video.fill")
+                    })
+                }
+            }
             
             Section {
                 if !contract.infoMaterialsArray.isEmpty {
@@ -38,23 +48,23 @@ struct ContractView: View {
             if !contract.agentActionsArray.isEmpty {
                 Section(header: Text("Agent Actions")) {
                     ForEach(contract.agentActionsArray) { agentAction in
-                            switch agentAction.type {
-                            case .url:
-                                if let name = agentAction.name, let link = agentAction.apiLink {
-                                    Link(destination: link, label: {
-                                        Label(name, systemImage: "person.icloud.fill")
-                                    })
-                                }
-                            case .action:
-                                Text("Action")
-                            default:
-                                if let name = agentAction.name, let link = agentAction.modalLink {
-                                    NavigationLink(destination: {
-                                        AgentActionView(url: link, name: name)
-//                                        Text("sdfghj")
-                                    }, label: {
-                                        Label(name, systemImage: "person.icloud.fill")
-                                    })
+                        switch agentAction.type {
+                        case .url:
+                            if let name = agentAction.name, let link = agentAction.apiLink {
+                                Link(destination: link, label: {
+                                    Label(name, systemImage: "person.icloud.fill")
+                                })
+                            }
+                        case .action:
+                            Text("Action")
+                        default:
+                            if let name = agentAction.name, let link = agentAction.modalLink {
+                                NavigationLink(destination: {
+                                    AgentActionView(url: link, name: name)
+                                    //                                        Text("sdfghj")
+                                }, label: {
+                                    Label(name, systemImage: "person.icloud.fill")
+                                })
                             }
                         }
                     }
@@ -100,6 +110,11 @@ struct ContractView: View {
             }
             Spacer()
         }
+    }
+    
+    func startCall() {
+        contentViewModel.videoCallContractId = Int(contract.id)
+        contentViewModel.isCalling = true
     }
 }
 

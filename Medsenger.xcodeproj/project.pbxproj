@@ -16,6 +16,19 @@
 		434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FA2927F6DC001D7C4F /* AttachmentsView.swift */; };
 		434399FD2928142A001D7C4F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FC2928142A001D7C4F /* WebView.swift */; };
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
+		4376163829338781001049E6 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376163729338781001049E6 /* SessionDescription.swift */; };
+		4376163A293387DF001049E6 /* IceCandidate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43761639293387DF001049E6 /* IceCandidate.swift */; };
+		4376163D2933881C001049E6 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 4376163C2933881B001049E6 /* WebRTC */; };
+		4376163F293389DD001049E6 /* WebRTCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376163E293389DD001049E6 /* WebRTCClient.swift */; };
+		43761643293393A3001049E6 /* ConfigExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43761642293393A3001049E6 /* ConfigExample.swift */; };
+		437616452933947A001049E6 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616442933947A001049E6 /* Config.swift */; };
+		437616482933986D001049E6 /* VideoCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616472933986D001049E6 /* VideoCallView.swift */; };
+		4376164A29339876001049E6 /* VideoCallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164929339876001049E6 /* VideoCallViewModel.swift */; };
+		4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164D2933A3C5001049E6 /* WaitingCallView.swift */; };
+		437616502933A475001049E6 /* CallingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164F2933A475001049E6 /* CallingView.swift */; };
+		437616542933C343001049E6 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616522933C343001049E6 /* VideoViewController.swift */; };
+		437616552933C343001049E6 /* VideoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 437616532933C343001049E6 /* VideoViewController.xib */; };
+		437616592933C424001049E6 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616582933C424001049E6 /* VideoView.swift */; };
 		43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A1E292E5F1500465281 /* URL+mimeType.swift */; };
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
@@ -119,6 +132,18 @@
 		434399FA2927F6DC001D7C4F /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
 		434399FC2928142A001D7C4F /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
+		4376163729338781001049E6 /* SessionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDescription.swift; sourceTree = "<group>"; };
+		43761639293387DF001049E6 /* IceCandidate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCandidate.swift; sourceTree = "<group>"; };
+		4376163E293389DD001049E6 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
+		43761642293393A3001049E6 /* ConfigExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigExample.swift; sourceTree = "<group>"; };
+		437616442933947A001049E6 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		437616472933986D001049E6 /* VideoCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCallView.swift; sourceTree = "<group>"; };
+		4376164929339876001049E6 /* VideoCallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCallViewModel.swift; sourceTree = "<group>"; };
+		4376164D2933A3C5001049E6 /* WaitingCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingCallView.swift; sourceTree = "<group>"; };
+		4376164F2933A475001049E6 /* CallingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallingView.swift; sourceTree = "<group>"; };
+		437616522933C343001049E6 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
+		437616532933C343001049E6 /* VideoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoViewController.xib; sourceTree = "<group>"; };
+		437616582933C424001049E6 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		43A18A1E292E5F1500465281 /* URL+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
@@ -221,15 +246,50 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4376163D2933881C001049E6 /* WebRTC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4376163629338736001049E6 /* WebRtcCalls */ = {
+			isa = PBXGroup;
+			children = (
+				4376163729338781001049E6 /* SessionDescription.swift */,
+				43761639293387DF001049E6 /* IceCandidate.swift */,
+				4376163E293389DD001049E6 /* WebRTCClient.swift */,
+			);
+			path = WebRtcCalls;
+			sourceTree = "<group>";
+		};
+		4376164629339850001049E6 /* VideoCall */ = {
+			isa = PBXGroup;
+			children = (
+				437616512933C335001049E6 /* VideoScreen */,
+				4376164929339876001049E6 /* VideoCallViewModel.swift */,
+				437616472933986D001049E6 /* VideoCallView.swift */,
+				4376164D2933A3C5001049E6 /* WaitingCallView.swift */,
+				4376164F2933A475001049E6 /* CallingView.swift */,
+			);
+			path = VideoCall;
+			sourceTree = "<group>";
+		};
+		437616512933C335001049E6 /* VideoScreen */ = {
+			isa = PBXGroup;
+			children = (
+				437616522933C343001049E6 /* VideoViewController.swift */,
+				437616532933C343001049E6 /* VideoViewController.xib */,
+				437616582933C424001049E6 /* VideoView.swift */,
+			);
+			path = VideoScreen;
+			sourceTree = "<group>";
+		};
 		43EF43E629227F74005DF084 = {
 			isa = PBXGroup;
 			children = (
+				437616442933947A001049E6 /* Config.swift */,
+				43761642293393A3001049E6 /* ConfigExample.swift */,
 				43EF44042922817B005DF084 /* README.md */,
 				43EF44022922813A005DF084 /* .gitignore */,
 				43EF4405292281D8005DF084 /* CoreData */,
@@ -303,6 +363,7 @@
 		43EF440B2922824B005DF084 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4376164629339850001049E6 /* VideoCall */,
 				43EF44AA29228FF3005DF084 /* Chat */,
 				43EF449F29228F4A005DF084 /* Settings */,
 				43EF449A29228EF1005DF084 /* UtilsViews */,
@@ -333,6 +394,7 @@
 		43EF443329228A03005DF084 /* MedsengerKit */ = {
 			isa = PBXGroup;
 			children = (
+				4376163629338736001049E6 /* WebRtcCalls */,
 				43EF447429228E36005DF084 /* Messages */,
 				43EF446429228D48005DF084 /* Websockets */,
 				43EF445929228CD0005DF084 /* Contracts */,
@@ -497,6 +559,9 @@
 			dependencies = (
 			);
 			name = Medsenger;
+			packageProductDependencies = (
+				4376163C2933881B001049E6 /* WebRTC */,
+			);
 			productName = Medsenger;
 			productReference = 43EF43EF29227F74005DF084 /* Medsenger.app */;
 			productType = "com.apple.product-type.application";
@@ -526,6 +591,9 @@
 				Base,
 			);
 			mainGroup = 43EF43E629227F74005DF084;
+			packageReferences = (
+				4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */,
+			);
 			productRefGroup = 43EF43F029227F74005DF084 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -542,6 +610,7 @@
 			files = (
 				43EF44B7292290FE005DF084 /* Localizable.strings in Resources */,
 				43EF43FA29227F76005DF084 /* Preview Assets.xcassets in Resources */,
+				437616552933C343001049E6 /* VideoViewController.xib in Resources */,
 				43EF44032922813A005DF084 /* .gitignore in Resources */,
 				43EF449629228EB1005DF084 /* README.md in Resources */,
 				43EF43F729227F76005DF084 /* Assets.xcassets in Resources */,
@@ -563,10 +632,12 @@
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
 				434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */,
 				43EF447829228E59005DF084 /* MessagesResource.swift in Sources */,
+				437616542933C343001049E6 /* VideoViewController.swift in Sources */,
 				43EF445D29228CF8005DF084 /* ContractsRequestAsPatientResource.swift in Sources */,
 				43EF448E29228EB1005DF084 /* BoundaryGenerator.swift in Sources */,
 				43EF4408292281F4005DF084 /* Medsenger.xcdatamodeld in Sources */,
 				43EF44A929228FB9005DF084 /* ChangePasswordView.swift in Sources */,
+				4376164A29339876001049E6 /* VideoCallViewModel.swift in Sources */,
 				43EF447329228DFD005DF084 /* LocalizedString+.swift in Sources */,
 				43EF445B29228CE7005DF084 /* Contracts.swift in Sources */,
 				43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */,
@@ -579,6 +650,7 @@
 				434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */,
 				433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */,
 				43EF4426292287BC005DF084 /* ImageAttachment+CoreDataClass.swift in Sources */,
+				437616592933C424001049E6 /* VideoView.swift in Sources */,
 				43EF442229228774005DF084 /* Agent+CoreDataClass.swift in Sources */,
 				43EF442E29228812005DF084 /* ClinicClassifier+CoreDataClass.swift in Sources */,
 				43EF4428292287CA005DF084 /* Attachment+CoreDataClass.swift in Sources */,
@@ -587,18 +659,22 @@
 				43EF43F529227F74005DF084 /* ContentView.swift in Sources */,
 				43EF449029228EB1005DF084 /* ContentType.swift in Sources */,
 				43EF448D29228EB1005DF084 /* ContentDisposition.swift in Sources */,
+				43761643293393A3001049E6 /* ConfigExample.swift in Sources */,
 				43EF441429228683005DF084 /* Clinic+CoreDataClass.swift in Sources */,
 				43EF442A292287E0005DF084 /* Message+CoreDataClass.swift in Sources */,
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
 				43EF448F29228EB1005DF084 /* MultipartFormData+Builder.swift in Sources */,
+				437616452933947A001049E6 /* Config.swift in Sources */,
 				43EF446329228D25005DF084 /* ConcludeContractResource.swift in Sources */,
 				43EF44A729228F83005DF084 /* EditPersonalDataView.swift in Sources */,
 				43EF444D29228C11005DF084 /* String+.swift in Sources */,
 				434399FD2928142A001D7C4F /* WebView.swift in Sources */,
 				43EF440F292283E3005DF084 /* User+CoreDataClass.swift in Sources */,
+				437616482933986D001049E6 /* VideoCallView.swift in Sources */,
 				43EF44A529228F72005DF084 /* ImagePicker.swift in Sources */,
 				43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */,
 				434399F72927E831001D7C4F /* ContractView.swift in Sources */,
+				4376163A293387DF001049E6 /* IceCandidate.swift in Sources */,
 				43EF446D29228DB8005DF084 /* SignInViewModel.swift in Sources */,
 				43EF44202922875D005DF084 /* AgentAction+CoreDataClass.swift in Sources */,
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
@@ -623,6 +699,7 @@
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
 				43EF440A29228202005DF084 /* PersistenceController.swift in Sources */,
 				43EF44A129228F54005DF084 /* SettingsViewModel.swift in Sources */,
+				4376163F293389DD001049E6 /* WebRTCClient.swift in Sources */,
 				43EF446129228D13005DF084 /* DeactivateMessagesResource.swift in Sources */,
 				434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */,
 				43EF449329228EB1005DF084 /* Dash.swift in Sources */,
@@ -638,6 +715,7 @@
 				43EF445429228C8B005DF084 /* ChatsView.swift in Sources */,
 				43EF449829228EB1005DF084 /* MultipartFormData.swift in Sources */,
 				43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */,
+				437616502933A475001049E6 /* CallingView.swift in Sources */,
 				43EF449C29228F01005DF084 /* Image+Data.swift in Sources */,
 				43EF440D29228280005DF084 /* ContentViewModel.swift in Sources */,
 				43EF449129228EB1005DF084 /* ValidationResult.swift in Sources */,
@@ -646,6 +724,8 @@
 				43EF447629228E44005DF084 /* Messages.swift in Sources */,
 				43EF444529228B9D005DF084 /* UpdateAccountResource.swift in Sources */,
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
+				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
+				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
 				43EF444B29228BD8005DF084 /* CheckResource.swift in Sources */,
 				43EF442C29228803005DF084 /* ClinicRule+CoreDataClass.swift in Sources */,
 				43EF443729228A3F005DF084 /* Constants.swift in Sources */,
@@ -797,7 +877,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(MARKETING_VERSION)";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = 1.0.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -833,7 +913,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "$(MARKETING_VERSION)";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = 1.0.0;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -875,6 +955,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stasel/WebRTC";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 107.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4376163C2933881B001049E6 /* WebRTC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */;
+			productName = WebRTC;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		43EF4406292281F4005DF084 /* Medsenger.xcdatamodeld */ = {
