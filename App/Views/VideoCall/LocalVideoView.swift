@@ -1,22 +1,22 @@
 //
-//  VideoViewController.swift
-//  WebRTC
+//  LocalVideoView.swift
+//  Medsenger
 //
-//  Created by Stasel on 21/05/2018.
-//  Copyright © 2018 Stasel. All rights reserved.
+//  Created by Tikhon Petrishchev on 28.11.2022.
+//  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+import SwiftUI
 import UIKit
 import WebRTC
 
-class VideoViewController: UIViewController {
-
-    @IBOutlet private weak var localVideoView: UIView?
+class LocalVideoViewController: UIViewController {
     private let webRTCClient: WebRTCClient
-
+    private var localRenderer: RTCVideoRenderer?
+    
     init(webRTCClient: WebRTCClient) {
         self.webRTCClient = webRTCClient
-        super.init(nibName: String(describing: VideoViewController.self), bundle: Bundle.main)
+        super.init(nibName: String(describing: LocalVideoViewController.self), bundle: Bundle.main)
     }
     
     @available(*, unavailable)
@@ -24,23 +24,30 @@ class VideoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func loadView() {
+        view = UIView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let localRenderer = RTCMTLVideoView(frame: self.localVideoView?.frame ?? CGRect.zero)
-        let remoteRenderer = RTCMTLVideoView(frame: self.view.frame)
+        let localRenderer = RTCMTLVideoView(frame: self.view.frame)
+        self.localRenderer = localRenderer
+        
         localRenderer.videoContentMode = .scaleAspectFill
-        remoteRenderer.videoContentMode = .scaleAspectFill
         
-
         self.webRTCClient.startCaptureLocalVideo(renderer: localRenderer)
-        self.webRTCClient.renderRemoteVideo(to: remoteRenderer)
         
-        if let localVideoView = self.localVideoView {
-            self.embedView(localRenderer, into: localVideoView)
+        self.embedView(localRenderer, into: self.view)
+        self.view.sendSubviewToBack(localRenderer)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if let localRenderer = localRenderer {
+            self.webRTCClient.stopVideoRender(to: localRenderer)
         }
-        self.embedView(remoteRenderer, into: self.view)
-        self.view.sendSubviewToBack(remoteRenderer)
     }
     
     private func embedView(_ view: UIView, into containerView: UIView) {
@@ -56,5 +63,23 @@ class VideoViewController: UIViewController {
                                                                     metrics: nil,
                                                                     views: ["view":view]))
         containerView.layoutIfNeeded()
+    }
+}
+
+struct LocalVideoView: UIViewControllerRepresentable {
+    let webRTCClient: WebRTCClient
+    
+    func makeUIViewController(context: Context) -> LocalVideoViewController {
+        return LocalVideoViewController(webRTCClient: self.webRTCClient)
+    }
+    
+    func updateUIViewController(_ uiViewController: LocalVideoViewController, context: Context) {
+        
+    }
+}
+
+struct LocalVideoView_Previews: PreviewProvider {
+    static var previews: some View {
+        LocalVideoView(webRTCClient: WebRTCClient(contractId: 1234))
     }
 }

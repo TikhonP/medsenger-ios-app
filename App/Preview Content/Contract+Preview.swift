@@ -108,5 +108,6 @@ extension Contract {
     static func createSampleContracts(for viewContext: NSManagedObjectContext) {
         _ = createSampleContract1(for: viewContext)
         _ = createSampleContract2Archive(for: viewContext)
+        
     }
 }

@@ -19,16 +19,16 @@ struct MessageView: View {
             ZStack {
                 if message.isMessageSent {
                     messageBody
-                        .padding(11)
+                        .padding(9)
                         .background(Color(UIColor.systemBlue))
-                        .clipShape(BubbleShape(myMessage: true))
+                        .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
                         .foregroundColor(.white)
                 } else {
                     messageBody
-                        .padding()
+                        .padding(9)
                         .foregroundColor(.primary)
                         .background(Color.secondary.opacity(0.2))
-                        .clipShape(BubbleShape(myMessage: false))
+                        .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
                 }
                 
             }
@@ -68,14 +68,26 @@ struct MessageView: View {
 struct MessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
-    static var message: Message = {
+    static var message1: Message = {
         let context = persistence.container.viewContext
         return Message.getSampleMessage(for: context)
     }()
     
+    static var message2: Message = {
+        let context = persistence.container.viewContext
+        return Message.getSampleMessage(for: context, with: "sdsc dscsdcvs")
+    }()
+    
     static var previews: some View {
-        MessageView(message: message, viewWidth: 450)
-            .previewLayout(.sizeThatFits)
+        Group {
+            MessageView(message: message1, viewWidth: 450)
+                .padding()
+                .previewLayout(.sizeThatFits)
+            
+            MessageView(message: message2, viewWidth: 450)
+                .padding()
+                .previewLayout(.sizeThatFits)
+        }
     }
 }
 

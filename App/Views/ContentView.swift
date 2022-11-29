@@ -28,10 +28,13 @@ struct ContentView: View {
                         }
                         .environmentObject(contentViewModel)
                         
-                        if contentViewModel.isCalling, let videoCallContractId = contentViewModel.videoCallContractId {
-                            VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)
-                                .environmentObject(contentViewModel)
+                        ZStack {
+                            if contentViewModel.isCalling, let videoCallContractId = contentViewModel.videoCallContractId {
+                                VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)
+                                    .environmentObject(contentViewModel)
+                            }
                         }
+                        .animation(.easeInOut)
                     }
                 }
             }

@@ -16,7 +16,6 @@ extension MultipartFormData {
             switch TypedBuilder.build(with: partParams, willSeparateBy: uniqueBoundary) {
             case let .invalid(because: error):
                 throw error
-                
             case let .valid(result):
                 return result
             }
@@ -62,19 +61,14 @@ extension MultipartFormData {
         }
     }
     
-    
-    
     public enum BuildError: Error {
         case partCreationError(MultipartFormData.Part.CreationError)
         case dataTransformError(MultipartFormData.DataTransformError)
     }
     
-    
-    
     public struct BuildResult {
         public let contentType: String
         public let body: Data
-        
         
         public init(contentType: String, body: Data) {
             self.contentType = contentType

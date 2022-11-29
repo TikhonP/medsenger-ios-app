@@ -7,9 +7,16 @@
 //
 
 import CoreData
+import os.log
 
 @objc(Message)
 public class Message: NSManagedObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: Message.self)
+    )
+    
     var isMessageSent: Bool {
         switch UserDefaults.userRole {
         case .patient:
@@ -148,7 +155,7 @@ extension Message {
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
             guard let contract = Contract.get(id: contractId, for: context) else {
-                print("Failed to save messages: Core data failed to fetch contract")
+                Message.logger.error("Failed to save messages: Core data failed to fetch contract")
                 return
             }
             
@@ -181,7 +188,7 @@ extension Message {
     class func saveFromJson(_ data: [JsonDecoder], contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             guard let contract = Contract.get(id: contractId, for: context) else {
-                print("Failed to save messages: Core data failed to fetch contract")
+                Message.logger.error("Failed to save messages: Core data failed to fetch contract")
                 return
             }
             

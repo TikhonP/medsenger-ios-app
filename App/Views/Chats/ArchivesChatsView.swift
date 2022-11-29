@@ -12,6 +12,8 @@ struct ArchivesChatsView: View {
     @ObservedObject var user: User
     
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
+    
+    @EnvironmentObject private var contentViewModel: ContentViewModel
 
     @FetchRequest(
         sortDescriptors: [
@@ -37,7 +39,7 @@ struct ArchivesChatsView: View {
     
     var body: some View {
         List(contracts) { contract in
-            NavigationLink(destination: {
+            NavigationLink(tag: Int(contract.id), selection: $contentViewModel.archiveChatsNavigationSelection, destination: {
                 ChatView(contract: contract, user: user)
             }, label: {
                 switch userRole {

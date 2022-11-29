@@ -7,9 +7,16 @@
 //
 
 import CoreData
+import os.log
 
 @objc(Attachment)
 public class Attachment: NSManagedObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: Attachment.self)
+    )
+    
     enum Icon: String {
         case word, link, excel, powerpoint, pdf, zip, defaultFile
     }
@@ -44,6 +51,7 @@ public class Attachment: NSManagedObject {
     
     class func writeToFile(_ data: Data, fileName: String) -> URL? {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
+            Attachment.logger.error("FileManager.default.urls directory is nil")
             return nil
         }
         let fileurl = directory.appendingPathComponent(fileName)
@@ -55,7 +63,7 @@ public class Attachment: NSManagedObject {
                 fileHandle.closeFile()
                 return fileurl
             } else {
-                print("Error Write attachment to file: Can't open file to write.")
+                Attachment.logger.error("Error Write attachment to file: Can't open file to write.")
                 return nil
             }
         } else {
@@ -63,7 +71,7 @@ public class Attachment: NSManagedObject {
                 try data.write(to: fileurl, options: .atomic)
                 return fileurl
             } catch {
-                print("Error Write attachment to file: \(error.localizedDescription)")
+                Attachment.logger.error("Error Write attachment to file: \(error.localizedDescription)")
                 return nil
             }
         }

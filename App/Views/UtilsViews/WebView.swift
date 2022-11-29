@@ -8,6 +8,7 @@
 
 import SwiftUI
 import WebKit
+import os.log
 
 class WebViewViewModel: ObservableObject {
     @Published var isLoaderVisible: Bool = true
@@ -18,6 +19,11 @@ struct WebView: UIViewRepresentable {
     var url: URL
 
     @ObservedObject var viewModel: WebViewViewModel
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: WebView.self)
+    )
 
     func makeUIView(context: Context) -> WKWebView {
         let preferences = WKPreferences()
@@ -63,7 +69,7 @@ struct WebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            print("Web View error: didFailProvisionalNavigation: \(error.localizedDescription)")
+            WebView.logger.error("Web View error: didFailProvisionalNavigation: \(error.localizedDescription)")
             self.parent.viewModel.isLoaderVisible = false
         }
 
@@ -72,7 +78,7 @@ struct WebView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("Web View error: didFail: \(error.localizedDescription)")
+            WebView.logger.error("Web View error: didFail: \(error.localizedDescription)")
             self.parent.viewModel.isLoaderVisible = false
         }
 

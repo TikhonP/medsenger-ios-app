@@ -9,11 +9,15 @@
 import CoreData
 
 extension Message {
-    static func getSampleMessage(for viewContext: NSManagedObjectContext, id: Int = Int.random(in: 0...10000)) -> Message {
+    static func getSampleMessage(for viewContext: NSManagedObjectContext, id: Int = Int.random(in: 0...10000), with text: String? = nil) -> Message {
         let message = Message(context: viewContext)
         
         message.id = Int64(id)
-        message.text = "Мы запросили доступ к данным глюкометра FreeStyle Libre. Пожалуйста, проверьте электронную почту и предоставьте доступ. После этого Ваш врач сможет автоматически получать отчеты об уровне глюкозы."
+        if let text = text {
+            message.text = text
+        } else {
+            message.text = "Мы запросили доступ к данным глюкометра FreeStyle Libre. Пожалуйста, проверьте электронную почту и предоставьте доступ. После этого Ваш врач сможет автоматически получать отчеты об уровне глюкозы."
+        }
         message.sent = Date()
         message.deadline = Date()
         message.isAnswered = false

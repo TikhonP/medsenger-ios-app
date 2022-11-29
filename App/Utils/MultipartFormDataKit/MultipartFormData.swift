@@ -22,7 +22,6 @@ public struct MultipartFormData {
         )
     }
     
-    
     // 4.1.  "Boundary" Parameter of multipart/form-data
     //
     // As with other multipart types, the parts are delimited with a
@@ -36,12 +35,10 @@ public struct MultipartFormData {
     public let uniqueAndValidLengthBoundary: String
     public let body: [Part]
     
-    
     // Boundary delimiters must not appear within the encapsulated material,
     // and must be no longer than 70 characters, not counting the two
     // leading hyphens.
     public static let maxLengthOfBoundary = 70
-    
     
     public init(
         uniqueAndValidLengthBoundary: String,
@@ -50,7 +47,6 @@ public struct MultipartFormData {
         self.uniqueAndValidLengthBoundary = uniqueAndValidLengthBoundary
         self.body = body
     }
-    
     
     public func asData() -> ValidationResult<Data, DataTransformError> {
         var data = Data()
@@ -74,8 +70,6 @@ public struct MultipartFormData {
         
         return .valid(data)
     }
-    
-    
     
     public enum DataTransformError: Error {
         case contentDispositionError(ContentDisposition.DataTransformError)

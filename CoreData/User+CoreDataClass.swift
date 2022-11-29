@@ -7,15 +7,21 @@
 //
 
 import CoreData
+import os.log
 
 @objc(User)
 public class User: NSManagedObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: User.self)
+    )
     
     /// Get user form context
     /// - Parameter context: Core Data context
     /// - Returns: optional user instance
     private class func get(for context: NSManagedObjectContext) -> User? {
-        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
+        let fetchRequest = User.fetchRequest()
         let objects = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "User all")
         return objects?.first
     }
@@ -35,7 +41,7 @@ public class User: NSManagedObject {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             guard let user = get(for: context) else {
-                print("Delete User failed: Not found")
+                User.logger.error("Delete User failed: Not found")
                 return
             }
             context.delete(user)

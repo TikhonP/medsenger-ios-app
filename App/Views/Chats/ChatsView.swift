@@ -13,6 +13,8 @@ struct ChatsView: View {
     
     @StateObject private var chatsViewModel = ChatsViewModel()
     
+    @EnvironmentObject private var contentViewModel: ContentViewModel
+    
     @FetchRequest(
         sortDescriptors: [
             NSSortDescriptor(key: "unread", ascending: false),
@@ -43,7 +45,7 @@ struct ChatsView: View {
     var body: some View {
         List {
             ForEach(contracts) { contract in
-                NavigationLink(destination: {
+                NavigationLink(tag: Int(contract.id), selection: $contentViewModel.chatsNavigationSelection, destination: {
                     ChatView(contract: contract, user: user)
                 }, label: {
                     switch userRole {
@@ -59,7 +61,7 @@ struct ChatsView: View {
                 })
             }
             
-            NavigationLink(destination: {
+            NavigationLink(tag: -1, selection: $contentViewModel.chatsNavigationSelection, destination: {
                 ArchivesChatsView(user: user)
                     .environmentObject(chatsViewModel)
             }, label: { archiveRow })
@@ -76,7 +78,11 @@ struct ChatsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if userRole == .doctor {
-                    Button(action: { showNewContractModal.toggle() }, label: { Image(systemName: "square.and.pencil") })
+                    Button(action: {
+//                        showNewContractModal.toggle()
+                        contentViewModel.chatsNavigationSelection = 6735
+//                        contentViewModel.archiveChatsNavigationSelection = 6258
+                    }, label: { Image(systemName: "square.and.pencil") })
                         .id(UUID())
                 }
             }

@@ -8,39 +8,124 @@
 
 import Foundation
 import WebRTC
+import os.log
+
+enum CallState: String {
+    case connected = "CONNECTED"
+    case canceled = "CANCELED"
+    case notPhoned = "NOT_PHONED"
+    case dismissCall = "DISMISS_CALL"
+    case disconnect = "DISCONNECT"
+    case patientOffline = "PATIENT_OFFLINE"
+    case hangUp = "HANG_UP"
+    case stopTalk = "STOP_TALK"
+    case `init` = "INIT"
+}
 
 final class VideoCallViewModel: ObservableObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: VideoCallViewModel.self)
+    )
+    
     let webRTCClient: WebRTCClient
     
     private let contractId: Int
     private weak var contentViewModel: ContentViewModel?
     
-    @Published var state: RTCIceConnectionState = .new
-    @Published var answered: Bool = false
+    private var callStartTime: Date?
+    private var callEndTime: Date?
+    private var talkStartTime: Date?
+    private var dismissCall = false
+    private var state: CallState = CallState(rawValue: "INIT")!
+    
+    @Published var isCaller: Bool
+    @Published var rtcState: RTCIceConnectionState = .new
+    @Published var answered = false
+    @Published var finishingCall = false
+   
+    @Published var isVideoOn = true
+    @Published var isAudioOn = true
     
     required init(contractId: Int, contentViewModel: ContentViewModel) {
         self.contractId = contractId
         self.webRTCClient = WebRTCClient(contractId: contractId)
         self.contentViewModel = contentViewModel
+        self.isCaller = contentViewModel.isCaller
+        
         self.webRTCClient.delegate = self
         Websockets.shared.callDelegate = self
     }
     
-    func makeCall() {
-        Websockets.shared.makeCall(contractId: contractId)
+    func videoCallViewAppear() {
+        callStartTime = Date()
+        if let isCaller = contentViewModel?.isCaller, isCaller {
+            Websockets.shared.makeCall(contractId: contractId)
+        }
+    }
+    
+    func callingViewAppear() {
+        talkStartTime = Date()
+    }
+    
+    func answer() {
+        Websockets.shared.answer(contractId: contractId)
+    }
+    
+    func dismiss() {
+        state = .dismissCall
+        hangUp()
+        dismissCall = true
     }
     
     func hangUp() {
         Websockets.shared.hangUp(contractId: contractId)
-        self.contentViewModel?.isCalling = false
+        stopCall()
+    }
+    
+    func toggleAudio() {
+        if isAudioOn {
+            self.webRTCClient.muteAudio()
+        } else {
+            self.webRTCClient.unmuteAudio()
+        }
+        isAudioOn.toggle()
+    }
+    
+    func toggleVideo() {
+        if isVideoOn {
+            self.webRTCClient.hideVideo()
+        } else {
+            self.webRTCClient.showVideo()
+        }
+        isVideoOn.toggle()
+    }
+    
+    private func stopCall() {
+        callEndTime = Date()
+        DispatchQueue.main.async {
+            self.finishingCall = true
+        }
+        self.webRTCClient.saveVideoCall(
+            contractId: contractId,
+            talkStartTime: talkStartTime ?? Date(),
+            callStartTime: callStartTime ?? Date(),
+            callEndTime: callEndTime ?? Date(),
+            state: state, dismissCall: dismissCall) {
+                self.contentViewModel?.hideCall()
+                DispatchQueue.main.async {
+                    self.finishingCall = false
+                    self.webRTCClient.stopCall()
+                }
+            }
     }
 }
 
 extension VideoCallViewModel: WebsocketsCallDelegate {
     func signalClient(_ websockets: Websockets, didAnswered data: String?) {
-        print("Answered")
         self.webRTCClient.startCall {
-            print("Failed")
+            VideoCallViewModel.logger.error("VideoCallViewModel: Failed to start call")
         }
         DispatchQueue.main.async {
             self.answered = true
@@ -48,27 +133,32 @@ extension VideoCallViewModel: WebsocketsCallDelegate {
     }
     
     func signalClient(_ websockets: Websockets, answeredFromAnotherDevice data: String?) {
-        DispatchQueue.main.async {
-            self.contentViewModel?.isCalling = false
-        }
+        state = .dismissCall
+        stopCall()
     }
     
     func signalClient(_ websockets: Websockets, hangUp data: String?) {
-        DispatchQueue.main.async {
-            print("Hang up")
-            self.contentViewModel?.isCalling = false
-            self.webRTCClient.hideVideo()
-            self.webRTCClient.muteAudio()
-            self.webRTCClient.speakerOff()
-            
-        }
+        state = .stopTalk
+        stopCall()
+    }
+    
+    func signalClient(_ websockets: Websockets, errorOffline data: String?) {
+        state = .patientOffline
+        Websockets.shared.hangUp(contractId: contractId)
+        stopCall()
+    }
+    
+    func signalClient(_ websockets: Websockets, errorConnection data: String?) {
+        state = .disconnect
+        Websockets.shared.hangUp(contractId: contractId)
+        stopCall()
     }
 }
 
 extension VideoCallViewModel: WebRTCClientDelegate {
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState) {
         DispatchQueue.main.async {
-            self.state = state
+            self.rtcState = state
         }
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 // MARK: Websocket Request protocol
 
@@ -120,17 +121,15 @@ struct NotAuthorizedWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: NotAuthorizedWebsocketResponse")
-        // FIXME: !!!
+        Logger.websockets.info("WebsocketResponse: NotAuthorizedWebsocketResponse")
+        Websockets.shared.close()
     }
 }
 
 struct AuthSuccessWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
-    func processResponse(_: Model) {
-        print("WebsocketResponse: AuthSuccessWebsocketResponse")
-    }
+    func processResponse(_: Model) {}
 }
 
 struct OnlineListWebsocketResponse: WebsocketResponse {
@@ -145,12 +144,11 @@ struct OnlineListWebsocketResponse: WebsocketResponse {
 
 struct NewMessageWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {
-        let contract_id: Int
+        let contract: Int
     }
     
     func processResponse(_ data: Model) {
-//        Contracts.shared.getDoctors()
-        Messages.shared.fetchMessages(contractId: data.contract_id)
+        Messages.shared.fetchMessages(contractId: data.contract)
     }
 }
 
@@ -162,7 +160,8 @@ struct AllReadWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("WebsocketResponse: AllReadWebsocketResponse: \(data)")
+        Contract.updateLastReadMessageIdByPatient(id: data.contract_id, lastReadMessageIdByPatient: data.last_read_id)
+        Logger.websockets.info("WebsocketResponse: AllReadWebsocketResponse: \(String(describing: data), privacy: .private)")
     }
 }
 
@@ -172,7 +171,8 @@ struct UserOnlineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("WebsocketResponse: UserOnlineWebsocketResponse: \(data)")
+        Contract.updateOnlineStatus(id: data.contract, isOnline: true)
+        Logger.websockets.info("WebsocketResponse: UserOnlineWebsocketResponse: \(String(describing: data), privacy: .private)")
     }
 }
 
@@ -182,23 +182,28 @@ struct UserOfflineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        print("WebsocketResponse: UserOfflineWebsocketResponse: \(data)")
+        Contract.updateOnlineStatus(id: data.contract, isOnline: false)
+        Logger.websockets.info("WebsocketResponse: UserOfflineWebsocketResponse: \(String(describing: data), privacy: .private)")
     }
 }
 
 struct CallWebsocketResponse: WebsocketResponse {
-    struct Model: Decodable {}
+    struct Model: Decodable {
+        let contract: Int
+    }
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: CallWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: CallWebsocketResponse")
     }
 }
 
 struct CallContinuedWebsocketResponse: WebsocketResponse {
-    struct Model: Decodable {}
+    struct Model: Decodable {
+        let contract: Int
+    }
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: CallContinuedWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: CallContinuedWebsocketResponse")
     }
 }
 
@@ -206,7 +211,7 @@ struct ErrorOfflineWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: ErrorOfflineWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: ErrorOfflineWebsocketResponse")
     }
 }
 
@@ -214,7 +219,7 @@ struct HangUpWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: HangUpWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: HangUpWebsocketResponse")
     }
 }
 
@@ -222,7 +227,7 @@ struct AnsweredWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: AnsweredWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: AnsweredWebsocketResponse")
     }
 }
 
@@ -230,7 +235,7 @@ struct AnsweredFromAnotherDeviceWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: AnsweredFromAnotherDeviceWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: AnsweredFromAnotherDeviceWebsocketResponse")
     }
 }
 
@@ -238,7 +243,7 @@ struct ErrorConnectionWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: AnsweredFromAnotherDeviceWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: ErrorConnectionWebsocketResponse")
     }
 }
 
@@ -246,7 +251,7 @@ struct ErrorConnectionServerWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: ErrorConnectionServerWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: ErrorConnectionServerWebsocketResponse")
     }
 }
 
@@ -256,9 +261,7 @@ struct SdpWebsocketResponse: WebsocketResponse {
         let sdp: SessionDescription
     }
     
-    func processResponse(_ data: Model) {
-        print("WebsocketResponse: ErrorConnectionServerWebsocketResponse")
-    }
+    func processResponse(_ data: Model) {}
 }
 
 struct IceWebsocketResponse: WebsocketResponse {
@@ -267,16 +270,14 @@ struct IceWebsocketResponse: WebsocketResponse {
         let ice: IceCandidate
     }
     
-    func processResponse(_ data: Model) {
-        
-    }
+    func processResponse(_ data: Model) {}
 }
 
 struct InvalidIceWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: InvalidIceWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: InvalidIceWebsocketResponse")
     }
 }
 
@@ -284,6 +285,6 @@ struct InvalidStreamWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {}
     
     func processResponse(_: Model) {
-        print("WebsocketResponse: InvalidStreamWebsocketResponse")
+        Logger.websockets.info("WebsocketResponse: InvalidStreamWebsocketResponse")
     }
 }

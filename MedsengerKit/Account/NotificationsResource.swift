@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 struct NotificationsResource: APIResource {
     let emailNotify: Bool
@@ -23,7 +24,7 @@ struct NotificationsResource: APIResource {
                 RequestModel(emailNotify: emailNotify))
             return data
         } catch {
-            print("Failed to encode notification resource data: \(error.localizedDescription)")
+            Logger.urlRequest.error("Failed to encode notification resource data: \(error.localizedDescription)")
             return nil
         }
     }

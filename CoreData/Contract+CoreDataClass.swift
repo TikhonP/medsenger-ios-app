@@ -7,9 +7,16 @@
 //
 
 import CoreData
+import os.log
 
 @objc(Contract)
 public class Contract: NSManagedObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: Contract.self)
+    )
+    
     enum State: String, Decodable {
         case noMessages = "no_messages" // FIXME: !!!
         case unread = "unread"
@@ -83,6 +90,15 @@ public class Contract: NSManagedObject {
         }
     }
     
+    class func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.lastReadMessageIdByPatient = Int64(lastReadMessageIdByPatient)
+            PersistenceController.save(for: context, detailsForLogging: "Contract save lastReadMessageIdByPatient")
+        }
+    }
+    
     func addToAgents(_ values: [Agent], for context: NSManagedObjectContext) {
         for agent in values {
             if let isExist = agents?.contains(agent), !isExist {
@@ -100,7 +116,7 @@ public class Contract: NSManagedObject {
                 try PersistenceController.shared.container.persistentStoreCoordinator.execute(deleteRequest, with: context)
                 PersistenceController.save(for: context, detailsForLogging: "Contract delete all")
             } catch {
-                print("Core Data failed to cleanup contracts: \(error.localizedDescription)")
+                Contract.logger.error("Core Data failed to cleanup contracts: \(error.localizedDescription)")
             }
         }
     }
@@ -118,13 +134,17 @@ public class Contract: NSManagedObject {
         for contract in fetchedResults {
             if !validContractIds.contains(Int(contract.id)) {
                 context.delete(contract)
-                print("Contract removed")
+                Contract.logger.debug("Contract removed")
             }
         }
     }
 }
 
 extension Contract {
+    public var wrappedName: String {
+        name ?? "Unknown name"
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)

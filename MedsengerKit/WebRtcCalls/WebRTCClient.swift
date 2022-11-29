@@ -8,12 +8,18 @@
 
 import Foundation
 import WebRTC
+import os.log
 
 protocol WebRTCClientDelegate: AnyObject {
     func webRTCClient(_ client: WebRTCClient, didChangeConnectionState state: RTCIceConnectionState)
 }
 
 final class WebRTCClient: NSObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: WebRTCClient.self)
+    )
     
     // The `RTCPeerConnectionFactory` is in charge of creating new RTCPeerConnection instances.
     // A new RTCPeerConnection should be created every new call, but the factory is shared.
@@ -25,6 +31,7 @@ final class WebRTCClient: NSObject {
     }()
     
     weak var delegate: WebRTCClientDelegate?
+    
     private let contractId: Int
     private let peerConnection: RTCPeerConnection
     private let rtcAudioSession =  RTCAudioSession.sharedInstance()
@@ -36,6 +43,8 @@ final class WebRTCClient: NSObject {
     private var remoteVideoTrack: RTCVideoTrack?
     private var localDataChannel: RTCDataChannel?
     private var remoteDataChannel: RTCDataChannel?
+    
+    private var saveVideoCallRequest: APIRequest<SaveVideoCallResource>?
     
     @available(*, unavailable)
     override init() {
@@ -79,16 +88,16 @@ final class WebRTCClient: NSObject {
                 if let failureCompletion = failureCompletion {
                     failureCompletion()
                 }
-                print("WebRTCClient: offer error: \(error.localizedDescription)")
+                WebRTCClient.logger.error("WebRTCClient: offer error: \(error.localizedDescription)")
             }
             guard let sdp = sdp else {
-                print("No sdp")
+                WebRTCClient.logger.error("startCall: No sdp")
                 return
             }
             
             self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
                 if let error = error {
-                    print("WebRTCClient: setLocalDescription error: \(error.localizedDescription)")
+                    WebRTCClient.logger.error("WebRTCClient: setLocalDescription error: \(error.localizedDescription)")
                     if let failureCompletion = failureCompletion {
                         failureCompletion()
                     }
@@ -96,6 +105,26 @@ final class WebRTCClient: NSObject {
                 }
                 Websockets.shared.sendSdp(contractId: self.contractId, rtcSdp: sdp)
             })
+        }
+    }
+    
+    public func stopCall() {
+        stopCaptureLocalVideo()
+        stopAudioSession()
+    }
+    
+    func stopAudioSession() {
+        self.audioQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.rtcAudioSession.lockForConfiguration()
+            do {
+                try self.rtcAudioSession.setActive(false)
+            } catch {
+                WebRTCClient.logger.error("WebRTCClient: Error disabling AudioSession: \(error.localizedDescription)")
+            }
+            self.rtcAudioSession.unlockForConfiguration()
         }
     }
     
@@ -127,8 +156,33 @@ final class WebRTCClient: NSObject {
         self.localVideoTrack?.add(renderer)
     }
     
+    func stopCaptureLocalVideo(completionHandler: (() -> Void)? = nil) {
+        guard let capturer = self.videoCapturer as? RTCCameraVideoCapturer else {
+            return
+        }
+        capturer.stopCapture(completionHandler: completionHandler)
+    }
+    
     func renderRemoteVideo(to renderer: RTCVideoRenderer) {
         self.remoteVideoTrack?.add(renderer)
+    }
+    
+    func stopVideoRender(to renderer: RTCVideoRenderer) {
+        self.remoteVideoTrack?.remove(renderer)
+    }
+    
+    private func answer(completion: @escaping (_ sdp: RTCSessionDescription) -> Void)  {
+        let constrains = RTCMediaConstraints(mandatoryConstraints: self.mediaConstrains,
+                                             optionalConstraints: nil)
+        self.peerConnection.answer(for: constrains) { (sdp, error) in
+            guard let sdp = sdp else {
+                return
+            }
+            
+            self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
+                completion(sdp)
+            })
+        }
     }
     
     private func configureAudioSession() {
@@ -136,8 +190,8 @@ final class WebRTCClient: NSObject {
         do {
             try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
             try self.rtcAudioSession.setMode(AVAudioSession.Mode.voiceChat.rawValue)
-        } catch let error {
-            debugPrint("Error changeing AVAudioSession category: \(error)")
+        } catch {
+            WebRTCClient.logger.error("Error changeing AVAudioSession category: \(error)")
         }
         self.rtcAudioSession.unlockForConfiguration()
     }
@@ -173,7 +227,7 @@ final class WebRTCClient: NSObject {
         let videoSource = WebRTCClient.factory.videoSource()
         
 #if targetEnvironment(simulator)
-        self.videoCapturer = RTCFileVideoCapturer(webRtcDelegate: videoSource)
+        self.videoCapturer = RTCFileVideoCapturer(delegate: videoSource)
 #else
         self.videoCapturer = RTCCameraVideoCapturer(delegate: videoSource)
 #endif
@@ -186,7 +240,7 @@ final class WebRTCClient: NSObject {
     private func createDataChannel() -> RTCDataChannel? {
         let config = RTCDataChannelConfiguration()
         guard let dataChannel = self.peerConnection.dataChannel(forLabel: "WebRTCData", configuration: config) else {
-            debugPrint("Warning: Couldn't create data channel.")
+            WebRTCClient.logger.notice("Warning: Couldn't create data channel.")
             return nil
         }
         return dataChannel
@@ -201,28 +255,28 @@ final class WebRTCClient: NSObject {
 extension WebRTCClient: RTCPeerConnectionDelegate {
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange stateChanged: RTCSignalingState) {
-        debugPrint("peerConnection new signaling state: \(stateChanged)")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection new signaling state: \(String(describing: stateChanged))")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didAdd stream: RTCMediaStream) {
-        debugPrint("peerConnection did add stream")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection did add stream")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove stream: RTCMediaStream) {
-        debugPrint("peerConnection did remove stream")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection did remove stream")
     }
     
     func peerConnectionShouldNegotiate(_ peerConnection: RTCPeerConnection) {
-        debugPrint("peerConnection should negotiate")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection should negotiate")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceConnectionState) {
-        debugPrint("peerConnection new connection state: \(newState)")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection new connection state: \(String(describing: newState))")
         self.delegate?.webRTCClient(self, didChangeConnectionState: newState)
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didChange newState: RTCIceGatheringState) {
-        debugPrint("peerConnection new gathering state: \(newState)")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection new gathering state: \(String(describing: newState))")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
@@ -230,11 +284,11 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
-        debugPrint("peerConnection did remove candidate(s)")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection did remove candidate(s)")
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didOpen dataChannel: RTCDataChannel) {
-        debugPrint("peerConnection did open data channel")
+        WebRTCClient.logger.debug("RTCPeerConnectionDelegate: peerConnection did open data channel")
         self.remoteDataChannel = dataChannel
     }
 }
@@ -247,6 +301,7 @@ extension WebRTCClient {
 }
 
 // MARK: - Video control
+
 extension WebRTCClient {
     func hideVideo() {
         self.setVideoEnabled(false)
@@ -260,7 +315,9 @@ extension WebRTCClient {
         setTrackEnabled(RTCVideoTrack.self, isEnabled: isEnabled)
     }
 }
-// MARK:- Audio control
+
+// MARK: - Audio control
+
 extension WebRTCClient {
     func muteAudio() {
         self.setAudioEnabled(false)
@@ -282,7 +339,7 @@ extension WebRTCClient {
                 try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
                 try self.rtcAudioSession.overrideOutputAudioPort(.none)
             } catch let error {
-                debugPrint("Error setting AVAudioSession category: \(error)")
+                WebRTCClient.logger.error("Error setting AVAudioSession category: \(error)")
             }
             self.rtcAudioSession.unlockForConfiguration()
         }
@@ -301,7 +358,7 @@ extension WebRTCClient {
                 try self.rtcAudioSession.overrideOutputAudioPort(.speaker)
                 try self.rtcAudioSession.setActive(true)
             } catch let error {
-                debugPrint("Couldn't force audio to speaker: \(error)")
+                WebRTCClient.logger.error("Couldn't force audio to speaker: \(error)")
             }
             self.rtcAudioSession.unlockForConfiguration()
         }
@@ -314,30 +371,57 @@ extension WebRTCClient {
 
 extension WebRTCClient: RTCDataChannelDelegate {
     func dataChannelDidChangeState(_ dataChannel: RTCDataChannel) {
-        debugPrint("dataChannel did change state: \(dataChannel.readyState)")
+        WebRTCClient.logger.debug("dataChannel did change state: \(String(describing: dataChannel.readyState))")
     }
     
     func dataChannel(_ dataChannel: RTCDataChannel, didReceiveMessageWith buffer: RTCDataBuffer) {
         let message = String(data: buffer.data, encoding: .utf8) ?? "(Binary: \(buffer.data.count) bytes)"
-        print("WebRTCClient: didReceiveMessageWith: \(message)")
+        WebRTCClient.logger.debug("WebRTCClient: didReceiveMessageWith: \(message)")
     }
 }
 
 extension WebRTCClient: WebsocketsWebRTCDelegate {
     func signalClient(_ websockets: Websockets, didReceiveRemoteSdp remoteSdp: RTCSessionDescription) {
-        print("Got remote SDP")
         self.peerConnection.setRemoteDescription(remoteSdp) { (error) in
             if let error = error {
-                print("WebRTCClient: didReceiveRemoteSdp error: \(error.localizedDescription)")
+                WebRTCClient.logger.error("WebRTCClient: didReceiveRemoteSdp error: \(error.localizedDescription)")
+                Websockets.shared.invalidStream(contractId: self.contractId)
+            } else {
+                if remoteSdp.type == .offer {
+                    self.answer { (localSdp) in
+                        Websockets.shared.sendSdp(contractId: self.contractId, rtcSdp: localSdp)
+                    }
+                }
             }
         }
     }
     
     func signalClient(_ websockets: Websockets, didReceiveCandidate remoteCandidate: RTCIceCandidate) {
-        print("Got remote remoteCandidate")
         self.peerConnection.add(remoteCandidate) { (error) in
             if let error = error {
-                print("WebRTCClient: didReceiveCandidate error: \(error.localizedDescription)")
+                WebRTCClient.logger.error("WebRTCClient: didReceiveCandidate error: \(error.localizedDescription)")
+                Websockets.shared.invalidIce(contractId: self.contractId)
+            }
+        }
+    }
+}
+
+extension WebRTCClient {
+    func saveVideoCall(contractId: Int, talkStartTime: Date, callStartTime: Date, callEndTime: Date, state: CallState, dismissCall: Bool, completion: (() -> Void)? = nil) {
+        let saveVideoCallResource = SaveVideoCallResource(
+            contractId: contractId, talkStartTime: talkStartTime, callStartTime: callStartTime, callEndTime: callEndTime, state: state, dismissCall: dismissCall)
+        saveVideoCallRequest = APIRequest(resource: saveVideoCallResource)
+        saveVideoCallRequest?.execute { result in
+            switch result {
+            case .success(_):
+                if let completion = completion {
+                    completion()
+                }
+            case .failure(let error):
+                if let completion = completion {
+                    processRequestError(error, "save video call data")
+                    completion()
+                }
             }
         }
     }

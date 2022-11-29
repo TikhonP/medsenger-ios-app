@@ -7,9 +7,16 @@
 //
 
 import CoreData
+import os.log
 
-class PersistenceController: ObservableObject {
+class PersistenceController {
+    
     static let shared = PersistenceController()
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: PersistenceController.self)
+    )
     
     let container: NSPersistentContainer
     
@@ -21,39 +28,44 @@ class PersistenceController: ObservableObject {
         
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error {
-                print("Core Data: Failed to load: \(error.localizedDescription)")
+                PersistenceController.logger.error("Core Data: Failed to load: \(error.localizedDescription)")
             }
         })
         container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+}
+
+extension PersistenceController {
     
     /// Save persistence store
     /// - Parameters:
     ///   - context: Managed object context
     ///   - detailsForLogging: if error appears while saving provide object that saved for logging and debugging
     public class func save(for context: NSManagedObjectContext, detailsForLogging: String? = nil) {
-        if let detailsForLogging = detailsForLogging {
-            print("Core Data: Called save: \(detailsForLogging)")
-        } else {
-            print("Core Data: Called save")
-        }
+//        if let detailsForLogging = detailsForLogging {
+//            print("Core Data: Called save: \(detailsForLogging)")
+//        } else {
+//            print("Core Data: Called save")
+//        }
         if context.hasChanges {
             do {
                 try context.save()
             } catch let nserror as NSError {
+                var errorDescription = ""
                 if let detailsForLogging = detailsForLogging {
-                    print("Core Data: Failed to save model `\(detailsForLogging)`: \(nserror.localizedDescription)")
+                    errorDescription = "Core Data: Failed to save model `\(detailsForLogging)`: \(nserror.localizedDescription)"
                 } else {
-                    print("Core Data: Failed to save model: \(nserror.localizedDescription)")
+                    errorDescription = "Core Data: Failed to save model: \(nserror.localizedDescription)"
                 }
                 if let detailed = nserror.userInfo["NSDetailedErrors"] as? NSMutableArray {
                     for nserror in detailed {
                         if let nserror = nserror as? NSError, let entity = nserror.userInfo["NSValidationErrorObject"] {
-                            print("Core Data: Detailed: \(nserror.localizedDescription) Entity: `\(type(of: entity))`.")
+                            errorDescription += "\nCore Data: Detailed: \(nserror.localizedDescription) Entity: `\(type(of: entity))`."
                         }
                     }
                 }
+                PersistenceController.logger.error("\(errorDescription)")
             }
         }
     }
@@ -69,9 +81,9 @@ class PersistenceController: ObservableObject {
             return try context.fetch(request)
         } catch let nserror as NSError {
             if let detailsForLogging = detailsForLogging {
-                print("Core Data: Failed to perform fetch request `\(detailsForLogging)`: \(nserror.localizedDescription)")
+                PersistenceController.logger.error("Core Data: Failed to perform fetch request `\(detailsForLogging)`: \(nserror.localizedDescription)")
             } else {
-                print("Core Data: Failed to perform fetch request: \(nserror.localizedDescription)")
+                PersistenceController.logger.error("Core Data: Failed to perform fetch request: \(nserror.localizedDescription)")
             }
             return nil
         }
@@ -83,10 +95,10 @@ class PersistenceController: ObservableObject {
         let persistentStoreCoordinator = PersistenceController.shared.container.persistentStoreCoordinator
         
         do {
-            try persistentStoreCoordinator.destroyPersistentStore(at:url, ofType: NSSQLiteStoreType, options: nil)
+            try persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
             try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
         } catch {
-            print("Core Data: Failed to clear persistent store: \(error.localizedDescription)")
+            PersistenceController.logger.error("Core Data: Failed to clear persistent store: \(error.localizedDescription)")
         }
     }
 }

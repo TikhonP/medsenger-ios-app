@@ -48,7 +48,7 @@ struct ChatView: View {
                         ScrollView {
                             ScrollViewReader { scrollReader in
                                 getMessagesView(viewWidth: reader.size.width)
-                                    .padding(.horizontal)
+                                    .padding(.horizontal, 5)
                                     .onAppear {
                                         if let messageID = messages.last?.id {
                                             scrollTo(messageID: Int(messageID), shouldAnumate: false, scrollReader: scrollReader)
@@ -148,17 +148,22 @@ struct ChatView_Previews: PreviewProvider {
     
     static var contract1: Contract = {
         let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
+        let contract = Contract.createSampleContract1(for: context)
+        PersistenceController.save(for: context)
+        return contract
     }()
     
     static var user: User = {
         let context = persistence.container.viewContext
-        return User.createSampleUser(for: context)
+        let user = User.createSampleUser(for: context)
+        PersistenceController.save(for: context)
+        return user
     }()
     
     static var previews: some View {
         NavigationView {
             ChatView(contract: contract1, user: user)
+                .environment(\.managedObjectContext, persistence.container.viewContext)
         }
     }
 }

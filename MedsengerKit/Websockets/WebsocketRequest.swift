@@ -8,6 +8,7 @@
 
 import Foundation
 import WebRTC
+import os.log
 
 // MARK: Websocket Request protocol
 
@@ -18,6 +19,9 @@ enum WebsocketCommands: String, Encodable {
     case sdp = "SDP"
     case ice = "ICE"
     case hangUp = "HANG_UP"
+    case invalidIce = "INVALID_ICE"
+    case invalidStream = "INVALID_STREAM"
+    case answer = "ANSWER"
 }
 
 protocol WebsocketModel: Encodable {
@@ -46,7 +50,7 @@ extension WebsocketRequest {
             let jsonString = String(data: jsonData, encoding: .utf8)
             return jsonString
         } catch {
-            print("Error with encodeing to JSON data for websockets: \(error.localizedDescription)")
+            Logger.websockets.error("Error with encodeing to JSON data for websockets: \(error.localizedDescription)")
             return nil
         }
     }
@@ -122,6 +126,39 @@ struct HangUpWebsocketRequest: WebsocketRequest {
     
     struct Model: WebsocketModel {
         var mType = WebsocketCommands.hangUp
+        let contract: Int
+    }
+    
+    var model: Model { Model(contract: contractId) }
+}
+
+struct InvalidIceWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.invalidIce
+        let contract: Int
+    }
+    
+    var model: Model { Model(contract: contractId) }
+}
+
+struct InvalidStreamWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.invalidStream
+        let contract: Int
+    }
+    
+    var model: Model { Model(contract: contractId) }
+}
+
+struct AnswerWebsocketRequest: WebsocketRequest {
+    let contractId: Int
+    
+    struct Model: WebsocketModel {
+        var mType = WebsocketCommands.answer
         let contract: Int
     }
     

@@ -113,8 +113,7 @@ struct ContractView: View {
     }
     
     func startCall() {
-        contentViewModel.videoCallContractId = Int(contract.id)
-        contentViewModel.isCalling = true
+        contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
     }
 }
 

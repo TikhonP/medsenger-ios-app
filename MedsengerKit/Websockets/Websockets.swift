@@ -8,6 +8,7 @@
 
 import Foundation
 import WebRTC
+import os.log
 
 protocol WebsocketsWebRTCDelegate: AnyObject {
     func signalClient(_ websockets: Websockets, didReceiveRemoteSdp sdp: RTCSessionDescription)
@@ -18,20 +19,191 @@ protocol WebsocketsCallDelegate: AnyObject {
     func signalClient(_ websockets: Websockets, didAnswered data: String?)
     func signalClient(_ websockets: Websockets, answeredFromAnotherDevice data: String?)
     func signalClient(_ websockets: Websockets, hangUp data: String?)
+    func signalClient(_ websockets: Websockets, errorOffline data: String?)
+    func signalClient(_ websockets: Websockets, errorConnection data: String?)
+}
+
+protocol WebsocketsContentViewModelDelegate: AnyObject {
+    func signalClient(_ websockets: Websockets, callWithContractId contractId: Int)
+    func signalClient(_ websockets: Websockets, callContinuedWithContractId contractId: Int)
 }
 
 class Websockets: NSObject {
+    
     static let shared = Websockets()
     
     private var webSocket: URLSessionWebSocketTask?
-    
     private(set) var isConnected: Bool = false
     
     weak var webRtcDelegate: WebsocketsWebRTCDelegate?
     weak var callDelegate: WebsocketsCallDelegate?
+    weak var contentViewModelDelegate: WebsocketsContentViewModelDelegate?
     
-    // MARK: - Public methods
+    // MARK: - Private methods
     
+    private func ping() {
+        webSocket?.sendPing { error in
+            if let error = error {
+                Logger.websockets.error("Websocket ping error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func send(_ request: some WebsocketRequest) {
+        ping()
+        guard let message = request.data else {
+            Logger.websockets.error("Webscokets: send: request data is nil")
+            return
+        }
+        webSocket?.send(.string(message), completionHandler: { error in
+            if let error = error {
+                Logger.websockets.error("Websocket send error: \(error.localizedDescription)")
+            }
+        })
+    }
+    
+    private func processWebsocketResponse(_ websocketResponse: some WebsocketResponse, _ data: String, responseStatus: WebsocketResponseStatus) {
+        let decodingResult = websocketResponse.decode(data)
+        switch decodingResult {
+        case .success(let data):
+            websocketResponse.processResponse(data)
+            
+            switch responseStatus {
+            case .sdp:
+                guard let data = data as? SdpWebsocketResponse.Model else {
+                    Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get SdpWebsocketResponse.Model")
+                    return
+                }
+                self.webRtcDelegate?.signalClient(self, didReceiveRemoteSdp: data.sdp.rtcSessionDescription)
+            case .ice:
+                guard let data = data as? IceWebsocketResponse.Model else {
+                    Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get IceWebsocketResponse.Model")
+                    return
+                }
+                self.webRtcDelegate?.signalClient(self, didReceiveCandidate: data.ice.rtcIceCandidate)
+            case .answered:
+                self.callDelegate?.signalClient(self, didAnswered: nil)
+            case .answeredFromAnotherDevice:
+                self.callDelegate?.signalClient(self, answeredFromAnotherDevice: nil)
+            case .hangUp:
+                self.callDelegate?.signalClient(self, hangUp: nil)
+            case .errOffline:
+                self.callDelegate?.signalClient(self, errorOffline: nil)
+            case .errConnection:
+                self.callDelegate?.signalClient(self, errorConnection: nil)
+            case .call:
+                guard let data = data as? CallWebsocketResponse.Model else {
+                    Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallWebsocketResponse.Model")
+                    return
+                }
+                self.contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+            case .callContinued:
+                guard let data = data as? CallContinuedWebsocketResponse.Model else {
+                    Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallContinuedWebsocketResponse.Model")
+                    return
+                }
+                self.contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+            default:
+                break
+            }
+        case .failure(let error):
+            Logger.websockets.error("Websocket received: Decoding data error: \(error.localizedDescription) Data: \(data)")
+        }
+    }
+    
+    private func receive() {
+        webSocket?.receive(completionHandler: { [weak self] result in
+            self?.receiveCompletion(result)
+            if let isConnected = self?.isConnected, isConnected {
+                self?.receive()
+            }
+        })
+    }
+    
+    private func receiveCompletion(_ result: Result<URLSessionWebSocketTask.Message, Error>) {
+        switch result {
+        case .success(let message):
+            switch message {
+            case .data(let data):
+                Logger.websockets.notice("Websocket received data: \(data)")
+            case .string(let string):
+                if string == "ping" {
+                    webSocket?.send(.string("pong"), completionHandler: { error in
+                        if let error = error {
+                            Logger.websockets.error("Websocket send pong error: \(error.localizedDescription)")
+                        }
+                    })
+                } else {
+                    do {
+                        let decoder = JSONDecoder()
+                        let status = try decoder.decode(WebsocketResponseStatusModel.self, from: Data(string.utf8))
+                        let websocketResponse = WebsocketResponseStatus.getWebsocketResponse(status.mType)
+                        processWebsocketResponse(websocketResponse, string, responseStatus: status.mType)
+                    } catch {
+                        Logger.websockets.error("Websocket received: Decoding status error: \(error.localizedDescription) Data: \(string)")
+                    }
+                }
+            @unknown default:
+                Logger.websockets.notice("Websocket received: Unknown message")
+            }
+        case .failure(let error as NSError):
+            switch error.code {
+            case 53: // Software caused connection abort
+                Logger.websockets.notice("Websocket receive connection aborted")
+                isConnected = false
+                close()
+            default:
+                Logger.websockets.error("Websocket receive error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func close() {
+        webSocket?.cancel(with: .goingAway, reason: nil)
+    }
+}
+
+// MARK: - `URLSessionWebSocketDelegate` delegate
+
+extension Websockets: URLSessionWebSocketDelegate {
+    internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        Logger.websockets.debug("Websockets: Connection established")
+        isConnected = true
+        ping()
+        receive()
+        send(IAmWebsocketRequest())
+    }
+    
+    internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        isConnected = false
+        Logger.websockets.notice("Websockets: Did closed connection with reason: \(String(describing: reason))")
+        
+        // try to reconnect every two seconds
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+            Logger.websockets.debug("Websockets: Trying to reconnect to websocket server...")
+            self.createUrlSession()
+        }
+    }
+    
+    internal func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error as? URLError {
+            if error.code == .timedOut  || error.code == .notConnectedToInternet || error.code == .networkConnectionLost {
+                isConnected = false
+                close()
+            } else {
+                Logger.websockets.error("Websockets: didCompleteWithError: URLError: \(error.localizedDescription)")
+            }
+        } else if let error = error {
+            Logger.websockets.error("Websockets: didCompleteWithError: \(error.localizedDescription)")
+        } else {
+            Logger.websockets.error("Websockets: didCompleteWithError: error is nil")
+        }
+    }
+}
+
+// MARK: - Public methods
+
+extension Websockets {
     public func createUrlSession() {
         if webSocket == nil || !isConnected {
             let session = URLSession(
@@ -66,155 +238,15 @@ class Websockets: NSObject {
         send(CallWebsocketRequest(contractId: contractId))
     }
     
-    // MARK: - Private methods
-    
-    private func ping() {
-        webSocket?.sendPing { error in
-            if let error = error {
-                print("Websocket ping error: \(error.localizedDescription)")
-            }
-        }
+    public func invalidIce(contractId: Int) {
+        send(InvalidIceWebsocketRequest(contractId: contractId))
     }
     
-    private func send(_ request: some WebsocketRequest) {
-        ping()
-        guard let message = request.data else {
-            print("Webscoket request data is nil")
-            return
-        }
-        print("WEBSOCKET send: \(message)")
-        webSocket?.send(.string(message), completionHandler: { error in
-            if let error = error {
-                print("Websocket send error: \(error.localizedDescription)")
-            }
-        })
+    public func invalidStream(contractId: Int) {
+        send(InvalidStreamWebsocketRequest(contractId: contractId))
     }
     
-    private func processWebsocketResponse(_ websocketResponse: some WebsocketResponse, _ data: String, responseStatus: WebsocketResponseStatus) {
-        let decodingResult = websocketResponse.decode(data)
-        if self.webRtcDelegate == nil {
-            print("self.webRtcDelegate == nil!!!")
-        } else {
-            print("self.webRtcDelegate != nil!!!")
-        }
-        switch decodingResult {
-        case .success(let data):
-            switch responseStatus {
-            case .sdp:
-                guard let data = data as? SdpWebsocketResponse.Model else {
-                    print("Websockets: processWebsocketResponse: Failed to get sdp")
-                    return
-                }
-                self.webRtcDelegate?.signalClient(self, didReceiveRemoteSdp: data.sdp.rtcSessionDescription)
-            case .ice:
-                guard let data = data as? IceWebsocketResponse.Model else {
-                    print("Websockets: processWebsocketResponse: Failed to get ice")
-                    return
-                }
-                self.webRtcDelegate?.signalClient(self, didReceiveCandidate: data.ice.rtcIceCandidate)
-            case .answered:
-                self.callDelegate?.signalClient(self, didAnswered: "")
-            case .answeredFromAnotherDevice:
-                self.callDelegate?.signalClient(self, answeredFromAnotherDevice: "")
-            case .hangUp:
-                self.callDelegate?.signalClient(self, hangUp: "")
-            default:
-                websocketResponse.processResponse(data)
-            }
-        case .failure(let error):
-            print("Websocket received: Decoding data error: \(error.localizedDescription)")
-        }
-    }
-    
-    private func receive() {
-        webSocket?.receive(completionHandler: { [weak self] result in
-            self?.receiveCompletion(result)
-            if let isConnected = self?.isConnected, isConnected {
-                self?.receive()
-            }
-        })
-    }
-    
-    private func receiveCompletion(_ result: Result<URLSessionWebSocketTask.Message, Error>) {
-        switch result {
-        case .success(let message):
-            switch message {
-            case .data(let data):
-                print("Websocket received data: \(data)")
-            case .string(let string):
-                if string == "ping" {
-                    webSocket?.send(.string("pong"), completionHandler: { error in
-                        if let error = error {
-                            print("Websocket send pong error: \(error.localizedDescription)")
-                        }
-                    })
-                } else {
-                    do {
-                        let decoder = JSONDecoder()
-                        let status = try decoder.decode(WebsocketResponseStatusModel.self, from: Data(string.utf8))
-                        let websocketResponse = WebsocketResponseStatus.getWebsocketResponse(status.mType)
-                        print("Websocket got: \(status.mType) \(string)")
-                        processWebsocketResponse(websocketResponse, string, responseStatus: status.mType)
-                    } catch {
-                        return print("Websocket received: Decoding status error: \(error.localizedDescription) Data: \(string)")
-                        
-                    }
-                }
-            @unknown default:
-                print("Websocket received: Unknown message")
-            }
-        case .failure(let error as NSError):
-            switch error.code {
-            case 53: // Software caused connection abort
-                print("Websocket receive connection aborted")
-                isConnected = false
-                close()
-            default:
-                print("Websocket receive error: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    private func close() {
-        webSocket?.cancel(with: .goingAway, reason: nil)
+    public func answer(contractId: Int) {
+        send(AnswerWebsocketRequest(contractId: contractId))
     }
 }
-
-// MARK: - `URLSessionWebSocketDelegate` delegate
-
-extension Websockets: URLSessionWebSocketDelegate {
-    internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        print("Websockets: Connection established")
-        isConnected = true
-        ping()
-        receive()
-        send(IAmWebsocketRequest())
-    }
-    
-    internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
-        isConnected = false
-        print("Websockets: Did closed connection with reason: \(String(describing: reason))")
-        
-        // try to reconnect every two seconds
-        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-            print("Websockets: Trying to reconnect to websocket server...")
-            self.createUrlSession()
-        }
-    }
-    
-    internal func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error as? URLError {
-            if error.code == .timedOut  || error.code == .notConnectedToInternet || error.code == .networkConnectionLost {
-                isConnected = false
-                close()
-            } else {
-                print("Websockets: didCompleteWithError: URLError: \(error.localizedDescription)")
-            }
-        } else if let error = error {
-            print("Websockets: didCompleteWithError: \(error.localizedDescription)")
-        } else {
-            print("Websockets: didCompleteWithError: error is nil")
-        }
-    }
-}
-

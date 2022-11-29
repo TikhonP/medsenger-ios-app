@@ -7,9 +7,15 @@
 //
 
 import Foundation
+import os.log
 
 class Contracts {
     static let shared = Contracts()
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: Contracts.self)
+    )
     
     private var contractsRequestAsPatientRequest: APIRequest<ContractsRequestAsPatientResource>?
     private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
@@ -48,7 +54,7 @@ class Contracts {
                 }
             }
         case .unknown:
-            print("Failed to fetch contracts: User role unknown")
+            Contracts.logger.error("Failed to fetch contracts: User role unknown")
         }
     }
     
@@ -81,7 +87,7 @@ class Contracts {
                 }
             }
         case .unknown:
-            print("Failed to fetch archive contracts: User role unknown")
+            Contracts.logger.error("Failed to fetch archive contracts: User role unknown")
         }
     }
     
@@ -100,26 +106,30 @@ class Contracts {
         }
     }
     
-    public func deactivateMessages(_ contractId: Int) {
+    public func deactivateMessages(_ contractId: Int, completion: (() -> Void)? = nil) {
         let deactivateMessagesResource = DeactivateMessagesResource(contractId: contractId)
         deactivateMessagesRequest = APIRequest(resource: deactivateMessagesResource)
         deactivateMessagesRequest?.execute { result in
             switch result {
             case .success(_):
-                break
+                if let completion = completion {
+                    completion()
+                }
             case .failure(let error):
                 processRequestError(error, "save profile data")
             }
         }
     }
     
-    public func concludeContract(_ contractId: Int) {
+    public func concludeContract(_ contractId: Int, completion: (() -> Void)? = nil) {
         let concludeContract = ConcludeContractResource(contractId: contractId)
         concludeContractRequest = APIRequest(resource: concludeContract)
         concludeContractRequest?.execute { result in
             switch result {
             case .success(_):
-                break
+                if let completion = completion {
+                    completion()
+                }
             case .failure(let error):
                 processRequestError(error, "save profile data")
             }

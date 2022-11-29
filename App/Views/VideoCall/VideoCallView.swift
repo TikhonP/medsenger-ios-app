@@ -11,26 +11,38 @@ import SwiftUI
 struct VideoCallView: View {
     @StateObject private var videoCallViewModel: VideoCallViewModel
     
+    @FetchRequest private var contracts: FetchedResults<Contract>
+    
     init(contractId: Int, contentViewModel: ContentViewModel) {
         _videoCallViewModel = StateObject(wrappedValue: VideoCallViewModel(contractId: contractId, contentViewModel: contentViewModel))
+        _contracts = FetchRequest<Contract>(
+            entity: Contract.entity(),
+            sortDescriptors: [],
+            predicate: NSPredicate(format: "id == %ld", contractId),
+            animation: .default
+        )
     }
     
     var body: some View {
         ZStack {
-            Color(UIColor.systemBackground)
-                .edgesIgnoringSafeArea(.all)
-            switch videoCallViewModel.state {
-            case .new, .checking:
-                WaitingCallView()
-                    .environmentObject(videoCallViewModel)
-            case .connected, .completed:
-                CallingView()
-                    .environmentObject(videoCallViewModel)
-            default:
-                Text("Call error")
+            if let contract = contracts.first {
+                ZStack {
+                    Color(UIColor.systemBackground)
+                        .edgesIgnoringSafeArea(.all)
+                    switch videoCallViewModel.rtcState {
+                    case .new, .checking:
+                        WaitingCallView(contract: contract)
+                            .environmentObject(videoCallViewModel)
+                    case .connected, .completed:
+                        CallingView(contract: contract)
+                            .environmentObject(videoCallViewModel)
+                    default:
+                        Text("Call error")
+                    }
+                }
+                .onAppear(perform: videoCallViewModel.videoCallViewAppear)
             }
         }
-        .onAppear(perform: videoCallViewModel.makeCall)
     }
 }
 

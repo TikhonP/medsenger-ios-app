@@ -23,10 +23,6 @@ extension PersistenceController {
         _ = User.createSampleUser(for: viewContext)
         Contract.createSampleContracts(for: viewContext)
         
-        do {
-            try viewContext.save()
-        } catch {
-            print("Core Data failed to save model: \(error.localizedDescription)")
-        }
+        PersistenceController.save(for: viewContext)
     }
 }

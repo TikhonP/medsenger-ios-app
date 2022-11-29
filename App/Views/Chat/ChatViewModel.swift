@@ -8,9 +8,14 @@
 
 import Foundation
 import AVFoundation
+import os.log
 
-final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
-    @Published var message: String = ""
+final class ChatViewModel: NSObject, ObservableObject {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: ChatViewModel.self)
+    )
     
     private var contractId: Int
     
@@ -18,17 +23,19 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
     private var audioPlayer: AVAudioPlayer!
     private var recordingSession: AVAudioSession?
     
-    @Published var isRecordingVoiceMessage: Bool = false
-    @Published var showAlertRecordingIsNotPermited: Bool = false
-    @Published var showRecordingfailedAlert: Bool = false
-    @Published var showRecordedMessage: Bool = false
+    @Published var message: String = ""
     
-    @Published var isVoiceMessagePlaying: Bool = false
+    @Published var isRecordingVoiceMessage = false
+    @Published var showAlertRecordingIsNotPermited = false
+    @Published var showRecordingfailedAlert = false
+    @Published var showRecordedMessage = false
+    
+    @Published var isVoiceMessagePlaying = false
     
     @Published var quickLookDocumentUrl: URL?
     @Published var loadingAttachmentIds = [Int]()
     
-    @Published var showSelectImageOptions: Bool = false
+    @Published var showSelectImageOptions = false
     @Published var showSelectPhotosSheet = false
     @Published var showTakeImageSheet = false
     @Published var selectedImage = Data()
@@ -65,13 +72,47 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
         }
     }
     
+    func showAttachmentPreview(_ attachment: Attachment) {
+        if let dataPath = attachment.dataPath {
+            quickLookDocumentUrl = dataPath
+        } else {
+            loadingAttachmentIds.append(Int(attachment.id))
+            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
+                        self.loadingAttachmentIds.remove(at: index)
+                    }
+                    self.quickLookDocumentUrl = Attachment.get(id: Int(attachment.id))?.dataPath
+                }
+            }
+        }
+    }
+    
+    func sendVoiceMessage() {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
+        guard let data = try? Data(contentsOf: voiceMessageFilePath) else { return }
+        Messages.shared.sendMessage(
+            Constants.voiceMessageText,
+            contractId: contractId,
+            attachments: [(Constants.voiceMessageFileName, data)]) {
+                DispatchQueue.main.async {
+                    self.isRecordingVoiceMessage = false
+                    self.showRecordedMessage = false
+                    self.isVoiceMessagePlaying = false
+                }
+            }
+    }
+}
+
+extension ChatViewModel: AVAudioRecorderDelegate {
     func initRecordingSession() {
         recordingSession = AVAudioSession.sharedInstance()
         do {
             try recordingSession?.setCategory(.playAndRecord, mode: .default)
             try recordingSession?.setActive(true)
         } catch {
-            print("Failed to prepare AVAudioSession: \(error.localizedDescription)")
+            ChatViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
         }
     }
     
@@ -106,7 +147,7 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
                     self.isRecordingVoiceMessage = true
                 } catch {
                     self.finishRecording(success: false)
-                    print("Failed to start audio recording: \(error.localizedDescription)")
+                    ChatViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
                 }
             }
         }
@@ -123,14 +164,16 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
             showRecordingfailedAlert = true
         }
     }
-    
+}
+
+extension ChatViewModel: AVAudioPlayerDelegate {
     func startPlaying(_ url: URL, completion: (() -> Void)? = nil) {
         let playSession = AVAudioSession.sharedInstance()
         
         do {
             try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
         } catch {
-            print("Failed to override output audio port: \(error.localizedDescription)")
+            ChatViewModel.logger.error("Failed to override output audio port: \(error.localizedDescription)")
         }
         
         do {
@@ -142,7 +185,7 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
                 completion()
             }
         } catch {
-            print("Playing voice message failed: \(error.localizedDescription)")
+            ChatViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
         }
     }
     
@@ -159,41 +202,9 @@ final class ChatViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate, 
         }
     }
     
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
             self.isVoiceMessagePlaying = false
-        }
-    }
-    
-    func sendVoiceMessage() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        guard let data = try? Data(contentsOf: voiceMessageFilePath) else { return }
-        Messages.shared.sendMessage(
-            Constants.voiceMessageText,
-            contractId: contractId,
-            attachments: [(Constants.voiceMessageFileName, data)]) {
-                DispatchQueue.main.async {
-                    self.isRecordingVoiceMessage = false
-                    self.showRecordedMessage = false
-                    self.isVoiceMessagePlaying = false
-                }
-            }
-    }
-    
-    func showAttachmentPreview(_ attachment: Attachment) {
-        if let dataPath = attachment.dataPath {
-            quickLookDocumentUrl = dataPath
-        } else {
-            loadingAttachmentIds.append(Int(attachment.id))
-            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                        self.loadingAttachmentIds.remove(at: index)
-                    }
-                    self.quickLookDocumentUrl = Attachment.get(id: Int(attachment.id))?.dataPath
-                }
-            }
         }
     }
 }

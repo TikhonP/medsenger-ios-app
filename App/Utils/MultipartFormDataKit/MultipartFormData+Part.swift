@@ -1,14 +1,11 @@
 import Foundation
 
-
-
 extension MultipartFormData {
     public struct Part {
         public let contentDisposition: ContentDisposition
         public let contentType: ContentType?
         public let content: Data
-
-
+        
         public init(
             contentDisposition: ContentDisposition,
             contentType: ContentType?,
@@ -18,8 +15,7 @@ extension MultipartFormData {
             self.contentType = contentType
             self.content = content
         }
-
-
+        
         // RFC 2046 Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types
         // 5.1.1.  Common Syntax
         //
@@ -51,12 +47,12 @@ extension MultipartFormData {
                     data.append(self.content)
                     data.append(CRLF)
                     return nil
-
+                    
                 case let .invalid(because: error):
                     return .contentDispositionError(error)
                 }
             }
-
+            
             switch (
                 self.contentDisposition.asData(),
                 contentType.asData()
@@ -70,17 +66,15 @@ extension MultipartFormData {
                 data.append(self.content)
                 data.append(CRLF)
                 return nil
-
+                
             case let (.invalid(because: error), _):
                 return .contentDispositionError(error)
-
+                
             case let (_, .invalid(because: error)):
                 return .contentTypeError(error)
             }
         }
-
-
-
+        
         public static func create(
             name: String,
             filename: String?,
@@ -102,12 +96,12 @@ extension MultipartFormData {
                             content: data
                         )
                     )
-
+                    
                 case let .invalid(because: error):
                     return .invalid(because: .invalidName(error))
                 }
             }
-
+            
             switch (
                 Name.create(by: name),
                 Filename.create(by: filename)
@@ -123,17 +117,15 @@ extension MultipartFormData {
                     },
                     content: data
                 ))
-
+                
             case let (.invalid(because: reason), _):
                 return .invalid(because: .invalidName(reason))
-
+                
             case let (_, .invalid(because: reason)):
                 return .invalid(because: .invalidFilename(reason))
             }
         }
-
-
-
+        
         public enum CreationError: Error {
             case invalidName(Name.FailureReason)
             case invalidFilename(Filename.FailureReason)

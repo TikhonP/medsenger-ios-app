@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 // MARK: Network Request
 
@@ -53,11 +54,32 @@ enum NetworkRequestError: Error {
 
 /// Decode JSON from data failure cases
 enum DecodeDataError: Error {
-    case dataCorrupted(DecodingError.Context)
-    case keyNotFound(CodingKey, DecodingError.Context)
-    case valueNotFound(Any, DecodingError.Context)
-    case typeMismatch(Any, DecodingError.Context)
-    case error(Error)
+    
+    /// Data corrupted error
+    ///  - Parameter context: DecodingError context
+    case dataCorrupted(_ context: DecodingError.Context)
+    
+    ///  Key not found in JSON string
+    ///  - Parameters:
+    ///   - key: missing key
+    ///   - context: DecodingError context
+    case keyNotFound(_ key: CodingKey, _ context: DecodingError.Context)
+    
+    /// Value Not Found in JSON string
+    /// - Parameters:
+    ///  - value: missing value
+    ///  - context: DecodingError context
+    case valueNotFound(_ value: Any, _ context: DecodingError.Context)
+    
+    /// Type Mismatch in JSON string
+    /// - Parameters:
+    ///  - type: mismatch type
+    ///  - context: DecodingError context
+    case typeMismatch(_ type: Any.Type, _ context: DecodingError.Context)
+    
+    /// Other Decoding Errors
+    /// - Parameter error: `DecodingError` error
+    case error(_ error: Error)
 }
 
 typealias DecodedDataReslut<T> = Result<T, DecodeDataError>
@@ -76,7 +98,7 @@ protocol NetworkRequest: AnyObject {
 }
 
 extension NetworkRequest {
-    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: HttpMethod = .GET, body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) {
+    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: HttpMethod = .GET, body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) -> URLSessionTask {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
@@ -150,13 +172,14 @@ extension NetworkRequest {
             }
         }
         
+        let task: URLSessionTask
         if let uploadData = uploadData {
-            URLSession.shared.uploadTask(with: request, from: uploadData, completionHandler: processResponse)
-                .resume()
+            task = URLSession.shared.uploadTask(with: request, from: uploadData, completionHandler: processResponse)
         } else {
-            URLSession.shared.dataTask(with: request, completionHandler: processResponse)
-                .resume()
+            task = URLSession.shared.dataTask(with: request, completionHandler: processResponse)
         }
+        task.resume()
+        return task
     }
 }
 
@@ -210,7 +233,7 @@ extension APIRequest: NetworkRequest {
     }
     
     func execute(withCompletion completion: @escaping NetworkRequestCompletion<Resource.ModelType>) {
-        load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, body: resource.options.httpBody, parseResponse: resource.options.parseResponse, withCompletion: completion)
+        _ = load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, body: resource.options.httpBody, parseResponse: resource.options.parseResponse, withCompletion: completion)
     }
 }
 
@@ -235,7 +258,7 @@ extension FileRequest: NetworkRequest {
     func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.success(data) }
     
     func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
-        load(url, method: .GET, parseResponse: true, withCompletion: completion)
+        _ = load(url, method: .GET, parseResponse: true, withCompletion: completion)
     }
 }
 
@@ -321,7 +344,7 @@ extension APIResource {
             case let .valid(data):
                 return data
             case let .invalid(error):
-                print("Serilize `send message` form data error: \(error.localizedDescription)")
+                Logger.urlRequest.fault("APIResource: Serilize `send message` form data error: \(error.localizedDescription)")
                 return nil
             }
         }()
@@ -391,7 +414,7 @@ extension UploadImageRequest: NetworkRequest {
     }
     
     func execute(withCompletion completion: @escaping NetworkRequestCompletion<Resource.ModelType>) {
-        load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, uploadData: resource.uploadData, withCompletion: completion)
+        _ = load(resource.url, headers: resource.options.headers, method: resource.options.httpMethod, uploadData: resource.uploadData, withCompletion: completion)
     }
 }
 
@@ -467,55 +490,55 @@ struct ErrorReponse: Decodable {
 func processRequestError(_ requestError: NetworkRequestError, _ requestName: String) {
     switch requestError {
     case .failedToGetUrlError(let error):
-        print("Request `\(requestName)` failed to get URLError error: \(error.localizedDescription)")
+        Logger.urlRequest.error("Request `\(requestName)` failed to get URLError error: \(error.localizedDescription)")
     case .request(let urlError):
         switch urlError.code {
         default:
-            print("Request `\(requestName)` error: \(urlError.localizedDescription)")
+            Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         }
     case .api(let errorData):
         for error in errorData {
             switch error {
             case "Incorrect token":
                 Login.shared.signOut()
-                print("Incorrect token in request, sign out.")
+                Logger.urlRequest.info("Incorrect token in request, sign out.")
             default:
-                print("Request `\(requestName)` error: medsenger server message: \(error)")
+                Logger.urlRequest.error("Request `\(requestName)` error: medsenger server message: \(error)")
             }
         }
     case .pageNotFound(let url):
-        print("Request `\(requestName)` error: Page not found with url: \(url)")
+        Logger.urlRequest.error("Request `\(requestName)` error: Page not found with url: \(url)")
     case .emptyDataStatusCode(let statusCode):
-        print("Request `\(requestName)` error: Invalid status code (\(statusCode)) with empty data")
+        Logger.urlRequest.error("Request `\(requestName)` error: Invalid status code (\(statusCode)) with empty data")
     case .failedToDeserializeError(let statusCode, let decodeDataError):
         switch decodeDataError {
         case .dataCorrupted(let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Data corrupted, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Data corrupted, context: \(String(describing: context))")
         case .keyNotFound(let key, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Key `\(key)` not found, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Key `\(String(describing: key))` not found, context: \(String(describing: context))")
         case .valueNotFound(let value, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Value `\(value)` not found, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Value `\(String(describing: value))` not found, context: \(String(describing: context))")
         case .typeMismatch(let type, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Type `\(type)` Mismatch, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Type `\(String(describing: type))` Mismatch, context: \(String(describing: context))")
         case .error(let error):
-            print("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(error.localizedDescription)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(error.localizedDescription)")
         }
     case .failedToDeserialize(let decodeDataError):
         switch decodeDataError {
         case .dataCorrupted(let context):
-            print("Request `\(requestName)` error: Failed to deserialize data: Data corrupted, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Data corrupted, context: \(String(describing: context))")
         case .keyNotFound(let key, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data: Key `\(key)` not found, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Key `\(String(describing: key))` not found, context: \(String(describing: context))")
         case .valueNotFound(let value, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data: Value `\(value)` not found, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Value `\(String(describing: value))` not found, context: \(String(describing: context))")
         case .typeMismatch(let type, let context):
-            print("Request `\(requestName)` error: Failed to deserialize data: Type `\(type)` Mismatch, context: \(context)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Type `\(String(describing: type))` Mismatch, context: \(String(describing: context))")
         case .error(let error):
-            print("Request `\(requestName)` error: Failed to deserialize data: Unknown error: \(error.localizedDescription)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Unknown error: \(error.localizedDescription)")
         }
     case .failedToGetResponse:
-        print("Request `\(requestName)` error: Failed to get status code")
+        Logger.urlRequest.error("Request `\(requestName)` error: Failed to get status code")
     case .selfIsNil:
-        print("Request `\(requestName)` error: `self` is `nil`")
+        Logger.urlRequest.error("Request `\(requestName)` error: `self` is `nil`")
     }
 }

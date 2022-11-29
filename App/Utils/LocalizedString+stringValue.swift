@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import os.log
 
 extension LocalizedStringKey {
     var stringKey: String? {
@@ -18,11 +19,11 @@ extension String {
     static func localizedString(for key: String, locale: Locale = .current) -> String {
         let language = locale.languageCode
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj") else {
-            print("Failed to load localized string for key: \(key): Bundle path is nil")
+//            Logger.defaultLogger.error("Failed to load localized string for key: \(key): Bundle path is nil")
             return "Failed to load localized string"
         }
         guard let bundle = Bundle(path: path)  else {
-            print("Failed to load localized string for key: \(key): Failed to create bundle from path")
+//            Logger.defaultLogger.error("Failed to load localized string for key: \(key): Failed to create bundle from path")
             return "Failed to load localized string"
         }
         let localizedString = NSLocalizedString(key, bundle: bundle, comment: "")
