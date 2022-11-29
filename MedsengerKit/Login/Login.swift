@@ -29,6 +29,9 @@ class Login {
                 if let data = data {
                     KeyСhain.apiToken = data.api_token
                     User.saveUserFromJson(data)
+                    if let fcmToken = UserDefaults.fcmToken, UserDefaults.userRole != .unknown {
+                        Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
+                    }
                     completion(.success)
                 } else {
                     completion(.unknownError)
@@ -90,6 +93,9 @@ class Login {
     }
     
     public func signOut() {
+        if let fcmToken = UserDefaults.fcmToken {
+            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
+        }
         KeyСhain.apiToken = nil
         User.delete()
         UserDefaults.userRole = .unknown

@@ -37,9 +37,11 @@ struct ArchivesChatsView: View {
         }
     }
     
+    @State private var archiveChatsNavigationSelection: Int? = nil
+    
     var body: some View {
         List(contracts) { contract in
-            NavigationLink(tag: Int(contract.id), selection: $contentViewModel.archiveChatsNavigationSelection, destination: {
+            NavigationLink(tag: Int(contract.id), selection: $archiveChatsNavigationSelection, destination: {
                 ChatView(contract: contract, user: user)
             }, label: {
                 switch userRole {

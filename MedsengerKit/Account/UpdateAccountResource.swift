@@ -35,6 +35,7 @@ struct UpdateAccountResource: APIResource {
     var options: APIResourceOptions {
         let result = multipartFormData(params: params)
         return APIResourceOptions(
+            parseResponse: false,
             httpBody: result.httpBody,
             httpMethod: .POST,
             headers: result.headers

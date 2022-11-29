@@ -257,7 +257,7 @@ struct ErrorConnectionServerWebsocketResponse: WebsocketResponse {
 
 struct SdpWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {
-        let contract: Int
+        let contract: String
         let sdp: SessionDescription
     }
     
@@ -266,7 +266,7 @@ struct SdpWebsocketResponse: WebsocketResponse {
 
 struct IceWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {
-        let contract: Int
+        let contract: String
         let ice: IceCandidate
     }
     

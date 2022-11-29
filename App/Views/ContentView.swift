@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var contentViewModel = ContentViewModel()
+    @StateObject private var contentViewModel = ContentViewModel.shared
     
     @FetchRequest(sortDescriptors: [], animation: .default)
     private var users: FetchedResults<User>
@@ -39,6 +39,7 @@ struct ContentView: View {
                 }
             }
             .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
+            .onOpenURL(perform: contentViewModel.processDeeplink)
         } else {
             SignInView()
                 .onAppear(perform: PersistenceController.clearDatabase)

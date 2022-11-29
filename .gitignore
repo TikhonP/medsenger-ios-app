@@ -93,3 +93,4 @@ iOSInjectionProject/
 *.swp
 Config.xcconfig
 Config.swift
+App/GoogleService-Info.plist

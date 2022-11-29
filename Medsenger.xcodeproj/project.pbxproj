@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		430E7D90293635C1009C129D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 430E7D8F293635C1009C129D /* FirebaseAnalytics */; };
+		430E7D92293635C1009C129D /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 430E7D91293635C1009C129D /* FirebaseMessaging */; };
+		430E7D962936392A009C129D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 430E7D952936392A009C129D /* GoogleService-Info.plist */; };
+		430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430E7D99293645BA009C129D /* PushNotificationsResource.swift */; };
+		430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430E7D9D29366D9D009C129D /* MessagesView.swift */; };
 		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
 		434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */; };
@@ -124,6 +129,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		430E7D952936392A009C129D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		430E7D99293645BA009C129D /* PushNotificationsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsResource.swift; sourceTree = "<group>"; };
+		430E7D9D29366D9D009C129D /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsDoctorResource.swift; sourceTree = "<group>"; };
@@ -248,6 +256,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				430E7D92293635C1009C129D /* FirebaseMessaging in Frameworks */,
+				430E7D90293635C1009C129D /* FirebaseAnalytics in Frameworks */,
 				4376163D2933881C001049E6 /* WebRTC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +317,7 @@
 				43EF442F292289B0005DF084 /* Utils */,
 				43EF440B2922824B005DF084 /* Views */,
 				43EF44012922808F005DF084 /* Info.plist */,
+				430E7D952936392A009C129D /* GoogleService-Info.plist */,
 				43EF44002922803D005DF084 /* Medsenger.entitlements */,
 				43EF43F229227F74005DF084 /* App.swift */,
 				43EF43F629227F76005DF084 /* Assets.xcassets */,
@@ -419,6 +430,7 @@
 				43EF444629228BAB005DF084 /* UploadAvatarResource.swift */,
 				43EF444829228BC5005DF084 /* NotificationsResource.swift */,
 				43EF444A29228BD8005DF084 /* CheckResource.swift */,
+				430E7D99293645BA009C129D /* PushNotificationsResource.swift */,
 			);
 			path = Account;
 			sourceTree = "<group>";
@@ -534,6 +546,7 @@
 				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
 				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
 				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
+				430E7D9D29366D9D009C129D /* MessagesView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -556,6 +569,8 @@
 			name = Medsenger;
 			packageProductDependencies = (
 				4376163C2933881B001049E6 /* WebRTC */,
+				430E7D8F293635C1009C129D /* FirebaseAnalytics */,
+				430E7D91293635C1009C129D /* FirebaseMessaging */,
 			);
 			productName = Medsenger;
 			productReference = 43EF43EF29227F74005DF084 /* Medsenger.app */;
@@ -588,6 +603,7 @@
 			mainGroup = 43EF43E629227F74005DF084;
 			packageReferences = (
 				4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */,
+				430E7D8E293635C1009C129D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 43EF43F029227F74005DF084 /* Products */;
 			projectDirPath = "";
@@ -608,6 +624,7 @@
 				43EF44032922813A005DF084 /* .gitignore in Resources */,
 				43EF449629228EB1005DF084 /* README.md in Resources */,
 				43EF43F729227F76005DF084 /* Assets.xcassets in Resources */,
+				430E7D962936392A009C129D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -658,6 +675,8 @@
 				43EF441429228683005DF084 /* Clinic+CoreDataClass.swift in Sources */,
 				43EF442A292287E0005DF084 /* Message+CoreDataClass.swift in Sources */,
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
+				430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */,
+				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
 				43EF448F29228EB1005DF084 /* MultipartFormData+Builder.swift in Sources */,
 				437616452933947A001049E6 /* Config.swift in Sources */,
 				43EF446329228D25005DF084 /* ConcludeContractResource.swift in Sources */,
@@ -885,7 +904,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -921,7 +940,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.medsenger.patient;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -953,6 +972,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		430E7D8E293635C1009C129D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.2.0;
+			};
+		};
 		4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stasel/WebRTC";
@@ -964,6 +991,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		430E7D8F293635C1009C129D /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 430E7D8E293635C1009C129D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		430E7D91293635C1009C129D /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 430E7D8E293635C1009C129D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		4376163C2933881B001049E6 /* WebRTC */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4376163B2933881B001049E6 /* XCRemoteSwiftPackageReference "WebRTC" */;

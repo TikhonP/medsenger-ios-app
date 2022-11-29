@@ -27,8 +27,12 @@ struct ChatsView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
     
+    @Environment(\.scenePhase) var scenePhase
+    
     @State private var showSettingsModal: Bool = false
     @State private var showNewContractModal: Bool = false
+    
+    @State private var chatsNavigationSelection: Int? = nil
     
     @State private var searchText = ""
     var query: Binding<String> {
@@ -45,7 +49,7 @@ struct ChatsView: View {
     var body: some View {
         List {
             ForEach(contracts) { contract in
-                NavigationLink(tag: Int(contract.id), selection: $contentViewModel.chatsNavigationSelection, destination: {
+                NavigationLink(tag: Int(contract.id), selection: $chatsNavigationSelection, destination: {
                     ChatView(contract: contract, user: user)
                 }, label: {
                     switch userRole {
@@ -61,7 +65,7 @@ struct ChatsView: View {
                 })
             }
             
-            NavigationLink(tag: -1, selection: $contentViewModel.chatsNavigationSelection, destination: {
+            NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
                 ArchivesChatsView(user: user)
                     .environmentObject(chatsViewModel)
             }, label: { archiveRow })
@@ -79,9 +83,7 @@ struct ChatsView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 if userRole == .doctor {
                     Button(action: {
-//                        showNewContractModal.toggle()
-                        contentViewModel.chatsNavigationSelection = 6735
-//                        contentViewModel.archiveChatsNavigationSelection = 6258
+                        showNewContractModal.toggle()
                     }, label: { Image(systemName: "square.and.pencil") })
                         .id(UUID())
                 }
@@ -94,6 +96,16 @@ struct ChatsView: View {
         }
         .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
         .sheet(isPresented: $showNewContractModal, content: { Text("Add new contract") })
+        .onChange(of: scenePhase) { newPhase in
+            if scenePhase == .inactive {
+                Websockets.shared.createUrlSession()
+            }
+        }
+        .onChange(of: contentViewModel.openChatContractId, perform: { newContractId in
+            if let newContractId = newContractId {
+                chatsNavigationSelection = newContractId
+            }
+        })
     }
     
     var archiveRow: some View {

@@ -23,6 +23,8 @@ _iOS/SwiftUI_ mobile application for telemedicine service Medsenger.
         ]
     }
     ```
+    
+2. Add firebase configuration `GoogleService-Info.plist` file into project
 
 ## 💼 License
 

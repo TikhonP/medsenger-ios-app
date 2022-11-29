@@ -13,24 +13,17 @@ struct ChatView: View {
     @StateObject private var chatViewModel: ChatViewModel
     
     @ObservedObject private var contract: Contract
-    @ObservedObject var user: User
-    
-    @FetchRequest private var messages: FetchedResults<Message>
+    @ObservedObject private var user: User
     
     @FocusState private var isTextFocused
     
     @State private var autoScrollDown = true
-    @State var showContractView = false
+    @State private var showContractView = false
     
-    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    @AppStorage(UserDefaults.Keys.userRoleKey)
+    private var userRole: UserRole = UserDefaults.userRole
     
     init(contract: Contract, user: User) {
-        _messages = FetchRequest<Message>(
-            entity: Message.entity(),
-            sortDescriptors: [NSSortDescriptor(key: "sent", ascending: true)],
-            predicate: NSPredicate(format: "contract == %@", contract),
-            animation: .easeIn
-        )
         _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
         self.contract = contract
         self.user = user
@@ -38,7 +31,7 @@ struct ChatView: View {
     
     var body: some View {
         VStack {
-            if messages.isEmpty {
+            if contract.messagesArray.isEmpty {
                 Spacer()
                 ProgressView()
                 Spacer()
@@ -47,10 +40,9 @@ struct ChatView: View {
                     GeometryReader { reader in
                         ScrollView {
                             ScrollViewReader { scrollReader in
-                                getMessagesView(viewWidth: reader.size.width)
-                                    .padding(.horizontal, 5)
+                                MessagesView(contract: contract, viewWidth: reader.size.width)
                                     .onAppear {
-                                        if let messageID = messages.last?.id {
+                                        if let messageID = contract.messagesArray.last?.id {
                                             scrollTo(messageID: Int(messageID), shouldAnumate: false, scrollReader: scrollReader)
                                         }
                                     }
@@ -122,22 +114,6 @@ struct ChatView: View {
         DispatchQueue.main.async {
             withAnimation(shouldAnumate ? Animation.easeIn : nil) {
                 scrollReader.scrollTo(messageID, anchor: anchor)
-            }
-        }
-    }
-    
-    func getMessagesView(viewWidth: CGFloat) -> some View {
-        VStack {
-            LazyVStack {
-                ForEach(messages.dropLast(10)) { message in
-                    MessageView(message: message, viewWidth: viewWidth)
-                }
-            }
-            
-            VStack {
-                ForEach(messages.suffix(10)) { message in
-                    MessageView(message: message, viewWidth: viewWidth)
-                }
             }
         }
     }

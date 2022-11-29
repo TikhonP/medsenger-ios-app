@@ -107,7 +107,18 @@ class Websockets: NSObject {
                 break
             }
         case .failure(let error):
-            Logger.websockets.error("Websocket received: Decoding data error: \(error.localizedDescription) Data: \(data)")
+            switch error {
+            case .dataCorrupted(let context):
+                Logger.websockets.error("Websocket received: Decoding data error: dataCorrupted: \(error.localizedDescription) Context: \(String(describing: context)) Data: \(data)")
+            case .keyNotFound(let key, let context):
+                Logger.websockets.error("Websocket received: Decoding data error: keyNotFound for key `\(String(describing: key))`: \(error.localizedDescription) Context: \(String(describing: context)) Data: \(data)")
+            case .valueNotFound(let value, let context):
+                Logger.websockets.error("Websocket received: Decoding data error: valueNotFound for value `\(String(describing: value))`: \(error.localizedDescription) Context: \(String(describing: context)) Data: \(data)")
+            case .typeMismatch(let type, let context):
+                Logger.websockets.error("Websocket received: Decoding data error: typeMismatch for key `\(type)`: \(error.localizedDescription) Context: \(String(describing: context)) Data: \(data)")
+            case .error(let error):
+                Logger.websockets.error("Websocket received: Decoding data error: \(error.localizedDescription) Data: \(data)")
+            }
         }
     }
     

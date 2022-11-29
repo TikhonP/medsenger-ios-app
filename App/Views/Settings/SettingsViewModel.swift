@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
-    @Published var isPushNotificationOn: Bool = false
+    @Published var isPushNotificationOn: Bool = UserDefaults.isPushNotificationsOn
     @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
     @Published var syncWithAppleHealth: Bool = false
     
@@ -44,6 +44,12 @@ final class SettingsViewModel: ObservableObject {
     func updateEmailNotifications() {
         Account.shared.updateEmailNotiofication(emailNotify: isEmailNotificationOn) {
             Account.shared.updateProfile()
+        }
+    }
+    
+    func updatePushNotifications() {
+        if let fcmToken = UserDefaults.fcmToken {
+            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: isPushNotificationOn)
         }
     }
     

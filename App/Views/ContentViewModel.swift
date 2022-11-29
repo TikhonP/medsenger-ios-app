@@ -10,6 +10,8 @@ import Foundation
 import SwiftUI
 
 final class ContentViewModel: ObservableObject {
+    static let shared = ContentViewModel()
+    
     init() {
         Websockets.shared.contentViewModelDelegate = self
     }
@@ -18,8 +20,7 @@ final class ContentViewModel: ObservableObject {
     @Published private(set) var videoCallContractId: Int?
     @Published private(set) var isCaller: Bool = false
     
-    @Published var chatsNavigationSelection: Int? = nil
-    @Published var archiveChatsNavigationSelection: Int? = nil
+    @Published private(set) var openChatContractId: Int?
     
     func showCall(contractId: Int, isCaller: Bool) {
         DispatchQueue.main.async {
@@ -35,6 +36,24 @@ final class ContentViewModel: ObservableObject {
         DispatchQueue.main.async {
             withAnimation {
                 self.isCalling = false
+            }
+        }
+    }
+    
+    func openChat(with contractId: Int) {
+        DispatchQueue.main.async {
+            self.openChatContractId = contractId
+        }
+    }
+    
+    func processDeeplink(_ url: URL) {
+        guard let urlComponents = URLComponents(string: url.absoluteString) else { return }
+        guard let queryItems = urlComponents.queryItems else { return }
+        for queryItem in queryItems {
+            if queryItem.name == "c" {
+                if let contractId = queryItem.value,  let contractId = Int(contractId) {
+                    openChat(with: contractId)
+                }
             }
         }
     }

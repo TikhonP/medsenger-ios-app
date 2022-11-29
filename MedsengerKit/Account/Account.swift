@@ -16,10 +16,17 @@ class Account {
     private var uploadAvatarRequest: UploadImageRequest<UploadAvatarResource>?
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
     private var notificationsRequest: APIRequest<NotificationsResource>?
+    private var pushNotificationsRequest: APIRequest<PushNotificationsResource>?
     
     public func changeRole(_ role: UserRole) {
+        if let fcmToken = UserDefaults.fcmToken {
+            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
+        }
         Contract.clearAllContracts()
         UserDefaults.userRole = role
+        if let fcmToken = UserDefaults.fcmToken {
+            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
+        }
     }
     
     public func fetchAvatar() {
@@ -90,7 +97,24 @@ class Account {
                     completion()
                 }
             case .failure(let error):
-                processRequestError(error, "save profile data")
+                processRequestError(error, "update email notification")
+            }
+        }
+    }
+    
+    /// Save or delete `fcmToken` from remote server
+    /// - Parameters:
+    ///   - fcmToken: the `fcmToken`
+    ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
+    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool) {
+        let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: storeOrRemove)
+        pushNotificationsRequest = APIRequest(resource: pushNotificationsResource)
+        pushNotificationsRequest?.execute { result in
+            switch result {
+            case .success(_):
+                UserDefaults.isPushNotificationsOn = storeOrRemove
+            case .failure(let error):
+                processRequestError(error, "store device push notification token")
             }
         }
     }

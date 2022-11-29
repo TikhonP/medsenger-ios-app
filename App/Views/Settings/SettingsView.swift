@@ -134,6 +134,9 @@ struct SettingsView: View {
                 Toggle(isOn: $settingsViewModel.isPushNotificationOn, label: {
                     Label("Push Notifications", systemImage: "bell.badge")
                 })
+                .onChange(of: settingsViewModel.isPushNotificationOn, perform: { value in
+                    settingsViewModel.updatePushNotifications()
+                })
             }
             
             if user.isPatient && user.isDoctor {
