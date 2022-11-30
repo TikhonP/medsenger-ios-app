@@ -29,7 +29,7 @@ class Contracts {
         switch UserDefaults.userRole {
         case .patient:
             let contractsRequestAsPatientResource = ContractsRequestAsPatientResource()
-            contractsRequestAsPatientRequest = APIRequest(resource: contractsRequestAsPatientResource)
+            contractsRequestAsPatientRequest = APIRequest(contractsRequestAsPatientResource)
             contractsRequestAsPatientRequest?.execute { result in
                 switch result {
                 case .success(let data):
@@ -42,7 +42,7 @@ class Contracts {
             }
         case .doctor:
             let contractsRequestAsDoctorResource = ContractsRequestAsDoctorResource()
-            contractsRequestAsDoctorRequest = APIRequest(resource: contractsRequestAsDoctorResource)
+            contractsRequestAsDoctorRequest = APIRequest(contractsRequestAsDoctorResource)
             contractsRequestAsDoctorRequest?.execute { result in
                 switch result {
                 case .success(let data):
@@ -62,7 +62,7 @@ class Contracts {
         switch UserDefaults.userRole {
         case .patient:
             let contractsArchiveRequestAsPatientResource = ContractsArchiveRequestAsPatientResource()
-            contractsArchiveRequestAsPatientRequest = APIRequest(resource: contractsArchiveRequestAsPatientResource)
+            contractsArchiveRequestAsPatientRequest = APIRequest(contractsArchiveRequestAsPatientResource)
             contractsArchiveRequestAsPatientRequest?.execute { result in
                 switch result {
                 case .success(let data):
@@ -75,7 +75,7 @@ class Contracts {
             }
         case .doctor:
             let contractsArchiveRequestAsDoctorResource = ContractsArchiveRequestAsDoctorResource()
-            contractsArchiveRequestAsDoctorRequest = APIRequest(resource: contractsArchiveRequestAsDoctorResource)
+            contractsArchiveRequestAsDoctorRequest = APIRequest(contractsArchiveRequestAsDoctorResource)
             contractsArchiveRequestAsDoctorRequest?.execute { result in
                 switch result {
                 case .success(let data):
@@ -108,7 +108,7 @@ class Contracts {
     
     public func deactivateMessages(_ contractId: Int, completion: (() -> Void)? = nil) {
         let deactivateMessagesResource = DeactivateMessagesResource(contractId: contractId)
-        deactivateMessagesRequest = APIRequest(resource: deactivateMessagesResource)
+        deactivateMessagesRequest = APIRequest(deactivateMessagesResource)
         deactivateMessagesRequest?.execute { result in
             switch result {
             case .success(_):
@@ -123,7 +123,7 @@ class Contracts {
     
     public func concludeContract(_ contractId: Int, completion: (() -> Void)? = nil) {
         let concludeContract = ConcludeContractResource(contractId: contractId)
-        concludeContractRequest = APIRequest(resource: concludeContract)
+        concludeContractRequest = APIRequest(concludeContract)
         concludeContractRequest?.execute { result in
             switch result {
             case .success(_):

@@ -74,35 +74,35 @@ class Websockets: NSObject {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get SdpWebsocketResponse.Model")
                     return
                 }
-                self.webRtcDelegate?.signalClient(self, didReceiveRemoteSdp: data.sdp.rtcSessionDescription)
+                webRtcDelegate?.signalClient(self, didReceiveRemoteSdp: data.sdp.rtcSessionDescription)
             case .ice:
                 guard let data = data as? IceWebsocketResponse.Model else {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get IceWebsocketResponse.Model")
                     return
                 }
-                self.webRtcDelegate?.signalClient(self, didReceiveCandidate: data.ice.rtcIceCandidate)
+                webRtcDelegate?.signalClient(self, didReceiveCandidate: data.ice.rtcIceCandidate)
             case .answered:
-                self.callDelegate?.signalClient(self, didAnswered: nil)
+                callDelegate?.signalClient(self, didAnswered: nil)
             case .answeredFromAnotherDevice:
-                self.callDelegate?.signalClient(self, answeredFromAnotherDevice: nil)
+                callDelegate?.signalClient(self, answeredFromAnotherDevice: nil)
             case .hangUp:
-                self.callDelegate?.signalClient(self, hangUp: nil)
+                callDelegate?.signalClient(self, hangUp: nil)
             case .errOffline:
-                self.callDelegate?.signalClient(self, errorOffline: nil)
+                callDelegate?.signalClient(self, errorOffline: nil)
             case .errConnection:
-                self.callDelegate?.signalClient(self, errorConnection: nil)
+                callDelegate?.signalClient(self, errorConnection: nil)
             case .call:
                 guard let data = data as? CallWebsocketResponse.Model else {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallWebsocketResponse.Model")
                     return
                 }
-                self.contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
             case .callContinued:
                 guard let data = data as? CallContinuedWebsocketResponse.Model else {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallContinuedWebsocketResponse.Model")
                     return
                 }
-                self.contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
             default:
                 break
             }
@@ -190,9 +190,9 @@ extension Websockets: URLSessionWebSocketDelegate {
         Logger.websockets.notice("Websockets: Did closed connection with reason: \(String(describing: reason))")
         
         // try to reconnect every two seconds
-        DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
             Logger.websockets.debug("Websockets: Trying to reconnect to websocket server...")
-            self.createUrlSession()
+            self?.createUrlSession()
         }
     }
     

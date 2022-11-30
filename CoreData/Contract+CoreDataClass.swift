@@ -81,11 +81,13 @@ public class Contract: NSManagedObject {
         }
     }
     
-    class func updateLastFetchedMessage(id: Int, lastFetchedMessageId: Int) {
+    class func updateLastFetchedMessage(id: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
-            contract?.lastFetchedMessage = Message.get(id: lastFetchedMessageId, for: context)
+            guard let contract = get(id: id, for: context) else {
+                return
+            }
+            contract.lastFetchedMessage = Message.getLastMessageForContract(for: contract, for: context)
             PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
         }
     }
@@ -143,6 +145,14 @@ public class Contract: NSManagedObject {
 extension Contract {
     public var wrappedName: String {
         name ?? "Unknown name"
+    }
+    
+    public var wrappedShortName: String {
+        shortName ?? "Unknown name"
+    }
+    
+    public var wrappedRole: String {
+        role ?? "Unknown role"
     }
     
     public var messagesArray: [Message] {

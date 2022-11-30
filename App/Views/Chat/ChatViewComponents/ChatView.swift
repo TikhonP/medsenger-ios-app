@@ -7,17 +7,15 @@
 //
 
 import SwiftUI
-import QuickLook
 
 struct ChatView: View {
-    @StateObject private var chatViewModel: ChatViewModel
-    
     @ObservedObject private var contract: Contract
     @ObservedObject private var user: User
     
+    @StateObject private var chatViewModel: ChatViewModel
+    
     @FocusState private var isTextFocused
     
-    @State private var autoScrollDown = true
     @State private var showContractView = false
     
     @AppStorage(UserDefaults.Keys.userRoleKey)
@@ -36,34 +34,14 @@ struct ChatView: View {
                 ProgressView()
                 Spacer()
             } else {
-                ZStack {
-                    GeometryReader { reader in
-                        ScrollView {
-                            ScrollViewReader { scrollReader in
-                                MessagesView(contract: contract, viewWidth: reader.size.width)
-                                    .onAppear {
-                                        if let messageID = contract.messagesArray.last?.id {
-                                            scrollTo(messageID: Int(messageID), shouldAnumate: false, scrollReader: scrollReader)
-                                        }
-                                    }
-                                    .onChange(of: contract.lastFetchedMessage, perform: { lastFetchedMessage in
-                                        if let lastFetchedMessage = lastFetchedMessage, autoScrollDown {
-                                            scrollTo(messageID: Int(lastFetchedMessage.id), shouldAnumate: true, scrollReader: scrollReader)
-                                        }
-                                    })
-                                    .padding(.bottom, 55)
-                                    .environmentObject(chatViewModel)
-                            }
-                        }
-                    }
-                    
-                    VStack {
-                        Spacer()
-                        TextInputView()
-                            .environmentObject(chatViewModel)
-                    }
+                VStack(spacing: 0) {
+                    MessagesView(contract: contract)
+                    Divider()
+                    TextInputView()
+                        .padding(.bottom, 3)
                 }
-                .quickLookPreview($chatViewModel.quickLookDocumentUrl)
+                .deprecatedScrollDismissesKeyboard()
+                .environmentObject(chatViewModel)
                 
                 NavigationLink(
                     destination: ContractView(contract: contract, user: user),
@@ -74,20 +52,19 @@ struct ChatView: View {
                 .isDetailLink(false)
             }
         }
-        .padding(.top, 1)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: chatViewModel.fetchMessages)
+        .navigationTitle("Chat")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Button(action: {
                     showContractView = true
                 }, label: {
                     VStack {
-                        Text(contract.shortName ?? "Unknown name")
+                        Text(contract.wrappedShortName)
                             .foregroundColor(.primary)
                             .bold()
                         if userRole == .patient {
-                            Text(contract.role ?? "Unknown role")
+                            Text(contract.wrappedRole)
                                 .foregroundColor(.secondary)
                                 .font(.caption)
                         }
@@ -108,14 +85,7 @@ struct ChatView: View {
                 })
             }
         }
-    }
-    
-    func scrollTo(messageID: Int, anchor: UnitPoint? = .top, shouldAnumate: Bool, scrollReader: ScrollViewProxy) {
-        DispatchQueue.main.async {
-            withAnimation(shouldAnumate ? Animation.easeIn : nil) {
-                scrollReader.scrollTo(messageID, anchor: anchor)
-            }
-        }
+        .onAppear(perform: chatViewModel.fetchMessages)
     }
 }
 

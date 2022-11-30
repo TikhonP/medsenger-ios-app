@@ -28,9 +28,19 @@ public class Message: NSManagedObject {
         }
     }
     
+    class func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
+        let fetchRequest = Message.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: false)]
+        fetchRequest.fetchLimit = 1
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getLastMessageForContract")
+        return fetchedResults?.first
+    }
+    
     class func get(id: Int, for context: NSManagedObjectContext) -> Message? {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        fetchRequest.fetchLimit = 1
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Message get by id")
         return fetchedResults?.first
     }
@@ -185,7 +195,7 @@ extension Message {
     /// - Parameters:
     ///   - data: struct decoded from JSON
     ///   - contractId: contract id for messages
-    class func saveFromJson(_ data: [JsonDecoder], contractId: Int) {
+    class func saveFromJson(_ data: [JsonDecoder], contractId: Int, completion: (() -> ())? = nil) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             guard let contract = Contract.get(id: contractId, for: context) else {
                 Message.logger.error("Failed to save messages: Core data failed to fetch contract")
@@ -220,9 +230,10 @@ extension Message {
                 }
             }
             
-            contract.lastFetchedMessage = Message.get(id: maxMessageId, for: context)
-            
             PersistenceController.save(for: context, detailsForLogging: "Message from JsonDeserializer")
+            if let completion = completion {
+                completion()
+            }
         }
     }
 }

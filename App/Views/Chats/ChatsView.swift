@@ -17,9 +17,9 @@ struct ChatsView: View {
     
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(key: "unread", ascending: false),
-            NSSortDescriptor(key: "sortRating", ascending: false),
-            NSSortDescriptor(key: "endDate", ascending: false)
+//            NSSortDescriptor(key: "unread", ascending: false),
+//            NSSortDescriptor(key: "sortRating", ascending: false),
+            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == NO"),
         animation: .default)

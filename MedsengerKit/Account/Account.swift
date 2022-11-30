@@ -45,13 +45,13 @@ class Account {
     
     public func updateProfile() {
         let checkResource = CheckResource()
-        checkRequest = APIRequest(resource: checkResource)
-        checkRequest?.execute { result in
+        checkRequest = APIRequest(checkResource)
+        checkRequest?.execute { [weak self] result in
             switch result {
             case .success(let data):
                 if let data = data {
                     User.saveUserFromJson(data)
-                    self.fetchAvatar()
+                    self?.fetchAvatar()
                 }
             case .failure(let error):
                 processRequestError(error, "get profile data")
@@ -63,11 +63,11 @@ class Account {
         User.saveAvatar(nil)
         
         let uploadAvatarResource = UploadAvatarResource(image: image)
-        uploadAvatarRequest = UploadImageRequest(resource: uploadAvatarResource)
-        uploadAvatarRequest?.execute { result in
+        uploadAvatarRequest = UploadImageRequest(uploadAvatarResource)
+        uploadAvatarRequest?.execute { [weak self] result in
             switch result {
             case .success(_):
-                self.fetchAvatar()
+                self?.fetchAvatar()
             case .failure(let error):
                 processRequestError(error, "upload user avatar")
             }
@@ -76,7 +76,7 @@ class Account {
     
     public func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
         let updateAccountResource = UpdateAccountResource(name: name, email: email, phone: phone, birthday: birthday)
-        updateAcountRequest = APIRequest(resource: updateAccountResource)
+        updateAcountRequest = APIRequest(updateAccountResource)
         updateAcountRequest?.execute { result in
             switch result {
             case .success(_):
@@ -89,7 +89,7 @@ class Account {
     
     public func updateEmailNotiofication(emailNotify: Bool, completion: (() -> Void)? = nil) {
         let notificationsResource = NotificationsResource(emailNotify: emailNotify)
-        notificationsRequest = APIRequest(resource: notificationsResource)
+        notificationsRequest = APIRequest(notificationsResource)
         notificationsRequest?.execute { result in
             switch result {
             case .success(_):
@@ -108,7 +108,7 @@ class Account {
     ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
     public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool) {
         let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: storeOrRemove)
-        pushNotificationsRequest = APIRequest(resource: pushNotificationsResource)
+        pushNotificationsRequest = APIRequest(pushNotificationsResource)
         pushNotificationsRequest?.execute { result in
             switch result {
             case .success(_):

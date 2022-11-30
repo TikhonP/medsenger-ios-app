@@ -20,14 +20,14 @@ struct MessageView: View {
                 if message.isMessageSent {
                     messageBody
                         .padding(9)
-                        .background(Color(UIColor.systemBlue))
+                        .background(Color.secondary.opacity(0.2))
                         .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
                         .foregroundColor(.white)
                 } else {
                     messageBody
                         .padding(9)
                         .foregroundColor(.primary)
-                        .background(Color.secondary.opacity(0.2))
+                        .background(Color.accentColor)
                         .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
                 }
                 

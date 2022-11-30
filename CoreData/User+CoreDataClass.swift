@@ -49,6 +49,8 @@ public class User: NSManagedObject {
         }
     }
     
+    /// Save user avatar data object
+    /// - Parameter image: avatar data
     class func saveAvatar(_ image: Data?) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump

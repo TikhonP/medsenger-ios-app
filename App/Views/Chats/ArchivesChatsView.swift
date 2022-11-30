@@ -17,6 +17,7 @@ struct ArchivesChatsView: View {
 
     @FetchRequest(
         sortDescriptors: [
+            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
             NSSortDescriptor(key: "endDate", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == YES"),

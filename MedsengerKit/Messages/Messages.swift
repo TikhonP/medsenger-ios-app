@@ -23,14 +23,16 @@ class Messages {
             return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id))
         }()
         
-        getMessagesRequest = APIRequest(resource: messagesResource)
+        getMessagesRequest = APIRequest(messagesResource)
         getMessagesRequest?.execute { result in
             switch result {
             case .success(let data):
                 if let data = data {
-                    Message.saveFromJson(data, contractId: contractId)
-                    if let completion = completion {
-                        completion()
+                    Message.saveFromJson(data, contractId: contractId) {
+                        Contract.updateLastFetchedMessage(id: contractId)
+                        if let completion = completion {
+                            completion()
+                        }
                     }
                 }
             case .failure(let error):
@@ -41,13 +43,13 @@ class Messages {
     
     public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
         let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, attachments: attachments)
-        sendMessageRequest = APIRequest(resource: sendMessageResource)
+        sendMessageRequest = APIRequest(sendMessageResource)
         sendMessageRequest?.execute { result in
             switch result {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId)
-                    Contract.updateLastFetchedMessage(id: contractId, lastFetchedMessageId: data.id)
+                    Contract.updateLastFetchedMessage(id: contractId)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     if let completion = completion {
                         completion()

@@ -21,6 +21,7 @@
 		434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FA2927F6DC001D7C4F /* AttachmentsView.swift */; };
 		434399FD2928142A001D7C4F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FC2928142A001D7C4F /* WebView.swift */; };
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
+		435D56F72937A8160013B0F4 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56F62937A8160013B0F4 /* TextInputView.swift */; };
 		435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA22934C8350094F93C /* LocalVideoView.swift */; };
 		435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */; };
 		435F9DA7293577540094F93C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA6293577540094F93C /* Logger.swift */; };
@@ -38,7 +39,6 @@
 		43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A1E292E5F1500465281 /* URL+mimeType.swift */; };
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
-		43C9D84F2927C89B003C15B8 /* TextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D84E2927C89B003C15B8 /* TextInputView.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
 		43EF43F329227F74005DF084 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F229227F74005DF084 /* App.swift */; };
 		43EF43F529227F74005DF084 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F429227F74005DF084 /* ContentView.swift */; };
@@ -141,6 +141,7 @@
 		434399FA2927F6DC001D7C4F /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
 		434399FC2928142A001D7C4F /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
+		435D56F62937A8160013B0F4 /* TextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputView.swift; sourceTree = "<group>"; };
 		435F9DA22934C8350094F93C /* LocalVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoView.swift; sourceTree = "<group>"; };
 		435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVideoCallResource.swift; sourceTree = "<group>"; };
 		435F9DA6293577540094F93C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -157,7 +158,6 @@
 		43A18A1E292E5F1500465281 /* URL+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
-		43C9D84E2927C89B003C15B8 /* TextInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputView.swift; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		43EF43EF29227F74005DF084 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43EF43F229227F74005DF084 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -265,6 +265,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		435D56F42937815F0013B0F4 /* ChatViewComponents */ = {
+			isa = PBXGroup;
+			children = (
+				43EF44AD2922900F005DF084 /* ChatView.swift */,
+				430E7D9D29366D9D009C129D /* MessagesView.swift */,
+				43C9D8502927D5C2003C15B8 /* MessageView.swift */,
+				435D56F62937A8160013B0F4 /* TextInputView.swift */,
+			);
+			path = ChatViewComponents;
+			sourceTree = "<group>";
+		};
+		435D56F52937818B0013B0F4 /* ContractViewComponents */ = {
+			isa = PBXGroup;
+			children = (
+				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
+				434399F62927E831001D7C4F /* ContractView.swift */,
+				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
+				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
+			);
+			path = ContractViewComponents;
+			sourceTree = "<group>";
+		};
 		4376163629338736001049E6 /* WebRtcCalls */ = {
 			isa = PBXGroup;
 			children = (
@@ -400,9 +422,9 @@
 		43EF443329228A03005DF084 /* MedsengerKit */ = {
 			isa = PBXGroup;
 			children = (
+				43EF446429228D48005DF084 /* Websockets */,
 				4376163629338736001049E6 /* WebRtcCalls */,
 				43EF447429228E36005DF084 /* Messages */,
-				43EF446429228D48005DF084 /* Websockets */,
 				43EF445929228CD0005DF084 /* Contracts */,
 				43EF444129228B76005DF084 /* Account */,
 				43EF443829228A50005DF084 /* Login */,
@@ -539,14 +561,8 @@
 			isa = PBXGroup;
 			children = (
 				43EF44AB29229003005DF084 /* ChatViewModel.swift */,
-				43EF44AD2922900F005DF084 /* ChatView.swift */,
-				43C9D84E2927C89B003C15B8 /* TextInputView.swift */,
-				43C9D8502927D5C2003C15B8 /* MessageView.swift */,
-				434399F62927E831001D7C4F /* ContractView.swift */,
-				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
-				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
-				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
-				430E7D9D29366D9D009C129D /* MessagesView.swift */,
+				435D56F42937815F0013B0F4 /* ChatViewComponents */,
+				435D56F52937818B0013B0F4 /* ContractViewComponents */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -655,6 +671,7 @@
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
+				435D56F72937A8160013B0F4 /* TextInputView.swift in Sources */,
 				43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */,
 				43EF447129228DDF005DF084 /* PasswordFieldView.swift in Sources */,
 				43EF441A292286FC005DF084 /* InfoMaterial+CoreDataClass.swift in Sources */,
@@ -694,7 +711,6 @@
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
-				43C9D84F2927C89B003C15B8 /* TextInputView.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
 				43EF449529228EB1005DF084 /* Name.swift in Sources */,
 				43EF443C29228A6C005DF084 /* ChangePasswordResource.swift in Sources */,

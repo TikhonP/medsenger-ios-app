@@ -24,9 +24,8 @@ struct DoctorChatRow: View {
                             .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
                     }
                 }
-                .frame(width: 70, height: 70)
+                .frame(width: 60, height: 60)
                 .clipShape(Circle())
-                .overlay(Circle().stroke(Color.white, lineWidth: 4))
                 .padding()
                 
                 if !contract.archive {
@@ -36,7 +35,8 @@ struct DoctorChatRow: View {
                             Spacer()
                             Circle()
                                 .foregroundColor(contract.isOnline ? .green : .red)
-                                .frame(width: 20, height: 20)
+                                .frame(width: 15, height: 15)
+                                .overlay(Circle().stroke(Color(UIColor.systemFill), lineWidth: 4))
                                 .padding()
                         }
                     }
@@ -47,24 +47,28 @@ struct DoctorChatRow: View {
             ZStack {
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
-                        Text(contract.name ?? "Unknown name")
+                        Text(contract.wrappedShortName)
                             .bold()
                         Spacer()
-                        Text("Date 123")
+                        if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
+                            Text(lastFetchedMessageSent, formatter: DateFormatter.ddMMyyyy)
+                        }
                     }
                     
                     HStack {
-                        Text("message  cdcdcdscsdcdscsdc dscdsfjdsnfksdjnjksdnkj  sdnfkjsdnkjsdnvkjdsnv kjdsnvkjsd jdfvnkjdfv fvnjkdfnvkjdf")
-                            .foregroundColor(.gray)
-                            .lineLimit(2)
-                            .frame(height: 50, alignment: .top)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.trailing, 40)
+                        if let text = contract.lastFetchedMessage?.text {
+                            Text(text)
+                                .foregroundColor(.gray)
+                                .lineLimit(2)
+                                .frame(height: 50, alignment: .top)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.trailing, 40)
+                        }
                     }
                 }
             }
         }
-        .frame(height: 80)
+        .frame(height: 70)
     }
 }
 

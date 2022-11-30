@@ -86,18 +86,18 @@ final class VideoCallViewModel: ObservableObject {
     
     func toggleAudio() {
         if isAudioOn {
-            self.webRTCClient.muteAudio()
+            webRTCClient.muteAudio()
         } else {
-            self.webRTCClient.unmuteAudio()
+            webRTCClient.unmuteAudio()
         }
         isAudioOn.toggle()
     }
     
     func toggleVideo() {
         if isVideoOn {
-            self.webRTCClient.hideVideo()
+            webRTCClient.hideVideo()
         } else {
-            self.webRTCClient.showVideo()
+            webRTCClient.showVideo()
         }
         isVideoOn.toggle()
     }
@@ -107,7 +107,7 @@ final class VideoCallViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.finishingCall = true
         }
-        self.webRTCClient.saveVideoCall(
+        webRTCClient.saveVideoCall(
             contractId: contractId,
             talkStartTime: talkStartTime ?? Date(),
             callStartTime: callStartTime ?? Date(),
@@ -124,7 +124,7 @@ final class VideoCallViewModel: ObservableObject {
 
 extension VideoCallViewModel: WebsocketsCallDelegate {
     func signalClient(_ websockets: Websockets, didAnswered data: String?) {
-        self.webRTCClient.startCall {
+        webRTCClient.startCall {
             VideoCallViewModel.logger.error("VideoCallViewModel: Failed to start call")
         }
         DispatchQueue.main.async {

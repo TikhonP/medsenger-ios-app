@@ -22,7 +22,7 @@ class Login {
     
     public func signIn(login: String, password: String, completion: @escaping (_ result: SignInCompletionCodes) -> Void) {
         let resource = SignInResource(email: login, password: password)
-        request = APIRequest(resource: resource)
+        request = APIRequest(resource)
         request?.execute { result in
             switch result {
             case .success(let data):
@@ -64,7 +64,7 @@ class Login {
     
     public func changePassword(newPassword: String, completion: @escaping (_ result: ChangePasswordCompletionCodes) -> Void) {
         let changePasswordResource = ChangePasswordResource(newPassword: newPassword)
-        changePasswordRequest = APIRequest(resource: changePasswordResource)
+        changePasswordRequest = APIRequest(changePasswordResource)
         changePasswordRequest?.execute { result in
             switch result {
             case .success(let data):

@@ -50,6 +50,10 @@ final class ChatViewModel: NSObject, ObservableObject {
     }
     
     func sendMessage() {
+        if showRecordedMessage {
+            sendVoiceMessage()
+            return
+        }
         guard !message.isEmpty || isImageAdded else {
             return
         }
@@ -95,11 +99,11 @@ final class ChatViewModel: NSObject, ObservableObject {
         Messages.shared.sendMessage(
             Constants.voiceMessageText,
             contractId: contractId,
-            attachments: [(Constants.voiceMessageFileName, data)]) {
+            attachments: [(Constants.voiceMessageFileName, data)]) { [weak self] in
                 DispatchQueue.main.async {
-                    self.isRecordingVoiceMessage = false
-                    self.showRecordedMessage = false
-                    self.isVoiceMessagePlaying = false
+                    self?.isRecordingVoiceMessage = false
+                    self?.showRecordedMessage = false
+                    self?.isVoiceMessagePlaying = false
                 }
             }
     }

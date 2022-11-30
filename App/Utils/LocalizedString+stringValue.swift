@@ -33,6 +33,6 @@ extension String {
 
 extension LocalizedStringKey {
     func stringValue(locale: Locale = .current) -> String {
-        return .localizedString(for: self.stringKey!, locale: locale)
+        return .localizedString(for: stringKey!, locale: locale)
     }
 }

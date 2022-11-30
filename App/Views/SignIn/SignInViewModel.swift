@@ -18,8 +18,11 @@ final class SignInViewModel: ObservableObject {
     
     func auth() {
         self.showError = false
-        Login.shared.signIn(login: login, password: password) { result in
+        Login.shared.signIn(login: login, password: password) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else {
+                    return
+                }
                 switch result {
                 case .success:
                     break

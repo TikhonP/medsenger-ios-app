@@ -82,23 +82,53 @@ enum DecodeDataError: Error {
     case error(_ error: Error)
 }
 
+/// Result of decoding JSON string
 typealias DecodedDataReslut<T> = Result<T, DecodeDataError>
 
+/// Completion for HTTP request
+/// - Parameter result: request result with decoded data type and error
 typealias NetworkRequestCompletion<T> = (_ result: Result<T?, NetworkRequestError>) -> Void
+
+enum HTTPMethod: String {
+    case GET, POST
+}
 
 // MARK: - Network Request
 
+/// The basic protocol for network requests
+///
+/// It can be used for creating new protocols and apies for specific network requests usage
 protocol NetworkRequest: AnyObject {
     associatedtype ModelType
     
+    /// Decode http success result data to specific swift type
+    /// - Parameter data: response data
+    /// - Returns: swift object that will be returned on request success
     func decode(_ data: Data) -> DecodedDataReslut<ModelType>
+    
+    /// Decode http request data on non 2xx status codes
+    /// - Parameter data: Response data
+    /// - Returns: List of errors strings
     func decodeError(_ data: Data) -> DecodedDataReslut<[String]>
     
+    /// Perform url session request and return request result
+    /// - Parameter completion: Request completion
     func execute(withCompletion completion: @escaping NetworkRequestCompletion<ModelType>)
 }
 
 extension NetworkRequest {
-    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: HttpMethod = .GET, body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) -> URLSessionTask {
+    
+    /// Perform URLSession request with parameters
+    /// - Parameters:
+    ///   - url: The URL for the request.
+    ///   - headers: Header fields
+    ///   - method: The HTTP request method. Default is ``HttpMethod.GET``
+    ///   - body: The data sent as the message body of a request, such as for an HTTP POST request.
+    ///   - parseResponse: Parse or not response with ``NetworkRequest.decode()``. If `false` result data wiil be `nil`
+    ///   - uploadData: The body data for the request upload data request
+    ///   - completion: Request completion
+    /// - Returns: The session task.
+    fileprivate func load(_ url: URL, headers: [String: String] = [:], method: HTTPMethod = .GET, body: Data? = nil, parseResponse: Bool = false, uploadData: Data? = nil, withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) -> URLSessionTask {
         
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
@@ -185,10 +215,15 @@ extension NetworkRequest {
 
 // MARK: - APIRequest
 
+/// The HTTP API request to `medsenger.ru` with JSON data
 class APIRequest<Resource: APIResource> {
+    
+    /// API resource: data for specific request
     let resource: Resource
     
-    init(resource: Resource) {
+    /// Create object
+    /// - Parameter resource: data for specific request
+    init(_ resource: Resource) {
         self.resource = resource
     }
 }
@@ -237,50 +272,30 @@ extension APIRequest: NetworkRequest {
     }
 }
 
-// MARK: - ImageRequest
-
-class FileRequest {
-    let url: URL
-    
-    init(path: String) {
-        var components = URLComponents(string: Constants.medsengerApiUrl)!
-        components.path = components.path + path
-        components.queryItems = [
-            URLQueryItem(name: "api_token", value: KeyСhain.apiToken),
-        ]
-        self.url = components.url!
-    }
-}
-
-extension FileRequest: NetworkRequest {
-    func decodeError(_ data: Data) -> DecodedDataReslut<[String]> { return DecodedDataReslut<[String]>.success([]) }
-    
-    func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.success(data) }
-    
-    func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
-        _ = load(url, method: .GET, parseResponse: true, withCompletion: completion)
-    }
-}
-
 // MARK: - API Resource
-
-enum HttpMethod: String {
-    case GET, POST
-}
 
 struct APIResourceOptions {
     let dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
     let parseResponse: Bool
     let httpBody: Data?
-    let httpMethod: HttpMethod
+    let httpMethod: HTTPMethod
     let headers: [String: String]
     let queryItems: [URLQueryItem]
     let addApiKey: Bool
     
+    /// Initilize options for ``APIResource``
+    /// - Parameters:
+    ///   - dateDecodingStrategy: The strategy used when decoding dates from part of a JSON object.
+    ///   - parseResponse: Parse or not response with ``NetworkRequest.decode()``. If `false` result data wiil be `nil`
+    ///   - httpBody: The data sent as the message body of a request, such as for an HTTP POST request.
+    ///   - httpMethod: The HTTP request method. Default is ``HttpMethod.GET``
+    ///   - headers: Header fields
+    ///   - queryItems: An array of query items for the URL in the order in which they appear in the original query string.
+    ///   - addApiKey: Append medsenger ApiKey from keychain as query item
     init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .formatted(DateFormatter.iso8601Full),
          parseResponse: Bool = false,
          httpBody: Data? = nil,
-         httpMethod: HttpMethod = .GET,
+         httpMethod: HTTPMethod = .GET,
          headers: [String: String] = [:],
          queryItems: [URLQueryItem] = [],
          addApiKey: Bool = true
@@ -296,23 +311,27 @@ struct APIResourceOptions {
 }
 
 protocol APIResource {
+    
+    /// Decodable model type for response JSON decoding
     associatedtype ModelType: Decodable
-
+    
+    /// Path of the resource without query items and base host
     var methodPath: String { get }
+    
+    /// Api resource data
     var options: APIResourceOptions { get }
 }
 
+/// Empty model
+///
+/// Use as placeholder for ``APIResource`` without handling response data
 struct EmptyModel: Decodable {}
 
 extension APIResource {
-    static func getPostString(params: [String: Any]) -> String {
-        var data = [String]()
-        for (key, value) in params {
-            data.append(key + "=\(value)")
-        }
-        return data.map { String($0) }.joined(separator: "&")
-    }
     
+    /// Generate ``MultipartFormData`` from string params
+    /// - Parameter params: Parameters with string key and string value
+    /// - Returns: MultipartFormData object
     private func getMultipartFormData(params: [String: String]) -> MultipartFormData {
         var data = [MultipartFormData.Part]()
         
@@ -337,6 +356,9 @@ extension APIResource {
         return multipartFormData
     }
     
+    /// Get httpBody and header as multipartFormData from string params
+    /// - Parameter params: Parameters with string key and string value
+    /// - Returns: Tuple with httpBody and headers
     func multipartFormData(params: [String: String]) -> (httpBody: Data?, headers: [String: String]) {
         let multipartFormData  = getMultipartFormData(params: params)
         let httpBody: Data? = {
@@ -352,6 +374,7 @@ extension APIResource {
         return (httpBody, headers)
     }
     
+    /// Computed final url
     var url: URL {
         var components = URLComponents(string: Constants.medsengerApiUrl)!
         components.path = components.path + methodPath
@@ -364,12 +387,47 @@ extension APIResource {
     }
 }
 
+// MARK: - FileRequest
+
+/// Load file from `medsenger.ru` request
+class FileRequest {
+    let url: URL
+    
+    /// Create object
+    /// - Parameters:
+    ///   - path: Path of the resource without query items and base host
+    ///   - addApiKey: Append medsenger ApiKey from keychain as query item
+    init(path: String, addApiKey: Bool = true) {
+        var components = URLComponents(string: Constants.medsengerApiUrl)!
+        components.path = components.path + path
+        if addApiKey {
+            components.queryItems = [
+                URLQueryItem(name: "api_token", value: KeyСhain.apiToken),
+            ]
+        }
+        self.url = components.url!
+    }
+}
+
+extension FileRequest: NetworkRequest {
+    func decodeError(_ data: Data) -> DecodedDataReslut<[String]> { return DecodedDataReslut<[String]>.success([]) }
+    
+    func decode(_ data: Data) -> DecodedDataReslut<Data> { return DecodedDataReslut<Data>.success(data) }
+    
+    func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
+        _ = load(url, method: .GET, parseResponse: true, withCompletion: completion)
+    }
+}
+
 // MARK: - Upload Image Request
 
+/// Upload image to `medsenger.ru`
 class UploadImageRequest<Resource: UploadImageResource> {
     let resource: Resource
     
-    init(resource: Resource) {
+    /// Create object
+    /// - Parameter resource: data for specific request
+    init(_ resource: Resource) {
         self.resource = resource
     }
 }
@@ -423,15 +481,24 @@ extension UploadImageRequest: NetworkRequest {
 struct UploadImageResourceOptions {
     let dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
     let parseResponse: Bool
-    let httpMethod: HttpMethod
+    let httpMethod: HTTPMethod
     let headers: [String: String]
     let queryItems: [URLQueryItem]
     let addApiKey: Bool
     
+    /// Initilize options for ``UploadImageResource``
+    /// - Parameters:
+    ///   - dateDecodingStrategy: The strategy used when decoding dates from part of a JSON object.
+    ///   - parseResponse: Parse or not response with ``NetworkRequest.decode()``. If `false` result data wiil be `nil`
+    ///   - httpBody: The data sent as the message body of a request, such as for an HTTP POST request.
+    ///   - httpMethod: The HTTP request method. Default is ``HttpMethod.GET``
+    ///   - headers: Header fields
+    ///   - queryItems: An array of query items for the URL in the order in which they appear in the original query string.
+    ///   - addApiKey: Append medsenger ApiKey from keychain as query item
     init(dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .formatted(DateFormatter.iso8601Full),
          parseResponse: Bool = false,
          httpBody: Data? = nil,
-         httpMethod: HttpMethod = .GET,
+         httpMethod: HTTPMethod = .GET,
          headers: [String: String] = [:],
          queryItems: [URLQueryItem] = [],
          addApiKey: Bool = true
@@ -446,10 +513,17 @@ struct UploadImageResourceOptions {
 }
 
 protocol UploadImageResource {
+    
+    /// Decodable model type for response JSON decoding
     associatedtype ModelType: Decodable
     
+    /// Data object to upload
     var uploadData: Data { get }
+    
+    /// Path of the resource without query items and base host
     var methodPath: String { get }
+    
+    /// Upload image resource data
     var options: UploadImageResourceOptions { get }
 }
 
@@ -468,16 +542,17 @@ extension UploadImageResource {
 
 // MARK: - Wrapper
 
+/// `medsenger.ru` response base model
 struct Wrapper<T: Decodable>: Decodable {
     enum status: String, Decodable {
-        case success = "success"
-        case error = "error"
+        case success, error
     }
     
     let state: status
     let data: T
 }
 
+/// `medsenger.ru` error model
 struct ErrorReponse: Decodable {
     let error: Array<String>
     let state: String
