@@ -12,6 +12,8 @@ struct ChatView: View {
     @ObservedObject private var contract: Contract
     @ObservedObject private var user: User
     
+    @EnvironmentObject private var contentViewModel: ContentViewModel
+    
     @StateObject private var chatViewModel: ChatViewModel
     
     @FocusState private var isTextFocused
@@ -85,7 +87,13 @@ struct ChatView: View {
                 })
             }
         }
-        .onAppear(perform: chatViewModel.fetchMessages)
+        .onAppear {
+            contentViewModel.markChatAsOpened(contractId: Int(contract.id))
+            chatViewModel.onChatViewAppear(contract: contract)
+        }
+        .onDisappear {
+            contentViewModel.markChatAsClosed()
+        }
     }
 }
 

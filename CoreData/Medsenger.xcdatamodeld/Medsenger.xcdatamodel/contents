@@ -263,6 +263,8 @@
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="messages" inverseEntity="Contract"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
         <relationship name="lastFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastFetchedMessage" inverseEntity="Contract"/>
+        <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>
+        <relationship name="replyToMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="replyedMessages" inverseEntity="Message"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>

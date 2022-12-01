@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Messages {
+final class Messages {
     static let shared = Messages()
     
     private var getMessagesRequest: APIRequest<MessagesResource>?

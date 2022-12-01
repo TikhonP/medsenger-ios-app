@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 import os.log
+import UIKit
 
 final class ChatViewModel: NSObject, ObservableObject {
     
@@ -24,6 +25,7 @@ final class ChatViewModel: NSObject, ObservableObject {
     private var recordingSession: AVAudioSession?
     
     @Published var message: String = ""
+    @Published var replyToMessage: Message?
     
     @Published var isRecordingVoiceMessage = false
     @Published var showAlertRecordingIsNotPermited = false
@@ -41,12 +43,22 @@ final class ChatViewModel: NSObject, ObservableObject {
     @Published var selectedImage = Data()
     @Published var isImageAdded = false
     
+    @Published var scrollToMessageId: Int?
+    
     init(contractId: Int) {
         self.contractId = contractId
     }
     
-    func fetchMessages() {
+    private var replyToId: Int? {
+        guard let replyToMessage = replyToMessage else {
+            return nil
+        }
+        return Int(replyToMessage.id)
+    }
+    
+    func onChatViewAppear(contract: Contract) {
         Messages.shared.fetchMessages(contractId: contractId)
+        UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
     }
     
     func sendMessage() {
@@ -61,6 +73,7 @@ final class ChatViewModel: NSObject, ObservableObject {
             Messages.shared.sendMessage(
                 message,
                 contractId: contractId,
+                replyToId: replyToId,
                 attachments: [("image.png", selectedImage)]) {
                     DispatchQueue.main.async {
                         self.isImageAdded = false
@@ -68,7 +81,7 @@ final class ChatViewModel: NSObject, ObservableObject {
                     }
                 }
         } else {
-            Messages.shared.sendMessage(message, contractId: contractId) {
+            Messages.shared.sendMessage(message, contractId: contractId, replyToId: replyToId) {
                 DispatchQueue.main.async {
                     self.message = ""
                 }
@@ -99,6 +112,7 @@ final class ChatViewModel: NSObject, ObservableObject {
         Messages.shared.sendMessage(
             Constants.voiceMessageText,
             contractId: contractId,
+            replyToId: replyToId,
             attachments: [(Constants.voiceMessageFileName, data)]) { [weak self] in
                 DispatchQueue.main.async {
                     self?.isRecordingVoiceMessage = false

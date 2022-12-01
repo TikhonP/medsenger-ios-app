@@ -41,16 +41,28 @@ struct PatientChatRow: View {
                             }
                         }
                         
-                        if let lastMessageText = contract.lastFetchedMessage?.text {
-                            HStack {
-                                Text(lastMessageText)
-                                    .foregroundColor(.secondary)
-                                    .lineLimit(2)
-                                    .frame(height: 50, alignment: .top)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.trailing, 40)
+                        HStack {
+                            if let lastMessageText = contract.lastFetchedMessage?.text {
+                                HStack {
+                                    Text(lastMessageText)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(2)
+                                        .frame(height: 50, alignment: .top)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.trailing, 40)
+                                }
+                            }
+                            Spacer()
+                            if contract.unread > 0 {
+                                ZStack {
+                                    Circle()
+                                        .foregroundColor(.red)
+                                        .font(.body)
+                                    Text("\(contract.unread)")
+                                }
                             }
                         }
+                        .padding(.leading)
                     }
                 }
             }

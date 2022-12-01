@@ -50,6 +50,7 @@ class Account {
             switch result {
             case .success(let data):
                 if let data = data {
+                    print("Contract last_health_sync: \(String(describing: data.last_health_sync))")
                     User.saveUserFromJson(data)
                     self?.fetchAvatar()
                 }

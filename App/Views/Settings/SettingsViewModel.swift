@@ -12,7 +12,7 @@ import SwiftUI
 final class SettingsViewModel: ObservableObject {
     @Published var isPushNotificationOn: Bool = UserDefaults.isPushNotificationsOn
     @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
-    @Published var syncWithAppleHealth: Bool = false
+    @Published var isHealthKitSyncActive: Bool = UserDefaults.isHealthKitSyncActive
     
     @Published var showEditProfileData: Bool = false
     
@@ -56,6 +56,25 @@ final class SettingsViewModel: ObservableObject {
     func toggleEditPersonalData() {
         withAnimation {
             showEditProfileData.toggle()
+        }
+    }
+    
+    func updateHealthKitSync() {
+        if isHealthKitSyncActive {
+            HealthKitSync.shared.authorizeHealthKit { [weak self] success in
+                if success {
+                    UserDefaults.isHealthKitSyncActive = true
+                    HealthKitSync.shared.syncDataFromHealthKit {
+                        print("lol kek")
+                        HealthKitSync.shared.startObservingHKChanges()
+                    }
+                } else {
+                    self?.isHealthKitSyncActive = false
+                    UserDefaults.isHealthKitSyncActive = false
+                }
+            }
+        } else {
+            UserDefaults.isHealthKitSyncActive = false
         }
     }
 }

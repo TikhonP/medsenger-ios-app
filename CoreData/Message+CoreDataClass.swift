@@ -155,6 +155,7 @@ extension Message {
         
         if let replyToId = data.reply_to_id {
             message.replyToId = Int64(replyToId)
+            message.replyToMessage = Message.get(id: replyToId, for: context)
         }
         
         return message

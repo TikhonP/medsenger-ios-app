@@ -20,15 +20,37 @@ struct MessageView: View {
                 if message.isMessageSent {
                     messageBody
                         .padding(9)
-                        .background(Color.secondary.opacity(0.2))
-                        .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
-                        .foregroundColor(.white)
+                        .background(Color.secondary.opacity(0.5))
+                        .cornerRadius(20)
+                        .contextMenu {
+                            if let text = message.text, !text.isEmpty {
+                                Button(action: {
+                                    UIPasteboard.general.string = text
+                                }, label: {
+                                    Label("Copy", systemImage: "doc.on.doc")
+                                })
+                            }
+                        }
                 } else {
                     messageBody
                         .padding(9)
                         .foregroundColor(.primary)
                         .background(Color.accentColor)
-                        .clipShape(RoundedRectangle(cornerSize: .init(width: 15, height: 0)))
+                        .cornerRadius(20)
+                        .contextMenu {
+                            Button(action: {
+                                chatViewModel.replyToMessage = message
+                            }, label: {
+                                Label("Reply", systemImage: "arrowshape.turn.up.left")
+                            })
+                            if let text = message.text, !text.isEmpty {
+                                Button(action: {
+                                    UIPasteboard.general.string = text
+                                }, label: {
+                                    Label("Copy", systemImage: "doc.on.doc")
+                                })
+                            }
+                        }
                 }
                 
             }
@@ -40,6 +62,20 @@ struct MessageView: View {
     
     var messageBody: some View {
         VStack {
+            
+            if let replyedMessage = message.replyToMessage {
+                Button(action: {
+                    chatViewModel.scrollToMessageId = Int(replyedMessage.id)
+                }, label: {
+                    Text(replyedMessage.wrappedText)
+                        .foregroundColor(Color(UIColor.darkText))
+                        .lineLimit(2)
+                        .padding(10)
+                        .background(Color.secondary)
+                        .cornerRadius(10)
+                })
+            }
+            
             Text(message.wrappedText)
             
             ForEach(message.attachmentsArray) { attachment in

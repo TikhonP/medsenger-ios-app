@@ -24,20 +24,49 @@ struct TextInputView: View {
     private var buttonsHeight: CGFloat = 33
     
     var body: some View {
-        HStack {
-            VStack {
-                Spacer()
-                leadingButtons
-                    .padding(.bottom, 8)
+        VStack {
+            ZStack {
+                if let replyToMessage = chatViewModel.replyToMessage {
+                    HStack {
+                        Image(systemName: "arrowshape.turn.up.left")
+                            .resizable()
+                            .scaledToFit()
+                            .padding(5)
+                            .frame(width: buttonsHeight, height: buttonsHeight)
+                        Spacer()
+                        Text(replyToMessage.wrappedText)
+                            .lineLimit(4)
+                        Spacer()
+                        Button(action: {
+                            chatViewModel.replyToMessage = nil
+                        }, label: {
+                            Image(systemName: "xmark")
+                                .resizable()
+                                .scaledToFit()
+                                .padding(7)
+                                .frame(width: buttonsHeight, height: buttonsHeight)
+                        })
+                    }
+                }
             }
-            .frame(height: min(textEditorHeight, maxHeight))
-            textInputView
-            VStack {
-                Spacer()
-                trailingButtons
-                    .padding(.bottom, 8)
+            .transition(.slide)
+            .animation(.default, value: chatViewModel.replyToMessage)
+    
+            HStack {
+                VStack {
+                    Spacer()
+                    leadingButtons
+                        .padding(.bottom, 8)
+                }
+                .frame(height: min(textEditorHeight, maxHeight))
+                textInputView
+                VStack {
+                    Spacer()
+                    trailingButtons
+                        .padding(.bottom, 8)
+                }
+                .frame(height: min(textEditorHeight, maxHeight))
             }
-            .frame(height: min(textEditorHeight, maxHeight))
         }
         .padding(.horizontal)
         .padding(.vertical, 5)
@@ -124,7 +153,7 @@ struct TextInputView: View {
                     Image(systemName: "arrow.up.circle.fill")
                         .resizable()
                         .frame(width: buttonsHeight, height: buttonsHeight)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentColor)
                 })
             }
         }

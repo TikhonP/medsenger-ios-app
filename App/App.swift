@@ -48,11 +48,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { done, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions) { granted, error in
             if let error = error {
                 AppDelegate.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
             }
-            if !done {
+            if !granted {
                 AppDelegate.logger.notice("Failed authorize push notifications")
             }
         }
@@ -73,9 +73,7 @@ extension AppDelegate: MessagingDelegate {
 extension AppDelegate : UNUserNotificationCenterDelegate {
     
     // Receive displayed notifications for iOS 10 devices.
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
         
         if let messageID = userInfo[gcmMessageIDKey] {
@@ -84,7 +82,13 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
         
         AppDelegate.logger.debug("\(userInfo)")
         
-        // Change this to your preferred presentation option
+        if let contracId = userInfo["contract_id"] as? String, let contracId = Int(contracId) {
+            if contracId == ContentViewModel.shared.openedChatContractId {
+                completionHandler([])
+                return
+            }
+        }
+        
         completionHandler([[.banner, .badge, .sound]])
     }
     

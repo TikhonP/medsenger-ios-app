@@ -22,6 +22,8 @@ final class ContentViewModel: ObservableObject {
     
     @Published private(set) var openChatContractId: Int?
     
+    @Published private(set) var openedChatContractId: Int?
+    
     func showCall(contractId: Int, isCaller: Bool) {
         DispatchQueue.main.async {
             withAnimation {
@@ -43,6 +45,18 @@ final class ContentViewModel: ObservableObject {
     func openChat(with contractId: Int) {
         DispatchQueue.main.async {
             self.openChatContractId = contractId
+        }
+    }
+    
+    func markChatAsOpened(contractId: Int) {
+        DispatchQueue.main.async {
+            self.openedChatContractId = contractId
+        }
+    }
+    
+    func markChatAsClosed() {
+        DispatchQueue.main.async {
+            self.openedChatContractId = nil
         }
     }
     

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var settingsViewModel = SettingsViewModel()
+    @StateObject private var healthKitSync = HealthKitSync.shared
     
     @Environment(\.presentationMode) private var presentationMode
     
@@ -24,7 +25,7 @@ struct SettingsView: View {
                 if settingsViewModel.showEditProfileData {
                     EditPersonalDataView(user: user)
                         .transition(.opacity)
-                        
+                    
                 } else {
                     profileView(user)
                         .deprecatedRefreshable { await settingsViewModel.updateProfile() }
@@ -153,7 +154,9 @@ struct SettingsView: View {
                 }
             }
             
-            syncWithAppleHealthSection
+            if healthKitSync.isHealthDataAvailable {
+                syncWithAppleHealthSection
+            }
             
             Section {
                 Button (action: settingsViewModel.signOut, label: {
@@ -166,43 +169,56 @@ struct SettingsView: View {
     
     var syncWithAppleHealthSection: some View {
         Section(header: Text("Apple Health")) {
-            Toggle(isOn: $settingsViewModel.syncWithAppleHealth) {
+            Toggle(isOn: $settingsViewModel.isHealthKitSyncActive) {
                 Text("Sync with apple health")
             }
-            VStack(alignment: .leading) {
-                Text("Steps")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                HStack {
-                    Image(systemName: "figure.walk")
-                    Text("33")
+            .onChange(of: settingsViewModel.isHealthKitSyncActive, perform: { _ in
+                settingsViewModel.updateHealthKitSync()
+            })
+            if settingsViewModel.isHealthKitSyncActive {
+                if let stepsCount = healthKitSync.lastHealthSyncStepsCount {
+                    VStack(alignment: .leading) {
+                        Text("Steps")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        HStack {
+                            Image(systemName: "figure.walk")
+                            Text(stepsCount)
+                        }
+                    }
                 }
             }
-            VStack(alignment: .leading) {
-                Text("Pulse")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                HStack {
-                    Image(systemName: "heart.fill")
-                    Text("64")
+            if let heartRate = healthKitSync.lastHealthSyncHeartRate {
+                VStack(alignment: .leading) {
+                    Text("Heart Rate")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    HStack {
+                        Image(systemName: "heart.fill")
+                        Text(heartRate)
+                    }
                 }
             }
-            VStack(alignment: .leading) {
-                Text("SpO2")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                HStack {
-                    Image(systemName: "lungs.fill")
-                    Text("156")
+            if let oxygenSaturation = healthKitSync.lastHealthSyncOxygenSaturation {
+                VStack(alignment: .leading) {
+                    Text("Oxygen Saturation")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    HStack {
+                        Image(systemName: "lungs.fill")
+                        Text(oxygenSaturation)
+                    }
                 }
             }
-            VStack(alignment: .leading) {
-                Text("CHdd")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                HStack {
-                    Image(systemName: "bubbles.and.sparkles.fill")
-                    Text("1245543")
+            if let respiratoryRate = healthKitSync.lastHealthSyncRespiratoryRate {
+                VStack(alignment: .leading) {
+                    Text("Respiratory Rate")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    HStack {
+                        Image(systemName: "bubbles.and.sparkles.fill")
+                        Text(respiratoryRate)
+                    }
                 }
             }
         }
