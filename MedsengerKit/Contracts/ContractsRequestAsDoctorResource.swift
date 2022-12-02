@@ -15,7 +15,7 @@ struct ContractsRequestAsDoctorResource: APIResource {
     
     var options = APIResourceOptions(
         parseResponse: true,
-        queryItems: [
+        params: [
             URLQueryItem(name: "with_inactive", value: "true"),
         ]
     )

@@ -17,24 +17,13 @@ struct NotificationsResource: APIResource {
     struct RequestModel: Encodable {
         let emailNotify: Bool
     }
-    
-    var httpBody: Data? {
-        do {
-            let data = try JSONEncoder().encode(
-                RequestModel(emailNotify: emailNotify))
-            return data
-        } catch {
-            Logger.urlRequest.error("Failed to encode notification resource data: \(error.localizedDescription)")
-            return nil
-        }
-    }
 
     var methodPath = "/account"
     
     var options: APIResourceOptions {
         APIResourceOptions(
-            httpBody: httpBody,
-            httpMethod: .POST
+            method: .POST,
+            httpBody: encodeToJSON(RequestModel(emailNotify: emailNotify))
         )
     }
 }

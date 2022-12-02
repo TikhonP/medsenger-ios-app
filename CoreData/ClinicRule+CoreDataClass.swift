@@ -19,6 +19,12 @@ public class ClinicRule: NSManagedObject {
 }
 
 extension ClinicRule {
+    public var wrappedName: String {
+        name ?? "Unknown name"
+    }
+}
+
+extension ClinicRule {
     struct JsonDeserializer: Decodable {
         let id: Int
         let name: String

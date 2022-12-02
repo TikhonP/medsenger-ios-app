@@ -12,7 +12,20 @@ struct ContractView: View {
     @ObservedObject var contract: Contract
     @ObservedObject var user: User
     
+    @StateObject private var contractViewModel: ContractViewModel
+    
     @EnvironmentObject private var contentViewModel: ContentViewModel
+    
+    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    
+    @State private var showChooseScenario = false
+    @State private var showDevices = false
+    
+    init(contract: Contract, user: User) {
+        self.contract = contract
+        self.user = user
+        _contractViewModel = StateObject(wrappedValue: ContractViewModel(contractId: Int(contract.id)))
+    }
     
     var body: some View {
         Form {
@@ -22,16 +35,54 @@ struct ContractView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
             
-            if contract.video {
+            if userRole == .doctor {
                 Section {
-                    Button(action: startCall, label: {
-                        Label("Video call", systemImage: "video.fill")
-                    })
+                    if contract.video {
+                        Button(action: {
+                            contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
+                        }, label: {
+                            Label("Video call", systemImage: "video.fill")
+                        })
+                    }
+                    if contract.canDecline {
+                        Button(action: {
+                            contractViewModel.declineMessages()
+                        }, label: {
+                            Label("Decline Messages", systemImage: "checkmark.message.fill")
+                        })
+                    }
+                    if contract.isWaitingForConclusion {
+                        Button(action: {
+                            contractViewModel.concludeContract()
+                        }, label: {
+                            Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
+                        })
+                    }
+                    if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
+                        Button(action: {
+                            showChooseScenario.toggle()
+                        }, label: {
+                            Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
+                        })
+                        .sheet(isPresented: $showChooseScenario) {
+                            ChooseScenarioView(contract: contract)
+                        }
+                    }
+                    if let clinic = contract.clinic, !clinic.devicesArray.isEmpty, !contract.archive {
+                        Button(action: {
+                            showDevices.toggle()
+                        }, label: {
+                            Label("Devices Control", systemImage: "lightbulb")
+                        })
+                        .sheet(isPresented: $showDevices) {
+                            ContractDevicesView(contract: contract)
+                        }
+                    }
                 }
             }
             
             Section {
-                if !contract.infoMaterialsArray.isEmpty {
+                if !contract.infoMaterialsArray.isEmpty && userRole == .patient {
                     NavigationLink(destination: {
                         InfoMaterialsView(contract: contract)
                     }, label: {
@@ -110,10 +161,6 @@ struct ContractView: View {
             }
             Spacer()
         }
-    }
-    
-    func startCall() {
-        contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
     }
 }
 

@@ -87,7 +87,7 @@ protocol WebsocketResponse {
     var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { get }
     
     func processResponse(_ data: ModelType)
-    func decode(_ string: String) -> DecodedDataReslut<ModelType>
+    func decode(_ string: String) -> Result<ModelType, Error>
     
     init()
 }
@@ -95,23 +95,17 @@ protocol WebsocketResponse {
 extension WebsocketResponse {
     var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { .secondsSince1970 }
     
-    func decode(_ string: String) -> DecodedDataReslut<ModelType> {
+    func decode(_ string: String) -> Result<ModelType, Error> {
+        let result: Result<ModelType, Error>
         do {
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = dateDecodingStrategy
             let wrapper = try decoder.decode(ModelType.self, from: Data(string.utf8))
-            return DecodedDataReslut<ModelType>.success(wrapper)
-        } catch DecodingError.dataCorrupted(let context) {
-            return DecodedDataReslut<ModelType>.failure(.dataCorrupted(context))
-        } catch DecodingError.keyNotFound(let key, let context) {
-            return DecodedDataReslut<ModelType>.failure(.keyNotFound(key, context))
-        } catch DecodingError.valueNotFound(let value, let context) {
-            return DecodedDataReslut<ModelType>.failure(.valueNotFound(value, context))
-        } catch DecodingError.typeMismatch(let type, let context) {
-            return DecodedDataReslut<ModelType>.failure(.typeMismatch(type, context))
+            result = .success(wrapper)
         } catch {
-            return DecodedDataReslut<ModelType>.failure(.error(error))
+            result = .failure(error)
         }
+        return result
     }
 }
 

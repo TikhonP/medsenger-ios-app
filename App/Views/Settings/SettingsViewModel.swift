@@ -65,7 +65,6 @@ final class SettingsViewModel: ObservableObject {
                 if success {
                     UserDefaults.isHealthKitSyncActive = true
                     HealthKitSync.shared.syncDataFromHealthKit {
-                        print("lol kek")
                         HealthKitSync.shared.startObservingHKChanges()
                     }
                 } else {

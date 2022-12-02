@@ -16,28 +16,25 @@ struct UpdateAccountResource: APIResource {
     
     typealias ModelType = User.JsonDecoder
     
-    var birthdayString: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.YYYY"
-        return dateFormatter.string(from: birthday)
+    var birthdayAsString: String {
+        return DateFormatter.ddMMyyyy.string(from: birthday)
     }
-    
     
     var params: [String: String] {
         ["name": name,
          "email": email,
          "phone": phone,
-         "birthday": birthdayString]
+         "birthday": birthdayAsString]
     }
     
     var methodPath = "/account"
     
     var options: APIResourceOptions {
-        let result = multipartFormData(params: params)
+        let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             parseResponse: false,
+            method: .POST,
             httpBody: result.httpBody,
-            httpMethod: .POST,
             headers: result.headers
         )
     }

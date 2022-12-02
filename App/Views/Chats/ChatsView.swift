@@ -59,6 +59,22 @@ struct ChatsView: View {
                     case .doctor:
                         DoctorChatRow(contract: contract)
                             .environmentObject(chatsViewModel)
+                            .contextMenu {
+                                if contract.canDecline {
+                                    Button(action: {
+                                        chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                    }, label: {
+                                        Label("Decline Messages", systemImage: "checkmark.message.fill")
+                                    })
+                                }
+                                if contract.isWaitingForConclusion {
+                                    Button(action: {
+                                        chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                    }, label: {
+                                        Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
+                                    })
+                                }
+                            }
                     default:
                         Text("Unknown user role")
                     }
@@ -78,6 +94,7 @@ struct ChatsView: View {
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
             chatsViewModel.getContracts()
+            contentViewModel.markChatAsClosed()
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -95,7 +112,7 @@ struct ChatsView: View {
             }
         }
         .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
-        .sheet(isPresented: $showNewContractModal, content: { Text("Add new contract") })
+        .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
         .onChange(of: scenePhase) { newPhase in
             if scenePhase == .inactive {
                 Websockets.shared.createUrlSession()

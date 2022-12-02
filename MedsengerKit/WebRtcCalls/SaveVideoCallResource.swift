@@ -22,7 +22,7 @@ struct SaveVideoCallResource: APIResource {
     
     var options: APIResourceOptions {
         APIResourceOptions(
-            queryItems: [
+            params: [
                 URLQueryItem(name: "CONTRACT", value: "\(contractId)"),
                 URLQueryItem(name: "TALK_START_TIME", value: "\(talkStartTime.timeIntervalSince1970)"),
                 URLQueryItem(name: "CALL_START_TIME", value: "\(callStartTime.timeIntervalSince1970)"),

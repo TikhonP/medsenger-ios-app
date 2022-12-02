@@ -1,5 +1,5 @@
 //
-//  DeactivateMessagesResource.swift
+//  ConcludeContractResource.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 11.11.2022.
@@ -8,16 +8,16 @@
 
 import Foundation
 
-struct DeactivateMessagesResource: APIResource {
+struct ConcludeContractResource: APIResource {
     let contractId: Int
     
     typealias ModelType = EmptyModel
     
     var methodPath: String {
-        "/contracts/\(contractId)/decline"
+        "/contracts/\(contractId)/conclusion"
     }
     
     var options = APIResourceOptions(
-        httpMethod: .POST
+        method: .POST
     )
 }

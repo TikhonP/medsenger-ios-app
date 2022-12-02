@@ -15,7 +15,7 @@ struct ContractsRequestAsPatientResource: APIResource {
     
     var options = APIResourceOptions(
         parseResponse: true,
-        queryItems: [
+        params: [
             URLQueryItem(name: "with_inactive", value: "true"),
             URLQueryItem(name: "separate_clinics", value: "true")
         ]

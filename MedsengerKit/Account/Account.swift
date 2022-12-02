@@ -13,7 +13,7 @@ class Account {
     
     private var getAvatarRequest: FileRequest?
     private var checkRequest: APIRequest<CheckResource>?
-    private var uploadAvatarRequest: UploadImageRequest<UploadAvatarResource>?
+    private var uploadAvatarRequest: APIRequest<UploadAvatarResource>?
     private var updateAcountRequest: APIRequest<UpdateAccountResource>?
     private var notificationsRequest: APIRequest<NotificationsResource>?
     private var pushNotificationsRequest: APIRequest<PushNotificationsResource>?
@@ -64,7 +64,7 @@ class Account {
         User.saveAvatar(nil)
         
         let uploadAvatarResource = UploadAvatarResource(image: image)
-        uploadAvatarRequest = UploadImageRequest(uploadAvatarResource)
+        uploadAvatarRequest = APIRequest(uploadAvatarResource)
         uploadAvatarRequest?.execute { [weak self] result in
             switch result {
             case .success(_):

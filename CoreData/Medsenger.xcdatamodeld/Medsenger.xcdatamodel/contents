@@ -95,7 +95,9 @@
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="clinics" inverseEntity="Agent"/>
         <relationship name="classifiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicClassifier" inverseName="clinic" inverseEntity="ClinicClassifier"/>
         <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="clinic" inverseEntity="Contract"/>
+        <relationship name="devices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ClinicDevice" inverseName="clinic" inverseEntity="ClinicDevice"/>
         <relationship name="rules" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicRule" inverseName="clinic" inverseEntity="ClinicRule"/>
+        <relationship name="scenarios" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ClinicScenario" inverseName="clinic" inverseEntity="ClinicScenario"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -112,10 +114,33 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="ClinicDevice" representedClassName="ClinicDevice" syncable="YES" codeGenerationType="category">
+        <attribute name="deviceDescription" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="devices" inverseEntity="Clinic"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
     <entity name="ClinicRule" representedClassName="ClinicRule" syncable="YES" codeGenerationType="category">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="rules" inverseEntity="Clinic"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="ClinicScenario" representedClassName="ClinicScenario" syncable="YES" codeGenerationType="category">
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="scenarioDescription" optional="YES" attributeType="String"/>
+        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="scenarios" inverseEntity="Clinic"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>

@@ -79,7 +79,6 @@ struct EditPersonalDataView: View {
             
             Section(footer: Text("Phone is optional value")) {
                 TextField("Phone", text: $phone)
-                //                    .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .textContentType(.telephoneNumber)
                     .keyboardType(.numberPad)

@@ -72,7 +72,7 @@ class Login {
                     completion(.unknownError)
                     return
                 }
-                KeyСhain.apiToken = data.api_token
+                KeyСhain.apiToken = data.apiToken
                 completion(.success)
             case .failure(let error):
                 switch error {

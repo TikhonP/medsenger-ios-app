@@ -30,8 +30,8 @@ struct HealthKitRecord: Encodable {
         }
     }
     
-    let category_name: CategoryName
-    let source: String
+    let categoryName: CategoryName
+    let source: String = "health"
     
     /// `Date` as time since 1970
     let time: Date
@@ -55,8 +55,7 @@ struct HealthKitRecord: Encodable {
             return nil
         }
         
-        self.category_name = category
-        self.source = sample.sourceRevision.source.name
+        self.categoryName = category
         self.time = sample.endDate
         self.value = String(value)
     }

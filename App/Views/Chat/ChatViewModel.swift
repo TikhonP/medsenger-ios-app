@@ -72,7 +72,7 @@ final class ChatViewModel: NSObject, ObservableObject {
         if isImageAdded {
             Messages.shared.sendMessage(
                 message,
-                contractId: contractId,
+                for: contractId,
                 replyToId: replyToId,
                 attachments: [("image.png", selectedImage)]) {
                     DispatchQueue.main.async {
@@ -81,7 +81,7 @@ final class ChatViewModel: NSObject, ObservableObject {
                     }
                 }
         } else {
-            Messages.shared.sendMessage(message, contractId: contractId, replyToId: replyToId) {
+            Messages.shared.sendMessage(message, for: contractId, replyToId: replyToId) {
                 DispatchQueue.main.async {
                     self.message = ""
                 }
@@ -111,7 +111,7 @@ final class ChatViewModel: NSObject, ObservableObject {
         guard let data = try? Data(contentsOf: voiceMessageFilePath) else { return }
         Messages.shared.sendMessage(
             Constants.voiceMessageText,
-            contractId: contractId,
+            for: contractId,
             replyToId: replyToId,
             attachments: [(Constants.voiceMessageFileName, data)]) { [weak self] in
                 DispatchQueue.main.async {

@@ -12,7 +12,7 @@ struct ChangePasswordResource: APIResource {
     let newPassword: String
     
     struct ResponseModel: Decodable {
-        let api_token: String
+        let apiToken: String
     }
     
     typealias ModelType = ResponseModel
@@ -25,12 +25,13 @@ struct ChangePasswordResource: APIResource {
     var methodPath = "/password"
     
     var options: APIResourceOptions {
-        let result = multipartFormData(params: params)
+        let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             parseResponse: true,
+            method: .POST,
             httpBody: result.httpBody,
-            httpMethod: .POST,
-            headers: result.headers
+            headers: result.headers,
+            keyDecodingStrategy: .convertFromSnakeCase
         )
     }
 }

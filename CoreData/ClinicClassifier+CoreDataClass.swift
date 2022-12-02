@@ -19,6 +19,12 @@ public class ClinicClassifier: NSManagedObject {
 }
 
 extension ClinicClassifier {
+    public var wrappedName: String {
+        name ?? "Unknown name" 
+    }
+}
+
+extension ClinicClassifier {
     struct JsonDeserializer: Decodable {
         let id: Int
         let name: String

@@ -17,26 +17,22 @@ struct HealthRecordsResource: APIResource {
         let values: Array<HealthKitRecord>
     }
     
-    typealias ModelType = EmptyModel
+    struct ResponseModel: Decodable {
+        let lastHealthSync: Date
+    }
+    
+    typealias ModelType = ResponseModel
     
     var methodPath = "/\(UserDefaults.userRole.rawValue)/record"
     
-    var httpBody: Data? {
-        do {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .secondsSince1970
-            let data = try encoder.encode(RequestModel(values: values))
-            return data
-        } catch {
-            Logger.urlRequest.error("Failed to encode HealthRecordsResource data: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
     var options: APIResourceOptions {
         APIResourceOptions(
-            httpBody: httpBody,
-            httpMethod: .POST
+            parseResponse: true,
+            method: .POST,
+            httpBody: encodeToJSON(
+                RequestModel(values: values), keyEncodingStrategy: .convertToSnakeCase),
+            dateDecodingStrategy: .secondsSince1970,
+            keyDecodingStrategy: .convertFromSnakeCase
         )
     }
 }

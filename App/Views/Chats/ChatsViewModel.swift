@@ -28,4 +28,12 @@ final class ChatsViewModel: ObservableObject {
     func getClinicLogo(contractId: Int) {
         Contracts.shared.fetchClinicLogo(contractId)
     }
+    
+    func declineMessages(contractId: Int) {
+        DoctorActions.shared.deactivateMessages(contractId)
+    }
+    
+    func concludeContract(contractId: Int) {
+        DoctorActions.shared.concludeContract(contractId)
+    }
 }

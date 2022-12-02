@@ -59,6 +59,17 @@ public class User: NSManagedObject {
             PersistenceController.save(for: context, detailsForLogging: "User save avatar")
         }
     }
+    
+    /// Save lastHealthSync param to user model
+    /// - Parameter lastHealthSync: date last HealthKit sync
+    class func updateLastHealthSync(lastHealthSync: Date) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let user = get(for: context)
+            user?.lastHealthSync = lastHealthSync
+            PersistenceController.save(for: context, detailsForLogging: "User save lastHealthSync")
+        }
+    }
 }
 
 extension User {

@@ -57,7 +57,6 @@ extension BotAction {
             self.api_link = try values.decode(URL.self, forKey: .apiLink)
             self.is_setup = try values.decode(Bool.self, forKey: .isSetup)
             
-            
             if values.contains(.type) {
                 self.type = try values.decode(String.self, forKey: .type)
             } else {

@@ -29,6 +29,10 @@ public class Clinic: NSManagedObject {
 }
 
 extension Clinic {
+    public var wrappedName: String {
+        name ?? "Unknown name"
+    }
+    
     public var contractsArray: [Contract] {
         let set = contracts as? Set<Contract> ?? []
         return Array(set)
@@ -46,6 +50,16 @@ extension Clinic {
     
     public var classifiersArray: [ClinicClassifier] {
         let set = classifiers as? Set<ClinicClassifier> ?? []
+        return Array(set)
+    }
+    
+    public var scenariosArray: [ClinicScenario] {
+        let set = scenarios as? Set<ClinicScenario> ?? []
+        return Array(set)
+    }
+    
+    public var devicesArray: [ClinicDevice] {
+        let set = devices as? Set<ClinicDevice> ?? []
         return Array(set)
     }
 }
@@ -147,8 +161,8 @@ extension Clinic {
         let phone: String
         
         let agents: Array<Agent.JsonDecoderFromClinic>
-//        let devices
-//        let scenarios:
+        let devices: Array<ClinicDevice.JsonDeserializer>
+        let scenarios: Array<ClinicScenario.JsonDeserializer>
     }
     
     class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Clinic {
@@ -176,6 +190,9 @@ extension Clinic {
                 clinic.addToAgents(agent)
             }
         }
+        
+        ClinicScenario.saveFromJson(data.scenarios, clinic: clinic, for: context)
+        ClinicDevice.saveFromJson(data.devices, clinic: clinic, for: context)
         
         return clinic
     }

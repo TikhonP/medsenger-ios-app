@@ -25,6 +25,21 @@
 		435D56FA293800290013B0F4 /* HealthRecordsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56F9293800290013B0F4 /* HealthRecordsResource.swift */; };
 		435D56FC2938009F0013B0F4 /* HealthKitRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56FB2938009F0013B0F4 /* HealthKitRecord.swift */; };
 		435D56FE293803940013B0F4 /* HealthKitSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D56FD293803940013B0F4 /* HealthKitSync.swift */; };
+		435D5701293A0FF40013B0F4 /* NetworkRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5700293A0FF40013B0F4 /* NetworkRequestError.swift */; };
+		435D5705293A109C0013B0F4 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5704293A109C0013B0F4 /* APIRequest.swift */; };
+		435D5709293A10F50013B0F4 /* APIResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5708293A10F50013B0F4 /* APIResource.swift */; };
+		435D570B293A11200013B0F4 /* FileRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D570A293A11200013B0F4 /* FileRequest.swift */; };
+		435D5716293A65080013B0F4 /* AddContractView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5715293A65080013B0F4 /* AddContractView.swift */; };
+		435D5718293A66650013B0F4 /* AddContractViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5717293A66650013B0F4 /* AddContractViewModel.swift */; };
+		435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D571A293A6AD50013B0F4 /* DoctorActions.swift */; };
+		435D571D293A6AF70013B0F4 /* FindUserResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D571C293A6AF70013B0F4 /* FindUserResource.swift */; };
+		435D571F293A81480013B0F4 /* AddContractResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D571E293A81480013B0F4 /* AddContractResource.swift */; };
+		435D5722293A8EB10013B0F4 /* ContractViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5721293A8EB10013B0F4 /* ContractViewModel.swift */; };
+		435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5727293A95700013B0F4 /* ChooseScenarioView.swift */; };
+		435D572B293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */; };
+		435D572F293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */; };
+		435D5732293A9EEA0013B0F4 /* ContractDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */; };
+		435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5733293AA0C90013B0F4 /* DeviceResource.swift */; };
 		435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA22934C8350094F93C /* LocalVideoView.swift */; };
 		435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */; };
 		435F9DA7293577540094F93C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA6293577540094F93C /* Logger.swift */; };
@@ -148,6 +163,21 @@
 		435D56F9293800290013B0F4 /* HealthRecordsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthRecordsResource.swift; sourceTree = "<group>"; };
 		435D56FB2938009F0013B0F4 /* HealthKitRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitRecord.swift; sourceTree = "<group>"; };
 		435D56FD293803940013B0F4 /* HealthKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitSync.swift; sourceTree = "<group>"; };
+		435D5700293A0FF40013B0F4 /* NetworkRequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequestError.swift; sourceTree = "<group>"; };
+		435D5704293A109C0013B0F4 /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
+		435D5708293A10F50013B0F4 /* APIResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResource.swift; sourceTree = "<group>"; };
+		435D570A293A11200013B0F4 /* FileRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRequest.swift; sourceTree = "<group>"; };
+		435D5715293A65080013B0F4 /* AddContractView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContractView.swift; sourceTree = "<group>"; };
+		435D5717293A66650013B0F4 /* AddContractViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContractViewModel.swift; sourceTree = "<group>"; };
+		435D571A293A6AD50013B0F4 /* DoctorActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorActions.swift; sourceTree = "<group>"; };
+		435D571C293A6AF70013B0F4 /* FindUserResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserResource.swift; sourceTree = "<group>"; };
+		435D571E293A81480013B0F4 /* AddContractResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContractResource.swift; sourceTree = "<group>"; };
+		435D5721293A8EB10013B0F4 /* ContractViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractViewModel.swift; sourceTree = "<group>"; };
+		435D5727293A95700013B0F4 /* ChooseScenarioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScenarioView.swift; sourceTree = "<group>"; };
+		435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenario+CoreDataClass.swift"; sourceTree = "<group>"; };
+		435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicDevice+CoreDataClass.swift"; sourceTree = "<group>"; };
+		435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractDevicesView.swift; sourceTree = "<group>"; };
+		435D5733293AA0C90013B0F4 /* DeviceResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceResource.swift; sourceTree = "<group>"; };
 		435F9DA22934C8350094F93C /* LocalVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoView.swift; sourceTree = "<group>"; };
 		435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVideoCallResource.swift; sourceTree = "<group>"; };
 		435F9DA6293577540094F93C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -271,28 +301,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		435D56F42937815F0013B0F4 /* ChatViewComponents */ = {
-			isa = PBXGroup;
-			children = (
-				43EF44AD2922900F005DF084 /* ChatView.swift */,
-				430E7D9D29366D9D009C129D /* MessagesView.swift */,
-				43C9D8502927D5C2003C15B8 /* MessageView.swift */,
-				435D56F62937A8160013B0F4 /* TextInputView.swift */,
-			);
-			path = ChatViewComponents;
-			sourceTree = "<group>";
-		};
-		435D56F52937818B0013B0F4 /* ContractViewComponents */ = {
-			isa = PBXGroup;
-			children = (
-				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
-				434399F62927E831001D7C4F /* ContractView.swift */,
-				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
-				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
-			);
-			path = ContractViewComponents;
-			sourceTree = "<group>";
-		};
 		435D56F8293800040013B0F4 /* HealthKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,6 +309,54 @@
 				435D56F9293800290013B0F4 /* HealthRecordsResource.swift */,
 			);
 			path = HealthKit;
+			sourceTree = "<group>";
+		};
+		435D56FF293A0FC40013B0F4 /* NetworkRequest */ = {
+			isa = PBXGroup;
+			children = (
+				43EF443429228A29005DF084 /* NetworkRequest.swift */,
+				435D5700293A0FF40013B0F4 /* NetworkRequestError.swift */,
+				435D5704293A109C0013B0F4 /* APIRequest.swift */,
+				435D5708293A10F50013B0F4 /* APIResource.swift */,
+				435D570A293A11200013B0F4 /* FileRequest.swift */,
+			);
+			path = NetworkRequest;
+			sourceTree = "<group>";
+		};
+		435D5714293A64A60013B0F4 /* AddContract */ = {
+			isa = PBXGroup;
+			children = (
+				435D5715293A65080013B0F4 /* AddContractView.swift */,
+				435D5717293A66650013B0F4 /* AddContractViewModel.swift */,
+			);
+			path = AddContract;
+			sourceTree = "<group>";
+		};
+		435D5719293A6AC30013B0F4 /* DoctorActions */ = {
+			isa = PBXGroup;
+			children = (
+				435D571A293A6AD50013B0F4 /* DoctorActions.swift */,
+				435D571C293A6AF70013B0F4 /* FindUserResource.swift */,
+				435D571E293A81480013B0F4 /* AddContractResource.swift */,
+				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
+				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
+				435D5733293AA0C90013B0F4 /* DeviceResource.swift */,
+			);
+			path = DoctorActions;
+			sourceTree = "<group>";
+		};
+		435D5720293A8E7D0013B0F4 /* Contract */ = {
+			isa = PBXGroup;
+			children = (
+				435D5721293A8EB10013B0F4 /* ContractViewModel.swift */,
+				434399F62927E831001D7C4F /* ContractView.swift */,
+				434399F82927F366001D7C4F /* InfoMaterialsView.swift */,
+				434399FA2927F6DC001D7C4F /* AttachmentsView.swift */,
+				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
+				435D5727293A95700013B0F4 /* ChooseScenarioView.swift */,
+				435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */,
+			);
+			path = Contract;
 			sourceTree = "<group>";
 		};
 		4376163629338736001049E6 /* WebRtcCalls */ = {
@@ -381,6 +437,8 @@
 		43EF4405292281D8005DF084 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */,
+				435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */,
 				43EF440E292283E3005DF084 /* User+CoreDataClass.swift */,
 				43EF441329228683005DF084 /* Clinic+CoreDataClass.swift */,
 				43EF441029228641005DF084 /* DoctorHelper+CoreDataClass.swift */,
@@ -406,6 +464,8 @@
 		43EF440B2922824B005DF084 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				435D5720293A8E7D0013B0F4 /* Contract */,
+				435D5714293A64A60013B0F4 /* AddContract */,
 				4376164629339850001049E6 /* VideoCall */,
 				43EF44AA29228FF3005DF084 /* Chat */,
 				43EF449F29228F4A005DF084 /* Settings */,
@@ -438,6 +498,8 @@
 		43EF443329228A03005DF084 /* MedsengerKit */ = {
 			isa = PBXGroup;
 			children = (
+				435D5719293A6AC30013B0F4 /* DoctorActions */,
+				435D56FF293A0FC40013B0F4 /* NetworkRequest */,
 				435D56F8293800040013B0F4 /* HealthKit */,
 				43EF446429228D48005DF084 /* Websockets */,
 				4376163629338736001049E6 /* WebRtcCalls */,
@@ -445,7 +507,6 @@
 				43EF445929228CD0005DF084 /* Contracts */,
 				43EF444129228B76005DF084 /* Account */,
 				43EF443829228A50005DF084 /* Login */,
-				43EF443429228A29005DF084 /* NetworkRequest.swift */,
 				43EF443629228A3F005DF084 /* Constants.swift */,
 			);
 			path = MedsengerKit;
@@ -492,8 +553,6 @@
 				43EF445A29228CE7005DF084 /* Contracts.swift */,
 				43EF445C29228CF8005DF084 /* ContractsRequestAsPatientResource.swift */,
 				43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */,
-				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
-				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
 				43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */,
 				434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */,
 			);
@@ -578,8 +637,10 @@
 			isa = PBXGroup;
 			children = (
 				43EF44AB29229003005DF084 /* ChatViewModel.swift */,
-				435D56F42937815F0013B0F4 /* ChatViewComponents */,
-				435D56F52937818B0013B0F4 /* ContractViewComponents */,
+				43EF44AD2922900F005DF084 /* ChatView.swift */,
+				430E7D9D29366D9D009C129D /* MessagesView.swift */,
+				43C9D8502927D5C2003C15B8 /* MessageView.swift */,
+				435D56F62937A8160013B0F4 /* TextInputView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -668,6 +729,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				435D572B293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift in Sources */,
 				43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */,
 				43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */,
 				43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */,
@@ -687,9 +749,12 @@
 				43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */,
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
+				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
 				435D56F72937A8160013B0F4 /* TextInputView.swift in Sources */,
+				435D5722293A8EB10013B0F4 /* ContractViewModel.swift in Sources */,
+				435D5709293A10F50013B0F4 /* APIResource.swift in Sources */,
 				43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */,
 				43EF447129228DDF005DF084 /* PasswordFieldView.swift in Sources */,
 				43EF441A292286FC005DF084 /* InfoMaterial+CoreDataClass.swift in Sources */,
@@ -709,6 +774,7 @@
 				43EF448D29228EB1005DF084 /* ContentDisposition.swift in Sources */,
 				43761643293393A3001049E6 /* ConfigExample.swift in Sources */,
 				43EF441429228683005DF084 /* Clinic+CoreDataClass.swift in Sources */,
+				435D571F293A81480013B0F4 /* AddContractResource.swift in Sources */,
 				43EF442A292287E0005DF084 /* Message+CoreDataClass.swift in Sources */,
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
 				430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */,
@@ -722,15 +788,18 @@
 				43EF440F292283E3005DF084 /* User+CoreDataClass.swift in Sources */,
 				437616482933986D001049E6 /* VideoCallView.swift in Sources */,
 				43EF44A529228F72005DF084 /* ImagePicker.swift in Sources */,
+				435D5716293A65080013B0F4 /* AddContractView.swift in Sources */,
 				43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */,
 				434399F72927E831001D7C4F /* ContractView.swift in Sources */,
 				4376163A293387DF001049E6 /* IceCandidate.swift in Sources */,
 				43EF446D29228DB8005DF084 /* SignInViewModel.swift in Sources */,
 				43EF44202922875D005DF084 /* AgentAction+CoreDataClass.swift in Sources */,
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
+				435D572F293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
+				435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */,
 				43EF449529228EB1005DF084 /* Name.swift in Sources */,
 				43EF443C29228A6C005DF084 /* ChangePasswordResource.swift in Sources */,
 				435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */,
@@ -738,7 +807,9 @@
 				43EF446829228D64005DF084 /* WebsocketRequest.swift in Sources */,
 				43EF44242922878D005DF084 /* Contract+CoreDataClass.swift in Sources */,
 				435D56FE293803940013B0F4 /* HealthKitSync.swift in Sources */,
+				435D5718293A66650013B0F4 /* AddContractViewModel.swift in Sources */,
 				43EF44BF2923C6A7005DF084 /* Clinic+Preview.swift in Sources */,
+				435D5701293A0FF40013B0F4 /* NetworkRequestError.swift in Sources */,
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,
 				43EF44B029229057005DF084 /* User+Preview.swift in Sources */,
 				43EF4418292286E6005DF084 /* PatientHelper+CoreDataClass.swift in Sources */,
@@ -755,9 +826,12 @@
 				434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */,
 				43EF449329228EB1005DF084 /* Dash.swift in Sources */,
 				43EF44AC29229003005DF084 /* ChatViewModel.swift in Sources */,
+				435D5732293A9EEA0013B0F4 /* ContractDevicesView.swift in Sources */,
 				43EF446629228D54005DF084 /* Websockets.swift in Sources */,
 				43EF44B229229068005DF084 /* PersistenceController+preparePreviewData.swift in Sources */,
+				435D5705293A109C0013B0F4 /* APIRequest.swift in Sources */,
 				43EF445229228C70005DF084 /* ChatsViewModel.swift in Sources */,
+				435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */,
 				434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */,
 				43EF444929228BC5005DF084 /* NotificationsResource.swift in Sources */,
 				43EF4416292286BC005DF084 /* ContractParam+CoreDataClass.swift in Sources */,
@@ -768,6 +842,7 @@
 				43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */,
 				437616502933A475001049E6 /* CallingView.swift in Sources */,
 				43EF449C29228F01005DF084 /* Image+Data.swift in Sources */,
+				435D571D293A6AF70013B0F4 /* FindUserResource.swift in Sources */,
 				43EF440D29228280005DF084 /* ContentViewModel.swift in Sources */,
 				43EF449129228EB1005DF084 /* ValidationResult.swift in Sources */,
 				434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */,
@@ -777,6 +852,7 @@
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
 				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
+				435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */,
 				43EF444B29228BD8005DF084 /* CheckResource.swift in Sources */,
 				43EF442C29228803005DF084 /* ClinicRule+CoreDataClass.swift in Sources */,
 				43EF443729228A3F005DF084 /* Constants.swift in Sources */,

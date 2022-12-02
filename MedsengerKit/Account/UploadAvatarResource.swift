@@ -8,33 +8,30 @@
 
 import Foundation
 
-struct UploadAvatarResource: UploadImageResource {
+struct UploadAvatarResource: APIResource {
     let image: Data
-    
+
     typealias ModelType = User.JsonDecoder
     
-    let paramName = "photo"
-    let boundary = UUID().uuidString
-    let fileName = UUID().uuidString
-    
-    var uploadData: Data {
-        var data = Data()
-
-        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
-        data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
-        data.append(image)
-
-        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        return data
+    var files: [MultipartFormData.Part] {
+        [MultipartFormData.Part(
+            contentDisposition: ContentDisposition(
+                name: Name(asPercentEncoded: "photo"),
+                filename: Filename(asPercentEncoded: UUID().uuidString)
+            ),
+            contentType: ContentType(representing: MIMEType(text: image.mimeType)),
+            content: image
+        )]
     }
     
     var methodPath = "/photo"
     
-    var options: UploadImageResourceOptions {
-        UploadImageResourceOptions(
-            headers: ["Content-Type": "multipart/form-data; boundary=\(boundary)"]
+    var options: APIResourceOptions {
+        let result = multipartFormData(files: files)
+        return APIResourceOptions(
+            method: .POST,
+            httpBody: result.httpBody,
+            headers: result.headers
         )
     }
 }

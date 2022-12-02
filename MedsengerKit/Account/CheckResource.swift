@@ -14,7 +14,7 @@ struct CheckResource: APIResource {
     var methodPath = "/check"
     
     var options = APIResourceOptions(
-        dateDecodingStrategy: .secondsSince1970,
-        parseResponse: true
+        parseResponse: true,
+        dateDecodingStrategy: .secondsSince1970
     )
 }

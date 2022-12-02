@@ -25,10 +25,10 @@ struct PushNotificationsResource: APIResource {
     }
     
     var options: APIResourceOptions {
-        let result = multipartFormData(params: params)
+        let result = multipartFormData(textParams: params)
         return APIResourceOptions(
+            method: .POST,
             httpBody: result.httpBody,
-            httpMethod: .POST,
             headers: result.headers
         )
     }

@@ -8,15 +8,23 @@
 
 import Foundation
 
+/// Get list of messages resource
 struct MessagesResource: APIResource {
     let contractId: Int
-    var fromMessageId: Int? = nil
+    let fromMessageId: Int?
     
-    init(contractId: Int) {
+    /// Get list of messages for contract
+    /// - Parameter contractId: Contract id
+    init(for contractId: Int) {
         self.contractId = contractId
+        self.fromMessageId = nil
     }
     
-    init(contractId: Int, fromMessageId: Int) {
+    /// Get list of last messages for contract
+    /// - Parameters:
+    ///   - contractId: Contract id
+    ///   - fromMessageId: Message id from start fetch
+    init(for contractId: Int, fromMessageId: Int) {
         self.contractId = contractId
         self.fromMessageId = fromMessageId
     }
@@ -32,7 +40,7 @@ struct MessagesResource: APIResource {
     }
     
     var options = APIResourceOptions(
-        dateDecodingStrategy: .secondsSince1970,
-        parseResponse: true
+        parseResponse: true,
+        dateDecodingStrategy: .secondsSince1970
     )
 }

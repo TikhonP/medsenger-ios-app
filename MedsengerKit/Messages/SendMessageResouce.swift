@@ -9,45 +9,27 @@
 import Foundation
 import os.log
 
+/// Send message to chat
 struct SendMessageResouce: APIResource {
     let text: String
     let contractID: Int
     let replyToId: Int?
+
+    /// Array of tuple: filename and data
     let attachments: Array<(String, Data)>
-//    let attachments: Array<URL>
     
-    init(_ text: String, contractID: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = []) {
-        self.text = text
-        self.contractID = contractID
-        self.replyToId = replyToId
-        self.attachments = attachments
+    var params: [String: String] {
+        var params = ["text": text]
+        if let replyToId = replyToId {
+            params["reply_to_id"] = String(replyToId)
+        }
+        return params
     }
     
-    var multipartFormData: MultipartFormData {
-        var data: [MultipartFormData.Part] = [
-            MultipartFormData.Part(
-                contentDisposition: ContentDisposition(
-                    name: Name(asPercentEncoded: "text"),
-                    filename: nil
-                ),
-                contentType: nil,
-                content: text.data(using: .utf8)!
-            )
-        ]
-        if let replyToId = replyToId {
-            data.append(
-                MultipartFormData.Part(
-                    contentDisposition: ContentDisposition(
-                        name: Name(asPercentEncoded: "reply_to_id"),
-                        filename: nil
-                    ),
-                    contentType: nil,
-                    content: String(replyToId).data(using: .utf8)!
-                )
-            )
-        }
+    var files: [MultipartFormData.Part] {
+        var files = [MultipartFormData.Part]()
         for (index, attachment) in attachments.enumerated() {
-            data.append(
+            files.append(
                 MultipartFormData.Part(
                     contentDisposition: ContentDisposition(
                         name: Name(asPercentEncoded: "attachment[\(index)]"),
@@ -58,10 +40,7 @@ struct SendMessageResouce: APIResource {
                 )
             )
         }
-        return MultipartFormData(
-            uniqueAndValidLengthBoundary: "boundary",
-            body: data
-        )
+        return files
     }
     
     typealias ModelType = Message.JsonDecoder
@@ -69,23 +48,13 @@ struct SendMessageResouce: APIResource {
     var methodPath: String { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }
     
     var options: APIResourceOptions {
-        let multipartFormData = multipartFormData
-        let httpBody: Data? = {
-            switch multipartFormData.asData() {
-            case let .valid(data):
-                return data
-            case let .invalid(error):
-                Logger.urlRequest.error("Serialize `send message` form data error: \(error.localizedDescription)")
-                return nil
-            }
-        }()
-        
+        let result = multipartFormData(textParams: params, files: files)
         return APIResourceOptions(
-            dateDecodingStrategy: .secondsSince1970,
             parseResponse: true,
-            httpBody: httpBody,
-            httpMethod: .POST,
-            headers: [multipartFormData.header.name: multipartFormData.header.value]
+            method: .POST,
+            httpBody: result.httpBody,
+            headers: result.headers,
+            dateDecodingStrategy: .secondsSince1970
         )
     }
 }

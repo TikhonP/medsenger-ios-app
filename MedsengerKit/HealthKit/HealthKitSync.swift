@@ -103,8 +103,11 @@ final class HealthKitSync: ObservableObject {
         submitHealthRecordsRequests.append(submitHealthRecordsRequest)
         submitHealthRecordsRequest.execute { result in
             switch result {
-            case .success(_):
-                HealthKitSync.logger.info("HealthKitSync submited")
+            case .success(let data):
+                if let data = data {
+                    User.updateLastHealthSync(lastHealthSync: data.lastHealthSync)
+                    HealthKitSync.logger.info("HealthKitSync submited")
+                }
             case .failure(let error):
                 processRequestError(error, "submit HealthKit records")
             }
@@ -160,7 +163,7 @@ final class HealthKitSync: ObservableObject {
             }
         }
         if let lastRecord = records.last {
-            switch lastRecord.category_name {
+            switch lastRecord.categoryName {
             case .steps:
                 lastHealthSyncStepsCount = lastRecord.value
             case .pulse:

@@ -55,7 +55,6 @@ struct ChatView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Chat")
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Button(action: {
@@ -91,9 +90,9 @@ struct ChatView: View {
             contentViewModel.markChatAsOpened(contractId: Int(contract.id))
             chatViewModel.onChatViewAppear(contract: contract)
         }
-        .onDisappear {
-            contentViewModel.markChatAsClosed()
-        }
+//        .onDisappear {
+//            contentViewModel.markChatAsClosed()
+//        }
     }
 }
 

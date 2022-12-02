@@ -18,9 +18,9 @@ final class Messages {
     public func fetchMessages(contractId: Int, completion: (() -> Void)? = nil) {
         let messagesResource = {
             guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
-                return MessagesResource(contractId: contractId)
+                return MessagesResource(for: contractId)
             }
-            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id))
+            return MessagesResource(for: contractId, fromMessageId: Int(lastFetchedMessage.id))
         }()
         
         getMessagesRequest = APIRequest(messagesResource)
@@ -41,8 +41,15 @@ final class Messages {
         }
     }
     
-    public func sendMessage(_ text: String, contractId: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
-        let sendMessageResource = SendMessageResouce(text, contractID: contractId, replyToId: replyToId, attachments: attachments)
+    /// Send message to chat
+    /// - Parameters:
+    ///   - text: Message text
+    ///   - contractId: Chat contract id
+    ///   - replyToId: If message is reply, reply to message id
+    ///   - attachments: Attachments as tuple with filename and data
+    ///   - completion: Request completion
+    public func sendMessage(_ text: String, for contractId: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
+        let sendMessageResource = SendMessageResouce(text: text, contractID: contractId, replyToId: replyToId, attachments: attachments)
         sendMessageRequest = APIRequest(sendMessageResource)
         sendMessageRequest?.execute { result in
             switch result {

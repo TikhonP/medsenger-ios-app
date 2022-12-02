@@ -21,8 +21,6 @@ class Contracts {
     private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
     private var contractsArchiveRequestAsPatientRequest: APIRequest<ContractsArchiveRequestAsPatientResource>?
     private var contractsArchiveRequestAsDoctorRequest: APIRequest<ContractsArchiveRequestAsDoctorResource>?
-    private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
-    private var concludeContractRequest: APIRequest<ConcludeContractResource>?
     private var getImageRequests = [FileRequest]()
     
     public func fetchContracts() {
@@ -102,36 +100,6 @@ class Contracts {
                 }
             case .failure(let error):
                 processRequestError(error, "get contract avatar")
-            }
-        }
-    }
-    
-    public func deactivateMessages(_ contractId: Int, completion: (() -> Void)? = nil) {
-        let deactivateMessagesResource = DeactivateMessagesResource(contractId: contractId)
-        deactivateMessagesRequest = APIRequest(deactivateMessagesResource)
-        deactivateMessagesRequest?.execute { result in
-            switch result {
-            case .success(_):
-                if let completion = completion {
-                    completion()
-                }
-            case .failure(let error):
-                processRequestError(error, "save profile data")
-            }
-        }
-    }
-    
-    public func concludeContract(_ contractId: Int, completion: (() -> Void)? = nil) {
-        let concludeContract = ConcludeContractResource(contractId: contractId)
-        concludeContractRequest = APIRequest(concludeContract)
-        concludeContractRequest?.execute { result in
-            switch result {
-            case .success(_):
-                if let completion = completion {
-                    completion()
-                }
-            case .failure(let error):
-                processRequestError(error, "save profile data")
             }
         }
     }
