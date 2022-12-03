@@ -155,6 +155,10 @@ extension Contract {
         role ?? "Unknown role"
     }
     
+    public var wrappedNumber: String {
+        number ?? "Unknown number"
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)
@@ -167,6 +171,21 @@ extension Contract {
     
     public var agentActionsArray: [AgentAction] {
         let set = agentActions as? Set<AgentAction> ?? []
+        return Array(set)
+    }
+    
+    public var agentTasksArray: [AgentTask] {
+        let set = agentTasks as? Set<AgentTask> ?? []
+        return Array(set)
+    }
+    
+    public var doctorHelpersArray: [DoctorHelper] {
+        let set = doctorHelpers as? Set<DoctorHelper> ?? []
+        return Array(set)
+    }
+    
+    public var patientHelpersArray: [PatientHelper] {
+        let set = patientHelpers as? Set<PatientHelper> ?? []
         return Array(set)
     }
 }

@@ -81,7 +81,22 @@ final class Messages {
                     }
                 }
             case .failure(let error):
-                processRequestError(error, "get doctor avatar")
+                processRequestError(error, "Messages: fetchAttachmentData")
+            }
+        }
+    }
+    
+    public func fetchImageAttachmentImage(imageAttachmentId: Int) {
+        let getImageAttachmentImagegetAttachmentRequest = FileRequest(path: "/images/\(imageAttachmentId)/real")
+        getAttachmentRequests.append(getImageAttachmentImagegetAttachmentRequest)
+        getImageAttachmentImagegetAttachmentRequest.execute { result in
+            switch result {
+            case .success(let data):
+                if let data = data {
+                    ImageAttachment.saveFile(id: imageAttachmentId, data: data)
+                }
+            case .failure(let error):
+                processRequestError(error, "Messages: fetchImageAttachmentImage")
             }
         }
     }

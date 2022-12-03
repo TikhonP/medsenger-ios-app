@@ -19,6 +19,8 @@ struct SettingsView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
     
+    private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    
     var body: some View {
         NavigationView {
             if let user = users.first {
@@ -156,6 +158,33 @@ struct SettingsView: View {
             
             if healthKitSync.isHealthDataAvailable {
                 syncWithAppleHealthSection
+            }
+            
+            Section(header: Text("About"), footer: Text("The medsenger.ru sservice implements the exchange of messages between a patient and his doctor. With its help, doctors advise their patients, answering their questions as they come.")) {
+                HStack {
+                    Text("Version")
+                    Spacer()
+                    if let appVersion = appVersion {
+                        Text(appVersion)
+                    } else {
+                        Text("Version not found")
+                    }
+                }
+                Button(action: {
+                    if let url = URL(string: "https://medsenger.ru") {
+                        UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    Label("Website", systemImage: "network")
+                })
+                Button(action: {
+                    let email = "support@medsenger.ru"
+                    if let url = URL(string: "mailto:\(email)") {
+                        UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    Label("Support", systemImage: "envelope")
+                })
             }
             
             Section {

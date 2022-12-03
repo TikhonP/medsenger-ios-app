@@ -45,6 +45,10 @@ final class ChatViewModel: NSObject, ObservableObject {
     
     @Published var scrollToMessageId: Int?
     
+    @Published var isAudioMessagePlayingWithId: Int?
+    @Published var totalAudioMessageTime: Double?
+    @Published var playingAudioProgress: Double = 0
+    
     init(contractId: Int) {
         self.contractId = contractId
     }
@@ -89,18 +93,30 @@ final class ChatViewModel: NSObject, ObservableObject {
         }
     }
     
+    func fetchAttachment(_ attachment: Attachment, completion: (() -> Void)? = nil) {
+        Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
+            DispatchQueue.main.async {
+                if let completion = completion {
+                    completion()
+                }
+            }
+        }
+    }
+    
+    func fetchImageAttachment(_ imageAttachment: ImageAttachment, completion: (() -> Void)? = nil) {
+        Messages.shared.fetchImageAttachmentImage(imageAttachmentId: Int(imageAttachment.id))
+    }
+    
     func showAttachmentPreview(_ attachment: Attachment) {
         if let dataPath = attachment.dataPath {
             quickLookDocumentUrl = dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
-            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                        self.loadingAttachmentIds.remove(at: index)
-                    }
-                    self.quickLookDocumentUrl = Attachment.get(id: Int(attachment.id))?.dataPath
+            fetchAttachment(attachment) {
+                if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
+                    self.loadingAttachmentIds.remove(at: index)
                 }
+                self.quickLookDocumentUrl = Attachment.get(id: Int(attachment.id))?.dataPath
             }
         }
     }
@@ -185,7 +201,7 @@ extension ChatViewModel: AVAudioRecorderDelegate {
 }
 
 extension ChatViewModel: AVAudioPlayerDelegate {
-    func startPlaying(_ url: URL, completion: (() -> Void)? = nil) {
+    func startPlaying(_ url: URL, attachmentId: Int? = nil, completion: (() -> Void)? = nil) {
         let playSession = AVAudioSession.sharedInstance()
         
         do {
@@ -199,6 +215,22 @@ extension ChatViewModel: AVAudioPlayerDelegate {
             audioPlayer.delegate = self
             audioPlayer.prepareToPlay()
             audioPlayer.play()
+            totalAudioMessageTime = audioPlayer.duration
+            playingAudioProgress = audioPlayer.currentTime / audioPlayer.duration
+            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+                guard let self = self else {
+                    timer.invalidate()
+                    return
+                }
+                if !self.isVoiceMessagePlaying && self.isAudioMessagePlayingWithId == nil {
+                    timer.invalidate()
+                } else {
+                    self.playingAudioProgress = self.audioPlayer.currentTime / self.audioPlayer.duration
+                }
+            }
+            if let attachmentId = attachmentId {
+                isAudioMessagePlayingWithId = attachmentId
+            }
             if let completion = completion {
                 completion()
             }
@@ -207,9 +239,10 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         }
     }
     
-    func stopPlaying(){
+    func stopPlaying() {
         audioPlayer.stop()
         isVoiceMessagePlaying = false
+        isAudioMessagePlayingWithId = nil
     }
     
     func startPlayingRecordedVoiceMessage() {
@@ -222,7 +255,16 @@ extension ChatViewModel: AVAudioPlayerDelegate {
     
     internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
+            self.isAudioMessagePlayingWithId = nil
             self.isVoiceMessagePlaying = false
+        }
+    }
+    
+    internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        if let error = error {
+            ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur: \(error.localizedDescription)")
+        } else {
+            ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
         }
     }
 }

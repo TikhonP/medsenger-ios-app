@@ -14,88 +14,101 @@ struct MessageView: View {
     
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
+    @FetchRequest private var imageAttachments: FetchedResults<ImageAttachment>
+    
+    init(message: Message, viewWidth: CGFloat) {
+        self.message = message
+        self.viewWidth = viewWidth
+        _imageAttachments = FetchRequest(
+            entity: ImageAttachment.entity(),
+            sortDescriptors: [],
+            predicate: NSPredicate(format: "message == %@", message), animation: .default)
+    }
+    
     var body: some View {
         HStack {
             ZStack {
                 if message.isMessageSent {
                     messageBody
-                        .padding(9)
                         .background(Color.secondary.opacity(0.5))
                         .cornerRadius(20)
-                        .contextMenu {
-                            if let text = message.text, !text.isEmpty {
-                                Button(action: {
-                                    UIPasteboard.general.string = text
-                                }, label: {
-                                    Label("Copy", systemImage: "doc.on.doc")
-                                })
-                            }
-                        }
                 } else {
                     messageBody
-                        .padding(9)
                         .foregroundColor(.primary)
                         .background(Color.accentColor)
                         .cornerRadius(20)
-                        .contextMenu {
-                            Button(action: {
-                                chatViewModel.replyToMessage = message
-                            }, label: {
-                                Label("Reply", systemImage: "arrowshape.turn.up.left")
-                            })
-                            if let text = message.text, !text.isEmpty {
-                                Button(action: {
-                                    UIPasteboard.general.string = text
-                                }, label: {
-                                    Label("Copy", systemImage: "doc.on.doc")
-                                })
-                            }
-                        }
                 }
                 
             }
             .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+            .contextMenu {
+                Button(action: {
+                    chatViewModel.replyToMessage = message
+                }, label: {
+                    Label("Reply", systemImage: "arrowshape.turn.up.left")
+                })
+                if let text = message.text, !text.isEmpty {
+                    Button(action: {
+                        UIPasteboard.general.string = text
+                    }, label: {
+                        Label("Copy", systemImage: "doc.on.doc")
+                    })
+                }
+            }
         }
         .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
         .id(Int(message.id))
     }
     
     var messageBody: some View {
-        VStack {
-            
-            if let replyedMessage = message.replyToMessage {
-                Button(action: {
-                    chatViewModel.scrollToMessageId = Int(replyedMessage.id)
-                }, label: {
-                    Text(replyedMessage.wrappedText)
-                        .foregroundColor(Color(UIColor.darkText))
-                        .lineLimit(2)
-                        .padding(10)
-                        .background(Color.secondary)
-                        .cornerRadius(10)
-                })
-            }
-            
-            Text(message.wrappedText)
-            
-            ForEach(message.attachmentsArray) { attachment in
-                if let name = attachment.name {
-                    Button(action: {
-                        chatViewModel.showAttachmentPreview(attachment)
-                    }, label: {
-                        HStack {
-                            Label(name, systemImage: attachment.iconAsSystemImageName)
-                            if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
-                                ProgressView()
-                                    .padding(.leading)
-                            }
-                        }
-                    })
+        ZStack {
+            if message.isVoiceMessage {
+                VoiceMessageView(message: message)
+                    .padding(9)
+            } else if message.wrappedText.isEmpty && imageAttachments.count == 1 {
+                if let image = imageAttachments.first {
+                    MessageImageView(imageAttachment: image)
                 }
-            }
-            
-            ForEach(message.imagesArray) { image in
-                Text(image.wrappedName)
+            } else {
+                VStack {
+                    if let replyedMessage = message.replyToMessage {
+                        Button(action: {
+                            chatViewModel.scrollToMessageId = Int(replyedMessage.id)
+                        }, label: {
+                            Text(replyedMessage.wrappedText)
+                                .foregroundColor(Color(UIColor.darkText))
+                                .lineLimit(2)
+                                .padding(10)
+                                .background(Color.secondary)
+                                .cornerRadius(10)
+                        })
+                    }
+                    
+                    if !message.wrappedText.isEmpty {
+                        Text(message.wrappedText)
+                    }
+                    
+                    ForEach(message.attachmentsArray) { attachment in
+                        if let name = attachment.name {
+                            Button(action: {
+                                chatViewModel.showAttachmentPreview(attachment)
+                            }, label: {
+                                HStack {
+                                    Label(name, systemImage: attachment.iconAsSystemImageName)
+                                    if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
+                                        ProgressView()
+                                            .padding(.leading)
+                                    }
+                                }
+                            })
+                        }
+                    }
+                    
+                    ForEach(imageAttachments) { image in
+                        MessageImageView(imageAttachment: image)
+                    }
+                }
+                .padding(9)
             }
         }
     }

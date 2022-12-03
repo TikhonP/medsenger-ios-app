@@ -36,6 +36,9 @@ struct TextInputView: View {
                         Spacer()
                         Text(replyToMessage.wrappedText)
                             .lineLimit(4)
+                            .onTapGesture {
+                                chatViewModel.scrollToMessageId = Int(replyToMessage.id)
+                            }
                         Spacer()
                         Button(action: {
                             chatViewModel.replyToMessage = nil

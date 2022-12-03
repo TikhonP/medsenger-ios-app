@@ -20,12 +20,17 @@ public class Message: NSManagedObject {
     var isMessageSent: Bool {
         switch UserDefaults.userRole {
         case .patient:
-            return !isDoctorMessage
+            return !isDoctorMessage && !onlyDoctor
         case .doctor:
-            return isDoctorMessage
+            return isDoctorMessage && !onlyPatient
         case .unknown:
             return true
         }
+    }
+    
+    var isVoiceMessage: Bool {
+        // FIXME: !!!
+        text == Constants.voiceMessageText && attachmentsArray.count == 1
     }
     
     class func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {

@@ -52,9 +52,9 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Attachment" representedClassName="Attachment" syncable="YES" codeGenerationType="category">
-        <attribute name="dataPath" optional="YES" attributeType="URI"/>
         <attribute name="icon" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="localFileName" optional="YES" attributeType="String"/>
         <attribute name="mime" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="size" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -150,7 +150,7 @@
     <entity name="Contract" representedClassName="Contract" syncable="YES" codeGenerationType="category">
         <attribute name="activated" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="archive" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="avatar" optional="YES" attributeType="Binary"/>
+        <attribute name="avatar" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="birthday" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="canApplySubmissionToContractExtension" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="canDecline" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -232,6 +232,7 @@
     </entity>
     <entity name="ImageAttachment" representedClassName="ImageAttachment" syncable="YES" codeGenerationType="category">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="localFileName" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="real" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="small" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -308,7 +309,7 @@
         </uniquenessConstraints>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="category">
-        <attribute name="avatar" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" customClassName="UIImage"/>
+        <attribute name="avatar" optional="YES" attributeType="Binary" valueTransformerName="NSSecureUnarchiveFromData" allowsExternalBinaryDataStorage="YES" customClassName="UIImage"/>
         <attribute name="birthday" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="emailNotifications" attributeType="Boolean" usesScalarValueType="YES"/>

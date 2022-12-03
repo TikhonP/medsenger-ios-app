@@ -49,27 +49,21 @@ public class Attachment: NSManagedObject {
         return fetchedResults?.first
     }
     
-    class func writeToFile(_ data: Data, fileName: String) -> URL? {
-        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
-            Attachment.logger.error("FileManager.default.urls directory is nil")
-            return nil
-        }
-        let fileurl = directory.appendingPathComponent(fileName)
-        
-        if FileManager.default.fileExists(atPath: fileurl.path) {
-            if let fileHandle = FileHandle(forWritingAtPath: fileurl.path) {
+    class func writeData(_ data: Data, fileUrl: URL) -> URL? {
+        if FileManager.default.fileExists(atPath: fileUrl.path) {
+            if let fileHandle = FileHandle(forWritingAtPath: fileUrl.path) {
                 fileHandle.seekToEndOfFile()
                 fileHandle.write(data)
                 fileHandle.closeFile()
-                return fileurl
+                return fileUrl
             } else {
                 Attachment.logger.error("Error Write attachment to file: Can't open file to write.")
                 return nil
             }
         } else {
             do {
-                try data.write(to: fileurl, options: .atomic)
-                return fileurl
+                try data.write(to: fileUrl, options: .atomic)
+                return fileUrl
             } catch {
                 Attachment.logger.error("Error Write attachment to file: \(error.localizedDescription)")
                 return nil
@@ -77,11 +71,39 @@ public class Attachment: NSManagedObject {
         }
     }
     
+    var dataPath: URL? {
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
+            Attachment.logger.error("FileManager.default.urls directory is nil")
+            return nil
+        }
+        guard let localFileName = localFileName else {
+            return nil
+        }
+        return URL(fileURLWithPath: localFileName, relativeTo: directory)
+    }
+    
+    func saveFile(_ data: Data) {
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
+            Attachment.logger.error("FileManager.default.urls directory is nil")
+            return
+        }
+        let fileUrl: URL
+        if let dataPath = dataPath {
+            fileUrl = dataPath
+        } else {
+            guard let fileName = name else {
+                return
+            }
+            let extention = URL(fileURLWithPath: fileName, relativeTo: nil).pathExtension
+            fileUrl = URL(fileURLWithPath: String.uniqueFilename(), relativeTo: directory).appendingPathExtension(extention)
+        }
+        localFileName = Attachment.writeData(data, fileUrl: fileUrl)?.relativePath
+    }
+    
     class func saveFile(id: Int, data: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let attachment = get(id: id, for: context)
-            guard let fileName = attachment?.name else { return }
-            attachment?.dataPath = writeToFile(data, fileName: fileName)
+            attachment?.saveFile(data)
             PersistenceController.save(for: context, detailsForLogging: "Attachment save file")
         }
     }
@@ -93,6 +115,12 @@ public class Attachment: NSManagedObject {
             attachment = get(id: id, for: context)
         }
         return attachment
+    }
+}
+
+extension Attachment {
+    public var wrappedName: String {
+        name ?? "Unknown name"
     }
 }
 

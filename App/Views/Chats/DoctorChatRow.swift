@@ -14,48 +14,38 @@ struct DoctorChatRow: View {
     
     var body: some View {
         HStack {
-            ZStack {
-                ZStack {
-                    if let avatar = contract.avatar {
-                        Image(data: avatar)?
-                            .resizable()
-                    } else {
-                        ProgressView()
-                            .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
-                    }
-                }
+            avatarImage
                 .frame(width: 60, height: 60)
-                .clipShape(Circle())
-                .padding()
-                
-                if !contract.archive {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Circle()
-                                .foregroundColor(contract.isOnline ? .green : .red)
-                                .frame(width: 15, height: 15)
-                                .overlay(Circle().stroke(Color(UIColor.systemFill), lineWidth: 4))
-                                .padding()
-                        }
+            
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text(contract.wrappedShortName)
+                        .bold()
+                    Spacer()
+                    if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
+                        LastDateView(date: lastFetchedMessageSent)
+                            .font(.caption)
                     }
                 }
-            }
-            .frame(width: 70, height: 70)
-            
-            ZStack {
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack {
-                        Text(contract.wrappedShortName)
-                            .bold()
-                        Spacer()
-                        if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
-                            Text(lastFetchedMessageSent, formatter: DateFormatter.ddMMyyyy)
+                HStack {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if let scenarioName = contract.scenarioName {
+                            Text(scenarioName)
+                                .font(.caption)
+                                .bold()
                         }
-                    }
-                    
-                    HStack {
+                        if let clinic = contract.clinic {
+                            Text(clinic.wrappedName)
+                                .font(.caption)
+                        }
+                        if let endDate = contract.endDate {
+                            Text("Contract \(contract.wrappedNumber). End: \(endDate, formatter: DateFormatter.ddMMyyyy)")
+                                .font(.caption)
+                        }
+                        if (contract.complianceAvailible != 0) {
+                            Text("Complience: \(contract.complianceDone) / \(contract.complianceAvailible)")
+                                .font(.caption)
+                        }
                         if let text = contract.lastFetchedMessage?.text {
                             Text(text)
                                 .foregroundColor(.gray)
@@ -65,10 +55,55 @@ struct DoctorChatRow: View {
                                 .padding(.trailing, 40)
                         }
                     }
+                    Spacer()
+                    if contract.state == .warning || contract.state == .deadlined {
+                        badgeView(max(Int(contract.unread), Int(contract.unanswered)), color: .red)
+                    } else if (contract.unread != 0) || (contract.unanswered != 0) {
+                        badgeView(max(Int(contract.unread), Int(contract.unanswered)), color: .secondary)
+                    }
                 }
             }
         }
-        .frame(height: 70)
+    }
+    
+    var avatarImage: some View {
+        ZStack {
+            ZStack {
+                if let avatar = contract.avatar {
+                    Image(data: avatar)?
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    ProgressView()
+                        .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
+                }
+            }
+            .clipShape(Circle())
+            
+            if !contract.archive {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Circle()
+                            .foregroundColor(contract.isOnline ? .green : .red)
+                            .frame(width: 12, height: 12)
+                            .overlay(Circle().stroke(Color(UIColor.systemBackground)))
+                            .padding(5)
+                    }
+                }
+            }
+        }
+    }
+    
+    func badgeView(_ count: Int, color: Color) -> some View {
+        Text("\(count)")
+            .padding(5)
+            .background(
+                Capsule()
+                    .foregroundColor(color)
+                    .frame(minWidth: 30)
+            )
     }
 }
 

@@ -17,7 +17,7 @@ struct ArchivesChatsView: View {
 
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
+//            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
             NSSortDescriptor(key: "endDate", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == YES"),
@@ -33,30 +33,38 @@ struct ArchivesChatsView: View {
         } set: { newValue in
             searchText = newValue
             if #available(iOS 15.0, *) {
-                contracts.nsPredicate = newValue.isEmpty ? nil : NSPredicate(format: "name CONTAINS %@ AND archive == YES", newValue)
+                if newValue.isEmpty {
+                    contracts.nsPredicate = NSPredicate(format: "archive == YES")
+                } else {
+                    contracts.nsPredicate = NSPredicate(format: "name CONTAINS %@ AND archive == YES", newValue)
+                }
             }
         }
     }
     
-    @State private var archiveChatsNavigationSelection: Int? = nil
-    
     var body: some View {
-        List(contracts) { contract in
-            NavigationLink(tag: Int(contract.id), selection: $archiveChatsNavigationSelection, destination: {
-                ChatView(contract: contract, user: user)
-            }, label: {
-                switch userRole {
-                case .patient:
-                    PatientChatRow(contract: contract)
-                case .doctor:
-                    DoctorChatRow(contract: contract)
-                default:
-                    Text("Unknown user role")
+        ZStack {
+            if contracts.isEmpty {
+                EmptyArchiveChatsView()
+            } else {
+                List(contracts) { contract in
+                    NavigationLink(destination: {
+                        ChatView(contract: contract, user: user)
+                    }, label: {
+                        switch userRole {
+                        case .patient:
+                            PatientChatRow(contract: contract)
+                        case .doctor:
+                            DoctorChatRow(contract: contract)
+                        default:
+                            Text("Unknown user role")
+                        }
+                    })
                 }
-            })
+            }
         }
-        .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
         .deprecatedSearchable(text: query)
+        .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
         .listStyle(PlainListStyle())
         .navigationTitle("Archive Chats")
         .onAppear(perform: chatsViewModel.getArchiveContracts)

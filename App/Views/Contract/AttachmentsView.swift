@@ -15,7 +15,7 @@ final class AttachmentViewModel: ObservableObject {
     
     func showPreview(_ attachment: Attachment) {
         if let dataPath = attachment.dataPath {
-            quickLookDocumentUrl = dataPath
+            quickLookDocumentUrl =  dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
             Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
@@ -23,7 +23,10 @@ final class AttachmentViewModel: ObservableObject {
                     if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
                         self.loadingAttachmentIds.remove(at: index)
                     }
-                    self.quickLookDocumentUrl = Attachment.get(id: Int(attachment.id))?.dataPath
+                    guard let dataPath = Attachment.get(id: Int(attachment.id))?.dataPath else {
+                        return 
+                    }
+                    self.quickLookDocumentUrl = dataPath
                 }
             }
         }
@@ -65,12 +68,12 @@ struct AttachmentsView: View {
                 Text("There is no attachments")
             } else {
                 List(attachments) { attachment in
-                    if let name = attachment.name {
+                    if let message = attachment.message, !message.isVoiceMessage {
                         Button(action: {
                             attachmentViewModel.showPreview(attachment)
                         }, label: {
                             HStack {
-                                Label(name, systemImage: attachment.iconAsSystemImageName)
+                                Label(attachment.wrappedName, systemImage: attachment.iconAsSystemImageName)
                                 if attachmentViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
                                     ProgressView()
                                         .padding(.leading)
