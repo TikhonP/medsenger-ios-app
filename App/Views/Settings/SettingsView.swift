@@ -65,19 +65,19 @@ struct SettingsView: View {
                         ])
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
-            ImagePicker(selectedImage: $settingsViewModel.selectedAvatarImage, sourceType: .photoLibrary)
+            ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .photoLibrary, mediaTypes: [.image], edit: true)
+                .edgesIgnoringSafeArea(.all)
         }
-        .sheet(isPresented: $settingsViewModel.showTakeImageSheet) {
-            ZStack {
-                Color.black
-                ImagePicker(selectedImage: $settingsViewModel.selectedAvatarImage, sourceType: .camera)
-                    .padding(.bottom, 40)
-                    .padding(.top)
-            }
-            .edgesIgnoringSafeArea(.bottom)
+        .fullScreenCover(isPresented: $settingsViewModel.showTakeImageSheet) {
+            ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
+                .edgesIgnoringSafeArea(.all)
         }
         .onChange(of: settingsViewModel.selectedAvatarImage) { newValue in
-            Task { settingsViewModel.uploadAvatar(image: newValue) }
+            guard let selectedMedia = newValue,
+                  selectedMedia.type == .image else {
+                return
+            }
+            settingsViewModel.uploadAvatar(image: selectedMedia)
         }
     }
     

@@ -15,8 +15,8 @@ struct SendMessageResouce: APIResource {
     let contractID: Int
     let replyToId: Int?
 
-    /// Array of tuple: filename and data
-    let attachments: Array<(String, Data)>
+    /// Array of file data ``ChatViewAttachment``
+    let attachments: Array<ChatViewAttachment>
     
     var params: [String: String] {
         var params = ["text": text]
@@ -33,10 +33,10 @@ struct SendMessageResouce: APIResource {
                 MultipartFormData.Part(
                     contentDisposition: ContentDisposition(
                         name: Name(asPercentEncoded: "attachment[\(index)]"),
-                        filename: Filename(asPercentEncoded: attachment.0)
+                        filename: Filename(asPercentEncoded: attachment.filename)
                     ),
-                    contentType: ContentType(representing: MIMEType(text: attachment.1.mimeType)),
-                    content: attachment.1
+                    contentType: ContentType(representing: MIMEType(text: attachment.mimeType)),
+                    content: attachment.data
                 )
             )
         }

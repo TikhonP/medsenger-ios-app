@@ -12,6 +12,10 @@
 		430E7D962936392A009C129D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 430E7D952936392A009C129D /* GoogleService-Info.plist */; };
 		430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430E7D99293645BA009C129D /* PushNotificationsResource.swift */; };
 		430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430E7D9D29366D9D009C129D /* MessagesView.swift */; };
+		4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319801A293CB7A6005F43A8 /* NetworkConnectionMonitor.swift */; };
+		4319801D293CEE9D005F43A8 /* UIImage+fixOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */; };
+		4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319801E293CFDA9005F43A8 /* TextInputImageView.swift */; };
+		43198021293D260D005F43A8 /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198020293D260D005F43A8 /* FilePicker.swift */; };
 		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
 		434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */; };
@@ -70,7 +74,6 @@
 		4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164D2933A3C5001049E6 /* WaitingCallView.swift */; };
 		437616502933A475001049E6 /* CallingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164F2933A475001049E6 /* CallingView.swift */; };
 		437616592933C424001049E6 /* RemoteVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616582933C424001049E6 /* RemoteVideoView.swift */; };
-		43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A1E292E5F1500465281 /* URL+mimeType.swift */; };
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
@@ -164,6 +167,10 @@
 		430E7D952936392A009C129D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		430E7D99293645BA009C129D /* PushNotificationsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsResource.swift; sourceTree = "<group>"; };
 		430E7D9D29366D9D009C129D /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		4319801A293CB7A6005F43A8 /* NetworkConnectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectionMonitor.swift; sourceTree = "<group>"; };
+		4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+fixOrientation.swift"; sourceTree = "<group>"; };
+		4319801E293CFDA9005F43A8 /* TextInputImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputImageView.swift; sourceTree = "<group>"; };
+		43198020293D260D005F43A8 /* FilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePicker.swift; sourceTree = "<group>"; };
 		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsDoctorResource.swift; sourceTree = "<group>"; };
@@ -223,7 +230,6 @@
 		4376164D2933A3C5001049E6 /* WaitingCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingCallView.swift; sourceTree = "<group>"; };
 		4376164F2933A475001049E6 /* CallingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallingView.swift; sourceTree = "<group>"; };
 		437616582933C424001049E6 /* RemoteVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteVideoView.swift; sourceTree = "<group>"; };
-		43A18A1E292E5F1500465281 /* URL+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -404,6 +410,7 @@
 				435D5704293A109C0013B0F4 /* APIRequest.swift */,
 				435D5708293A10F50013B0F4 /* APIResource.swift */,
 				435D570A293A11200013B0F4 /* FileRequest.swift */,
+				4319801A293CB7A6005F43A8 /* NetworkConnectionMonitor.swift */,
 			);
 			path = NetworkRequest;
 			sourceTree = "<group>";
@@ -572,7 +579,6 @@
 				43EF443F29228ABC005DF084 /* KeyChain.swift */,
 				43EF444C29228C11005DF084 /* String+urlEncoded.swift */,
 				43EF447229228DFD005DF084 /* LocalizedString+stringValue.swift */,
-				43A18A1E292E5F1500465281 /* URL+mimeType.swift */,
 				43A18A20292E61E500465281 /* Data+mimeType.swift */,
 				433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */,
 				435F9DA6293577540094F93C /* Logger.swift */,
@@ -699,11 +705,14 @@
 		43EF449A29228EF1005DF084 /* UtilsViews */ = {
 			isa = PBXGroup;
 			children = (
+				43EF44A429228F72005DF084 /* ImagePicker.swift */,
 				43EF449B29228F01005DF084 /* Image+Data.swift */,
 				43EF449D29228F11005DF084 /* DeprecatedRefreshable.swift */,
 				43EF44C02923D9A2005DF084 /* DeprecatedSearchable.swift */,
 				434399F22927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift */,
 				434399FC2928142A001D7C4F /* WebView.swift */,
+				4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */,
+				43198020293D260D005F43A8 /* FilePicker.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -713,7 +722,6 @@
 			children = (
 				43EF44A029228F54005DF084 /* SettingsViewModel.swift */,
 				43EF44A229228F60005DF084 /* SettingsView.swift */,
-				43EF44A429228F72005DF084 /* ImagePicker.swift */,
 				43EF44A629228F83005DF084 /* EditPersonalDataView.swift */,
 				43EF44A829228FB9005DF084 /* ChangePasswordView.swift */,
 			);
@@ -731,6 +739,7 @@
 				435C1837293AEDDB009483F6 /* VoiceMessageView.swift */,
 				435C1859293BFAA2009483F6 /* AgentMessageView.swift */,
 				435C185B293BFDF4009483F6 /* MessageImageView.swift */,
+				4319801E293CFDA9005F43A8 /* TextInputImageView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -822,7 +831,6 @@
 				43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */,
 				435C184E293B8044009483F6 /* WaveformAnalyzer.swift in Sources */,
 				435C185C293BFDF4009483F6 /* MessageImageView.swift in Sources */,
-				43A18A1F292E5F1500465281 /* URL+mimeType.swift in Sources */,
 				43EF4431292289DD005DF084 /* DateFormatter+Formats.swift in Sources */,
 				43EF446F29228DCA005DF084 /* SignInView.swift in Sources */,
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
@@ -894,8 +902,10 @@
 				43EF446D29228DB8005DF084 /* SignInViewModel.swift in Sources */,
 				43EF44202922875D005DF084 /* AgentAction+CoreDataClass.swift in Sources */,
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
+				43198021293D260D005F43A8 /* FilePicker.swift in Sources */,
 				435D572F293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
+				4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
 				435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */,
@@ -920,6 +930,7 @@
 				433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */,
 				43EF443A29228A62005DF084 /* SignInResource.swift in Sources */,
 				43EF44B42922908B005DF084 /* Contract+Preview.swift in Sources */,
+				4319801D293CEE9D005F43A8 /* UIImage+fixOrientation.swift in Sources */,
 				43EF447A29228E66005DF084 /* SendMessageResouce.swift in Sources */,
 				43EF449929228EB1005DF084 /* MultipartFormData+Part.swift in Sources */,
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
@@ -955,6 +966,7 @@
 				43EF444529228B9D005DF084 /* UpdateAccountResource.swift in Sources */,
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
+				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,
 				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
 				435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */,
 				43EF444B29228BD8005DF084 /* CheckResource.swift in Sources */,
@@ -1028,7 +1040,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1082,7 +1094,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

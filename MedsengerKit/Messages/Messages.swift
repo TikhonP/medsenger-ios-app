@@ -48,7 +48,7 @@ final class Messages {
     ///   - replyToId: If message is reply, reply to message id
     ///   - attachments: Attachments as tuple with filename and data
     ///   - completion: Request completion
-    public func sendMessage(_ text: String, for contractId: Int, replyToId: Int? = nil, attachments: Array<(String, Data)> = [], completion: (() -> Void)? = nil) {
+    public func sendMessage(_ text: String, for contractId: Int, replyToId: Int? = nil, attachments: Array<ChatViewAttachment> = [], completion: (() -> Void)? = nil) {
         let sendMessageResource = SendMessageResouce(text: text, contractID: contractId, replyToId: replyToId, attachments: attachments)
         sendMessageRequest = APIRequest(sendMessageResource)
         sendMessageRequest?.execute { result in

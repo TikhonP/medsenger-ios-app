@@ -20,11 +20,12 @@ struct DoctorChatRow: View {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
                     Text(contract.wrappedShortName)
-                        .bold()
+                        .font(.headline)
                     Spacer()
                     if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
                         LastDateView(date: lastFetchedMessageSent)
                             .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
                 HStack {
@@ -67,7 +68,7 @@ struct DoctorChatRow: View {
     }
     
     var avatarImage: some View {
-        ZStack {
+        ZStack(alignment: .bottomTrailing) {
             ZStack {
                 if let avatar = contract.avatar {
                     Image(data: avatar)?
@@ -81,17 +82,11 @@ struct DoctorChatRow: View {
             .clipShape(Circle())
             
             if !contract.archive {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Circle()
-                            .foregroundColor(contract.isOnline ? .green : .red)
-                            .frame(width: 12, height: 12)
-                            .overlay(Circle().stroke(Color(UIColor.systemBackground)))
-                            .padding(5)
-                    }
-                }
+                Circle()
+                    .foregroundColor(contract.isOnline ? .green : .red)
+                    .frame(width: 12, height: 12)
+                    .overlay(Circle().stroke(Color(UIColor.systemBackground)))
+                    .offset(x: -4, y: -4)
             }
         }
     }

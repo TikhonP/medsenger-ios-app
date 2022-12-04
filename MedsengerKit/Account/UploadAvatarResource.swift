@@ -9,7 +9,7 @@
 import Foundation
 
 struct UploadAvatarResource: APIResource {
-    let image: Data
+    let image: ImagePickerMedia
 
     typealias ModelType = User.JsonDecoder
     
@@ -17,10 +17,10 @@ struct UploadAvatarResource: APIResource {
         [MultipartFormData.Part(
             contentDisposition: ContentDisposition(
                 name: Name(asPercentEncoded: "photo"),
-                filename: Filename(asPercentEncoded: UUID().uuidString)
+                filename: Filename(asPercentEncoded: image.filename)
             ),
             contentType: ContentType(representing: MIMEType(text: image.mimeType)),
-            content: image
+            content: image.data
         )]
     }
     

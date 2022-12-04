@@ -11,8 +11,38 @@ import AVFoundation
 import os.log
 import UIKit
 
-final class ChatViewModel: NSObject, ObservableObject {
+enum ChatViewAttachmentType: String {
+    case image, video, audio, file
+}
+
+struct ChatViewAttachment: Identifiable, Equatable {
+    let id = UUID()
+    let data: Data
+    let extention: String
+    let realFilename: String?
+    let type: ChatViewAttachmentType
     
+    var mimeType: String {
+        if let mimeType = UTType(filenameExtension: extention)?.preferredMIMEType {
+            return mimeType
+        } else {
+            return "multipart/form-data"
+        }
+    }
+    
+    var randomFilename: String {
+        let url = URL(fileURLWithPath: String.uniqueFilename(), relativeTo: nil)
+        let fileURL = url.appendingPathExtension(extention)
+        return fileURL.relativePath
+    }
+    
+    var filename: String {
+        realFilename ?? randomFilename
+    }
+}
+
+final class ChatViewModel: NSObject, ObservableObject {
+
     private static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: ChatViewModel.self)
@@ -40,9 +70,9 @@ final class ChatViewModel: NSObject, ObservableObject {
     @Published var showSelectImageOptions = false
     @Published var showSelectPhotosSheet = false
     @Published var showTakeImageSheet = false
-    @Published var selectedImage = Data()
-    @Published var isImageAdded = false
-    
+    @Published var selectedMedia: ImagePickerMedia?
+    @Published var addedImages = [ChatViewAttachment]()
+
     @Published var scrollToMessageId: Int?
     
     @Published var isAudioMessagePlayingWithId: Int?
@@ -70,17 +100,17 @@ final class ChatViewModel: NSObject, ObservableObject {
             sendVoiceMessage()
             return
         }
-        guard !message.isEmpty || isImageAdded else {
+        guard !message.isEmpty || !addedImages.isEmpty else {
             return
         }
-        if isImageAdded {
+        if !addedImages.isEmpty {
             Messages.shared.sendMessage(
                 message,
                 for: contractId,
                 replyToId: replyToId,
-                attachments: [("image.png", selectedImage)]) {
+                attachments: addedImages) {
                     DispatchQueue.main.async {
-                        self.isImageAdded = false
+                        self.addedImages = []
                         self.message = ""
                     }
                 }
@@ -129,7 +159,8 @@ final class ChatViewModel: NSObject, ObservableObject {
             Constants.voiceMessageText,
             for: contractId,
             replyToId: replyToId,
-            attachments: [(Constants.voiceMessageFileName, data)]) { [weak self] in
+            attachments: [ChatViewAttachment(
+                data: data, extention: "m4a", realFilename: Constants.voiceMessageFileName, type: .audio)]) { [weak self] in
                 DispatchQueue.main.async {
                     self?.isRecordingVoiceMessage = false
                     self?.showRecordedMessage = false

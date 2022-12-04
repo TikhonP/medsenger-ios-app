@@ -11,12 +11,10 @@ import SwiftUI
 struct ChooseRoleView: View {
     var body: some View {
         VStack {
-            Spacer()
             Button("Sign in as patient") { Account.shared.changeRole(.patient) }
                 .padding()
             Button("Sign in as doctor") { Account.shared.changeRole(.doctor) }
                 .padding()
-            Spacer()
         }
     }
 }

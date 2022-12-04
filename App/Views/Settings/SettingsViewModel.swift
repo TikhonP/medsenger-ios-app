@@ -19,7 +19,7 @@ final class SettingsViewModel: ObservableObject {
     @Published var showSelectAvatarOptions: Bool = false
     @Published var showSelectPhotosSheet = false
     @Published var showTakeImageSheet = false
-    @Published var selectedAvatarImage = Data()
+    @Published var selectedAvatarImage: ImagePickerMedia?
     
     func getAvatar() {
         Account.shared.fetchAvatar()
@@ -33,7 +33,7 @@ final class SettingsViewModel: ObservableObject {
         Account.shared.updateProfile()
     }
     
-    func uploadAvatar(image: Data) {
+    func uploadAvatar(image: ImagePickerMedia) {
         Account.shared.uploadAvatar(image)
     }
     

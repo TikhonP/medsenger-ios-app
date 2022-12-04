@@ -60,9 +60,8 @@ class Account {
         }
     }
     
-    public func uploadAvatar(_ image: Data) {
+    public func uploadAvatar(_ image: ImagePickerMedia) {
         User.saveAvatar(nil)
-        
         let uploadAvatarResource = UploadAvatarResource(image: image)
         uploadAvatarRequest = APIRequest(uploadAvatarResource)
         uploadAvatarRequest?.execute { [weak self] result in

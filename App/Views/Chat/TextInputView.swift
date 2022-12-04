@@ -23,6 +23,8 @@ struct TextInputView: View {
     private var maxHeight: CGFloat = 250
     private var buttonsHeight: CGFloat = 33
     
+    @State var showFilePickerModal = false
+    
     var body: some View {
         VStack {
             ZStack {
@@ -54,11 +56,28 @@ struct TextInputView: View {
             }
             .transition(.slide)
             .animation(.default, value: chatViewModel.replyToMessage)
-    
+            
+            ZStack {
+                if !chatViewModel.addedImages.isEmpty {
+                    ScrollView(.horizontal) {
+                        HStack{
+                            ForEach(chatViewModel.addedImages) { attachment in
+                                TextInputAttachmentView(attachment: attachment)
+                                    .padding(.trailing)
+                            }
+                        }
+                        .padding(.vertical)
+                    }
+                }
+            }
+            .transition(.slide)
+            .animation(.default, value: chatViewModel.addedImages)
+            
             HStack {
                 VStack {
                     Spacer()
                     leadingButtons
+                        .frame(height: buttonsHeight)
                         .padding(.bottom, 8)
                 }
                 .frame(height: min(textEditorHeight, maxHeight))
@@ -82,54 +101,67 @@ struct TextInputView: View {
                             .default(Text("Take a photo")) {
                                 chatViewModel.showTakeImageSheet = true
                             },
+                            .default(Text("Pick from documents")) {
+                                showFilePickerModal = true
+                            },
                             .cancel()
                         ])
         }
         .sheet(isPresented: $chatViewModel.showSelectPhotosSheet) {
-            ImagePicker(selectedImage: $chatViewModel.selectedImage, sourceType: .photoLibrary)
-                .edgesIgnoringSafeArea(.bottom)
+            ImagePicker(selectedMedia: $chatViewModel.selectedMedia, sourceType: .photoLibrary, mediaTypes: [.image, .movie], edit: false)
+                .edgesIgnoringSafeArea(.all)
+            
         }
-        .sheet(isPresented: $chatViewModel.showTakeImageSheet) {
-            ZStack {
-                Color.black
-                ImagePicker(selectedImage: $chatViewModel.selectedImage, sourceType: .camera)
-                    .padding(.bottom, 40)
-                    .padding(.top)
-                    .edgesIgnoringSafeArea(.bottom)
+        .fullScreenCover(isPresented: $chatViewModel.showTakeImageSheet) {
+            ImagePicker(selectedMedia: $chatViewModel.selectedMedia, sourceType: .camera, mediaTypes: [.image, .movie], edit: false)
+                .edgesIgnoringSafeArea(.all)
+        }
+        .sheet(isPresented: $showFilePickerModal) {
+            FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: { urls in
+                for fileURL in urls {
+                    do {
+                        if fileURL.startAccessingSecurityScopedResource() {
+                            let data = try Data(contentsOf: fileURL)
+                            chatViewModel.addedImages.append(ChatViewAttachment(
+                                data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .file))
+                            fileURL.stopAccessingSecurityScopedResource()
+                        }
+                    } catch {
+                        print("Failed to load file: \(error.localizedDescription)")
+                    }
+                }
+            })
+            .edgesIgnoringSafeArea(.all)
+        }
+        .onChange(of: chatViewModel.selectedMedia) { newValue in
+            guard let selectedMedia = newValue else {
+                return
             }
-            .edgesIgnoringSafeArea(.bottom)
-        }
-        .onChange(of: chatViewModel.selectedImage) { newValue in
-            chatViewModel.isImageAdded = true
+            let chatViewAttachment: ChatViewAttachment
+            switch selectedMedia.type {
+            case .image:
+                chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .image)
+            case .movie:
+                chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .video)
+            }
+            chatViewModel.addedImages.append(chatViewAttachment)
         }
     }
     
     var leadingButtons: some View {
-        ZStack {
-            if chatViewModel.isImageAdded {
-                Button(action: {
-                    chatViewModel.isImageAdded = false
-                }, label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .resizable()
-                        .frame(width: buttonsHeight, height: buttonsHeight)
-                })
-            } else {
-                Button(action: {
-                    chatViewModel.showSelectImageOptions = true
-                }, label: {
-                    Image(systemName: "camera.circle.fill")
-                        .resizable()
-                        .frame(width: buttonsHeight, height: buttonsHeight)
-                })
-            }
-        }
-        .transition(.opacity)
+        Button(action: {
+            chatViewModel.showSelectImageOptions = true
+        }, label: {
+            Image(systemName: "paperclip")
+                .resizable()
+                .scaledToFit()
+//
+        })
     }
     
     var trailingButtons: some View {
         ZStack {
-            if chatViewModel.message.isEmpty && !chatViewModel.isImageAdded && !chatViewModel.showRecordedMessage {
+            if chatViewModel.message.isEmpty && chatViewModel.addedImages.isEmpty && !chatViewModel.showRecordedMessage {
                 if chatViewModel.isRecordingVoiceMessage {
                     Button(action: { chatViewModel.finishRecording(success: true) }, label: {
                         Image(systemName: "stop.circle.fill")

@@ -27,34 +27,26 @@ struct MessageView: View {
     
     var body: some View {
         HStack {
-            ZStack {
-                if message.isMessageSent {
-                    messageBody
-                        .background(Color.secondary.opacity(0.5))
-                        .cornerRadius(20)
-                } else {
-                    messageBody
-                        .foregroundColor(.primary)
-                        .background(Color.accentColor)
-                        .cornerRadius(20)
-                }
-                
-            }
-            .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
-            .contextMenu {
-                Button(action: {
-                    chatViewModel.replyToMessage = message
-                }, label: {
-                    Label("Reply", systemImage: "arrowshape.turn.up.left")
-                })
-                if let text = message.text, !text.isEmpty {
+            messageBody
+                .foregroundColor(.primary)
+                .background(message.isMessageSent ? Color.secondary : Color.accentColor)
+                .cornerRadius(20)
+                .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+                .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .contextMenu {
                     Button(action: {
-                        UIPasteboard.general.string = text
+                        chatViewModel.replyToMessage = message
                     }, label: {
-                        Label("Copy", systemImage: "doc.on.doc")
+                        Label("Reply", systemImage: "arrowshape.turn.up.left")
                     })
+                    if let text = message.text, !text.isEmpty {
+                        Button(action: {
+                            UIPasteboard.general.string = text
+                        }, label: {
+                            Label("Copy", systemImage: "doc.on.doc")
+                        })
+                    }
                 }
-            }
         }
         .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
         .id(Int(message.id))
@@ -70,26 +62,32 @@ struct MessageView: View {
                     MessageImageView(imageAttachment: image)
                 }
             } else {
-                VStack {
+                VStack(alignment: .leading, spacing: 0) {
                     if let replyedMessage = message.replyToMessage {
                         Button(action: {
                             chatViewModel.scrollToMessageId = Int(replyedMessage.id)
                         }, label: {
-                            Text(replyedMessage.wrappedText)
-                                .foregroundColor(Color(UIColor.darkText))
-                                .lineLimit(2)
-                                .padding(10)
-                                .background(Color.secondary)
-                                .cornerRadius(10)
+                            VStack(spacing: 0) {
+                                ZStack {
+                                    Color.secondary
+                                    Text(replyedMessage.wrappedText)
+                                        .foregroundColor(Color(UIColor.darkText))
+                                        .lineLimit(2)
+                                        .padding(7)
+                                }
+                                Divider()
+                            }
                         })
                     }
                     
                     if !message.wrappedText.isEmpty {
                         Text(message.wrappedText)
+                            .padding(10)
                     }
                     
                     ForEach(message.attachmentsArray) { attachment in
                         if let name = attachment.name {
+                            Divider()
                             Button(action: {
                                 chatViewModel.showAttachmentPreview(attachment)
                             }, label: {
@@ -100,15 +98,19 @@ struct MessageView: View {
                                             .padding(.leading)
                                     }
                                 }
+                                .padding(10)
                             })
                         }
+                    }
+                    
+                    if !imageAttachments.isEmpty {
+                        Divider()
                     }
                     
                     ForEach(imageAttachments) { image in
                         MessageImageView(imageAttachment: image)
                     }
                 }
-                .padding(9)
             }
         }
     }
