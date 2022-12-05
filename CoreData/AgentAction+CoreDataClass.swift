@@ -26,7 +26,7 @@ public class AgentAction: NSManagedObject {
         guard var components = URLComponents(url: apiLink, resolvingAgainstBaseURL: false) else {
             return nil
         }
-        let apiTokenQueryItem = URLQueryItem(name: "api_token", value: KeyСhain.apiToken)
+        let apiTokenQueryItem = URLQueryItem(name: "api_token", value: KeyChain.apiToken)
         if var queryItems = components.queryItems {
             queryItems.append(apiTokenQueryItem)
             components.queryItems = queryItems

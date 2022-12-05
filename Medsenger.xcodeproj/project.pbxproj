@@ -16,6 +16,8 @@
 		4319801D293CEE9D005F43A8 /* UIImage+fixOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */; };
 		4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4319801E293CFDA9005F43A8 /* TextInputImageView.swift */; };
 		43198021293D260D005F43A8 /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198020293D260D005F43A8 /* FilePicker.swift */; };
+		43198023293D5107005F43A8 /* NewImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198022293D5107005F43A8 /* NewImagePicker.swift */; };
+		43198025293E3C35005F43A8 /* View+hideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198024293E3C35005F43A8 /* View+hideKeyboard.swift */; };
 		433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433CC887292BB7500084CFF5 /* AgentActionView.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
 		434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */; };
@@ -57,7 +59,6 @@
 		435D5722293A8EB10013B0F4 /* ContractViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5721293A8EB10013B0F4 /* ContractViewModel.swift */; };
 		435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5727293A95700013B0F4 /* ChooseScenarioView.swift */; };
 		435D572B293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */; };
-		435D572F293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */; };
 		435D5732293A9EEA0013B0F4 /* ContractDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */; };
 		435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435D5733293AA0C90013B0F4 /* DeviceResource.swift */; };
 		435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA22934C8350094F93C /* LocalVideoView.swift */; };
@@ -171,6 +172,8 @@
 		4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+fixOrientation.swift"; sourceTree = "<group>"; };
 		4319801E293CFDA9005F43A8 /* TextInputImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputImageView.swift; sourceTree = "<group>"; };
 		43198020293D260D005F43A8 /* FilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePicker.swift; sourceTree = "<group>"; };
+		43198022293D5107005F43A8 /* NewImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewImagePicker.swift; sourceTree = "<group>"; };
+		43198024293E3C35005F43A8 /* View+hideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+hideKeyboard.swift"; sourceTree = "<group>"; };
 		433CC887292BB7500084CFF5 /* AgentActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentActionView.swift; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsDoctorResource.swift; sourceTree = "<group>"; };
@@ -214,7 +217,6 @@
 		435D5721293A8EB10013B0F4 /* ContractViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractViewModel.swift; sourceTree = "<group>"; };
 		435D5727293A95700013B0F4 /* ChooseScenarioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseScenarioView.swift; sourceTree = "<group>"; };
 		435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenario+CoreDataClass.swift"; sourceTree = "<group>"; };
-		435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicDevice+CoreDataClass.swift"; sourceTree = "<group>"; };
 		435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractDevicesView.swift; sourceTree = "<group>"; };
 		435D5733293AA0C90013B0F4 /* DeviceResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceResource.swift; sourceTree = "<group>"; };
 		435F9DA22934C8350094F93C /* LocalVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoView.swift; sourceTree = "<group>"; };
@@ -530,7 +532,6 @@
 		43EF4405292281D8005DF084 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				435D572D293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift */,
 				435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */,
 				43EF440E292283E3005DF084 /* User+CoreDataClass.swift */,
 				43EF441329228683005DF084 /* Clinic+CoreDataClass.swift */,
@@ -713,6 +714,8 @@
 				434399FC2928142A001D7C4F /* WebView.swift */,
 				4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */,
 				43198020293D260D005F43A8 /* FilePicker.swift */,
+				43198022293D5107005F43A8 /* NewImagePicker.swift */,
+				43198024293E3C35005F43A8 /* View+hideKeyboard.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -869,6 +872,7 @@
 				437616592933C424001049E6 /* RemoteVideoView.swift in Sources */,
 				43EF442229228774005DF084 /* Agent+CoreDataClass.swift in Sources */,
 				43EF442E29228812005DF084 /* ClinicClassifier+CoreDataClass.swift in Sources */,
+				43198025293E3C35005F43A8 /* View+hideKeyboard.swift in Sources */,
 				43EF4428292287CA005DF084 /* Attachment+CoreDataClass.swift in Sources */,
 				435C184D293B8044009483F6 /* TempiFFT.swift in Sources */,
 				43EF444329228B8B005DF084 /* Account.swift in Sources */,
@@ -903,7 +907,6 @@
 				43EF44202922875D005DF084 /* AgentAction+CoreDataClass.swift in Sources */,
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
 				43198021293D260D005F43A8 /* FilePicker.swift in Sources */,
-				435D572F293A9D690013B0F4 /* ClinicDevice+CoreDataClass.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
 				4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
@@ -964,6 +967,7 @@
 				43EF44AE2922900F005DF084 /* ChatView.swift in Sources */,
 				43EF447629228E44005DF084 /* Messages.swift in Sources */,
 				43EF444529228B9D005DF084 /* UpdateAccountResource.swift in Sources */,
+				43198023293D5107005F43A8 /* NewImagePicker.swift in Sources */,
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
 				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,

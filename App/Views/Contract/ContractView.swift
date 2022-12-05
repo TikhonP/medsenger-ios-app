@@ -36,88 +36,100 @@ struct ContractView: View {
             .listRowInsets(EdgeInsets())
             
             if userRole == .doctor {
-                Section {
-                    if contract.video {
-                        Button(action: {
-                            contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
-                        }, label: {
-                            Label("Video call", systemImage: "video.fill")
-                        })
-                    }
-                    if contract.canDecline {
-                        Button(action: {
-                            contractViewModel.declineMessages()
-                        }, label: {
-                            Label("Decline Messages", systemImage: "checkmark.message.fill")
-                        })
-                    }
-                    if contract.isWaitingForConclusion {
-                        Button(action: {
-                            contractViewModel.concludeContract()
-                        }, label: {
-                            Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
-                        })
-                    }
-                    if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
-                        Button(action: {
-                            showChooseScenario.toggle()
-                        }, label: {
-                            Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
-                        })
-                        .sheet(isPresented: $showChooseScenario) {
-                            ChooseScenarioView(contract: contract)
-                        }
-                    }
-                    if let clinic = contract.clinic, !clinic.devicesArray.isEmpty, !contract.archive {
-                        Button(action: {
-                            showDevices.toggle()
-                        }, label: {
-                            Label("Devices Control", systemImage: "lightbulb")
-                        })
-                        .sheet(isPresented: $showDevices) {
-                            ContractDevicesView(contract: contract)
-                        }
-                    }
-                }
+                actionsForDoctor
             }
             
-            Section {
-                if !contract.infoMaterialsArray.isEmpty && userRole == .patient {
-                    NavigationLink(destination: {
-                        InfoMaterialsView(contract: contract)
-                    }, label: {
-                        Label("Info materials", systemImage: "info.circle.fill")
-                    })
-                }
-                NavigationLink(destination: {
-                    AttachmentsView(contract: contract)
-                }, label: {
-                    Label("Attachments", systemImage: "doc.fill")
-                })
-            }
+            infoMaterialsAndAttachments
             
             if !contract.agentActionsArray.isEmpty {
-                Section(header: Text("Agent Actions")) {
-                    ForEach(contract.agentActionsArray) { agentAction in
-                        switch agentAction.type {
-                        case .url:
-                            if let name = agentAction.name, let link = agentAction.apiLink {
-                                Link(destination: link, label: {
-                                    Label(name, systemImage: "person.icloud.fill")
-                                })
-                            }
-                        case .action:
-                            Text("Action")
-                        default:
-                            if let name = agentAction.name, let link = agentAction.modalLink {
-                                NavigationLink(destination: {
-                                    AgentActionView(url: link, name: name)
-                                    //                                        Text("sdfghj")
-                                }, label: {
-                                    Label(name, systemImage: "person.icloud.fill")
-                                })
-                            }
-                        }
+                agentActions
+            }
+        }
+    }
+    
+    var infoMaterialsAndAttachments: some View {
+        Section {
+            if !contract.infoMaterialsArray.isEmpty && userRole == .patient {
+                NavigationLink(destination: {
+                    InfoMaterialsView(contract: contract)
+                }, label: {
+                    Label("Info materials", systemImage: "info.circle.fill")
+                })
+            }
+            NavigationLink(destination: {
+                AttachmentsView(contract: contract)
+            }, label: {
+                Label("Attachments", systemImage: "doc.fill")
+            })
+        }
+    }
+    
+    var actionsForDoctor: some View {
+        Section {
+            if contract.video {
+                Button(action: {
+                    contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
+                }, label: {
+                    Label("Video call", systemImage: "video.fill")
+                })
+            }
+            if contract.canDecline {
+                Button(action: {
+                    contractViewModel.declineMessages()
+                }, label: {
+                    Label("Decline Messages", systemImage: "checkmark.message.fill")
+                })
+            }
+            if contract.isWaitingForConclusion {
+                Button(action: {
+                    contractViewModel.concludeContract()
+                }, label: {
+                    Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
+                })
+            }
+            if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
+                Button(action: {
+                    showChooseScenario.toggle()
+                }, label: {
+                    Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
+                })
+                .sheet(isPresented: $showChooseScenario) {
+                    ChooseScenarioView(contract: contract)
+                }
+            }
+            if !contract.archive, let clinic = contract.clinic, !clinic.devices.isEmpty {
+                Button(action: {
+                    showDevices.toggle()
+                }, label: {
+                    Label("Devices Control", systemImage: "lightbulb")
+                })
+                .sheet(isPresented: $showDevices) {
+                    ContractDevicesView(contract: contract)
+                }
+            }
+        }
+    }
+    
+    var agentActions: some View {
+        Section(header: Text("Agent Actions")) {
+            ForEach(contract.agentActionsArray) { agentAction in
+                switch agentAction.type {
+                case .url:
+                    if let name = agentAction.name, let link = agentAction.apiLink {
+                        Link(destination: link, label: {
+                            Label(name, systemImage: "person.icloud.fill")
+                        })
+                    }
+                case .action:
+                    Text("Action")
+                default:
+                    if let name = agentAction.name, let link = agentAction.modalLink {
+                        NavigationLink(destination: {
+                            AgentActionView(url: link, name: name)
+                            //                                        Text("sdfghj")
+                        }, label: {
+                            Label(name, systemImage: "person.icloud.fill")
+                        })
                     }
                 }
             }

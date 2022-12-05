@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ChatView: View {
     @ObservedObject private var contract: Contract
@@ -44,6 +45,34 @@ struct ChatView: View {
                 }
                 .deprecatedScrollDismissesKeyboard()
                 .environmentObject(chatViewModel)
+                .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
+                    guard !providers.isEmpty else {
+                        return false
+                    }
+                    for itemProvider in providers {
+                        guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
+                            continue
+                        }
+                        itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
+                            if let error = error {
+                                print(error.localizedDescription)
+                            }
+                            guard let url = url else {
+                                return
+                            }
+                            do {
+                                let data = try Data(contentsOf: url)
+                                DispatchQueue.main.async {
+                                    chatViewModel.addedImages.append(ChatViewAttachment(
+                                        data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
+                                }
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                        }
+                    }
+                    return true
+                })
                 
                 NavigationLink(
                     destination: ContractView(contract: contract, user: user),

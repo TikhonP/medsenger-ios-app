@@ -59,6 +59,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         application.registerForRemoteNotifications()
         
+        if UserDefaults.isHealthKitSyncActive {
+            HealthKitSync.shared.authorizeHealthKit { success in
+                if success {
+                    HealthKitSync.shared.startObservingHKChanges()
+                }
+            }
+        }
+        
         return true
     }
 }

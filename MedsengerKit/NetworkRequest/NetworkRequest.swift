@@ -22,17 +22,12 @@ enum HTTPMethod: String {
 ///
 /// It can be used for creating new protocols and apies for specific network requests usage
 protocol NetworkRequest: AnyObject {
-    associatedtype ModelType
+    associatedtype ModelType: Decodable
     
     /// Decode http success result data to specific swift type
     /// - Parameter data: response data
     /// - Returns: swift object that will be returned on request success
     func decode(_ data: Data) -> Result<ModelType, Error>
-    
-    /// Decode http request data on non 2xx status codes
-    /// - Parameter data: Response data
-    /// - Returns: List of errors strings
-    func decodeError(_ data: Data) -> Result<[String], Error>
     
     /// Perform url session request and return request result
     /// - Parameter completion: Request completion
@@ -83,49 +78,31 @@ extension NetworkRequest {
                 completion(.failure(.selfIsNil))
                 return
             }
-            guard (200...299).contains(httpResponse.statusCode) else {
-                if httpResponse.statusCode == 404 {
-                    completion(.failure(.pageNotFound(url)))
-                    return
-                }
-                guard let data = data else {
-                    completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
-                    return
-                }
-                let decodedDataReslut = self.decodeError(data)
-                switch decodedDataReslut {
-                case .success(let result):
-                    completion(.failure(.api(result)))
-                    return
-                case .failure(let error):
-                    completion(.failure(.failedToDeserializeError(httpResponse.statusCode, error)))
-                    return
-                }
+            if httpResponse.statusCode == 404 {
+                completion(.failure(.pageNotFound(url)))
+                return
             }
-            if parseResponse {
-                guard let data = data else {
-                    completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
-                    return
-                }
-                let decodedDataReslut = self.decode(data)
-                switch decodedDataReslut {
+            print(String(decoding: data ?? Data(), as: UTF8.self))
+            guard let data = data else {
+                completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
+                return
+            }
+            let decodedDataReslut = self.decode(data)
+            switch decodedDataReslut {
+            case .success(let resultData):
+                switch resultData {
                 case .success(let result):
                     completion(.success(result))
-                    return
-                case .failure(let error):
-                    let decodedDataReslut = self.decodeError(data)
-                    switch decodedDataReslut {
-                    case .success(let result):
-                        completion(.failure(.api(result)))
-                        return
-                    case .failure(_):
-                        completion(.failure(.failedToDeserialize(error)))
-                        return
-                    }
+                case .error(let errorResponse):
+                    completion(.failure(.api(errorResponse, httpResponse.statusCode)))
                 }
-            } else {
-                completion(.success(nil))
                 return
+            case .failure(let error):
+                if (200...299).contains(httpResponse.statusCode) || parseResponse {
+                    completion(.failure(.failedToDeserialize(error)))
+                } else {
+                    completion(.success(nil))
+                }
             }
         }
         

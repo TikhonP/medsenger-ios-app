@@ -17,23 +17,20 @@ struct DeviceResource: APIResource {
     
     var methodPath: String { "/contracts/\(contractId)/agents" }
     
-    var httpBody: Data? {
-        var data = [String: Bool]()
+    var params: [String: String] {
+        var data = [String: String]()
         for device in devices {
-            data["agent_\(device.id)"] = device.isEnabled
+            data["agent_\(device.id)"] = "\(device.isEnabled)"
         }
-        do {
-            return try JSONSerialization.data(withJSONObject: data)
-        } catch {
-            Logger.urlRequest.error("DeviceResource: Failed to serialize JSON data: \(error.localizedDescription)")
-            return nil
-        }
+        return data
     }
     
     var options: APIResourceOptions {
-        APIResourceOptions(
+        let result = multipartFormData(textParams: params)
+        return APIResourceOptions(
             method: .POST,
-            httpBody: httpBody
+            httpBody: result.httpBody,
+            headers: result.headers
         )
     }
 }

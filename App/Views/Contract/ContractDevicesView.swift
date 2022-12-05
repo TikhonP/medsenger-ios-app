@@ -11,39 +11,41 @@ import SwiftUI
 class DeviceNode: ObservableObject, Identifiable {
     @Published var isEnabled: Bool
     
-    let id = UUID()
-    let medsengerId: Int
+    let id: Int
     let name: String
     let description: String
     
-    init(_ device: ClinicDevice) {
+    init(_ device: Agent, isEnabled: Bool) {
         self.name = device.wrappedName
         self.description = device.wrappedDescription
-        self.medsengerId = Int(device.id)
-        self.isEnabled = false
+        self.id = Int(device.id)
+        self.isEnabled = isEnabled
     }
 }
 
 final class ContractDevicesViewModel: ObservableObject {
     @Published var devicesAsNodes = [DeviceNode]()
+    @Published var showLoading = false
     
     let contract: Contract
     
     init(contract: Contract) {
         self.contract = contract
-        
         guard let clinic = contract.clinic else {
             return
         }
-        for device in clinic.devicesArray {
-            devicesAsNodes.append(DeviceNode(device))
+        let contractDevices = contract.devices
+        for device in clinic.devices {
+            devicesAsNodes.append(DeviceNode(device, isEnabled: contractDevices.contains(device)))
         }
     }
     
     func save(completion: @escaping () -> Void) {
+        showLoading = true
         DoctorActions.shared.deviceState(devices: devicesAsNodes, contractId: Int(contract.id)) { succeeded in
-            if succeeded {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                self.showLoading = false
+                if succeeded {
                     completion()
                 }
             }
@@ -70,8 +72,6 @@ struct ContractDevicesView: View {
     
     @StateObject private var contractDevicesViewModel: ContractDevicesViewModel
     
-    @State private var showLoading = false
-    
     init(contract: Contract) {
         self.contract = contract
         _contractDevicesViewModel = StateObject(wrappedValue: ContractDevicesViewModel(contract: contract))
@@ -80,20 +80,20 @@ struct ContractDevicesView: View {
     var body: some View {
         NavigationView {
             Form {
+                Section(footer: Text("Here you can control connected devices"), content: {})
                 ForEach(contractDevicesViewModel.devicesAsNodes) { device in
                     DeviceNodeView(deviceNode: device)
                 }
             }
             .navigationTitle("Devices Control")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        showLoading = true
                         contractDevicesViewModel.save {
-                            showLoading = false
                             presentationMode.wrappedValue.dismiss()
                         }}, label: {
-                            if showLoading {
+                            if contractDevicesViewModel.showLoading {
                                 ProgressView()
                             } else {
                                 Text("Save")

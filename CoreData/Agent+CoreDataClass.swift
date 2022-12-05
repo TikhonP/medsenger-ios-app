@@ -13,6 +13,7 @@ public class Agent: NSManagedObject {
     private class func get(id: Int, for context: NSManagedObjectContext) -> Agent? {
         let fetchRequest = Agent.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
+        fetchRequest.fetchLimit = 1
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Agent get by id")
         if let agent = fetchedResults?.first {
             return agent
@@ -29,6 +30,16 @@ public class Agent: NSManagedObject {
 }
 
 extension Agent {
+    public var wrappedName: String {
+        name ?? "Unknown name"
+    }
+    
+    public var wrappedDescription: String {
+        agentDescription ?? "Unknown description"
+    }
+}
+
+extension Agent {
     struct JsonDecoderRequestAsPatient: Decodable {
         let id: Int
         let name: String
@@ -36,26 +47,20 @@ extension Agent {
         let open_settings_in_blank: Bool
     }
     
-    class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Agent {
+    class func saveFromJson(_ data: JsonDecoderRequestAsPatient, contract: Contract, for context: NSManagedObjectContext) {
         let agent = get(id: data.id, for: context) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
-        agent.caption = data.description
+        agent.agentDescription = data.description
         agent.name = data.name
-        agent.openSettingsInBlank = data.open_settings_in_blank
-        
-        return agent
+//        agent.isDevice = false
+        contract.addToAgents(agent)
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], for context: NSManagedObjectContext) -> [Agent] {
-        var agents = [Agent]()
-        
+    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], contract: Contract, for context: NSManagedObjectContext) {
         for agentData in data {
-            let agent = saveFromJson(agentData, for: context)
-            agents.append(agent)
+            saveFromJson(agentData, contract: contract, for: context)
         }
-        
-        return agents
     }
 }
 
@@ -68,57 +73,83 @@ extension Agent {
         let settings_link: URL
     }
     
-    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Agent {
+    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) {
         let agent = get(id: data.id, for: context) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
-        agent.caption = data.description
+        agent.agentDescription = data.description
         agent.name = data.name
-        agent.openSettingsInBlank = data.open_settings_in_blank
-        agent.settingsLink = data.settings_link
-        
-        return agent
+//        agent.isDevice = false
+        contract.addToAgents(agent)
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsDoctor], for context: NSManagedObjectContext) -> [Agent] {
-        var agents = [Agent]()
-        
+    class func saveFromJson(_ data: [JsonDecoderRequestAsDoctor], contract: Contract, for context: NSManagedObjectContext) {
         for agentData in data {
-            let agent = saveFromJson(agentData, for: context)
-            agents.append(agent)
+            saveFromJson(agentData, contract: contract, for: context)
         }
-        
-        return agents
     }
 }
 
+// MARK: - Deserialize from `agents` from clinic in contract request as Doctor
+
 extension Agent {
-    struct JsonDecoderFromClinic: Decodable {
+    struct JsonDecoderFromClinicAsAgent: Decodable {
         let id: Int
         let name: String
         let description: String
         let is_enabled: Bool
     }
     
-    class func saveFromJson(_ data: JsonDecoderFromClinic, for context: NSManagedObjectContext) -> Agent {
+    class func saveFromJson(_ data: JsonDecoderFromClinicAsAgent, clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
         let agent = get(id: data.id, for: context) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
-        agent.caption = data.description
+        agent.agentDescription = data.description
         agent.name = data.name
-        agent.isEnabled = data.is_enabled
-        
-        return agent
+        agent.isDevice = false
+        agent.addToClinics(clinic)
+        if data.is_enabled {
+            agent.addToEnabledContracts(contract)
+        } else {
+            agent.removeFromEnabledContracts(contract)
+        }
     }
     
-    class func saveFromJson(_ data: [JsonDecoderFromClinic], for context: NSManagedObjectContext) -> [Agent] {
-        var agents = [Agent]()
-        
+    class func saveFromJson(_ data: [JsonDecoderFromClinicAsAgent], clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
         for agentData in data {
-            let agent = saveFromJson(agentData, for: context)
-            agents.append(agent)
+            saveFromJson(agentData, clinic: clinic, contract: contract, for: context)
         }
+    }
+}
+
+// MARK: - Deserialize from `devices` from clinic in contract request as Doctor
+
+extension Agent {
+    struct JsonDecoderFromClinicAsDevice: Decodable {
+        let id: Int
+        let name: String
+        let description: String
+        let is_enabled: Bool
+    }
+    
+    private class func saveFromJson(_ data: JsonDecoderFromClinicAsDevice, clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
+        let agent = get(id: data.id, for: context) ?? Agent(context: context)
         
-        return agents
+        agent.id = Int64(data.id)
+        agent.name = data.name
+        agent.agentDescription = data.description
+        agent.isDevice = true
+        agent.addToClinics(clinic)
+        if data.is_enabled {
+            agent.addToEnabledContracts(contract)
+        } else {
+            agent.removeFromEnabledContracts(contract)
+        }
+    }
+    
+    class func saveFromJson(_ data: [JsonDecoderFromClinicAsDevice], clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
+        for clinicDeviceData in data {
+            saveFromJson(clinicDeviceData, clinic: clinic, contract: contract, for: context)
+        }
     }
 }

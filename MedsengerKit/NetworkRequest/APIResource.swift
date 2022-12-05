@@ -34,7 +34,7 @@ extension APIResource {
         components.path = components.path + methodPath
         var queryItems = options.params
         if options.addApiKey {
-            queryItems.append(URLQueryItem(name: "api_token", value: KeyСhain.apiToken))
+            queryItems.append(URLQueryItem(name: "api_token", value: KeyChain.apiToken))
         }
         components.queryItems = queryItems
         return components.url!

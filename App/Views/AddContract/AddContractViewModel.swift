@@ -12,14 +12,20 @@ enum AddContractViewStates {
     case inputClinicAndEmail
     case fetchingUserFromMedsenger
     case knownClient, unknownClient
-    case submittingAddPatient
 }
 
-enum Sex: Codable {
+enum Sex: String, Codable, CaseIterable {
     case male, female
 }
 
 final class AddContractViewModel: ObservableObject {
+    @Published var clinicId: Int = {
+        if let clinic = Clinic.objectsAll().first {
+            return Int(clinic.id)
+        } else {
+            return 1
+        }
+    }()
     @Published var clinic: Clinic?
     @Published var patientEmail = ""
     @Published var state: AddContractViewStates = .inputClinicAndEmail
@@ -31,53 +37,78 @@ final class AddContractViewModel: ObservableObject {
     
     @Published var contractNumber = ""
     @Published var contractEndDate = Date()
-    @Published var clinicRule: ClinicRule?
-    @Published var clinicClassifier: ClinicClassifier?
+    @Published var clinicRuleId: Int = 0
+    @Published var clinicClassifierId: Int = 0
     @Published var videoEnabled = false
     
-    private var contractExist: Bool?
+    @Published var showContractExistsAlert = false
+    
+    @Published var submittingAddPatient = false
+    
+    private var userExists: Bool?
     
     let welcomeMessage = "" // FIXME: !!!
     
     func findPatient() {
         state = .fetchingUserFromMedsenger
-        // TODO: validate values
-        guard let clinic = clinic else {
-            return
+        clinic = Clinic.get(id: clinicId)
+        if let rule = clinic?.rulesArray.first {
+            clinicRuleId = Int(rule.id)
         }
-        DoctorActions.shared.findUser(clinicId: Int(clinic.id), email: patientEmail, completion: { [weak self] data in
+        if let classifier = clinic?.classifiersArray.first {
+            clinicClassifierId = Int(classifier.id)
+        }
+        DoctorActions.shared.findUser(clinicId: clinicId, email: patientEmail, completion: { [weak self] data, contractExists in
             DispatchQueue.main.async {
-                guard data != nil else {
+                if contractExists {
+                    self?.showContractExistsAlert = true
                     self?.state = .inputClinicAndEmail
-                    return
+                } else {
+                    guard let data = data else {
+                        self?.state = .inputClinicAndEmail
+                        return
+                    }
+                    self?.userExists = data.found
+                    self?.patientName = ""
+                    self?.patientBirthday = Date()
+                    if data.found {
+                        self?.state = .knownClient
+                        if let name = data.name, let birthday = data.birthday {
+                            self?.patientName = name
+                            self?.patientBirthday = birthday
+                        }
+                    } else {
+                        self?.state = .unknownClient
+                    }
                 }
-                self?.state = .knownClient
             }
         })
     }
     
     func addContract(completion: @escaping () -> Void) {
-        guard let contractExist = contractExist, let clinic = clinic, let clinicRule = clinicRule, let clinicClassifier = clinicClassifier else {
+        guard let userExists = userExists else {
+            print("lol")
             return
         }
-        state = .submittingAddPatient
+        submittingAddPatient = true
         let addContractRequestModel = AddContractRequestModel(
-            clinic: Int(clinic.id),
+            clinic: clinicId,
             email: patientEmail,
-            exists: contractExist,
+            exists: userExists,
             birthday: patientBirthday,
             name: patientName,
             sex: patientSex,
             phone: patientPhone,
             endDate: contractEndDate,
-            rule: String(clinicRule.id),
-            classifier: String(clinicClassifier.id),
+            rule: String(clinicRuleId),
+            classifier: String(clinicClassifierId),
             welcomeMessage: welcomeMessage,
             video: videoEnabled,
             number: contractNumber)
-        DoctorActions.shared.addContract(addContractRequestModel) { succeeded in
-            if succeeded {
-                DispatchQueue.main.async {
+        DoctorActions.shared.addContract(addContractRequestModel) { [weak self] succeeded in
+            DispatchQueue.main.async {
+                self?.submittingAddPatient = false
+                if succeeded {
                     completion()
                 }
             }

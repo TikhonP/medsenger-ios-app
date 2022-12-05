@@ -26,6 +26,27 @@ public class Clinic: NSManagedObject {
             PersistenceController.save(for: context, detailsForLogging: "Clinic save logo")
         }
     }
+    
+    class func get(id: Int) -> Clinic? {
+        let context = PersistenceController.shared.container.viewContext
+        var clinic: Clinic?
+        context.performAndWait {
+            clinic = get(id: id, for: context)
+        }
+        return clinic
+    }
+    
+    class func objectsAll() -> [Clinic] {
+        let context = PersistenceController.shared.container.viewContext
+        var result = [Clinic]()
+        context.performAndWait {
+            let fetchRequest = Clinic.fetchRequest()
+            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
+                result = fetchedResults
+            }
+        }
+        return result
+    }
 }
 
 extension Clinic {
@@ -58,9 +79,17 @@ extension Clinic {
         return Array(set)
     }
     
-    public var devicesArray: [ClinicDevice] {
-        let set = devices as? Set<ClinicDevice> ?? []
-        return Array(set)
+    public var devices: [Agent] {
+        let context = PersistenceController.shared.container.viewContext
+        var result = [Agent]()
+        context.performAndWait {
+            let fetchRequest = Agent.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "clinics CONTAINS %@ AND isDevice == YES", self)
+            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
+                result = fetchedResults
+            }
+        }
+        return result
     }
 }
 
@@ -160,12 +189,12 @@ extension Clinic {
         let phone_paid: Bool
         let phone: String
         
-        let agents: Array<Agent.JsonDecoderFromClinic>
-        let devices: Array<ClinicDevice.JsonDeserializer>
+        let agents: Array<Agent.JsonDecoderFromClinicAsAgent>
+        let devices: Array<Agent.JsonDecoderFromClinicAsDevice>
         let scenarios: Array<ClinicScenario.JsonDeserializer>
     }
     
-    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Clinic {
+    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) -> Clinic {
         let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
@@ -184,15 +213,10 @@ extension Clinic {
         clinic.phonePaid = data.phone_paid
         clinic.phone = data.phone
         
-        for agentData in data.agents {
-            let agent = Agent.saveFromJson(agentData, for: context)
-            if !clinic.agentsArray.contains(agent) {
-                clinic.addToAgents(agent)
-            }
-        }
+        Agent.saveFromJson(data.agents, clinic: clinic, contract: contract, for: context)
+        Agent.saveFromJson(data.devices, clinic: clinic, contract: contract, for: context)
         
         ClinicScenario.saveFromJson(data.scenarios, clinic: clinic, for: context)
-        ClinicDevice.saveFromJson(data.devices, clinic: clinic, for: context)
         
         return clinic
     }

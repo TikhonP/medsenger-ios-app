@@ -14,7 +14,7 @@ class Login {
     private var request: APIRequest<SignInResource>?
     private var changePasswordRequest: APIRequest<ChangePasswordResource>?
     
-    class var isSignedIn: Bool { KeyСhain.apiToken != nil }
+    class var isSignedIn: Bool { KeyChain.apiToken != nil }
     
     enum SignInCompletionCodes {
         case success, unknownError, userIsNotActivated, incorrectData, incorrectPassword
@@ -27,7 +27,7 @@ class Login {
             switch result {
             case .success(let data):
                 if let data = data {
-                    KeyСhain.apiToken = data.api_token
+                    KeyChain.apiToken = data.api_token
                     User.saveUserFromJson(data)
                     if let fcmToken = UserDefaults.fcmToken, UserDefaults.userRole != .unknown {
                         Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
@@ -72,7 +72,7 @@ class Login {
                     completion(.unknownError)
                     return
                 }
-                KeyСhain.apiToken = data.apiToken
+                KeyChain.apiToken = data.apiToken
                 completion(.success)
             case .failure(let error):
                 switch error {
@@ -96,7 +96,7 @@ class Login {
         if let fcmToken = UserDefaults.fcmToken {
             Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
         }
-        KeyСhain.apiToken = nil
+        KeyChain.apiToken = nil
         User.delete()
         UserDefaults.userRole = .unknown
     }

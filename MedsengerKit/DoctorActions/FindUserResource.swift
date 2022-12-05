@@ -12,24 +12,26 @@ struct FindUserResource: APIResource {
     let clinicId: Int
     let email: String
     
-    struct CheckModel: Decodable {
-        let state: String // "success"
+    struct Model: Decodable {
         let found: Bool
+        let name: String?
+        let birthday: Date?
+        let id: Int?
     }
     
-    struct FoundModel: Decodable {
-        let state: String // "success"
-        let found: Bool
-        let name: String
-        let birthday: Date
-        let id: Int
-    }
-    
-    typealias ModelType = FoundModel
+    typealias ModelType = Model
     
     internal var methodPath: String = "/findUser"
     
     var options: APIResourceOptions {
-        APIResourceOptions()
+        APIResourceOptions(
+            parseResponse: true,
+            params: [
+                URLQueryItem(name: "with_data", value: "true"),
+                URLQueryItem(name: "clinic", value: "\(clinicId)"),
+                URLQueryItem(name: "email", value: email)
+            ],
+            dateDecodingStrategy: .formatted(DateFormatter.ddMMyyyy)
+        )
     }
 }

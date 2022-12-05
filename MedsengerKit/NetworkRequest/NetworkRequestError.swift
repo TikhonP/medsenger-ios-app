@@ -21,8 +21,14 @@ enum NetworkRequestError: Error {
     case failedToGetUrlError(_ error: Error)
     
     /// Error from medsenger server
-    /// - Parameter errors: Errors as string got from medsenger server
-    case api(_ errors: [String])
+    /// - Parameters:
+    ///  - errors: Errors response type
+    ///  - statusCode: HTTP status code
+    case api(_ errors: ErrorResponse, _ statusCode: Int)
+    
+    /// Invalid status code but api decoded succeded
+    /// - Parameter statusCode: HTTP status code
+    case apiWithDecodedData(_ statusCode: Int)
     
     /// 404 error from medsenger server
     /// - Parameter url: requested url
@@ -63,15 +69,12 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         default:
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         }
-    case .api(let errorData):
-        for error in errorData {
-            switch error {
-            case "Incorrect token":
-                Login.shared.signOut()
-                Logger.urlRequest.info("Incorrect token in request, sign out.")
-            default:
-                Logger.urlRequest.error("Request `\(requestName)` error: medsenger server message: \(error)")
-            }
+    case .api(let errorData, let statusCode):
+        if errorData.errors.contains("Incorrect token") {
+            Login.shared.signOut()
+            Logger.urlRequest.info("Incorrect token in request, sign out.")
+        } else {
+            Logger.urlRequest.error("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         }
     case .pageNotFound(let url):
         Logger.urlRequest.error("Request `\(requestName)` error: Page not found with url: \(url)")
@@ -115,5 +118,7 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         Logger.urlRequest.error("Request `\(requestName)` error: Failed to get status code")
     case .selfIsNil:
         Logger.urlRequest.error("Request `\(requestName)` error: `self` is `nil`")
+    case .apiWithDecodedData(let statusCode):
+        Logger.urlRequest.error("Request `\(requestName)` error: apiWithDecodedData statusCode: \(statusCode)")
     }
 }

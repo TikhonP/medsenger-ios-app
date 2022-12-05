@@ -21,7 +21,7 @@ class FileRequest {
         components.path = components.path + path
         if addApiKey {
             components.queryItems = [
-                URLQueryItem(name: "api_token", value: KeyСhain.apiToken),
+                URLQueryItem(name: "api_token", value: KeyChain.apiToken),
             ]
         }
         self.url = components.url!

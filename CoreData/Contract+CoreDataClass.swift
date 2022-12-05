@@ -188,6 +188,19 @@ extension Contract {
         let set = patientHelpers as? Set<PatientHelper> ?? []
         return Array(set)
     }
+    
+    public var devices: [Agent] {
+        let context = PersistenceController.shared.container.viewContext
+        var result = [Agent]()
+        context.performAndWait {
+            let fetchRequest = Agent.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "enabledContracts CONTAINS %@ AND isDevice == YES", self)
+            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract.hasDevices") {
+                result = fetchedResults
+            }
+        }
+        return result
+    }
 }
 
 // MARK: - Contracts with Doctors
@@ -300,8 +313,7 @@ extension Contract {
                 
                 contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
 
-                let agents = Agent.saveFromJson(contractData.agents, for: context)
-                contract.addToAgents(NSSet(array: agents))
+                Agent.saveFromJson(contractData.agents, contract: contract, for: context)
                 
                 _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
                 _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)
@@ -520,10 +532,9 @@ extension Contract {
                 
                 let contract = saveFromJson(contractData, for: context)
                 
-                contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
+                contract.clinic = Clinic.saveFromJson(contractData.clinic, contract: contract, for: context)
 
-                let agents = Agent.saveFromJson(contractData.agents, for: context)
-                contract.addToAgents(NSSet(array: agents))
+//                Agent.saveFromJson(contractData.agents, contract: contract, for: context)
 
                 _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
                 _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)

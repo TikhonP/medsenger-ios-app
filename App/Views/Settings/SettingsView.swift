@@ -65,8 +65,13 @@ struct SettingsView: View {
                         ])
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
-            ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .photoLibrary, mediaTypes: [.image], edit: true)
-                .edgesIgnoringSafeArea(.all)
+            NewImagePicker(filter: .images) { selectedMedia in
+                guard selectedMedia.type == .image else {
+                    return
+                }
+                settingsViewModel.uploadAvatar(image: selectedMedia)
+            }
+            .edgesIgnoringSafeArea(.all)
         }
         .fullScreenCover(isPresented: $settingsViewModel.showTakeImageSheet) {
             ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
@@ -147,16 +152,18 @@ struct SettingsView: View {
                     if userRole == .patient {
                         Button("Change role to doctor", action: {
                             Account.shared.changeRole(.doctor)
+                            presentationMode.wrappedValue.dismiss()
                         })
                     } else if userRole == .doctor {
                         Button("Change role to patient", action: {
                             Account.shared.changeRole(.patient)
+                            presentationMode.wrappedValue.dismiss()
                         })
                     }
                 }
             }
             
-            if healthKitSync.isHealthDataAvailable {
+            if userRole == .patient && healthKitSync.isHealthDataAvailable {
                 syncWithAppleHealthSection
             }
             

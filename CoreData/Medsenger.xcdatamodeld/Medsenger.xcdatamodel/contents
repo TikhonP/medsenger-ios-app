@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A400" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Agent" representedClassName="Agent" syncable="YES" codeGenerationType="category">
-        <attribute name="caption" attributeType="String"/>
+        <attribute name="agentDescription" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="isEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isDevice" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="openSettingsInBlank" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="settingsLink" optional="YES" attributeType="URI"/>
         <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
         <relationship name="clinics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clinic" inverseName="agents" inverseEntity="Clinic"/>
-        <relationship name="contract" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
+        <relationship name="enabledContracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -95,7 +93,6 @@
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="clinics" inverseEntity="Agent"/>
         <relationship name="classifiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicClassifier" inverseName="clinic" inverseEntity="ClinicClassifier"/>
         <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="clinic" inverseEntity="Contract"/>
-        <relationship name="devices" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ClinicDevice" inverseName="clinic" inverseEntity="ClinicDevice"/>
         <relationship name="rules" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicRule" inverseName="clinic" inverseEntity="ClinicRule"/>
         <relationship name="scenarios" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ClinicScenario" inverseName="clinic" inverseEntity="ClinicScenario"/>
         <uniquenessConstraints>
@@ -108,17 +105,6 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="classifiers" inverseEntity="Clinic"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="id"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="ClinicDevice" representedClassName="ClinicDevice" syncable="YES" codeGenerationType="category">
-        <attribute name="deviceDescription" optional="YES" attributeType="String"/>
-        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="name" attributeType="String"/>
-        <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="devices" inverseEntity="Clinic"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -190,7 +176,7 @@
         <attribute name="unread" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="video" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
-        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="contract" inverseEntity="Agent"/>
+        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="enabledContracts" inverseEntity="Agent"/>
         <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentTask" inverseName="contract" inverseEntity="AgentTask"/>
         <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="contracts" inverseEntity="Clinic"/>

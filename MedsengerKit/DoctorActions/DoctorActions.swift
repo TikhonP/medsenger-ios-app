@@ -23,16 +23,26 @@ final class DoctorActions {
     ///   - clinicId: Clinic Id where search user
     ///   - email: User email
     ///   - completion: Request completion
-    public func findUser(clinicId: Int, email: String, completion: @escaping (_ result: FindUserResource.FoundModel?) -> Void) {
+    public func findUser(clinicId: Int, email: String, completion: @escaping (_ result: FindUserResource.Model?, _ contractExist: Bool) -> Void) {
         let findUserResource = FindUserResource(clinicId: clinicId, email: email)
         findUserRequest = APIRequest(findUserResource)
         findUserRequest?.execute{ result in
             switch result {
             case .success(let data):
-                completion(data)
+                completion(data, false)
             case .failure(let error):
-                processRequestError(error, "DoctorActions: findUser")
-                completion(nil)
+                switch error {
+                case .api(let apiErrors):
+                    if apiErrors.contains("Contract exists") {
+                        completion(nil, true)
+                    } else {
+                        completion(nil, false)
+                        processRequestError(error, "DoctorActions.findUser")
+                    }
+                default:
+                    completion(nil, false)
+                    processRequestError(error, "DoctorActions.findUser")
+                }
             }
         }
     }
@@ -99,6 +109,7 @@ final class DoctorActions {
         deviceStateRequest?.execute { result in
             switch result {
             case .success(_):
+                Contracts.shared.fetchContracts()
                 completion(true)
             case .failure(let error):
                 completion(false)

@@ -48,6 +48,30 @@ struct AddContractRequestModel: Encodable {
     
     /// Contract number
     let number: String
+    
+    var birthdayAsString: String {
+        DateFormatter.ddMMyyyy.string(from: birthday)
+    }
+    
+    var endDateAsString: String {
+        DateFormatter.ddMMyyyy.string(from: endDate)
+    }
+    
+    var params: [String: String] {
+        ["clinic": "\(clinic)",
+         "email": email,
+         "exists": "\(exists)",
+         "birthday": birthdayAsString,
+         "name": name,
+         "sex": sex.rawValue,
+         "phone": phone,
+         "end_date": endDateAsString,
+         "rule": classifier,
+         "classifier": classifier,
+         "welcome_message": welcomeMessage,
+         "video": "\(video)",
+         "number": number]
+    }
 }
 
 struct AddContractResource: APIResource {
@@ -58,11 +82,11 @@ struct AddContractResource: APIResource {
     internal var methodPath = "/add_contract"
     
     var options: APIResourceOptions {
-        APIResourceOptions(
+        let formData = multipartFormData(textParams: addContractRequestModel.params)
+        return APIResourceOptions(
             method: .POST,
-            httpBody: encodeToJSON(addContractRequestModel,
-                                   dateEncodingStrategy: .formatted(DateFormatter.ddMMyyyy),
-                                   keyEncodingStrategy: .convertToSnakeCase)
+            httpBody: formData.httpBody,
+            headers: formData.headers
         )
     }
 }

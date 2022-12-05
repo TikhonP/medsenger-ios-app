@@ -8,21 +8,78 @@
 
 import Foundation
 
+enum Wrapper<T: Decodable> {
+    case success(T)
+    case error(ErrorResponse)
+}
+
 /// `medsenger.ru` response base model
-struct Wrapper<T: Decodable>: Decodable {
+extension Wrapper: Decodable {
     enum status: String, Decodable {
         case success, error
     }
     
-    let state: status
-    let data: T
+    enum CodingKeys: CodingKey {
+        case state
+        case data
+        case error
+        case error_fields
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<Wrapper<T>.CodingKeys> = try decoder.container(keyedBy: Wrapper<T>.CodingKeys.self)
+        let state = try container.decode(Wrapper<T>.status.self, forKey: Wrapper<T>.CodingKeys.state)
+        
+        switch state {
+        case .success:
+            self = .success(try container.decode(T.self, forKey: .data))
+        case .error:
+            let errorFields: [String]
+            do {
+                errorFields = try container.decode(Array<String>.self, forKey: .error_fields)
+            } catch {
+                errorFields = []
+            }
+            let errorDescriptions: [String]
+            do {
+                errorDescriptions = try container.decode(Array<String>.self, forKey: .error)
+            } catch {
+                errorDescriptions = [try container.decode(String.self, forKey: .error)]
+            }
+            self = .error(ErrorResponse(errors: errorDescriptions, errorFields: errorFields))
+        }
+    }
+}
+
+struct ErrorResponse: CustomStringConvertible {
+    let errors: Array<String>
+    let errorFields: Array<String>
+    
+    var description: String {
+        "Server errors: \(errors) with errorFields: \(errorFields)"
+    }
 }
 
 /// `medsenger.ru` error model
-struct ErrorReponse: Decodable {
-    let error: Array<String>
-    let state: String
-}
+//struct ErrorReponse: Decodable {
+//    let error: Array<String>
+//    let state: String
+//
+//    enum CodingKeys: CodingKey {
+//        case error
+//        case state
+//    }
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        do {
+//            self.error = try container.decode([String].self, forKey: .error)
+//        } catch {
+//            self.error = [try container.decode(String.self, forKey: .error)]
+//        }
+//        self.state = try container.decode(String.self, forKey: .state)
+//    }
+//}
 
 /// The HTTP API request to `medsenger.ru` with JSON data
 class APIRequest<Resource: APIResource> {
@@ -38,7 +95,7 @@ class APIRequest<Resource: APIResource> {
 }
 
 extension APIRequest: NetworkRequest {
-    
+
     /// Returns a value of the type you specify, decoded from a JSON object.
     /// - Parameters:
     ///   - type: The type of the value to decode from the supplied JSON object.
@@ -62,28 +119,14 @@ extension APIRequest: NetworkRequest {
         return result
     }
     
-    internal func decodeError(_ data: Data) -> Result<[String], Error> {
-        let resultDecoded = decodeFromJSON(ErrorReponse.self, from: data,
-                                           dateDecodingStrategy: resource.options.dateDecodingStrategy,
-                                           keyDecodingStrategy: .useDefaultKeys)
-        let result: Result<[String], Error>
-        switch resultDecoded {
-        case .success(let wrapper):
-            result = .success(wrapper.error)
-        case .failure(let error):
-            result = .failure(error)
-        }
-        return result
-    }
-    
-    internal func decode(_ data: Data) -> Result<Resource.ModelType, Error> {
+    internal func decode(_ data: Data) -> Result<Wrapper<Resource.ModelType>, Error> {
         let resultDecoded = decodeFromJSON(Wrapper<Resource.ModelType>.self, from: data,
                                            dateDecodingStrategy: resource.options.dateDecodingStrategy,
                                            keyDecodingStrategy: resource.options.keyDecodingStrategy)
-        let result: Result<Resource.ModelType, Error>
+        let result: Result<Wrapper<Resource.ModelType>, Error>
         switch resultDecoded {
         case .success(let wrapper):
-            result = .success(wrapper.data)
+            result = .success(wrapper)
         case .failure(let error):
             result = .failure(error)
         }
@@ -96,6 +139,8 @@ extension APIRequest: NetworkRequest {
                  parseResponse: resource.options.parseResponse,
                  data: resource.options.httpBody,
                  headers: resource.options.headers,
-                 withCompletion: completion)
+                 withCompletion: { result in
+            
+        })
     }
 }

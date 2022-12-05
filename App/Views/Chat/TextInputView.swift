@@ -108,9 +108,17 @@ struct TextInputView: View {
                         ])
         }
         .sheet(isPresented: $chatViewModel.showSelectPhotosSheet) {
-            ImagePicker(selectedMedia: $chatViewModel.selectedMedia, sourceType: .photoLibrary, mediaTypes: [.image, .movie], edit: false)
-                .edgesIgnoringSafeArea(.all)
-            
+            NewImagePicker { selectedMedia in
+                let chatViewAttachment: ChatViewAttachment
+                switch selectedMedia.type {
+                case .image:
+                    chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .image)
+                case .movie:
+                    chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .video)
+                }
+                chatViewModel.addedImages.append(chatViewAttachment)
+            }
+            .edgesIgnoringSafeArea(.all)
         }
         .fullScreenCover(isPresented: $chatViewModel.showTakeImageSheet) {
             ImagePicker(selectedMedia: $chatViewModel.selectedMedia, sourceType: .camera, mediaTypes: [.image, .movie], edit: false)
@@ -152,9 +160,10 @@ struct TextInputView: View {
         Button(action: {
             chatViewModel.showSelectImageOptions = true
         }, label: {
-            Image(systemName: "paperclip")
+            Image(systemName: "paperclip.circle.fill")
                 .resizable()
                 .scaledToFit()
+                .foregroundColor(.secondary)
 //
         })
     }
