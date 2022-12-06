@@ -78,6 +78,43 @@
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
+		43D5057B293F498B00EE3756 /* View+blurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5057A293F498B00EE3756 /* View+blurEffect.swift */; };
+		43D5057D293F4EA400EE3756 /* ScrollToBottomLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */; };
+		43D50580293F55C400EE3756 /* Contract+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5057F293F55C400EE3756 /* Contract+Wrappers.swift */; };
+		43D50582293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D50581293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift */; };
+		43D50584293F568A00EE3756 /* Contract+DecoderRequestAsDoctor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D50583293F568A00EE3756 /* Contract+DecoderRequestAsDoctor.swift */; };
+		43D50586293F577400EE3756 /* Contract+publicClassMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D50585293F577400EE3756 /* Contract+publicClassMethods.swift */; };
+		43D50599293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D50598293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift */; };
+		43D5059B293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5059A293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift */; };
+		43D5059D293F5B0100EE3756 /* ClinicRule+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5059C293F5B0100EE3756 /* ClinicRule+Wrappers.swift */; };
+		43D5059F293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5059E293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift */; };
+		43D505A1293F5B4D00EE3756 /* Message+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505A0293F5B4D00EE3756 /* Message+Wrappers.swift */; };
+		43D505A3293F5B5900EE3756 /* Message+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505A2293F5B5900EE3756 /* Message+JsonDeserializer.swift */; };
+		43D505A7293F5D2400EE3756 /* Attachment+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505A6293F5D2400EE3756 /* Attachment+Wrappers.swift */; };
+		43D505A9293F5D4400EE3756 /* Attachment+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505A8293F5D4400EE3756 /* Attachment+JsonDeserializer.swift */; };
+		43D505AD293F5F0200EE3756 /* ImageAttachment+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505AC293F5F0200EE3756 /* ImageAttachment+Wrappers.swift */; };
+		43D505AF293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505AE293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift */; };
+		43D505B3293F609600EE3756 /* Agent+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505B2293F609600EE3756 /* Agent+Wrappers.swift */; };
+		43D505B5293F60B400EE3756 /* Agent+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505B4293F60B400EE3756 /* Agent+JsonDeserializer.swift */; };
+		43D505B7293F615A00EE3756 /* AgentAction+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505B6293F615A00EE3756 /* AgentAction+Wrappers.swift */; };
+		43D505B9293F616B00EE3756 /* AgentAction+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505B8293F616B00EE3756 /* AgentAction+JsonDeserializer.swift */; };
+		43D505BB293F625400EE3756 /* BotAction+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505BA293F625400EE3756 /* BotAction+JsonDeserializer.swift */; };
+		43D505BD293F631400EE3756 /* AgentTask+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505BC293F631400EE3756 /* AgentTask+JsonDeserializer.swift */; };
+		43D505BF293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505BE293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift */; };
+		43D505C1293F649000EE3756 /* PatientHelper+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505C0293F649000EE3756 /* PatientHelper+JsonDeserializer.swift */; };
+		43D505C3293F653700EE3756 /* CoreDataProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505C2293F653700EE3756 /* CoreDataProtocols.swift */; };
+		43D505D1293F712A00EE3756 /* DoctorHelper+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505D0293F712A00EE3756 /* DoctorHelper+JsonDeserializer.swift */; };
+		43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505D2293F714A00EE3756 /* Clinic+Wrappers.swift */; };
+		43D505D5293F716500EE3756 /* Clinic+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505D4293F716500EE3756 /* Clinic+JsonDeserializer.swift */; };
+		43D505D7293F720A00EE3756 /* User+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505D6293F720A00EE3756 /* User+JsonDeserializer.swift */; };
+		43D505D9293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505D8293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift */; };
+		43D505E2293F835D00EE3756 /* ClinicScenarioParam+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505DE293F835D00EE3756 /* ClinicScenarioParam+CoreDataClass.swift */; };
+		43D505E4293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505E0293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift */; };
+		43D505EA293F84F900EE3756 /* ClinicScenarioParam+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505E9293F84F900EE3756 /* ClinicScenarioParam+JsonDeserializer.swift */; };
+		43D505EC293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505EB293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift */; };
+		43D505EE293F966C00EE3756 /* ClinicScenario+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505ED293F966C00EE3756 /* ClinicScenario+Wrappers.swift */; };
+		43D505F0293F992900EE3756 /* ScenarioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505EF293F992900EE3756 /* ScenarioView.swift */; };
+		43D505F2293FA56C00EE3756 /* ClinicScenarioParam+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D505F1293FA56C00EE3756 /* ClinicScenarioParam+Wrappers.swift */; };
 		43EF43F329227F74005DF084 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F229227F74005DF084 /* App.swift */; };
 		43EF43F529227F74005DF084 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF43F429227F74005DF084 /* ContentView.swift */; };
 		43EF43F729227F76005DF084 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43EF43F629227F76005DF084 /* Assets.xcassets */; };
@@ -235,6 +272,43 @@
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		43D5057A293F498B00EE3756 /* View+blurEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+blurEffect.swift"; sourceTree = "<group>"; };
+		43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollToBottomLabelView.swift; sourceTree = "<group>"; };
+		43D5057F293F55C400EE3756 /* Contract+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+Wrappers.swift"; sourceTree = "<group>"; };
+		43D50581293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+DecoderRequestAsPatient.swift"; sourceTree = "<group>"; };
+		43D50583293F568A00EE3756 /* Contract+DecoderRequestAsDoctor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+DecoderRequestAsDoctor.swift"; sourceTree = "<group>"; };
+		43D50585293F577400EE3756 /* Contract+publicClassMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+publicClassMethods.swift"; sourceTree = "<group>"; };
+		43D50598293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicClassifier+Wrappers.swift"; sourceTree = "<group>"; };
+		43D5059A293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicClassifier+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D5059C293F5B0100EE3756 /* ClinicRule+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicRule+Wrappers.swift"; sourceTree = "<group>"; };
+		43D5059E293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicRule+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505A0293F5B4D00EE3756 /* Message+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505A2293F5B5900EE3756 /* Message+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505A6293F5D2400EE3756 /* Attachment+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attachment+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505A8293F5D4400EE3756 /* Attachment+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Attachment+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505AC293F5F0200EE3756 /* ImageAttachment+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageAttachment+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505AE293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageAttachment+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505B2293F609600EE3756 /* Agent+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Agent+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505B4293F60B400EE3756 /* Agent+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Agent+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505B6293F615A00EE3756 /* AgentAction+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AgentAction+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505B8293F616B00EE3756 /* AgentAction+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AgentAction+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505BA293F625400EE3756 /* BotAction+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BotAction+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505BC293F631400EE3756 /* AgentTask+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AgentTask+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505BE293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InfoMaterial+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505C0293F649000EE3756 /* PatientHelper+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PatientHelper+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505C2293F653700EE3756 /* CoreDataProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataProtocols.swift; sourceTree = "<group>"; };
+		43D505D0293F712A00EE3756 /* DoctorHelper+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DoctorHelper+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505D2293F714A00EE3756 /* Clinic+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clinic+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505D4293F716500EE3756 /* Clinic+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clinic+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505D6293F720A00EE3756 /* User+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505D8293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenario+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505DE293F835D00EE3756 /* ClinicScenarioParam+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParam+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43D505E0293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParamOption+CoreDataClass.swift"; sourceTree = "<group>"; };
+		43D505E9293F84F900EE3756 /* ClinicScenarioParam+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParam+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505EB293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParamOption+JsonDeserializer.swift"; sourceTree = "<group>"; };
+		43D505ED293F966C00EE3756 /* ClinicScenario+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenario+Wrappers.swift"; sourceTree = "<group>"; };
+		43D505EF293F992900EE3756 /* ScenarioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenarioView.swift; sourceTree = "<group>"; };
+		43D505F1293FA56C00EE3756 /* ClinicScenarioParam+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParam+Wrappers.swift"; sourceTree = "<group>"; };
 		43EF43EF29227F74005DF084 /* Medsenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Medsenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		43EF43F229227F74005DF084 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		43EF43F429227F74005DF084 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -449,6 +523,7 @@
 				433CC887292BB7500084CFF5 /* AgentActionView.swift */,
 				435D5727293A95700013B0F4 /* ChooseScenarioView.swift */,
 				435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */,
+				43D505EF293F992900EE3756 /* ScenarioView.swift */,
 			);
 			path = Contract;
 			sourceTree = "<group>";
@@ -475,6 +550,199 @@
 				4376164F2933A475001049E6 /* CallingView.swift */,
 			);
 			path = VideoCall;
+			sourceTree = "<group>";
+		};
+		43D5057E293F55A600EE3756 /* Contract */ = {
+			isa = PBXGroup;
+			children = (
+				43EF44232922878D005DF084 /* Contract+CoreDataClass.swift */,
+				43D5057F293F55C400EE3756 /* Contract+Wrappers.swift */,
+				43D50581293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift */,
+				43D50583293F568A00EE3756 /* Contract+DecoderRequestAsDoctor.swift */,
+				43D50585293F577400EE3756 /* Contract+publicClassMethods.swift */,
+			);
+			path = Contract;
+			sourceTree = "<group>";
+		};
+		43D50587293F591A00EE3756 /* ClinicScenario */ = {
+			isa = PBXGroup;
+			children = (
+				435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */,
+				43D505D8293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift */,
+				43D505ED293F966C00EE3756 /* ClinicScenario+Wrappers.swift */,
+			);
+			path = ClinicScenario;
+			sourceTree = "<group>";
+		};
+		43D50588293F592F00EE3756 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				43EF440E292283E3005DF084 /* User+CoreDataClass.swift */,
+				43D505D6293F720A00EE3756 /* User+JsonDeserializer.swift */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
+		43D50589293F594300EE3756 /* Clinic */ = {
+			isa = PBXGroup;
+			children = (
+				43EF441329228683005DF084 /* Clinic+CoreDataClass.swift */,
+				43D505D2293F714A00EE3756 /* Clinic+Wrappers.swift */,
+				43D505D4293F716500EE3756 /* Clinic+JsonDeserializer.swift */,
+			);
+			path = Clinic;
+			sourceTree = "<group>";
+		};
+		43D5058B293F599B00EE3756 /* DoctorHelper */ = {
+			isa = PBXGroup;
+			children = (
+				43EF441029228641005DF084 /* DoctorHelper+CoreDataClass.swift */,
+				43D505D0293F712A00EE3756 /* DoctorHelper+JsonDeserializer.swift */,
+			);
+			path = DoctorHelper;
+			sourceTree = "<group>";
+		};
+		43D5058C293F59AC00EE3756 /* ContractParam */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4415292286BC005DF084 /* ContractParam+CoreDataClass.swift */,
+			);
+			path = ContractParam;
+			sourceTree = "<group>";
+		};
+		43D5058D293F59B700EE3756 /* PatientHelper */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4417292286E6005DF084 /* PatientHelper+CoreDataClass.swift */,
+				43D505C0293F649000EE3756 /* PatientHelper+JsonDeserializer.swift */,
+			);
+			path = PatientHelper;
+			sourceTree = "<group>";
+		};
+		43D5058E293F59C400EE3756 /* InfoMaterial */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4419292286FC005DF084 /* InfoMaterial+CoreDataClass.swift */,
+				43D505BE293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift */,
+			);
+			path = InfoMaterial;
+			sourceTree = "<group>";
+		};
+		43D5058F293F59D200EE3756 /* AgentTask */ = {
+			isa = PBXGroup;
+			children = (
+				43EF441B29228739005DF084 /* AgentTask+CoreDataClass.swift */,
+				43D505BC293F631400EE3756 /* AgentTask+JsonDeserializer.swift */,
+			);
+			path = AgentTask;
+			sourceTree = "<group>";
+		};
+		43D50590293F59E000EE3756 /* BotAction */ = {
+			isa = PBXGroup;
+			children = (
+				43EF441D2922874A005DF084 /* BotAction+CoreDataClass.swift */,
+				43D505BA293F625400EE3756 /* BotAction+JsonDeserializer.swift */,
+			);
+			path = BotAction;
+			sourceTree = "<group>";
+		};
+		43D50591293F59EB00EE3756 /* AgentAction */ = {
+			isa = PBXGroup;
+			children = (
+				43EF441F2922875D005DF084 /* AgentAction+CoreDataClass.swift */,
+				43D505B6293F615A00EE3756 /* AgentAction+Wrappers.swift */,
+				43D505B8293F616B00EE3756 /* AgentAction+JsonDeserializer.swift */,
+			);
+			path = AgentAction;
+			sourceTree = "<group>";
+		};
+		43D50592293F5A0100EE3756 /* Agent */ = {
+			isa = PBXGroup;
+			children = (
+				43EF442129228774005DF084 /* Agent+CoreDataClass.swift */,
+				43D505B2293F609600EE3756 /* Agent+Wrappers.swift */,
+				43D505B4293F60B400EE3756 /* Agent+JsonDeserializer.swift */,
+			);
+			path = Agent;
+			sourceTree = "<group>";
+		};
+		43D50593293F5A0C00EE3756 /* ImageAttachment */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4425292287BC005DF084 /* ImageAttachment+CoreDataClass.swift */,
+				43D505AC293F5F0200EE3756 /* ImageAttachment+Wrappers.swift */,
+				43D505AE293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift */,
+			);
+			path = ImageAttachment;
+			sourceTree = "<group>";
+		};
+		43D50594293F5A2400EE3756 /* Attachment */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4427292287CA005DF084 /* Attachment+CoreDataClass.swift */,
+				43D505A6293F5D2400EE3756 /* Attachment+Wrappers.swift */,
+				43D505A8293F5D4400EE3756 /* Attachment+JsonDeserializer.swift */,
+			);
+			path = Attachment;
+			sourceTree = "<group>";
+		};
+		43D50595293F5A3100EE3756 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				43EF4429292287E0005DF084 /* Message+CoreDataClass.swift */,
+				43D505A0293F5B4D00EE3756 /* Message+Wrappers.swift */,
+				43D505A2293F5B5900EE3756 /* Message+JsonDeserializer.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		43D50596293F5A3B00EE3756 /* ClinicRule */ = {
+			isa = PBXGroup;
+			children = (
+				43EF442B29228803005DF084 /* ClinicRule+CoreDataClass.swift */,
+				43D5059C293F5B0100EE3756 /* ClinicRule+Wrappers.swift */,
+				43D5059E293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift */,
+			);
+			path = ClinicRule;
+			sourceTree = "<group>";
+		};
+		43D50597293F5A4C00EE3756 /* ClinicClassifier */ = {
+			isa = PBXGroup;
+			children = (
+				43EF442D29228812005DF084 /* ClinicClassifier+CoreDataClass.swift */,
+				43D50598293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift */,
+				43D5059A293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift */,
+			);
+			path = ClinicClassifier;
+			sourceTree = "<group>";
+		};
+		43D505E6293F837B00EE3756 /* ClinicScenarioParam */ = {
+			isa = PBXGroup;
+			children = (
+				43D505DE293F835D00EE3756 /* ClinicScenarioParam+CoreDataClass.swift */,
+				43D505E9293F84F900EE3756 /* ClinicScenarioParam+JsonDeserializer.swift */,
+				43D505F1293FA56C00EE3756 /* ClinicScenarioParam+Wrappers.swift */,
+			);
+			path = ClinicScenarioParam;
+			sourceTree = "<group>";
+		};
+		43D505E7293F838F00EE3756 /* ClinicScenarioParamOption */ = {
+			isa = PBXGroup;
+			children = (
+				43D505E0293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift */,
+				43D505EB293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift */,
+			);
+			path = ClinicScenarioParamOption;
+			sourceTree = "<group>";
+		};
+		43D505E8293F83A600EE3756 /* Scenarios */ = {
+			isa = PBXGroup;
+			children = (
+				43D50587293F591A00EE3756 /* ClinicScenario */,
+				43D505E6293F837B00EE3756 /* ClinicScenarioParam */,
+				43D505E7293F838F00EE3756 /* ClinicScenarioParamOption */,
+			);
+			path = Scenarios;
 			sourceTree = "<group>";
 		};
 		43EF43E629227F74005DF084 = {
@@ -532,25 +800,26 @@
 		43EF4405292281D8005DF084 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				435D5729293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift */,
-				43EF440E292283E3005DF084 /* User+CoreDataClass.swift */,
-				43EF441329228683005DF084 /* Clinic+CoreDataClass.swift */,
-				43EF441029228641005DF084 /* DoctorHelper+CoreDataClass.swift */,
-				43EF4415292286BC005DF084 /* ContractParam+CoreDataClass.swift */,
-				43EF4417292286E6005DF084 /* PatientHelper+CoreDataClass.swift */,
-				43EF4419292286FC005DF084 /* InfoMaterial+CoreDataClass.swift */,
-				43EF441B29228739005DF084 /* AgentTask+CoreDataClass.swift */,
-				43EF441D2922874A005DF084 /* BotAction+CoreDataClass.swift */,
-				43EF441F2922875D005DF084 /* AgentAction+CoreDataClass.swift */,
-				43EF442129228774005DF084 /* Agent+CoreDataClass.swift */,
-				43EF44232922878D005DF084 /* Contract+CoreDataClass.swift */,
-				43EF4425292287BC005DF084 /* ImageAttachment+CoreDataClass.swift */,
-				43EF4427292287CA005DF084 /* Attachment+CoreDataClass.swift */,
-				43EF4429292287E0005DF084 /* Message+CoreDataClass.swift */,
-				43EF442B29228803005DF084 /* ClinicRule+CoreDataClass.swift */,
-				43EF442D29228812005DF084 /* ClinicClassifier+CoreDataClass.swift */,
+				43D505E8293F83A600EE3756 /* Scenarios */,
+				43D50597293F5A4C00EE3756 /* ClinicClassifier */,
+				43D50596293F5A3B00EE3756 /* ClinicRule */,
+				43D50595293F5A3100EE3756 /* Message */,
+				43D50594293F5A2400EE3756 /* Attachment */,
+				43D50593293F5A0C00EE3756 /* ImageAttachment */,
+				43D50592293F5A0100EE3756 /* Agent */,
+				43D50591293F59EB00EE3756 /* AgentAction */,
+				43D50590293F59E000EE3756 /* BotAction */,
+				43D5058F293F59D200EE3756 /* AgentTask */,
+				43D5058E293F59C400EE3756 /* InfoMaterial */,
+				43D5058D293F59B700EE3756 /* PatientHelper */,
+				43D5058C293F59AC00EE3756 /* ContractParam */,
+				43D5058B293F599B00EE3756 /* DoctorHelper */,
+				43D50589293F594300EE3756 /* Clinic */,
+				43D50588293F592F00EE3756 /* User */,
+				43D5057E293F55A600EE3756 /* Contract */,
 				43EF4406292281F4005DF084 /* Medsenger.xcdatamodeld */,
 				43EF440929228202005DF084 /* PersistenceController.swift */,
+				43D505C2293F653700EE3756 /* CoreDataProtocols.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -716,6 +985,7 @@
 				43198020293D260D005F43A8 /* FilePicker.swift */,
 				43198022293D5107005F43A8 /* NewImagePicker.swift */,
 				43198024293E3C35005F43A8 /* View+hideKeyboard.swift */,
+				43D5057A293F498B00EE3756 /* View+blurEffect.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -743,6 +1013,7 @@
 				435C1859293BFAA2009483F6 /* AgentMessageView.swift */,
 				435C185B293BFDF4009483F6 /* MessageImageView.swift */,
 				4319801E293CFDA9005F43A8 /* TextInputImageView.swift */,
+				43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -839,9 +1110,13 @@
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
 				435C184B293B8044009483F6 /* WaveformImageDrawer+macOS.swift in Sources */,
 				435C1838293AEDDB009483F6 /* VoiceMessageView.swift in Sources */,
+				43D505C3293F653700EE3756 /* CoreDataProtocols.swift in Sources */,
 				434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */,
 				43EF447829228E59005DF084 /* MessagesResource.swift in Sources */,
+				43D505BB293F625400EE3756 /* BotAction+JsonDeserializer.swift in Sources */,
 				43EF445D29228CF8005DF084 /* ContractsRequestAsPatientResource.swift in Sources */,
+				43D505EA293F84F900EE3756 /* ClinicScenarioParam+JsonDeserializer.swift in Sources */,
+				43D505AD293F5F0200EE3756 /* ImageAttachment+Wrappers.swift in Sources */,
 				43EF448E29228EB1005DF084 /* BoundaryGenerator.swift in Sources */,
 				435C1854293BCE66009483F6 /* EmptyArchiveChatsView.swift in Sources */,
 				43EF4408292281F4005DF084 /* Medsenger.xcdatamodeld in Sources */,
@@ -856,17 +1131,22 @@
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
 				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
+				43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
 				435D56F72937A8160013B0F4 /* TextInputView.swift in Sources */,
 				435D5722293A8EB10013B0F4 /* ContractViewModel.swift in Sources */,
 				435D5709293A10F50013B0F4 /* APIResource.swift in Sources */,
+				43D505E2293F835D00EE3756 /* ClinicScenarioParam+CoreDataClass.swift in Sources */,
 				43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */,
+				43D505EC293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift in Sources */,
 				43EF447129228DDF005DF084 /* PasswordFieldView.swift in Sources */,
 				435C1858293BD89A009483F6 /* LastDateView.swift in Sources */,
 				435C1848293B8044009483F6 /* WaveformRenderer.swift in Sources */,
+				43D505B3293F609600EE3756 /* Agent+Wrappers.swift in Sources */,
 				43EF441A292286FC005DF084 /* InfoMaterial+CoreDataClass.swift in Sources */,
 				434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */,
+				43D505A3293F5B5900EE3756 /* Message+JsonDeserializer.swift in Sources */,
 				433CC888292BB7500084CFF5 /* AgentActionView.swift in Sources */,
 				43EF4426292287BC005DF084 /* ImageAttachment+CoreDataClass.swift in Sources */,
 				437616592933C424001049E6 /* RemoteVideoView.swift in Sources */,
@@ -875,6 +1155,7 @@
 				43198025293E3C35005F43A8 /* View+hideKeyboard.swift in Sources */,
 				43EF4428292287CA005DF084 /* Attachment+CoreDataClass.swift in Sources */,
 				435C184D293B8044009483F6 /* TempiFFT.swift in Sources */,
+				43D505B5293F60B400EE3756 /* Agent+JsonDeserializer.swift in Sources */,
 				43EF444329228B8B005DF084 /* Account.swift in Sources */,
 				435D56FA293800290013B0F4 /* HealthRecordsResource.swift in Sources */,
 				435C1831293ADD70009483F6 /* String+uniqueFilename.swift in Sources */,
@@ -883,10 +1164,12 @@
 				43EF43F529227F74005DF084 /* ContentView.swift in Sources */,
 				43EF449029228EB1005DF084 /* ContentType.swift in Sources */,
 				43EF448D29228EB1005DF084 /* ContentDisposition.swift in Sources */,
+				43D505D7293F720A00EE3756 /* User+JsonDeserializer.swift in Sources */,
 				43761643293393A3001049E6 /* ConfigExample.swift in Sources */,
 				43EF441429228683005DF084 /* Clinic+CoreDataClass.swift in Sources */,
 				435D571F293A81480013B0F4 /* AddContractResource.swift in Sources */,
 				43EF442A292287E0005DF084 /* Message+CoreDataClass.swift in Sources */,
+				43D50582293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift in Sources */,
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
 				430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */,
 				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
@@ -898,9 +1181,13 @@
 				434399FD2928142A001D7C4F /* WebView.swift in Sources */,
 				43EF440F292283E3005DF084 /* User+CoreDataClass.swift in Sources */,
 				437616482933986D001049E6 /* VideoCallView.swift in Sources */,
+				43D505E4293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift in Sources */,
 				43EF44A529228F72005DF084 /* ImagePicker.swift in Sources */,
 				435D5716293A65080013B0F4 /* AddContractView.swift in Sources */,
+				43D505B7293F615A00EE3756 /* AgentAction+Wrappers.swift in Sources */,
 				43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */,
+				43D50599293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift in Sources */,
+				43D505BF293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift in Sources */,
 				434399F72927E831001D7C4F /* ContractView.swift in Sources */,
 				4376163A293387DF001049E6 /* IceCandidate.swift in Sources */,
 				43EF446D29228DB8005DF084 /* SignInViewModel.swift in Sources */,
@@ -908,23 +1195,30 @@
 				43EF445F29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift in Sources */,
 				43198021293D260D005F43A8 /* FilePicker.swift in Sources */,
 				43EF449229228EB1005DF084 /* MIMEType.swift in Sources */,
+				43D505A9293F5D4400EE3756 /* Attachment+JsonDeserializer.swift in Sources */,
 				4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
 				435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */,
+				43D505BD293F631400EE3756 /* AgentTask+JsonDeserializer.swift in Sources */,
 				435C1849293B8044009483F6 /* CircularWaveformRenderer.swift in Sources */,
 				43EF449529228EB1005DF084 /* Name.swift in Sources */,
+				43D505D5293F716500EE3756 /* Clinic+JsonDeserializer.swift in Sources */,
 				435C184C293B8044009483F6 /* WaveformImageDrawer.swift in Sources */,
+				43D505B9293F616B00EE3756 /* AgentAction+JsonDeserializer.swift in Sources */,
 				435C1847293B8044009483F6 /* WaveformImageTypes.swift in Sources */,
 				43EF443C29228A6C005DF084 /* ChangePasswordResource.swift in Sources */,
 				435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */,
 				43EF443E29228A7C005DF084 /* Login.swift in Sources */,
 				43EF446829228D64005DF084 /* WebsocketRequest.swift in Sources */,
 				43EF44242922878D005DF084 /* Contract+CoreDataClass.swift in Sources */,
+				43D505D1293F712A00EE3756 /* DoctorHelper+JsonDeserializer.swift in Sources */,
 				435C185A293BFAA2009483F6 /* AgentMessageView.swift in Sources */,
 				435D56FE293803940013B0F4 /* HealthKitSync.swift in Sources */,
 				435D5718293A66650013B0F4 /* AddContractViewModel.swift in Sources */,
+				43D505A1293F5B4D00EE3756 /* Message+Wrappers.swift in Sources */,
 				43EF44BF2923C6A7005DF084 /* Clinic+Preview.swift in Sources */,
+				43D505EE293F966C00EE3756 /* ClinicScenario+Wrappers.swift in Sources */,
 				435D5701293A0FF40013B0F4 /* NetworkRequestError.swift in Sources */,
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,
 				435C1846293B8044009483F6 /* WaveformImageDrawer+iOS.swift in Sources */,
@@ -932,8 +1226,10 @@
 				43EF4418292286E6005DF084 /* PatientHelper+CoreDataClass.swift in Sources */,
 				433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */,
 				43EF443A29228A62005DF084 /* SignInResource.swift in Sources */,
+				43D50584293F568A00EE3756 /* Contract+DecoderRequestAsDoctor.swift in Sources */,
 				43EF44B42922908B005DF084 /* Contract+Preview.swift in Sources */,
 				4319801D293CEE9D005F43A8 /* UIImage+fixOrientation.swift in Sources */,
+				43D505F2293FA56C00EE3756 /* ClinicScenarioParam+Wrappers.swift in Sources */,
 				43EF447A29228E66005DF084 /* SendMessageResouce.swift in Sources */,
 				43EF449929228EB1005DF084 /* MultipartFormData+Part.swift in Sources */,
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
@@ -950,6 +1246,7 @@
 				435D5705293A109C0013B0F4 /* APIRequest.swift in Sources */,
 				43EF445229228C70005DF084 /* ChatsViewModel.swift in Sources */,
 				435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */,
+				43D5059F293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift in Sources */,
 				434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */,
 				43EF444929228BC5005DF084 /* NotificationsResource.swift in Sources */,
 				43EF4416292286BC005DF084 /* ContractParam+CoreDataClass.swift in Sources */,
@@ -957,13 +1254,20 @@
 				43EF445829228CAF005DF084 /* ArchivesChatsView.swift in Sources */,
 				43EF445429228C8B005DF084 /* ChatsView.swift in Sources */,
 				43EF449829228EB1005DF084 /* MultipartFormData.swift in Sources */,
+				43D5057B293F498B00EE3756 /* View+blurEffect.swift in Sources */,
 				43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */,
+				43D505D9293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift in Sources */,
 				437616502933A475001049E6 /* CallingView.swift in Sources */,
+				43D505AF293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift in Sources */,
 				43EF449C29228F01005DF084 /* Image+Data.swift in Sources */,
 				435D571D293A6AF70013B0F4 /* FindUserResource.swift in Sources */,
+				43D505A7293F5D2400EE3756 /* Attachment+Wrappers.swift in Sources */,
 				43EF440D29228280005DF084 /* ContentViewModel.swift in Sources */,
+				43D5057D293F4EA400EE3756 /* ScrollToBottomLabelView.swift in Sources */,
+				43D50586293F577400EE3756 /* Contract+publicClassMethods.swift in Sources */,
 				43EF449129228EB1005DF084 /* ValidationResult.swift in Sources */,
 				434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */,
+				43D5059B293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift in Sources */,
 				43EF44AE2922900F005DF084 /* ChatView.swift in Sources */,
 				43EF447629228E44005DF084 /* Messages.swift in Sources */,
 				43EF444529228B9D005DF084 /* UpdateAccountResource.swift in Sources */,
@@ -971,12 +1275,16 @@
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
 				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,
+				43D505C1293F649000EE3756 /* PatientHelper+JsonDeserializer.swift in Sources */,
 				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
 				435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */,
 				43EF444B29228BD8005DF084 /* CheckResource.swift in Sources */,
 				43EF442C29228803005DF084 /* ClinicRule+CoreDataClass.swift in Sources */,
+				43D50580293F55C400EE3756 /* Contract+Wrappers.swift in Sources */,
+				43D505F0293F992900EE3756 /* ScenarioView.swift in Sources */,
 				43EF443729228A3F005DF084 /* Constants.swift in Sources */,
 				43EF444F29228C3C005DF084 /* ChooseRoleView.swift in Sources */,
+				43D5059D293F5B0100EE3756 /* ClinicRule+Wrappers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

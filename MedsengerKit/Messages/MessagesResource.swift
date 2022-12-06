@@ -29,7 +29,7 @@ struct MessagesResource: APIResource {
         self.fromMessageId = fromMessageId
     }
     
-    typealias ModelType = Array<Message.JsonDecoder>
+    typealias ModelType = Array<Message.JsonDeserializer>
     
     var methodPath: String {
         if let fromMessageId = fromMessageId {

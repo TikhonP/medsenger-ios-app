@@ -37,11 +37,9 @@ struct ChatView: View {
                 ProgressView()
                 Spacer()
             } else {
-                VStack(spacing: 0) {
+                ZStack(alignment: .bottom) {
                     MessagesView(contract: contract)
-                    Divider()
                     TextInputView()
-                        .padding(.bottom, 3)
                 }
                 .deprecatedScrollDismissesKeyboard()
                 .environmentObject(chatViewModel)

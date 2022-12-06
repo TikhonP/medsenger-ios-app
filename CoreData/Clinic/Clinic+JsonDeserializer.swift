@@ -1,102 +1,18 @@
 //
-//  Clinic+CoreDataClass.swift
+//  Clinic+JsonDeserializer.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 08.11.2022.
+//  Created by Tikhon Petrishchev on 06.12.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+import Foundation
 import CoreData
-
-@objc(Clinic)
-public class Clinic: NSManagedObject {
-    class func get(id: Int, for context: NSManagedObjectContext) -> Clinic? {
-        let fetchRequest = Clinic.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic get by id")
-        return fetchedResults?.first
-    }
-    
-    class func saveLogo(id: Int, image: Data) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let clinic = get(id: id, for: context) else {
-                return
-            }
-            clinic.logo = image
-            PersistenceController.save(for: context, detailsForLogging: "Clinic save logo")
-        }
-    }
-    
-    class func get(id: Int) -> Clinic? {
-        let context = PersistenceController.shared.container.viewContext
-        var clinic: Clinic?
-        context.performAndWait {
-            clinic = get(id: id, for: context)
-        }
-        return clinic
-    }
-    
-    class func objectsAll() -> [Clinic] {
-        let context = PersistenceController.shared.container.viewContext
-        var result = [Clinic]()
-        context.performAndWait {
-            let fetchRequest = Clinic.fetchRequest()
-            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
-                result = fetchedResults
-            }
-        }
-        return result
-    }
-}
-
-extension Clinic {
-    public var wrappedName: String {
-        name ?? "Unknown name"
-    }
-    
-    public var contractsArray: [Contract] {
-        let set = contracts as? Set<Contract> ?? []
-        return Array(set)
-    }
-    
-    public var agentsArray: [Agent] {
-        let set = agents as? Set<Agent> ?? []
-        return Array(set)
-    }
-    
-    public var rulesArray: [ClinicRule] {
-        let set = rules as? Set<ClinicRule> ?? []
-        return Array(set)
-    }
-    
-    public var classifiersArray: [ClinicClassifier] {
-        let set = classifiers as? Set<ClinicClassifier> ?? []
-        return Array(set)
-    }
-    
-    public var scenariosArray: [ClinicScenario] {
-        let set = scenarios as? Set<ClinicScenario> ?? []
-        return Array(set)
-    }
-    
-    public var devices: [Agent] {
-        let context = PersistenceController.shared.container.viewContext
-        var result = [Agent]()
-        context.performAndWait {
-            let fetchRequest = Agent.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "clinics CONTAINS %@ AND isDevice == YES", self)
-            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
-                result = fetchedResults
-            }
-        }
-        return result
-    }
-}
 
 // MARK: - Check JSON data logic
 
 extension Clinic {
-    struct JsonDecoderFromCheck: Decodable {
+    public struct JsonDecoderFromCheck: Decodable {
         let name: String
         let id: Int
         let video_enabled: Bool
@@ -107,7 +23,7 @@ extension Clinic {
         let classifiers: Array<ClinicClassifier.JsonDeserializer>
     }
     
-    class func saveFromJson(_ data: JsonDecoderFromCheck, for context: NSManagedObjectContext) -> Clinic {
+    public static func saveFromJson(_ data: JsonDecoderFromCheck, for context: NSManagedObjectContext) -> Clinic {
         let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.name = data.name
@@ -139,7 +55,7 @@ extension Clinic {
 // MARK: - Clinic from doctor contracts JSON data logic
 
 extension Clinic {
-    struct JsonDecoderRequestAsPatient: Decodable {
+    public struct JsonDecoderRequestAsPatient: Decodable {
         let id: Int
         let name: String
         let timezone: String
@@ -151,7 +67,7 @@ extension Clinic {
         let phone: String
     }
     
-    class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Clinic {
+    public static func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Clinic {
         let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
@@ -178,7 +94,7 @@ extension Clinic {
 
 
 extension Clinic {
-    struct JsonDecoderRequestAsDoctor: Decodable {
+    public struct JsonDecoderRequestAsDoctor: Decodable {
         let id: Int
         let name: String
         let timezone: String
@@ -194,7 +110,7 @@ extension Clinic {
         let scenarios: Array<ClinicScenario.JsonDeserializer>
     }
     
-    class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) -> Clinic {
+    public static func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) -> Clinic {
         let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)

@@ -1,74 +1,16 @@
 //
-//  Message+CoreDataClass.swift
+//  Message+JsonDeserializer.swift
 //  Medsenger
 //
-//  Created by Tikhon Petrishchev on 07.11.2022.
+//  Created by Tikhon Petrishchev on 06.12.2022.
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+import Foundation
 import CoreData
-import os.log
-
-@objc(Message)
-public class Message: NSManagedObject {
-    
-    private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: String(describing: Message.self)
-    )
-    
-    var isMessageSent: Bool {
-        switch UserDefaults.userRole {
-        case .patient:
-            return !isDoctorMessage && !onlyDoctor
-        case .doctor:
-            return isDoctorMessage && !onlyPatient
-        case .unknown:
-            return true
-        }
-    }
-    
-    var isVoiceMessage: Bool {
-        // FIXME: !!!
-        text == Constants.voiceMessageText && attachmentsArray.count == 1
-    }
-    
-    class func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
-        let fetchRequest = Message.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: false)]
-        fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getLastMessageForContract")
-        return fetchedResults?.first
-    }
-    
-    class func get(id: Int, for context: NSManagedObjectContext) -> Message? {
-        let fetchRequest = Message.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-        fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Message get by id")
-        return fetchedResults?.first
-    }
-}
 
 extension Message {
-    public var wrappedText: String {
-        text ?? "Unknown text"
-    }
-    
-    public var attachmentsArray: [Attachment] {
-        let set = attachments as? Set<Attachment> ?? []
-        return Array(set)
-    }
-    
-    public var imagesArray: [ImageAttachment] {
-        let set = images as? Set<ImageAttachment> ?? []
-        return Array(set)
-    }
-}
-
-extension Message {
-    struct JsonDecoder: Decodable {
+    public struct JsonDeserializer: Decodable {
         let id: Int
         let text: String
         let sent: String
@@ -78,7 +20,7 @@ extension Message {
         let isWarning: Bool
         let isDoctorMessage: Bool
         let attachments: Array<Attachment.JsonDeserializer>
-        let images: Array<ImageAttachment.JsonSerializer>
+        let images: Array<ImageAttachment.JsonDeserializer>
         let author: String
         let author_role: String?
         let is_auto: Bool?
@@ -111,12 +53,8 @@ extension Message {
         }
     }
     
-    private class func saveFromJson(_ data: JsonDecoder, for context: NSManagedObjectContext) -> Message {
+    private static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> Message {
         let message = get(id: data.id, for: context) ?? Message(context: context)
-        
-        if data.isSimilar(message) {
-            return message
-        }
         
         message.id = Int64(data.id)
         message.text = data.text
@@ -166,7 +104,7 @@ extension Message {
         return message
     }
     
-    class func saveFromJson(_ data: JsonDecoder, contractId: Int) {
+    public static func saveFromJson(_ data: JsonDeserializer, contractId: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
@@ -201,7 +139,7 @@ extension Message {
     /// - Parameters:
     ///   - data: struct decoded from JSON
     ///   - contractId: contract id for messages
-    class func saveFromJson(_ data: [JsonDecoder], contractId: Int, completion: (() -> ())? = nil) {
+    public static func saveFromJson(_ data: [JsonDeserializer], contractId: Int, completion: (() -> ())? = nil) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             guard let contract = Contract.get(id: contractId, for: context) else {
                 Message.logger.error("Failed to save messages: Core data failed to fetch contract")
@@ -241,48 +179,5 @@ extension Message {
                 completion()
             }
         }
-    }
-}
-
-extension Message.JsonDecoder {
-    func isSimilar(_ message: Message) -> Bool {
-        if message.id != Int64(id) ||
-            message.text != text ||
-            message.sent != sentAsDate ||
-            message.deadline != deadlineAsDate ||
-            message.isAnswered != isAnswered ||
-            message.isOvertime != isOvertime ||
-            message.isWarning != isWarning ||
-            message.isDoctorMessage != isDoctorMessage ||
-            message.author != author ||
-            message.authorRole != author_role ||
-            message.isAuto != is_auto ||
-            message.state != state ||
-            message.isAgent != is_agent ||
-            message.actionType != action_type ||
-            message.actionName != action_name ||
-            message.actionDeadline != action_deadline ||
-            message.actionOnetime != action_onetime ||
-            message.actionUsed != action_used ||
-            message.actionBig != action_big ||
-            message.forwardToDoctor != forward_to_doctor ||
-            message.onlyDoctor != only_doctor ||
-            message.onlyPatient != only_patient ||
-            message.isUrgent != is_urgent ||
-            message.isWarning != is_warning ||
-            message.isFiltered != is_filtered {
-            return false
-        }
-        
-        if let actionLink = action_link, let urlEncoded = actionLink.urlEncoded, message.actionLink != URL(string: urlEncoded) {
-            return false
-        }
-        if let apiActionLink = api_action_link, let urlEncoded = apiActionLink.urlEncoded, message.apiActionLink != URL(string: urlEncoded) {
-            return false
-        }
-        if let replyToId = reply_to_id, message.replyToId != Int64(replyToId) {
-            return false
-        }
-        return true
     }
 }

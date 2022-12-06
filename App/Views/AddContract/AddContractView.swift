@@ -51,7 +51,7 @@ struct AddContractView: View {
                             Spacer()
                             ProgressView()
                             Spacer()
-                        } 
+                        }
                     }
                     
                     if addContractViewModel.state == .knownClient {

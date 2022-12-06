@@ -16,6 +16,19 @@ enum HTTPMethod: String {
     case GET, POST
 }
 
+enum DecodeError: Error {
+    
+    /// Failed to deserialize data with JSON
+    /// - Parameters:
+    ///  - decodeDataError: decode JSON from data failure cases
+    case json(_ decodeDataError: Error)
+    
+    /// Error from medsenger server
+    /// - Parameters:
+    ///  - errors: Errors response type
+    case api(_ errors: ErrorResponse)
+}
+
 // MARK: - Network Request
 
 /// The basic protocol for network requests
@@ -27,7 +40,7 @@ protocol NetworkRequest: AnyObject {
     /// Decode http success result data to specific swift type
     /// - Parameter data: response data
     /// - Returns: swift object that will be returned on request success
-    func decode(_ data: Data) -> Result<ModelType, Error>
+    func decode(_ data: Data) -> Result<ModelType, DecodeError>
     
     /// Perform url session request and return request result
     /// - Parameter completion: Request completion
@@ -35,7 +48,7 @@ protocol NetworkRequest: AnyObject {
 }
 
 extension NetworkRequest {
-
+    
     /// Perform URLSession request with parameters
     /// - Parameters:
     ///   - method: The HTTP request method.
@@ -46,13 +59,13 @@ extension NetworkRequest {
     ///   - timeoutInterval: The request’s timeout interval, in seconds.
     ///   - completion: Request completion
     /// - Returns: The session task.
-    func load(method: HTTPMethod,
-              url: URL,
-              parseResponse: Bool,
-              data: Data? = nil,
-              headers: [String: String] = [:],
-              timeoutInterval: TimeInterval = 60.0,
-              withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) -> URLSessionTask {
+    internal func load(method: HTTPMethod,
+                       url: URL,
+                       parseResponse: Bool,
+                       data: Data? = nil,
+                       headers: [String: String] = [:],
+                       timeoutInterval: TimeInterval = 60.0,
+                       withCompletion completion: @escaping NetworkRequestCompletion<ModelType>) -> URLSessionTask {
         
         var request = URLRequest(url: url, timeoutInterval: timeoutInterval)
         request.httpMethod = method.rawValue
@@ -82,7 +95,7 @@ extension NetworkRequest {
                 completion(.failure(.pageNotFound(url)))
                 return
             }
-            print(String(decoding: data ?? Data(), as: UTF8.self))
+//            print(String(decoding: data ?? Data(), as: UTF8.self))
             guard let data = data else {
                 completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
                 return
@@ -90,18 +103,17 @@ extension NetworkRequest {
             let decodedDataReslut = self.decode(data)
             switch decodedDataReslut {
             case .success(let resultData):
-                switch resultData {
-                case .success(let result):
-                    completion(.success(result))
-                case .error(let errorResponse):
+                completion(.success(resultData))
+            case .failure(let decodeError):
+                switch decodeError {
+                case .json(let error):
+                    if (200...299).contains(httpResponse.statusCode) || parseResponse {
+                        completion(.failure(.failedToDeserialize(error)))
+                    } else {
+                        completion(.success(nil))
+                    }
+                case .api(let errorResponse):
                     completion(.failure(.api(errorResponse, httpResponse.statusCode)))
-                }
-                return
-            case .failure(let error):
-                if (200...299).contains(httpResponse.statusCode) || parseResponse {
-                    completion(.failure(.failedToDeserialize(error)))
-                } else {
-                    completion(.success(nil))
                 }
             }
         }

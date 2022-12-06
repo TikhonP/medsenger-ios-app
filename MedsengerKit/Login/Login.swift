@@ -38,15 +38,14 @@ class Login {
                 }
             case .failure(let requestError):
                 switch requestError {
-                case .api(let apiError):
-                    switch apiError[0] {
-                    case "User is not activated":
+                case .api(let errorResponse, _):
+                    if errorResponse.errors.contains("User is not activated") {
                         completion(.userIsNotActivated)
-                    case "Incorrect data":
+                    } else if errorResponse.errors.contains("Incorrect data") {
                         completion(.incorrectData)
-                    case "Incorrect password":
+                    } else if errorResponse.errors.contains("Incorrect password") {
                         completion(.incorrectPassword)
-                    default:
+                    } else {
                         processRequestError(requestError, "sign in")
                         completion(.unknownError)
                     }
@@ -76,11 +75,10 @@ class Login {
                 completion(.success)
             case .failure(let error):
                 switch error {
-                case .api(let apiErrors):
-                    switch apiErrors[0] {
-                    case "Incorrect data":
+                case .api(let errorResponse, _):
+                    if errorResponse.errors.contains("Incorrect data") {
                         completion(.incorrectData)
-                    default:
+                    } else {
                         completion(.unknownError)
                         processRequestError(error, "change password")
                     }

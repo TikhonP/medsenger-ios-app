@@ -9,7 +9,7 @@
 import SwiftUI
 import QuickLook
 
-struct ChildSizeReader<Content: View>: View {
+fileprivate struct ChildSizeReader<Content: View>: View {
     @Binding var size: CGSize
     
     let content: () -> Content
@@ -30,7 +30,7 @@ struct ChildSizeReader<Content: View>: View {
     }
 }
 
-struct SizePreferenceKey: PreferenceKey {
+fileprivate struct SizePreferenceKey: PreferenceKey {
     typealias Value = CGSize
     static var defaultValue: Value = .zero
     
@@ -39,7 +39,7 @@ struct SizePreferenceKey: PreferenceKey {
     }
 }
 
-struct ViewOffsetKey: PreferenceKey {
+fileprivate struct ViewOffsetKey: PreferenceKey {
     typealias Value = CGFloat
     static var defaultValue = CGFloat.zero
     static func reduce(value: inout Value, nextValue: () -> Value) {
@@ -76,31 +76,21 @@ struct MessagesView: View {
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottomTrailing)  {
             scrollView
             ZStack {
                 if showScrollDownButton {
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                scrollToBottom = true
-                            }, label: {
-                                ZStack {
-                                    Circle()
-                                        .foregroundColor(.gray)
-                                        .scaledToFit()
-                                        .frame(width: 40)
-                                    Image(systemName: "chevron.down")
-                                }
-                                .padding()
-                            })
-                        }
-                    }
+                    Button(action: {
+                        scrollToBottom = true
+                    }, label: {
+                        ScrollToBottomLabelView()
+                            .padding(5)
+                    })
                 }
             }
-            .transition(.slide)
+            .offset(y: -47)
+            .transition(.scale)
+            .animation(.spring(), value: showScrollDownButton)
         }
     }
     
@@ -117,6 +107,7 @@ struct MessagesView: View {
                                     }
                                 }
                                 Color.clear.id(-1)
+                                    .frame(height: 50)
                             }
                             .padding(.horizontal)
                             .background(
@@ -130,12 +121,10 @@ struct MessagesView: View {
                             .onPreferenceChange(
                                 ViewOffsetKey.self,
                                 perform: { value in
-                                    withAnimation {
-                                        if value >= (scrollViewSize.height - wholeSize.height) - bottomScrollConstant {
-                                            showScrollDownButton = false
-                                        } else {
-                                            showScrollDownButton = true
-                                        }
+                                    if value >= (scrollViewSize.height - wholeSize.height) - bottomScrollConstant {
+                                        showScrollDownButton = false
+                                    } else {
+                                        showScrollDownButton = true
                                     }
                                 }
                             )

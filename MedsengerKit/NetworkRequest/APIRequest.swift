@@ -37,13 +37,13 @@ extension Wrapper: Decodable {
             let errorFields: [String]
             do {
                 errorFields = try container.decode(Array<String>.self, forKey: .error_fields)
-            } catch {
+            } catch is DecodingError {
                 errorFields = []
             }
             let errorDescriptions: [String]
             do {
                 errorDescriptions = try container.decode(Array<String>.self, forKey: .error)
-            } catch {
+            } catch is DecodingError {
                 errorDescriptions = [try container.decode(String.self, forKey: .error)]
             }
             self = .error(ErrorResponse(errors: errorDescriptions, errorFields: errorFields))
@@ -60,27 +60,6 @@ struct ErrorResponse: CustomStringConvertible {
     }
 }
 
-/// `medsenger.ru` error model
-//struct ErrorReponse: Decodable {
-//    let error: Array<String>
-//    let state: String
-//
-//    enum CodingKeys: CodingKey {
-//        case error
-//        case state
-//    }
-//
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        do {
-//            self.error = try container.decode([String].self, forKey: .error)
-//        } catch {
-//            self.error = [try container.decode(String.self, forKey: .error)]
-//        }
-//        self.state = try container.decode(String.self, forKey: .state)
-//    }
-//}
-
 /// The HTTP API request to `medsenger.ru` with JSON data
 class APIRequest<Resource: APIResource> {
     
@@ -95,40 +74,22 @@ class APIRequest<Resource: APIResource> {
 }
 
 extension APIRequest: NetworkRequest {
-
-    /// Returns a value of the type you specify, decoded from a JSON object.
-    /// - Parameters:
-    ///   - type: The type of the value to decode from the supplied JSON object.
-    ///   - data: The JSON object to decode.
-    ///   - dateDecodingStrategy: The strategy used when decoding dates from part of a JSON object.
-    ///   - keyDecodingStrategy: A value that determines how to decode a type’s coding keys from JSON keys.
-    /// - Returns: A value of the specified type, if the decoder can parse the data.
-    private func decodeFromJSON<T: Decodable>(_ type: T.Type, from data: Data,
-                                              dateDecodingStrategy: JSONDecoder.DateDecodingStrategy,
-                                              keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy) -> Result<T, Error> {
-        let result: Result<T, Error>
+    
+    internal func decode(_ data: Data) -> Result<Resource.ModelType, DecodeError> {
+        let result: Result<Resource.ModelType, DecodeError>
         do {
             let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = dateDecodingStrategy
-            decoder.keyDecodingStrategy = keyDecodingStrategy
-            let data = try decoder.decode(type, from: data)
-            result = .success(data)
+            decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
+            decoder.keyDecodingStrategy = resource.options.keyDecodingStrategy
+            let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
+            switch wrapper {
+            case .success(let data):
+                result = .success(data)
+            case .error(let errorResponse):
+                result = .failure(.api(errorResponse))
+            }
         } catch {
-            result = .failure(error)
-        }
-        return result
-    }
-    
-    internal func decode(_ data: Data) -> Result<Wrapper<Resource.ModelType>, Error> {
-        let resultDecoded = decodeFromJSON(Wrapper<Resource.ModelType>.self, from: data,
-                                           dateDecodingStrategy: resource.options.dateDecodingStrategy,
-                                           keyDecodingStrategy: resource.options.keyDecodingStrategy)
-        let result: Result<Wrapper<Resource.ModelType>, Error>
-        switch resultDecoded {
-        case .success(let wrapper):
-            result = .success(wrapper)
-        case .failure(let error):
-            result = .failure(error)
+            result = .failure(.json(error))
         }
         return result
     }
@@ -139,8 +100,6 @@ extension APIRequest: NetworkRequest {
                  parseResponse: resource.options.parseResponse,
                  data: resource.options.httpBody,
                  headers: resource.options.headers,
-                 withCompletion: { result in
-            
-        })
+                 withCompletion: completion)
     }
 }

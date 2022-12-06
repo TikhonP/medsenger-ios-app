@@ -32,8 +32,8 @@ final class DoctorActions {
                 completion(data, false)
             case .failure(let error):
                 switch error {
-                case .api(let apiErrors):
-                    if apiErrors.contains("Contract exists") {
+                case .api(let errorResponse, _):
+                    if errorResponse.errors.contains("Contract exists") {
                         completion(nil, true)
                     } else {
                         completion(nil, false)

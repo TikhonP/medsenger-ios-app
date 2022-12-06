@@ -9,14 +9,8 @@
 import CoreData
 
 @objc(ContractParam)
-public class ContractParam: NSManagedObject {
-    private class func get(id: Int, for context: NSManagedObjectContext) -> ContractParam? {
-        let fetchRequest = ContractParam.fetchRequest()
-        fetchRequest.fetchLimit = 1
-        fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ContractParam get by id")
-        return fetchedResults?.first
-    }
+public class ContractParam: NSManagedObject, CoreDataIdGetable, CoreDataIdIntRemovedCleanable {
+    
 }
 
 extension ContractParam {
@@ -26,19 +20,6 @@ extension ContractParam {
         let value: String
         let created_at: Date
         let updated_at: Date
-    }
-    
-    private class func cleanRemoved(validIds: [Int], contract: Contract, for context: NSManagedObjectContext) {
-        let fetchRequest = ContractParam.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "ContractParam fetch by contract for removing") else {
-            return
-        }
-        for contractParam in fetchedResults {
-            if !validIds.contains(Int(contractParam.id)) {
-                context.delete(contractParam)
-            }
-        }
     }
     
     private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> ContractParam {
@@ -67,7 +48,7 @@ extension ContractParam {
         }
         
         if !gotIds.isEmpty {
-            cleanRemoved(validIds: gotIds, contract: contract, for: context)
+            cleanRemoved(gotIds, contract: contract, for: context)
         }
         
         return contractParams

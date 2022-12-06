@@ -94,7 +94,7 @@ struct ContractView: View {
                     Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
                 })
                 .sheet(isPresented: $showChooseScenario) {
-                    ChooseScenarioView(contract: contract)
+                    ChooseScenarioView(contract: contract, clinic: clinic)
                 }
             }
             if !contract.archive, let clinic = contract.clinic, !clinic.devices.isEmpty {

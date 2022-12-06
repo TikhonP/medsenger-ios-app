@@ -43,7 +43,7 @@ struct SendMessageResouce: APIResource {
         return files
     }
     
-    typealias ModelType = Message.JsonDecoder
+    typealias ModelType = Message.JsonDeserializer
     
     var methodPath: String { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }
     

@@ -29,9 +29,7 @@ class FileRequest {
 }
 
 extension FileRequest: NetworkRequest {
-    internal func decodeError(_ data: Data) -> Result<[String], Error> { return Result<[String], Error>.success([]) }
-    
-    internal func decode(_ data: Data) -> Result<Data, Error> { return Result<Data, Error>.success(data) }
+    internal func decode(_ data: Data) -> Result<Data, DecodeError> { return Result<Data, DecodeError>.success(data) }
     
     public func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
         _ = load(method: .GET, url: url, parseResponse: true, withCompletion: completion)

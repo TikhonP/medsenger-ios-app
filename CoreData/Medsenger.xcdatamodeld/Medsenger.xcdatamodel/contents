@@ -127,11 +127,29 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="scenarioDescription" optional="YES" attributeType="String"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="scenarios" inverseEntity="Clinic"/>
+        <relationship name="params" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicScenarioParam" inverseName="scenario" inverseEntity="ClinicScenarioParam"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
+    </entity>
+    <entity name="ClinicScenarioParam" representedClassName="ClinicScenarioParam" syncable="YES" codeGenerationType="category">
+        <attribute name="code" optional="YES" attributeType="String"/>
+        <attribute name="defaultValue" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="paramDescription" optional="YES" attributeType="String"/>
+        <attribute name="required" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <attribute name="value" optional="YES" attributeType="String"/>
+        <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicScenarioParamOption" inverseName="param" inverseEntity="ClinicScenarioParamOption"/>
+        <relationship name="scenario" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClinicScenario" inverseName="params" inverseEntity="ClinicScenario"/>
+    </entity>
+    <entity name="ClinicScenarioParamOption" representedClassName="ClinicScenarioParamOption" syncable="YES" codeGenerationType="category">
+        <attribute name="code" attributeType="String"/>
+        <attribute name="defaultValue" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="param" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClinicScenarioParam" inverseName="options" inverseEntity="ClinicScenarioParam"/>
     </entity>
     <entity name="Contract" representedClassName="Contract" syncable="YES" codeGenerationType="category">
         <attribute name="activated" attributeType="Boolean" usesScalarValueType="YES"/>
