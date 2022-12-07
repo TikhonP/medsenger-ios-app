@@ -16,6 +16,11 @@ extension ClinicScenario {
     public var wrappedDescription: String {
         scenarioDescription ?? ""
     }
+    
+    public var paramsArray: [ClinicScenarioParam] {
+        let set = params as? Set<ClinicScenarioParam> ?? []
+        return Array(set)
+    }
 }
 
 extension ClinicScenario {

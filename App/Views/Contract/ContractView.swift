@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct ContractView: View {
-    @ObservedObject var contract: Contract
-    @ObservedObject var user: User
+    let contract: Contract
+    let user: User
     
     @StateObject private var contractViewModel: ContractViewModel
     
@@ -20,6 +20,8 @@ struct ContractView: View {
     
     @State private var showChooseScenario = false
     @State private var showDevices = false
+    @State private var showEditNotes = false
+    @State private var showDeleteScenarioConfirmation = false
     
     init(contract: Contract, user: User) {
         self.contract = contract
@@ -37,6 +39,10 @@ struct ContractView: View {
             
             if userRole == .doctor {
                 actionsForDoctor
+                if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
+                    monitoringSection
+                }
+                notesSection
             }
             
             infoMaterialsAndAttachments
@@ -44,6 +50,17 @@ struct ContractView: View {
             if !contract.agentActionsArray.isEmpty {
                 agentActions
             }
+        }
+        .sheet(isPresented: $showEditNotes) {
+            EditNotesView(contract: contract)
+        }
+        .sheet(isPresented: $showChooseScenario) {
+            if let clinic = contract.clinic {
+                ChooseScenarioView(contract: contract, clinic: clinic)
+            }
+        }
+        .sheet(isPresented: $showDevices) {
+            ContractDevicesView(contract: contract)
         }
     }
     
@@ -60,6 +77,23 @@ struct ContractView: View {
                 AttachmentsView(contract: contract)
             }, label: {
                 Label("Attachments", systemImage: "doc.fill")
+            })
+        }
+    }
+    
+    var notesSection: some View {
+        Section(header: Text("Notes")) {
+            if !contract.wrappedComments.isEmpty {
+                Text(contract.wrappedComments)
+            }
+            Button(action: {
+                showEditNotes.toggle()
+            }, label: {
+                if contract.wrappedComments.isEmpty {
+                    Label("Add Notes", systemImage: "note.text.badge.plus")
+                } else {
+                    Label("Edit Notes", systemImage: "note.text")
+                }
             })
         }
     }
@@ -87,15 +121,37 @@ struct ContractView: View {
                     Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
                 })
             }
+        }
+    }
+    
+    var monitoringSection: some View {
+        Section(header: Text("Monitoring")) {
+            if let scenarioName = contract.scenarioName {
+                Text(scenarioName)
+                Button(action: {
+                    showDeleteScenarioConfirmation.toggle()
+                }, label: {
+                    if contractViewModel.showRemoveScenarioLoading {
+                        ProgressView()
+                    } else {
+                        Label("Disable Scenario", systemImage: "trash")
+                    }
+                })
+                .actionSheet(isPresented: $showDeleteScenarioConfirmation) {
+                    ActionSheet(title: Text("Are you sure you want to disable the monitoring script?"),
+                                message: Text("All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
+                                buttons: [
+                                    .destructive(Text("Disable Scenario"), action: contractViewModel.removeScenario),
+                                    .cancel()
+                                ])
+                }
+            }
             if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
                 Button(action: {
                     showChooseScenario.toggle()
                 }, label: {
                     Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
                 })
-                .sheet(isPresented: $showChooseScenario) {
-                    ChooseScenarioView(contract: contract, clinic: clinic)
-                }
             }
             if !contract.archive, let clinic = contract.clinic, !clinic.devices.isEmpty {
                 Button(action: {
@@ -103,9 +159,6 @@ struct ContractView: View {
                 }, label: {
                     Label("Devices Control", systemImage: "lightbulb")
                 })
-                .sheet(isPresented: $showDevices) {
-                    ContractDevicesView(contract: contract)
-                }
             }
         }
     }

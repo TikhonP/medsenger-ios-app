@@ -34,6 +34,7 @@ struct AddContractView: View {
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                             .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
                             .onChange(of: addContractViewModel.patientEmail, perform: { _ in
                                 addContractViewModel.state = .inputClinicAndEmail
                             })

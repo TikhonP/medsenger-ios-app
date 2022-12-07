@@ -40,6 +40,10 @@ extension Contract {
         number ?? "Unknown number"
     }
     
+    public var wrappedComments: String {
+        comments ?? ""
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)

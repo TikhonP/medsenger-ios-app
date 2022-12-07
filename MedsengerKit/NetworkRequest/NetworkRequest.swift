@@ -91,10 +91,10 @@ extension NetworkRequest {
                 completion(.failure(.selfIsNil))
                 return
             }
-            if httpResponse.statusCode == 404 {
-                completion(.failure(.pageNotFound(url)))
-                return
-            }
+//            if httpResponse.statusCode == 404 {
+//                completion(.failure(.pageNotFound(url)))
+//                return
+//            }
 //            print(String(decoding: data ?? Data(), as: UTF8.self))
             guard let data = data else {
                 completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
@@ -107,10 +107,10 @@ extension NetworkRequest {
             case .failure(let decodeError):
                 switch decodeError {
                 case .json(let error):
-                    if (200...299).contains(httpResponse.statusCode) || parseResponse {
-                        completion(.failure(.failedToDeserialize(error)))
-                    } else {
+                    if (200...299).contains(httpResponse.statusCode) && !parseResponse {
                         completion(.success(nil))
+                    } else {
+                        completion(.failure(.failedToDeserialize(httpResponse.statusCode, error)))
                     }
                 case .api(let errorResponse):
                     completion(.failure(.api(errorResponse, httpResponse.statusCode)))

@@ -19,7 +19,7 @@ struct ChatView: View {
     
     @FocusState private var isTextFocused
     
-    @State private var showContractView = false
+    @State private var navigationSelection: Int? = nil
     
     @AppStorage(UserDefaults.Keys.userRoleKey)
     private var userRole: UserRole = UserDefaults.userRole
@@ -71,21 +71,22 @@ struct ChatView: View {
                     }
                     return true
                 })
-                
-                NavigationLink(
-                    destination: ContractView(contract: contract, user: user),
-                    isActive: $showContractView
-                ) {
-                    EmptyView()
-                }
-                .isDetailLink(false)
             }
+            
+            NavigationLink(
+                tag: 1, selection: $navigationSelection,
+                destination: {
+                    ContractView(contract: contract, user: user)
+                } , label: {
+                    EmptyView()
+                })
+                .isDetailLink(false)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Button(action: {
-                    showContractView = true
+                    navigationSelection = 1
                 }, label: {
                     VStack {
                         Text(contract.wrappedShortName)
@@ -102,7 +103,7 @@ struct ChatView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    showContractView = true
+                    navigationSelection = 1
                 }, label: {
                     if let image = contract.avatar {
                         Image(data: image)?

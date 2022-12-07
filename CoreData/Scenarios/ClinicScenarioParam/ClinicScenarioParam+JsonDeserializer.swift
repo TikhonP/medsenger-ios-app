@@ -10,10 +10,6 @@ import Foundation
 import CoreData
 
 extension ClinicScenarioParam {
-    enum ParamType: String, Decodable {
-        case checkbox, select, number, text, date, hidden, currentDate = "current_date"
-    }
-    
     public struct JsonDeserializer {
         let type: ParamType
         let code: String
@@ -63,7 +59,7 @@ extension ClinicScenarioParam.JsonDeserializer: Decodable {
     
     public init(from decoder: Decoder) throws {
         let container: KeyedDecodingContainer<ClinicScenarioParam.JsonDeserializer.CodingKeys> = try decoder.container(keyedBy: ClinicScenarioParam.JsonDeserializer.CodingKeys.self)
-        self.type = try container.decode(ClinicScenarioParam.ParamType.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.type)
+        self.type = (try? container.decode(ClinicScenarioParam.ParamType.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.type)) ?? .unknown
         self.code = try container.decode(String.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.code)
         self.value = (try? container.decode(String.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.value)) ?? nil
         self.required = (try? container.decode(Bool.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.required)) ?? false
@@ -74,6 +70,6 @@ extension ClinicScenarioParam.JsonDeserializer: Decodable {
         } else {
             self.defaultValue = nil
         }
-        self.values = (try? container.decode(Array<ClinicScenarioParamOption.JsonDeserializer>.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.description)) ?? nil
+        self.values = (try? container.decode(Array<ClinicScenarioParamOption.JsonDeserializer>.self, forKey: ClinicScenarioParam.JsonDeserializer.CodingKeys.values)) ?? nil
     }
 }

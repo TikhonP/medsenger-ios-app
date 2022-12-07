@@ -9,6 +9,8 @@
 import Foundation
 
 final class ContractViewModel: ObservableObject {
+    @Published var showRemoveScenarioLoading = false
+
     let contractId: Int
     
     init(contractId: Int) {
@@ -21,5 +23,14 @@ final class ContractViewModel: ObservableObject {
     
     func concludeContract() {
         DoctorActions.shared.concludeContract(contractId)
+    }
+    
+    func removeScenario() {
+        showRemoveScenarioLoading = true
+        DoctorActions.shared.removeScenario(contractId: contractId) { [weak self] succeeded in
+            DispatchQueue.main.async {
+                self?.showRemoveScenarioLoading = false
+            }
+        }
     }
 }

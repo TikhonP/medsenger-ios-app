@@ -46,8 +46,9 @@ enum NetworkRequestError: Error {
     
     /// Failed to deserialize data with JSON
     /// - Parameters:
+    ///  - statusCode: HTTP status code
     ///  - decodeDataError: decode JSON from data failure cases
-    case failedToDeserialize(_ decodeDataError: Error)
+    case failedToDeserialize(_ statusCode: Int, _ decodeDataError: Error)
     
     /// Failed to get `URLSession` response as `HTTPURLResponse`
     case failedToGetResponse
@@ -97,22 +98,22 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         } else {
             Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(decodeDataError.localizedDescription)")
         }
-    case .failedToDeserialize(let decodeDataError):
+    case .failedToDeserialize(let statusCode, let decodeDataError):
         if let decodeDataError = decodeDataError as? DecodingError {
             switch decodeDataError {
             case .typeMismatch(let type, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Type `\(String(describing: type))` Mismatch, context: \(String(describing: context))")
+                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Type `\(String(describing: type))` Mismatch, context: \(String(describing: context))")
             case .valueNotFound(let value, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Value `\(String(describing: value))` not found, context: \(String(describing: context))")
+                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Value `\(String(describing: value))` not found, context: \(String(describing: context))")
             case .keyNotFound(let key, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Key `\(String(describing: key))` not found, context: \(String(describing: context))")
+                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Key `\(String(describing: key))` not found, context: \(String(describing: context))")
             case .dataCorrupted(let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Data corrupted, context: \(String(describing: context))")
+                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Data corrupted, context: \(String(describing: context))")
             @unknown default:
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Unknown error: \(decodeDataError.localizedDescription)")
+                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Unknown error: \(decodeDataError.localizedDescription)")
             }
         } else {
-            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data: Unknown error: \(decodeDataError.localizedDescription)")
+            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data status code: \(statusCode): Unknown error: \(decodeDataError.localizedDescription)")
         }
     case .failedToGetResponse:
         Logger.urlRequest.error("Request `\(requestName)` error: Failed to get status code")

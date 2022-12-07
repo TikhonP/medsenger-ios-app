@@ -74,7 +74,7 @@ struct EditPersonalDataView: View {
                 //                    .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                     .textContentType(.emailAddress)
-                
+                    .keyboardType(.emailAddress)
             }
             
             Section(footer: Text("Phone is optional value")) {

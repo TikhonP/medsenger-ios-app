@@ -17,6 +17,8 @@ final class DoctorActions {
     private var deactivateMessagesRequest: APIRequest<DeactivateMessagesResource>?
     private var concludeContractRequest: APIRequest<ConcludeContractResource>?
     private var deviceStateRequest: APIRequest<DeviceResource>?
+    private var updateCommentsRequest: APIRequest<UpdateCommentsResource>?
+    private var removeScenarioRequest: APIRequest<RemoveScenarioResource>?
     
     /// Check if user exists in Medseger when adding contract
     /// - Parameters:
@@ -114,6 +116,35 @@ final class DoctorActions {
             case .failure(let error):
                 completion(false)
                 processRequestError(error, "DoctorActions: deviceState")
+            }
+        }
+    }
+    
+    public func updateContractNotes(contractId: Int, notes: String, completion: @escaping (_ succeeded: Bool) -> Void) {
+        let updateCommentsResource = UpdateCommentsResource(contractId: contractId, comment: notes)
+        updateCommentsRequest = APIRequest(updateCommentsResource)
+        updateCommentsRequest?.execute { result in
+            switch result {
+            case .success(_):
+                Contract.updateContractNotes(id: contractId, notes: notes)
+                completion(true)
+            case .failure(let error):
+                completion(false)
+                processRequestError(error, "DoctorActions: updateContractNotes")
+            }
+        }
+    }
+    
+    public func removeScenario(contractId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
+        let removeScenarioResource = RemoveScenarioResource(contractId: contractId)
+        removeScenarioRequest = APIRequest(removeScenarioResource)
+        removeScenarioRequest?.execute { result in
+            switch result {
+            case .success(_):
+                completion(true)
+            case .failure(let error):
+                completion(false)
+                processRequestError(error, "DoctorActions: removeScenario")
             }
         }
     }

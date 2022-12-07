@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 extension Contract {
-    public class func get(id: Int) -> Contract? {
+    public static func get(id: Int) -> Contract? {
         let context = PersistenceController.shared.container.viewContext
         var contract: Contract?
         context.performAndWait {
@@ -19,7 +19,7 @@ extension Contract {
         return contract
     }
     
-    public class func saveAvatar(id: Int, image: Data) {
+    public static func saveAvatar(id: Int, image: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             let contract = get(id: id, for: context)
@@ -28,7 +28,7 @@ extension Contract {
         }
     }
     
-    public class func updateOnlineStatus(id: Int, isOnline: Bool) {
+    public static func updateOnlineStatus(id: Int, isOnline: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             let contract = get(id: id, for: context)
@@ -37,7 +37,7 @@ extension Contract {
         }
     }
     
-    public class func updateOnlineStatusFromList(_ onlineIds: [Int]) {
+    public static func updateOnlineStatusFromList(_ onlineIds: [Int]) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             let fetchRequest = Contract.fetchRequest()
@@ -52,7 +52,7 @@ extension Contract {
         }
     }
     
-    public class func updateLastFetchedMessage(id: Int) {
+    public static func updateLastFetchedMessage(id: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             guard let contract = get(id: id, for: context) else {
@@ -63,7 +63,7 @@ extension Contract {
         }
     }
     
-    public class func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) {
+    public static func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             let contract = get(id: id, for: context)
@@ -72,7 +72,7 @@ extension Contract {
         }
     }
     
-    public class func clearAllContracts() {
+    public static func clearAllContracts() {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Contract")
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -83,6 +83,15 @@ extension Contract {
             } catch {
                 Contract.logger.error("Core Data failed to cleanup contracts: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    public static func updateContractNotes(id: Int, notes: String) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.comments = notes
+            PersistenceController.save(for: context, detailsForLogging: "Contract save updateContractNotes")
         }
     }
 }

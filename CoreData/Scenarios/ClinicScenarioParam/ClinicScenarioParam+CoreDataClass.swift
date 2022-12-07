@@ -19,4 +19,8 @@ public class ClinicScenarioParam: NSManagedObject {
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context)
         return fetchedResults?.first
     }
+    
+    public enum ParamType: String, Decodable {
+        case checkbox, select, number, text, date, hidden, currentDate = "current_date", unknown
+    }
 }

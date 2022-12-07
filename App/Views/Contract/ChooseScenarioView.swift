@@ -52,14 +52,7 @@ struct ChooseScenarioView: View {
                 NavigationLink(destination: {
                     ScenarioView(scenario: scenario)
                 }, label: {
-                    VStack {
-                        Label(scenario.wrappedName, systemImage: scenario.systemNameIcon)
-                        if !scenario.wrappedDescription.isEmpty {
-                            Text(scenario.wrappedDescription)
-                                .padding(.top)
-                                .foregroundColor(.secondary)
-                        }
-                    }
+                    Label(scenario.wrappedName, systemImage: scenario.systemNameIcon)
                 })
             }
             .navigationTitle("Monitoring Scenarios")

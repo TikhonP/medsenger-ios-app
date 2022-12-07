@@ -199,6 +199,10 @@
 		43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BC2922D427005DF084 /* Message+Preview.swift */; };
 		43EF44BF2923C6A7005DF084 /* Clinic+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */; };
 		43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44C02923D9A2005DF084 /* DeprecatedSearchable.swift */; };
+		43F63C642940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C632940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift */; };
+		43F63C662940E0EF008D1B9F /* EditNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C652940E0EF008D1B9F /* EditNotesView.swift */; };
+		43F63C682940E22E008D1B9F /* UpdateCommentsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C672940E22E008D1B9F /* UpdateCommentsResource.swift */; };
+		43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C692940ECFE008D1B9F /* RemoveScenarioResource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -399,6 +403,10 @@
 		43EF44BC2922D427005DF084 /* Message+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+Preview.swift"; sourceTree = "<group>"; };
 		43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clinic+Preview.swift"; sourceTree = "<group>"; };
 		43EF44C02923D9A2005DF084 /* DeprecatedSearchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedSearchable.swift; sourceTree = "<group>"; };
+		43F63C632940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParamOption+Wrappers.swift"; sourceTree = "<group>"; };
+		43F63C652940E0EF008D1B9F /* EditNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNotesView.swift; sourceTree = "<group>"; };
+		43F63C672940E22E008D1B9F /* UpdateCommentsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCommentsResource.swift; sourceTree = "<group>"; };
+		43F63C692940ECFE008D1B9F /* RemoveScenarioResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveScenarioResource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,6 +517,8 @@
 				43EF446029228D13005DF084 /* DeactivateMessagesResource.swift */,
 				43EF446229228D25005DF084 /* ConcludeContractResource.swift */,
 				435D5733293AA0C90013B0F4 /* DeviceResource.swift */,
+				43F63C672940E22E008D1B9F /* UpdateCommentsResource.swift */,
+				43F63C692940ECFE008D1B9F /* RemoveScenarioResource.swift */,
 			);
 			path = DoctorActions;
 			sourceTree = "<group>";
@@ -524,6 +534,7 @@
 				435D5727293A95700013B0F4 /* ChooseScenarioView.swift */,
 				435D5731293A9EEA0013B0F4 /* ContractDevicesView.swift */,
 				43D505EF293F992900EE3756 /* ScenarioView.swift */,
+				43F63C652940E0EF008D1B9F /* EditNotesView.swift */,
 			);
 			path = Contract;
 			sourceTree = "<group>";
@@ -731,6 +742,7 @@
 			children = (
 				43D505E0293F835D00EE3756 /* ClinicScenarioParamOption+CoreDataClass.swift */,
 				43D505EB293F917100EE3756 /* ClinicScenarioParamOption+JsonDeserializer.swift */,
+				43F63C632940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift */,
 			);
 			path = ClinicScenarioParamOption;
 			sourceTree = "<group>";
@@ -1131,6 +1143,7 @@
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
 				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
+				43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */,
 				43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
@@ -1223,6 +1236,7 @@
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,
 				435C1846293B8044009483F6 /* WaveformImageDrawer+iOS.swift in Sources */,
 				43EF44B029229057005DF084 /* User+Preview.swift in Sources */,
+				43F63C662940E0EF008D1B9F /* EditNotesView.swift in Sources */,
 				43EF4418292286E6005DF084 /* PatientHelper+CoreDataClass.swift in Sources */,
 				433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */,
 				43EF443A29228A62005DF084 /* SignInResource.swift in Sources */,
@@ -1247,6 +1261,7 @@
 				43EF445229228C70005DF084 /* ChatsViewModel.swift in Sources */,
 				435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */,
 				43D5059F293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift in Sources */,
+				43F63C682940E22E008D1B9F /* UpdateCommentsResource.swift in Sources */,
 				434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */,
 				43EF444929228BC5005DF084 /* NotificationsResource.swift in Sources */,
 				43EF4416292286BC005DF084 /* ContractParam+CoreDataClass.swift in Sources */,
@@ -1266,6 +1281,7 @@
 				43D5057D293F4EA400EE3756 /* ScrollToBottomLabelView.swift in Sources */,
 				43D50586293F577400EE3756 /* Contract+publicClassMethods.swift in Sources */,
 				43EF449129228EB1005DF084 /* ValidationResult.swift in Sources */,
+				43F63C642940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift in Sources */,
 				434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */,
 				43D5059B293F5ABA00EE3756 /* ClinicClassifier+JsonDeserializer.swift in Sources */,
 				43EF44AE2922900F005DF084 /* ChatView.swift in Sources */,
