@@ -23,7 +23,7 @@ class Contracts {
     private var contractsArchiveRequestAsDoctorRequest: APIRequest<ContractsArchiveRequestAsDoctorResource>?
     private var getImageRequests = [FileRequest]()
     
-    public func fetchContracts() {
+    public func fetchContracts(completion: (() -> Void)? = nil) {
         switch UserDefaults.userRole {
         case .patient:
             let contractsRequestAsPatientResource = ContractsRequestAsPatientResource()
@@ -33,6 +33,9 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: false)
+                        if let completion = completion {
+                            completion()
+                        }
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts request as patient")
@@ -46,6 +49,9 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: false)
+                        if let completion = completion {
+                            completion()
+                        }
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts request as doctor")
@@ -56,7 +62,7 @@ class Contracts {
         }
     }
     
-    public func fetchArchiveContracts() {
+    public func fetchArchiveContracts(completion: (() -> Void)? = nil) {
         switch UserDefaults.userRole {
         case .patient:
             let contractsArchiveRequestAsPatientResource = ContractsArchiveRequestAsPatientResource()
@@ -66,6 +72,9 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: true)
+                        if let completion = completion {
+                            completion()
+                        }
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts archive request as patient")
@@ -79,6 +88,9 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: true)
+                        if let completion = completion {
+                            completion()
+                        }
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts archive request as doctor")

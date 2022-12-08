@@ -29,7 +29,7 @@ struct MessageView: View {
         HStack {
             messageBody
                 .foregroundColor(.primary)
-                .background(message.isMessageSent ? Color.secondary : Color.accentColor)
+                .background(message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor"))
                 .cornerRadius(20)
                 .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
                 .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -55,8 +55,26 @@ struct MessageView: View {
     var messageBody: some View {
         ZStack {
             if message.isVoiceMessage {
-                VoiceMessageView(message: message)
-                    .padding(9)
+                VStack(alignment: .leading, spacing: 0) {
+                    if let replyedMessage = message.replyToMessage {
+                        Button(action: {
+                            chatViewModel.scrollToMessageId = Int(replyedMessage.id)
+                        }, label: {
+                            VStack(spacing: 0) {
+                                ZStack {
+                                    Color.secondary
+                                    Text(replyedMessage.wrappedText)
+                                        .foregroundColor(Color(UIColor.darkText))
+                                        .lineLimit(2)
+                                        .padding(7)
+                                }
+                                Divider()
+                            }
+                        })
+                    }
+                    VoiceMessageView(message: message)
+                        .padding(9)
+                }
             } else if message.wrappedText.isEmpty && imageAttachments.count == 1 {
                 if let image = imageAttachments.first {
                     MessageImageView(imageAttachment: image)

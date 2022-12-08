@@ -34,10 +34,8 @@ extension CoreDataIdGetable {
     public static func get(id: Int) -> Self? {
         let context = PersistenceController.shared.container.viewContext
         var entity: Self?
-        DispatchQueue.main.sync {
-            context.performAndWait {
-                entity = get(id: id, for: context)
-            }
+        context.performAndWait {
+            entity = get(id: id, for: context)
         }
         return entity
     }
@@ -116,6 +114,20 @@ extension CoreDataIdIntRemovedCleanable {
             if !validIds.contains(Int(entity.id)) {
                 context.delete(entity)
             }
+        }
+    }
+}
+
+protocol CoreDataErasable: NSManagedObject {}
+
+extension CoreDataErasable{
+    internal static func erase(for context: NSManagedObjectContext) {
+        let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
+        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) earse") else {
+            return
+        }
+        for entity in fetchedResults {
+            context.delete(entity)
         }
     }
 }

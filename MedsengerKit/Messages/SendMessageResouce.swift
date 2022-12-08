@@ -10,7 +10,7 @@ import Foundation
 import os.log
 
 /// Send message to chat
-struct SendMessageResouce: APIResource {
+class SendMessageResouce: APIResource {
     let text: String
     let contractID: Int
     let replyToId: Int?
@@ -18,15 +18,22 @@ struct SendMessageResouce: APIResource {
     /// Array of file data ``ChatViewAttachment``
     let attachments: Array<ChatViewAttachment>
     
-    var params: [String: String] {
+    init(text: String, contractID: Int, replyToId: Int?, attachments: Array<ChatViewAttachment>) {
+        self.text = text
+        self.contractID = contractID
+        self.replyToId = replyToId
+        self.attachments = attachments
+    }
+    
+    lazy var params: [String: String] = {
         var params = ["text": text]
         if let replyToId = replyToId {
             params["reply_to_id"] = String(replyToId)
         }
         return params
-    }
+    }()
     
-    var files: [MultipartFormData.Part] {
+    lazy var files: [MultipartFormData.Part] = {
         var files = [MultipartFormData.Part]()
         for (index, attachment) in attachments.enumerated() {
             files.append(
@@ -41,13 +48,13 @@ struct SendMessageResouce: APIResource {
             )
         }
         return files
-    }
+    }()
     
     typealias ModelType = Message.JsonDeserializer
     
-    var methodPath: String { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }
+    lazy var methodPath: String = { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }()
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let result = multipartFormData(textParams: params, files: files)
         return APIResourceOptions(
             parseResponse: true,
@@ -56,5 +63,5 @@ struct SendMessageResouce: APIResource {
             headers: result.headers,
             dateDecodingStrategy: .secondsSince1970
         )
-    }
+    }()
 }

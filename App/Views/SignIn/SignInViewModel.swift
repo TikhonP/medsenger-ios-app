@@ -9,34 +9,73 @@
 import Foundation
 import SwiftUI
 
+struct SignInAlertInfo: AlertInfo {
+    enum AlertType {
+        case fillTheFields
+        case userIsNotActivated
+        case userIsNotFound
+        case invalidPassword
+        case global
+    }
+    
+    let id: AlertType
+    let title: String
+    let message: String
+}
+
+class SignInAlerts {
+    static let fillTheFields = SignInAlertInfo(
+        id: .fillTheFields,
+        title: LocalizedStringKey("Provide auth data!").stringValue(),
+        message: LocalizedStringKey("Please fill both username and password fields.").stringValue())
+    static let userIsNotActivated = SignInAlertInfo(
+        id: .userIsNotActivated,
+        title: LocalizedStringKey("User is not activated!").stringValue(),
+        message: "")
+    static let userIsNotFound = SignInAlertInfo(
+        id: .userIsNotFound,
+        title: LocalizedStringKey("User is not found!").stringValue(),
+        message: "")
+    static let invalidPassword = SignInAlertInfo(
+        id: .invalidPassword,
+        title: LocalizedStringKey("Invalid password!").stringValue(),
+        message: "")
+}
+
 final class SignInViewModel: ObservableObject {
-    @Published var error: String = LocalizedStringKey("Unknown Error").stringValue()
-    @Published var showError: Bool = false
     @Published var login: String = ""
     @Published var password: String = ""
+    
     @Published var showLoader = false
     
+    @Published var alert: SignInAlertInfo?
+    
     func auth() {
-        self.showError = false
+        guard !login.isEmpty, !password.isEmpty else {
+            alert = SignInAlerts.fillTheFields
+            return
+        }
+        showLoader = true
         Login.shared.signIn(login: login, password: password) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else {
                     return
                 }
+                self.showLoader = false
                 switch result {
                 case .success:
                     break
                 case .unknownError:
-                    self.showError = true
+                    let globalAlert = ContentViewModel.shared.getGlobalAlert()
+                    if !globalAlert.title.isEmpty {
+                        self.alert = SignInAlertInfo(id: .global, title: globalAlert.title, message: globalAlert.message)
+                    }
                 case .userIsNotActivated:
-                    self.error = LocalizedStringKey("User not activated").stringValue()
-                    self.showError = true
+                    self.alert = SignInAlerts.userIsNotActivated
                 case .incorrectData:
-                    self.error = LocalizedStringKey("User is not found").stringValue()
-                    self.showError = true
+                    self.alert = SignInAlerts.userIsNotFound
                 case .incorrectPassword:
-                    self.error = LocalizedStringKey("Invalid password").stringValue()
-                    self.showError = true
+                    self.alert = SignInAlerts.invalidPassword
                 }
             }
         }

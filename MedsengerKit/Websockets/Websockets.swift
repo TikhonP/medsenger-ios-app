@@ -96,13 +96,13 @@ class Websockets: NSObject {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallWebsocketResponse.Model")
                     return
                 }
-                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract_id)
             case .callContinued:
                 guard let data = data as? CallContinuedWebsocketResponse.Model else {
                     Logger.websockets.error("Websockets: processWebsocketResponse: Failed to get CallContinuedWebsocketResponse.Model")
                     return
                 }
-                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract)
+                contentViewModelDelegate?.signalClient(self, callWithContractId: data.contract_id)
             default:
                 break
             }

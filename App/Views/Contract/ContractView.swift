@@ -18,7 +18,6 @@ struct ContractView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
     
-    @State private var showChooseScenario = false
     @State private var showDevices = false
     @State private var showEditNotes = false
     @State private var showDeleteScenarioConfirmation = false
@@ -54,9 +53,10 @@ struct ContractView: View {
         .sheet(isPresented: $showEditNotes) {
             EditNotesView(contract: contract)
         }
-        .sheet(isPresented: $showChooseScenario) {
+        .sheet(isPresented: $contractViewModel.showChooseScenario) {
             if let clinic = contract.clinic {
                 ChooseScenarioView(contract: contract, clinic: clinic)
+                    .environmentObject(contentViewModel)
             }
         }
         .sheet(isPresented: $showDevices) {
@@ -148,7 +148,7 @@ struct ContractView: View {
             }
             if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
                 Button(action: {
-                    showChooseScenario.toggle()
+                    contractViewModel.showChooseScenario.toggle()
                 }, label: {
                     Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
                 })
@@ -178,8 +178,7 @@ struct ContractView: View {
                 default:
                     if let name = agentAction.name, let link = agentAction.modalLink {
                         NavigationLink(destination: {
-                            AgentActionView(url: link, name: name)
-                            //                                        Text("sdfghj")
+                            WebView(url: link, name: name)
                         }, label: {
                             Label(name, systemImage: "person.icloud.fill")
                         })

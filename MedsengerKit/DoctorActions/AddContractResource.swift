@@ -65,7 +65,7 @@ struct AddContractRequestModel: Encodable {
          "name": name,
          "sex": sex.rawValue,
          "phone": phone,
-         "end_date": endDateAsString,
+         "endDate": endDateAsString,
          "rule": classifier,
          "classifier": classifier,
          "welcome_message": welcomeMessage,

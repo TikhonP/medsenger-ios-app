@@ -10,39 +10,37 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var contentViewModel = ContentViewModel.shared
+    @StateObject private var networkConnectionMonitor = NetworkConnectionMonitor()
     
-    @FetchRequest(sortDescriptors: [], animation: .default)
-    private var users: FetchedResults<User>
+    @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
-    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    @FetchRequest(sortDescriptors: [], animation: .default) private var users: FetchedResults<User>
     
     var body: some View {
         if let user = users.first {
-            ZStack {
-                if userRole == .unknown {
-                    ChooseRoleView()
-                } else {
-                    ZStack {
-                        NavigationView {
-                            ChatsView(user: user)
-                        }
-                        .environmentObject(contentViewModel)
-                        
-                        ZStack {
-                            if contentViewModel.isCalling, let videoCallContractId = contentViewModel.videoCallContractId {
-                                VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)
-                                    .environmentObject(contentViewModel)
-                            }
-                        }
-                        .animation(.easeInOut)
+            if userRole == .unknown {
+                ChooseRoleView()
+            } else {
+                NavigationView {
+                    ChatsView(user: user)
+                }
+                .environmentObject(contentViewModel)
+                .environmentObject(networkConnectionMonitor)
+                .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
+                .onOpenURL(perform: contentViewModel.processDeeplink)
+                .fullScreenCover(isPresented: $contentViewModel.isCalling) {
+                    if let videoCallContractId = contentViewModel.videoCallContractId {
+                        VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)
+                            .environmentObject(contentViewModel)
                     }
                 }
             }
-            .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
-            .onOpenURL(perform: contentViewModel.processDeeplink)
         } else {
             SignInView()
-                .onAppear(perform: PersistenceController.clearDatabase)
+                .environmentObject(networkConnectionMonitor)
+                .onAppear(perform: {
+                    PersistenceController.clearDatabase(withUser: true)
+                })
         }
     }
 }

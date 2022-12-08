@@ -10,7 +10,7 @@ import CoreData
 import os.log
 
 @objc(User)
-public class User: NSManagedObject {
+public class User: NSManagedObject, CoreDataErasable {
     
     internal static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,

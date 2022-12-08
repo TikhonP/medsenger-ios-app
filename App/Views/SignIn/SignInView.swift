@@ -9,85 +9,52 @@
 import SwiftUI
 
 struct SignInView: View {
-    
     @StateObject private var signInViewModel = SignInViewModel()
     
-    @Environment(\.colorScheme) private var colorScheme
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     var body: some View {
         VStack {
             Spacer()
-            titleLoginView
+            Text("Medsenger")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .foregroundColor(.accentColor)
+                .multilineTextAlignment(.center)
+                .padding()
             Spacer()
-            usernameField
+            TextField("Email", text: $signInViewModel.login)
+                .padding()
+                .textContentType(.username)
+                .keyboardType(.emailAddress)
+                .autocapitalization(.none)
             PasswordFieldView(password: $signInViewModel.password)
             Spacer()
             
-            if signInViewModel.showError {
-                CardView(text: signInViewModel.error)
-                Spacer()
-            }
-            
-            if signInViewModel.showLoader {
-                ProgressView()
-            } else {
-                Button(action: signInViewModel.auth, label: { buttonLoginView })
-                    .animation(.default)
-            }
-            
+            Button(action: signInViewModel.auth, label: {
+                ZStack {
+                    if signInViewModel.showLoader {
+                        ProgressView()
+                    } else {
+                        Text("Sign In")
+                    }
+                }
+                .font(.headline)
+                .foregroundColor(Color(UIColor.systemBackground))
+                .padding(.vertical)
+                .padding(.horizontal, 50)
+                .background(Color.accentColor)
+                .clipShape(Capsule())
+            })
             Spacer()
         }
-        .padding()
-    }
-    
-    var logoIconLoginView: some View {
-        Image("loginIcon") // FIXME: logo
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: 150, height: 150)
-            //            .clipShape(Circle())
-            //            .shadow(radius: 10)
-            .padding()
-    }
-    
-    var titleLoginView: some View {
-        Text("Medsenger")
-            .font(.largeTitle)
-            .fontWeight(.semibold)
-            .multilineTextAlignment(.center)
-            .padding()
-    }
-    
-    var buttonLoginView: some View {
-        Text("Sign In")
-            .font(.headline)
-            .foregroundColor(colorScheme == .dark ? Color.black : Color.white)
-            .padding()
-            .frame(width: 220, height: 60)
-            .background(colorScheme == .dark ? Color.white : Color.black)
-            .cornerRadius(35)
-    }
-    
-    var usernameField: some View {
-        TextField("Email", text: $signInViewModel.login)
-            .padding()
-            .textContentType(.username)
-            .cornerRadius(5.0)
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
-    }
-}
-
-struct CardView: View {
-    let text: String
-    
-    var body: some View {
-        Text(text)
-            .padding()
-            .overlay(
-                RoundedRectangle(cornerRadius: 5)
-                    .stroke(Color.red, lineWidth: 1)
+        .alert(item: $signInViewModel.alert, content: { error in
+            Alert(
+                title: Text(error.title),
+                message: Text(error.message),
+                dismissButton: .default(Text("Close"))
             )
+        })
     }
 }
 

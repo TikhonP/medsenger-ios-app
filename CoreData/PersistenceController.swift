@@ -89,16 +89,15 @@ extension PersistenceController {
         }
     }
     
-    public class func clearDatabase() {
-        guard let url = PersistenceController.shared.container.persistentStoreDescriptions.first?.url else { return }
-        
-        let persistentStoreCoordinator = PersistenceController.shared.container.persistentStoreCoordinator
-        
-        do {
-            try persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: NSSQLiteStoreType, options: nil)
-            try persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: url, options: nil)
-        } catch {
-            PersistenceController.logger.error("Core Data: Failed to clear persistent store: \(error.localizedDescription)")
+    public class func clearDatabase(withUser: Bool) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            Contract.erase(for: context)
+            Agent.erase(for: context)
+            Clinic.erase(for: context)
+            if withUser {
+                User.erase(for: context)
+            }
+            PersistenceController.save(for: context, detailsForLogging: "PersistenceController: clearDatabase withUser: \(withUser)")
         }
     }
 }

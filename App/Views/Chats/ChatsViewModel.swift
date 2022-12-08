@@ -9,16 +9,33 @@
 import Foundation
 
 final class ChatsViewModel: ObservableObject {
+    @Published var showContractsLoading = false
+    @Published var showArchiveContractsLoading = false
+    
     func initilizeWebsockets() {
         Websockets.shared.createUrlSession()
     }
     
     func getArchiveContracts() {
-        Contracts.shared.fetchArchiveContracts()
+        DispatchQueue.main.async {
+            self.showArchiveContractsLoading = true
+        }
+        Contracts.shared.fetchArchiveContracts { [weak self] in
+            DispatchQueue.main.async {
+                self?.showArchiveContractsLoading = false
+            }
+        }
     }
     
     func getContracts() {
-        Contracts.shared.fetchContracts()
+        DispatchQueue.main.async {
+            self.showContractsLoading = true
+        }
+        Contracts.shared.fetchContracts { [weak self] in
+            DispatchQueue.main.async {
+                self?.showContractsLoading = false
+            }
+        }
     }
     
     func getContractAvatar(contractId: Int) {

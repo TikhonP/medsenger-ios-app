@@ -11,38 +11,8 @@ import AVFoundation
 import os.log
 import UIKit
 
-enum ChatViewAttachmentType: String {
-    case image, video, audio, file
-}
-
-struct ChatViewAttachment: Identifiable, Equatable {
-    let id = UUID()
-    let data: Data
-    let extention: String
-    let realFilename: String?
-    let type: ChatViewAttachmentType
-    
-    var mimeType: String {
-        if let mimeType = UTType(filenameExtension: extention)?.preferredMIMEType {
-            return mimeType
-        } else {
-            return "multipart/form-data"
-        }
-    }
-    
-    var randomFilename: String {
-        let url = URL(fileURLWithPath: String.uniqueFilename(), relativeTo: nil)
-        let fileURL = url.appendingPathExtension(extention)
-        return fileURL.relativePath
-    }
-    
-    var filename: String {
-        realFilename ?? randomFilename
-    }
-}
-
 final class ChatViewModel: NSObject, ObservableObject {
-
+    
     private static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: ChatViewModel.self)
@@ -50,31 +20,32 @@ final class ChatViewModel: NSObject, ObservableObject {
     
     private var contractId: Int
     
-    private var audioRecorder: AVAudioRecorder!
-    private var audioPlayer: AVAudioPlayer!
+    private var audioRecorder: AVAudioRecorder?
+    private var audioPlayer: AVAudioPlayer?
     private var recordingSession: AVAudioSession?
     
+    @Published var scrollToMessageId: Int?
+    
+    // Message body varibles
     @Published var message: String = ""
     @Published var replyToMessage: Message?
+    @Published var messageAttachments = [ChatViewAttachment]()
+    @Published var showSendingMessageLoading = false
     
-    @Published var isRecordingVoiceMessage = false
-    @Published var showAlertRecordingIsNotPermited = false
-    @Published var showRecordingfailedAlert = false
-    @Published var showRecordedMessage = false
-    
-    @Published var isVoiceMessagePlaying = false
-    
+    // Documents QuickLook
     @Published var quickLookDocumentUrl: URL?
     @Published var loadingAttachmentIds = [Int]()
     
-    @Published var showSelectImageOptions = false
-    @Published var showSelectPhotosSheet = false
-    @Published var showTakeImageSheet = false
-    @Published var selectedMedia: ImagePickerMedia?
-    @Published var addedImages = [ChatViewAttachment]()
-
-    @Published var scrollToMessageId: Int?
+    // Recording voice messages varibles
+    @Published var isRecordingVoiceMessage = false
+    @Published var isVoiceMessagePlaying = false
+    @Published var showAlertRecordingIsNotPermited = false
+    @Published var showRecordingfailedAlert = false
+    @Published var showRecordedMessage = false
+    @Published var recordedMessageUrl: URL?
+    @Published var currentVoiceMessageTime: TimeInterval = 0
     
+    // Playing voice messages varibles
     @Published var isAudioMessagePlayingWithId: Int?
     @Published var totalAudioMessageTime: Double?
     @Published var playingAudioProgress: Double = 0
@@ -83,44 +54,16 @@ final class ChatViewModel: NSObject, ObservableObject {
         self.contractId = contractId
     }
     
-    private var replyToId: Int? {
-        guard let replyToMessage = replyToMessage else {
-            return nil
-        }
-        return Int(replyToMessage.id)
-    }
-    
     func onChatViewAppear(contract: Contract) {
         Messages.shared.fetchMessages(contractId: contractId)
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
     }
     
-    func sendMessage() {
-        if showRecordedMessage {
-            sendVoiceMessage()
-            return
+    private var replyToId: Int? {
+        guard let replyToMessage = replyToMessage else {
+            return nil
         }
-        guard !message.isEmpty || !addedImages.isEmpty else {
-            return
-        }
-        if !addedImages.isEmpty {
-            Messages.shared.sendMessage(
-                message,
-                for: contractId,
-                replyToId: replyToId,
-                attachments: addedImages) {
-                    DispatchQueue.main.async {
-                        self.addedImages = []
-                        self.message = ""
-                    }
-                }
-        } else {
-            Messages.shared.sendMessage(message, for: contractId, replyToId: replyToId) {
-                DispatchQueue.main.async {
-                    self.message = ""
-                }
-            }
-        }
+        return Int(replyToMessage.id)
     }
     
     func fetchAttachment(_ attachment: Attachment, completion: (() -> Void)? = nil) {
@@ -150,23 +93,69 @@ final class ChatViewModel: NSObject, ObservableObject {
             }
         }
     }
-    
-    func sendVoiceMessage() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        guard let data = try? Data(contentsOf: voiceMessageFilePath) else { return }
+}
+
+// MARK: - Send Message extention
+extension ChatViewModel {
+    func sendMessage() {
+        if showRecordedMessage {
+            guard let recordedMessageUrl = recordedMessageUrl, let data = try? Data(contentsOf: recordedMessageUrl) else {
+                return
+            }
+            messageAttachments.append(
+                ChatViewAttachment(
+                    data: data, extention: "m4a", realFilename: recordedMessageUrl.lastPathComponent, type: .audio))
+            message = Constants.voiceMessageText
+        }
+        guard !message.isEmpty || !messageAttachments.isEmpty else {
+            return
+        }
+        showSendingMessageLoading = true
         Messages.shared.sendMessage(
-            Constants.voiceMessageText,
+            message,
             for: contractId,
             replyToId: replyToId,
-            attachments: [ChatViewAttachment(
-                data: data, extention: "m4a", realFilename: Constants.voiceMessageFileName, type: .audio)]) { [weak self] in
+            attachments: messageAttachments) { [weak self] succeeded in
                 DispatchQueue.main.async {
-                    self?.isRecordingVoiceMessage = false
-                    self?.showRecordedMessage = false
-                    self?.isVoiceMessagePlaying = false
+                    self?.showSendingMessageLoading = false
+                    if succeeded {
+                        self?.messageAttachments = []
+                        self?.message = ""
+                        self?.isRecordingVoiceMessage = false
+                        self?.showRecordedMessage = false
+                        self?.isVoiceMessagePlaying = false
+                    }
                 }
             }
+    }
+    
+    func addImagesAttachments(_ selectedMedia: ImagePickerMedia?) {
+        guard let selectedMedia = selectedMedia else {
+            return
+        }
+        let chatViewAttachment: ChatViewAttachment
+        switch selectedMedia.type {
+        case .image:
+            chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .image)
+        case .movie:
+            chatViewAttachment = ChatViewAttachment(data: selectedMedia.data, extention: selectedMedia.extention, realFilename: selectedMedia.realFilename, type: .video)
+        }
+        messageAttachments.append(chatViewAttachment)
+    }
+    
+    func addFilesAttachments(_ urls: [URL]) {
+        for fileURL in urls {
+            do {
+                if fileURL.startAccessingSecurityScopedResource() {
+                    let data = try Data(contentsOf: fileURL)
+                    messageAttachments.append(ChatViewAttachment(
+                        data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .file))
+                    fileURL.stopAccessingSecurityScopedResource()
+                }
+            } catch {
+                print("Failed to load file: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
@@ -188,15 +177,21 @@ extension ChatViewModel: AVAudioRecorderDelegate {
         guard let recordingSession = recordingSession else {
             return
         }
-        recordingSession.requestRecordPermission() { [unowned self] allowed in
+        recordingSession.requestRecordPermission() { [weak self] allowed in
+            guard let self = self else {
+                return
+            }
             DispatchQueue.main.async {
                 guard allowed else {
                     self.showAlertRecordingIsNotPermited = true
                     return
                 }
                 
-                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                    return
+                }
                 let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
+                self.recordedMessageUrl = voiceMessageFilePath
                 
                 let settings = [
                     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -206,12 +201,35 @@ extension ChatViewModel: AVAudioRecorderDelegate {
                 ]
                 
                 do {
-                    self.audioRecorder = try AVAudioRecorder(url: voiceMessageFilePath, settings: settings)
-                    self.audioRecorder.delegate = self
-                    self.audioRecorder.record()
+                    let audioRecorder = try AVAudioRecorder(url: voiceMessageFilePath, settings: settings)
+                    self.audioRecorder = audioRecorder
+                    if !audioRecorder.prepareToRecord() {
+                        self.isRecordingVoiceMessage = false
+                        self.showRecordingfailedAlert = true
+                        ChatViewModel.logger.error("Failed to prepareToRecord audio recording")
+                    }
+                    audioRecorder.delegate = self
+                    audioRecorder.record()
                     self.isRecordingVoiceMessage = true
+                    self.currentVoiceMessageTime = audioRecorder.currentTime
+                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+                        guard let self = self else {
+                            timer.invalidate()
+                            return
+                        }
+                        if !self.isRecordingVoiceMessage {
+                            timer.invalidate()
+                        } else {
+                            if let currentTime = self.audioRecorder?.currentTime {
+                                self.currentVoiceMessageTime = currentTime
+                            }
+                        }
+                    }
                 } catch {
-                    self.finishRecording(success: false)
+                    self.audioRecorder?.stop()
+                    self.audioRecorder = nil
+                    self.isRecordingVoiceMessage = false
+                    self.showRecordingfailedAlert = true
                     ChatViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
                 }
             }
@@ -219,15 +237,21 @@ extension ChatViewModel: AVAudioRecorderDelegate {
     }
     
     func finishRecording(success: Bool) {
-        audioRecorder.stop()
-        audioRecorder = nil
         isRecordingVoiceMessage = false
+        audioRecorder?.stop()
+        audioRecorder = nil
         
         if success {
             showRecordedMessage = true
-        } else {
-            showRecordingfailedAlert = true
         }
+    }
+    
+    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
+        print("audioRecorderEncodeErrorDidOccur")
+    }
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+        print("audioRecorderDidFinishRecording")
     }
 }
 
@@ -243,11 +267,13 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
-            audioPlayer.delegate = self
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
-            totalAudioMessageTime = audioPlayer.duration
-            playingAudioProgress = audioPlayer.currentTime / audioPlayer.duration
+            audioPlayer?.delegate = self
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+            totalAudioMessageTime = audioPlayer?.duration
+            if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+                self.playingAudioProgress = currentTime / duration
+            }
             Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
                 guard let self = self else {
                     timer.invalidate()
@@ -256,7 +282,9 @@ extension ChatViewModel: AVAudioPlayerDelegate {
                 if !self.isVoiceMessagePlaying && self.isAudioMessagePlayingWithId == nil {
                     timer.invalidate()
                 } else {
-                    self.playingAudioProgress = self.audioPlayer.currentTime / self.audioPlayer.duration
+                    if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+                        self.playingAudioProgress = currentTime / duration
+                    }
                 }
             }
             if let attachmentId = attachmentId {
@@ -271,7 +299,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
     }
     
     func stopPlaying() {
-        audioPlayer.stop()
+        audioPlayer?.stop()
         isVoiceMessagePlaying = false
         isAudioMessagePlayingWithId = nil
     }

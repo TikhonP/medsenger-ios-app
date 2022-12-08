@@ -5,7 +5,7 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isDevice" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
+        <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentTask" inverseName="agent" inverseEntity="AgentTask"/>
         <relationship name="clinics" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Clinic" inverseName="agents" inverseEntity="Clinic"/>
         <relationship name="enabledContracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="agents" inverseEntity="Contract"/>
         <uniquenessConstraints>
@@ -92,9 +92,9 @@
         <attribute name="videoEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="clinics" inverseEntity="Agent"/>
         <relationship name="classifiers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicClassifier" inverseName="clinic" inverseEntity="ClinicClassifier"/>
-        <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Contract" inverseName="clinic" inverseEntity="Contract"/>
+        <relationship name="contracts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Contract" inverseName="clinic" inverseEntity="Contract"/>
         <relationship name="rules" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicRule" inverseName="clinic" inverseEntity="ClinicRule"/>
-        <relationship name="scenarios" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ClinicScenario" inverseName="clinic" inverseEntity="ClinicScenario"/>
+        <relationship name="scenarios" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ClinicScenario" inverseName="clinic" inverseEntity="ClinicScenario"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -194,16 +194,16 @@
         <attribute name="unread" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="video" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="agentActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentAction" inverseName="contract" inverseEntity="AgentAction"/>
-        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Agent" inverseName="enabledContracts" inverseEntity="Agent"/>
+        <relationship name="agents" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Agent" inverseName="enabledContracts" inverseEntity="Agent"/>
         <relationship name="agentTasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AgentTask" inverseName="contract" inverseEntity="AgentTask"/>
         <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="contracts" inverseEntity="Clinic"/>
-        <relationship name="doctorHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
+        <relationship name="doctorHelpers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
         <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
         <relationship name="lastFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="lastFetchContract" inverseEntity="Message"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
-        <relationship name="params" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
-        <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
+        <relationship name="params" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
+        <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
@@ -289,11 +289,11 @@
         <attribute name="sent" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="state" optional="YES" attributeType="String"/>
         <attribute name="text" optional="YES" attributeType="String"/>
-        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="messages" inverseEntity="Contract"/>
-        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
         <relationship name="lastFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastFetchedMessage" inverseEntity="Contract"/>
-        <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>
+        <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>
         <relationship name="replyToMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="replyedMessages" inverseEntity="Message"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

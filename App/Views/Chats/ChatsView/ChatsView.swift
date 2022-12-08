@@ -52,7 +52,14 @@ struct ChatsView: View {
     var body: some View {
         ZStack {
             if contracts.isEmpty {
-                EmptyChatsView()
+                if chatsViewModel.showContractsLoading {
+                    ProgressView()
+                } else {
+                    EmptyChatsView()
+                        .onTapGesture {
+                            chatsViewModel.getContracts()
+                        }
+                }
             } else {
                 List {
                     if userRole == .patient && (tasksTotalToday != 0 || tasksTotalThisWeek != 0) {

@@ -9,9 +9,7 @@
 import Foundation
 import Network
 
-class NetworkConnectionMonitor: ObservableObject {
-    static let shared = NetworkConnectionMonitor()
-    
+final class NetworkConnectionMonitor: ObservableObject {
     @Published private(set) var isConnected = false
     @Published private(set) var isCellular = false
     

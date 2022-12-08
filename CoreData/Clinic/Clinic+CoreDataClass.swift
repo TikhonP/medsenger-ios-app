@@ -9,7 +9,7 @@
 import CoreData
 
 @objc(Clinic)
-public class Clinic: NSManagedObject, CoreDataIdGetable {
+public class Clinic: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     public static func saveLogo(id: Int, image: Data) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             let clinic = get(id: id, for: context)
@@ -21,12 +21,10 @@ public class Clinic: NSManagedObject, CoreDataIdGetable {
     public static func objectsAll() -> [Clinic] {
         let context = PersistenceController.shared.container.viewContext
         var result = [Clinic]()
-        DispatchQueue.main.sync {
-            context.performAndWait {
-                let fetchRequest = Clinic.fetchRequest()
-                if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
-                    result = fetchedResults
-                }
+        context.performAndWait {
+            let fetchRequest = Clinic.fetchRequest()
+            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
+                result = fetchedResults
             }
         }
         return result

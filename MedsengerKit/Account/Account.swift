@@ -22,11 +22,12 @@ class Account {
         if let fcmToken = UserDefaults.fcmToken {
             updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
         }
-        Contract.clearAllContracts()
+        PersistenceController.clearDatabase(withUser: false)
         UserDefaults.userRole = role
         if let fcmToken = UserDefaults.fcmToken {
             updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
         }
+        Contracts.shared.fetchContracts()
     }
     
     public func fetchAvatar() {

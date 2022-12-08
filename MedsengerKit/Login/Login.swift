@@ -37,6 +37,7 @@ class Login {
                     completion(.unknownError)
                 }
             case .failure(let requestError):
+                processRequestError(requestError, "sign in")
                 switch requestError {
                 case .api(let errorResponse, _):
                     if errorResponse.errors.contains("User is not activated") {
@@ -46,11 +47,9 @@ class Login {
                     } else if errorResponse.errors.contains("Incorrect password") {
                         completion(.incorrectPassword)
                     } else {
-                        processRequestError(requestError, "sign in")
                         completion(.unknownError)
                     }
                 default:
-                    processRequestError(requestError, "sign in")
                     completion(.unknownError)
                 }
             }

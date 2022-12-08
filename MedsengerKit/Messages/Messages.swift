@@ -48,7 +48,7 @@ final class Messages {
     ///   - replyToId: If message is reply, reply to message id
     ///   - attachments: Attachments as tuple with filename and data
     ///   - completion: Request completion
-    public func sendMessage(_ text: String, for contractId: Int, replyToId: Int? = nil, attachments: Array<ChatViewAttachment> = [], completion: (() -> Void)? = nil) {
+    public func sendMessage(_ text: String, for contractId: Int, replyToId: Int? = nil, attachments: Array<ChatViewAttachment> = [], completion: @escaping (_ succeeded: Bool) -> Void) {
         let sendMessageResource = SendMessageResouce(text: text, contractID: contractId, replyToId: replyToId, attachments: attachments)
         sendMessageRequest = APIRequest(sendMessageResource)
         sendMessageRequest?.execute { result in
@@ -58,12 +58,20 @@ final class Messages {
                     Message.saveFromJson(data, contractId: contractId)
                     Contract.updateLastFetchedMessage(id: contractId)
                     Websockets.shared.messageUpdate(contractId: contractId)
-                    if let completion = completion {
-                        completion()
-                    }
+                    completion(true)
+                } else {
+                    completion(false)
                 }
-            case .failure(let error):
-                processRequestError(error, "send message for contract \(contractId)")
+            case .failure(let failureError):
+                completion(false)
+                switch failureError {
+                case .api(let errorsResponse, _):
+                    if errorsResponse.errors.contains("too large file") {
+                        print("too large file")
+                    }
+                default:
+                    processRequestError(failureError, "send message for contract \(contractId)")
+                }
             }
         }
     }

@@ -45,7 +45,14 @@ struct ArchivesChatsView: View {
     var body: some View {
         ZStack {
             if contracts.isEmpty {
-                EmptyArchiveChatsView()
+                if chatsViewModel.showArchiveContractsLoading {
+                    ProgressView()
+                } else {
+                    EmptyArchiveChatsView()
+                        .onTapGesture {
+                            chatsViewModel.getArchiveContracts()
+                        }
+                }
             } else {
                 List(contracts) { contract in
                     NavigationLink(destination: {

@@ -8,6 +8,7 @@
 
 import Foundation
 import os.log
+import SwiftUI
 
 /// Network request failure cases
 enum NetworkRequestError: Error {
@@ -67,6 +68,11 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         Logger.urlRequest.error("Request `\(requestName)` failed to get URLError error: \(error.localizedDescription)")
     case .request(let urlError):
         switch urlError.code {
+        case .notConnectedToInternet:
+            ContentViewModel.shared.createGlobalAlert(
+                title: LocalizedStringKey("The Internet connection appears to be offline.").stringValue(),
+                message: LocalizedStringKey("Turn off Airplane Mode or connect to Wi-Fi.").stringValue())
+            Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         default:
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         }

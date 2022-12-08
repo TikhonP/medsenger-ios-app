@@ -72,20 +72,6 @@ extension Contract {
         }
     }
     
-    public static func clearAllContracts() {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "Contract")
-            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-            
-            do {
-                try PersistenceController.shared.container.persistentStoreCoordinator.execute(deleteRequest, with: context)
-                PersistenceController.save(for: context, detailsForLogging: "Contract delete all")
-            } catch {
-                Contract.logger.error("Core Data failed to cleanup contracts: \(error.localizedDescription)")
-            }
-        }
-    }
-    
     public static func updateContractNotes(id: Int, notes: String) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump

@@ -16,7 +16,7 @@ enum Wrapper<T: Decodable> {
 /// `medsenger.ru` response base model
 extension Wrapper: Decodable {
     enum status: String, Decodable {
-        case success, error
+        case success, error, failed
     }
     
     enum CodingKeys: CodingKey {
@@ -33,7 +33,7 @@ extension Wrapper: Decodable {
         switch state {
         case .success:
             self = .success(try container.decode(T.self, forKey: .data))
-        case .error:
+        case .error, .failed:
             let errorFields: [String]
             do {
                 errorFields = try container.decode(Array<String>.self, forKey: .error_fields)

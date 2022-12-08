@@ -15,7 +15,7 @@ struct ScrollToBottomLabelView: View {
             .scaledToFit()
             .foregroundColor(.gray)
             .padding(10)
-            .frame(width: 37)
+            .frame(width: 38)
             .padding(5)
             .blurEffect()
             .clipShape(Circle())

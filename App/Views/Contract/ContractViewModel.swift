@@ -10,6 +10,7 @@ import Foundation
 
 final class ContractViewModel: ObservableObject {
     @Published var showRemoveScenarioLoading = false
+    @Published var showChooseScenario = false
 
     let contractId: Int
     

@@ -50,7 +50,7 @@ struct ChooseScenarioView: View {
         NavigationView {
             List(scenarios) { scenario in
                 NavigationLink(destination: {
-                    ScenarioView(scenario: scenario)
+                    ScenarioView(scenario: scenario, contractId: Int(contract.id))
                 }, label: {
                     Label(scenario.wrappedName, systemImage: scenario.systemNameIcon)
                 })

@@ -16,13 +16,28 @@ final class ContentViewModel: ObservableObject {
         Websockets.shared.contentViewModelDelegate = self
     }
     
-    @Published private(set) var isCalling: Bool = false
+    @Published var isCalling: Bool = false
     @Published private(set) var videoCallContractId: Int?
     @Published private(set) var isCaller: Bool = false
     
     @Published private(set) var openChatContractId: Int?
     
     @Published private(set) var openedChatContractId: Int?
+    
+    private var globalAlertTitle = ""
+    private var globalAlertMessage = ""
+    
+    func createGlobalAlert(title: String, message: String) {
+        globalAlertTitle = title
+        globalAlertMessage = message
+    }
+    
+    func getGlobalAlert() -> (title: String, message: String) {
+        let result = (globalAlertTitle, globalAlertMessage)
+        globalAlertTitle = ""
+        globalAlertMessage = ""
+        return result
+    }
     
     func showCall(contractId: Int, isCaller: Bool) {
         DispatchQueue.main.async {

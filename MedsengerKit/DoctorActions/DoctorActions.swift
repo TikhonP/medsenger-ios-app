@@ -19,6 +19,7 @@ final class DoctorActions {
     private var deviceStateRequest: APIRequest<DeviceResource>?
     private var updateCommentsRequest: APIRequest<UpdateCommentsResource>?
     private var removeScenarioRequest: APIRequest<RemoveScenarioResource>?
+    private var addScenarioRequest: APIRequest<AddScenarioResource>?
     
     /// Check if user exists in Medseger when adding contract
     /// - Parameters:
@@ -145,6 +146,20 @@ final class DoctorActions {
             case .failure(let error):
                 completion(false)
                 processRequestError(error, "DoctorActions: removeScenario")
+            }
+        }
+    }
+    
+    public func addScenario(contractId: Int, scenarioId: Int, params: [ClinicScenarioParamNode], completion: @escaping (_ succeeded: Bool) -> Void) {
+        let addScenarioResource = AddScenarioResource(contractId: contractId, scenarioId: scenarioId, params: params)
+        addScenarioRequest = APIRequest(addScenarioResource)
+        addScenarioRequest?.execute { result in
+            switch result {
+            case .success(_):
+                completion(true)
+            case .failure(let error):
+                completion(false)
+                processRequestError(error, "DoctorActions: addScenario")
             }
         }
     }

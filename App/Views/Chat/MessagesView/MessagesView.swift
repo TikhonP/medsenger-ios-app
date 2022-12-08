@@ -49,7 +49,7 @@ fileprivate struct ViewOffsetKey: PreferenceKey {
 
 struct MessagesView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
-    
+
     @ObservedObject private var contract: Contract
     
     @FetchRequest private var messages: FetchedResults<Message>
@@ -61,8 +61,11 @@ struct MessagesView: View {
     @State private var wholeSize: CGSize = .zero
     @State private var scrollViewSize: CGSize = .zero
     
-    let spaceName = "scroll"
-    let bottomScrollConstant: Double = 50
+    private let spaceName = "scroll"
+    private let bottomScrollConstant: Double = 50
+    
+    private let scrollToBottomOffset: CGFloat = 60
+    private let scrollViewBottomPadding: CGFloat = 45
     
     init(contract: Contract) {
         self.contract = contract
@@ -84,11 +87,11 @@ struct MessagesView: View {
                         scrollToBottom = true
                     }, label: {
                         ScrollToBottomLabelView()
-                            .padding(5)
+                            .padding(.trailing, 5)
+                            .padding(.bottom, scrollToBottomOffset)
                     })
                 }
             }
-            .offset(y: -47)
             .transition(.scale)
             .animation(.spring(), value: showScrollDownButton)
         }
@@ -107,7 +110,7 @@ struct MessagesView: View {
                                     }
                                 }
                                 Color.clear.id(-1)
-                                    .frame(height: 50)
+                                    .padding(.bottom, scrollViewBottomPadding)
                             }
                             .padding(.horizontal)
                             .background(
@@ -133,8 +136,11 @@ struct MessagesView: View {
                                 scrollTo(messageID: -1, shouldAnumate: false, scrollReader: scrollReader)
                             }
                             .onChange(of: contract.lastFetchedMessage, perform: { lastFetchedMessage in
-                                if let lastFetchedMessage = lastFetchedMessage, autoScrollDown {
-                                    scrollTo(messageID: Int(lastFetchedMessage.id), shouldAnumate: true, scrollReader: scrollReader)
+//                                if let lastFetchedMessage = lastFetchedMessage, autoScrollDown {
+//                                    scrollTo(messageID: Int(lastFetchedMessage.id), shouldAnumate: true, scrollReader: scrollReader)
+//                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    scrollTo(messageID: -1, shouldAnumate: true, scrollReader: scrollReader)
                                 }
                             })
                             .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
@@ -161,7 +167,7 @@ struct MessagesView: View {
     
     func scrollTo(messageID: Int, anchor: UnitPoint? = .bottomTrailing, shouldAnumate: Bool, scrollReader: ScrollViewProxy) {
         DispatchQueue.main.async {
-            withAnimation(shouldAnumate ? Animation.easeIn : nil) {
+            withAnimation(shouldAnumate ? .easeIn : nil) {
                 scrollReader.scrollTo(messageID, anchor: anchor)
             }
         }

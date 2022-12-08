@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct ChatView: View {
     @ObservedObject private var contract: Contract
@@ -39,7 +38,7 @@ struct ChatView: View {
             } else {
                 ZStack(alignment: .bottom) {
                     MessagesView(contract: contract)
-                    TextInputView()
+                    MessageInputView()
                 }
                 .deprecatedScrollDismissesKeyboard()
                 .environmentObject(chatViewModel)
@@ -61,7 +60,7 @@ struct ChatView: View {
                             do {
                                 let data = try Data(contentsOf: url)
                                 DispatchQueue.main.async {
-                                    chatViewModel.addedImages.append(ChatViewAttachment(
+                                    chatViewModel.messageAttachments.append(ChatViewAttachment(
                                         data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
                                 }
                             } catch {
@@ -80,7 +79,7 @@ struct ChatView: View {
                 } , label: {
                     EmptyView()
                 })
-                .isDetailLink(false)
+            .isDetailLink(false)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
