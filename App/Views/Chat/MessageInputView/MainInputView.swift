@@ -80,6 +80,7 @@ struct MainInputView: View {
     }
 }
 
+#if DEBUG
 struct MainInputView_Previews: PreviewProvider {
     static var previews: some View {
         MainInputView()
@@ -87,3 +88,4 @@ struct MainInputView_Previews: PreviewProvider {
             .previewLayout(PreviewLayout.sizeThatFits)
     }
 }
+#endif

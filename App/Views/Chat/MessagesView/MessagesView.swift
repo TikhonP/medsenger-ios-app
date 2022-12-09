@@ -100,7 +100,7 @@ struct MessagesView: View {
     var scrollView: some View {
         GeometryReader { reader in
             ChildSizeReader(size: $wholeSize) {
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     ScrollViewReader { scrollReader in
                         ChildSizeReader(size: $scrollViewSize) {
                             VStack(spacing: 0) {
@@ -136,9 +136,6 @@ struct MessagesView: View {
                                 scrollTo(messageID: -1, shouldAnumate: false, scrollReader: scrollReader)
                             }
                             .onChange(of: contract.lastFetchedMessage, perform: { lastFetchedMessage in
-//                                if let lastFetchedMessage = lastFetchedMessage, autoScrollDown {
-//                                    scrollTo(messageID: Int(lastFetchedMessage.id), shouldAnumate: true, scrollReader: scrollReader)
-//                                }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     scrollTo(messageID: -1, shouldAnumate: true, scrollReader: scrollReader)
                                 }
@@ -156,7 +153,6 @@ struct MessagesView: View {
                                 }
                             })
                             .environmentObject(chatViewModel)
-                            
                         }
                     }
                 }
@@ -174,6 +170,7 @@ struct MessagesView: View {
     }
 }
 
+#if DEBUG
 struct MessagesView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -188,3 +185,4 @@ struct MessagesView_Previews: PreviewProvider {
         MessagesView(contract: contract1)
     }
 }
+#endif

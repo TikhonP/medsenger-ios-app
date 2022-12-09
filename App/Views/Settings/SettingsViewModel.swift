@@ -10,15 +10,11 @@ import Foundation
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
-    @Published var isPushNotificationOn: Bool = UserDefaults.isPushNotificationsOn
-    @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
     @Published var isHealthKitSyncActive: Bool = UserDefaults.isHealthKitSyncActive
     
     @Published var showEditProfileData: Bool = false
     
-    @Published var showSelectAvatarOptions: Bool = false
-    @Published var showSelectPhotosSheet = false
-    @Published var showTakeImageSheet = false
+    @Published var showSelectAvatarOptions = false
     @Published var selectedAvatarImage: ImagePickerMedia?
     
     func getAvatar() {
@@ -37,28 +33,6 @@ final class SettingsViewModel: ObservableObject {
         Account.shared.uploadAvatar(image)
     }
     
-    func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
-        Account.shared.saveProfileData(name: name, email: email, phone: phone, birthday: birthday, completion: completion)
-    }
-    
-    func updateEmailNotifications() {
-        Account.shared.updateEmailNotiofication(emailNotify: isEmailNotificationOn) {
-            Account.shared.updateProfile()
-        }
-    }
-    
-    func updatePushNotifications() {
-        if let fcmToken = UserDefaults.fcmToken {
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: isPushNotificationOn)
-        }
-    }
-    
-    func toggleEditPersonalData() {
-        withAnimation {
-            showEditProfileData.toggle()
-        }
-    }
-    
     func updateHealthKitSync() {
         if isHealthKitSyncActive {
             HealthKitSync.shared.authorizeHealthKit { [weak self] success in
@@ -75,5 +49,28 @@ final class SettingsViewModel: ObservableObject {
         } else {
             UserDefaults.isHealthKitSyncActive = false
         }
+    }
+    
+    func updateAvatarFromFile(_ urls: [URL]) {
+        guard let fileURL = urls.first else {
+            return
+        }
+        do {
+            if fileURL.startAccessingSecurityScopedResource() {
+                let data = try Data(contentsOf: fileURL)
+                fileURL.stopAccessingSecurityScopedResource()
+                uploadAvatar(image: ImagePickerMedia(data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .image))
+            }
+        } catch {
+            print("Failed to load file: \(error.localizedDescription)")
+        }
+    }
+    
+    func updateAvatarFromImage(_ selectedMedia: ImagePickerMedia?) {
+        guard let selectedMedia = selectedMedia,
+              selectedMedia.type == .image else {
+            return
+        }
+        uploadAvatar(image: selectedMedia)
     }
 }

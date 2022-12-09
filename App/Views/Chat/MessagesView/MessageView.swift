@@ -134,6 +134,7 @@ struct MessageView: View {
     }
 }
 
+#if DEBUG
 struct MessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -159,6 +160,7 @@ struct MessageView_Previews: PreviewProvider {
         }
     }
 }
+#endif
 
 struct BubbleShape: Shape {
     var myMessage : Bool

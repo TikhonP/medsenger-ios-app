@@ -63,6 +63,8 @@
 		435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA22934C8350094F93C /* LocalVideoView.swift */; };
 		435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */; };
 		435F9DA7293577540094F93C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA6293577540094F93C /* Logger.swift */; };
+		43758B51294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */; };
+		43758B5329429D45008969FF /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43758B5229429D45008969FF /* MotionManager.swift */; };
 		4376163829338781001049E6 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376163729338781001049E6 /* SessionDescription.swift */; };
 		4376163A293387DF001049E6 /* IceCandidate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43761639293387DF001049E6 /* IceCandidate.swift */; };
 		4376163D2933881C001049E6 /* WebRTC in Frameworks */ = {isa = PBXBuildFile; productRef = 4376163C2933881B001049E6 /* WebRTC */; };
@@ -74,6 +76,14 @@
 		4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164D2933A3C5001049E6 /* WaitingCallView.swift */; };
 		437616502933A475001049E6 /* CallingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376164F2933A475001049E6 /* CallingView.swift */; };
 		437616592933C424001049E6 /* RemoteVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437616582933C424001049E6 /* RemoteVideoView.swift */; };
+		437BEB51294346F9008EF4DE /* View+pinchToZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */; };
+		437BEB5329434747008EF4DE /* FullscreenImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5229434747008EF4DE /* FullscreenImagePreview.swift */; };
+		437BEB552943549A008EF4DE /* SettingsMainFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB542943549A008EF4DE /* SettingsMainFormView.swift */; };
+		437BEB5729435AA6008EF4DE /* String+isEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5629435AA6008EF4DE /* String+isEmail.swift */; };
+		437BEB5929435B1D008EF4DE /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5829435B1D008EF4DE /* Alertable.swift */; };
+		437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */; };
+		437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */; };
+		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
 		43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1662F294131380003E1FB /* ReplyedMessageView.swift */; };
 		43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16631294132670003E1FB /* InputAttachmentsView.swift */; };
 		43A16634294133450003E1FB /* MainInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16633294133450003E1FB /* MainInputView.swift */; };
@@ -87,9 +97,11 @@
 		43A16648294222D60003E1FB /* ClinicScenarioParamNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16647294222D60003E1FB /* ClinicScenarioParamNode.swift */; };
 		43A1664A294222EA0003E1FB /* ScenarioViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16649294222EA0003E1FB /* ScenarioViewModel.swift */; };
 		43A1664C2942230E0003E1FB /* ScenarioParamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1664B2942230E0003E1FB /* ScenarioParamView.swift */; };
-		43A16650294247600003E1FB /* AlertInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1664F294247600003E1FB /* AlertInfo.swift */; };
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
+		43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */; };
+		43B9AB20294395BC0004EEFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB1E294395BB0004EEFD /* InfoPlist.strings */; };
+		43B9AB232943A7C10004EEFD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB252943A7C10004EEFD /* Localizable.strings */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
 		43D5057B293F498B00EE3756 /* View+blurEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5057A293F498B00EE3756 /* View+blurEffect.swift */; };
 		43D5057D293F4EA400EE3756 /* ScrollToBottomLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */; };
@@ -208,7 +220,6 @@
 		43EF44B029229057005DF084 /* User+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44AF29229057005DF084 /* User+Preview.swift */; };
 		43EF44B229229068005DF084 /* PersistenceController+preparePreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44B129229068005DF084 /* PersistenceController+preparePreviewData.swift */; };
 		43EF44B42922908B005DF084 /* Contract+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44B32922908B005DF084 /* Contract+Preview.swift */; };
-		43EF44B7292290FE005DF084 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43EF44B9292290FE005DF084 /* Localizable.strings */; };
 		43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BC2922D427005DF084 /* Message+Preview.swift */; };
 		43EF44BF2923C6A7005DF084 /* Clinic+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */; };
 		43EF44C12923D9A2005DF084 /* DeprecatedSearchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44C02923D9A2005DF084 /* DeprecatedSearchable.swift */; };
@@ -275,6 +286,8 @@
 		435F9DA22934C8350094F93C /* LocalVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoView.swift; sourceTree = "<group>"; };
 		435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVideoCallResource.swift; sourceTree = "<group>"; };
 		435F9DA6293577540094F93C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+internetOfflineWarningInBottomBar.swift"; sourceTree = "<group>"; };
+		43758B5229429D45008969FF /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		4376163729338781001049E6 /* SessionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDescription.swift; sourceTree = "<group>"; };
 		43761639293387DF001049E6 /* IceCandidate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IceCandidate.swift; sourceTree = "<group>"; };
 		4376163E293389DD001049E6 /* WebRTCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRTCClient.swift; sourceTree = "<group>"; };
@@ -285,6 +298,14 @@
 		4376164D2933A3C5001049E6 /* WaitingCallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingCallView.swift; sourceTree = "<group>"; };
 		4376164F2933A475001049E6 /* CallingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallingView.swift; sourceTree = "<group>"; };
 		437616582933C424001049E6 /* RemoteVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteVideoView.swift; sourceTree = "<group>"; };
+		437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+pinchToZoom.swift"; sourceTree = "<group>"; };
+		437BEB5229434747008EF4DE /* FullscreenImagePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenImagePreview.swift; sourceTree = "<group>"; };
+		437BEB542943549A008EF4DE /* SettingsMainFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainFormView.swift; sourceTree = "<group>"; };
+		437BEB5629435AA6008EF4DE /* String+isEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+isEmail.swift"; sourceTree = "<group>"; };
+		437BEB5829435B1D008EF4DE /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
+		437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
+		437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataViewModel.swift; sourceTree = "<group>"; };
+		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		43A1662F294131380003E1FB /* ReplyedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyedMessageView.swift; sourceTree = "<group>"; };
 		43A16631294132670003E1FB /* InputAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAttachmentsView.swift; sourceTree = "<group>"; };
 		43A16633294133450003E1FB /* MainInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInputView.swift; sourceTree = "<group>"; };
@@ -298,9 +319,12 @@
 		43A16647294222D60003E1FB /* ClinicScenarioParamNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClinicScenarioParamNode.swift; sourceTree = "<group>"; };
 		43A16649294222EA0003E1FB /* ScenarioViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenarioViewModel.swift; sourceTree = "<group>"; };
 		43A1664B2942230E0003E1FB /* ScenarioParamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenarioParamView.swift; sourceTree = "<group>"; };
-		43A1664F294247600003E1FB /* AlertInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertInfo.swift; sourceTree = "<group>"; };
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
+		43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainFormViewModel.swift; sourceTree = "<group>"; };
+		43B9AB1F294395BC0004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		43B9AB242943A7C10004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43B9AB262943A7C40004EEFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		43D5057A293F498B00EE3756 /* View+blurEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+blurEffect.swift"; sourceTree = "<group>"; };
 		43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollToBottomLabelView.swift; sourceTree = "<group>"; };
@@ -425,7 +449,6 @@
 		43EF44AF29229057005DF084 /* User+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+Preview.swift"; sourceTree = "<group>"; };
 		43EF44B129229068005DF084 /* PersistenceController+preparePreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PersistenceController+preparePreviewData.swift"; sourceTree = "<group>"; };
 		43EF44B32922908B005DF084 /* Contract+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+Preview.swift"; sourceTree = "<group>"; };
-		43EF44B8292290FE005DF084 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43EF44BC2922D427005DF084 /* Message+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+Preview.swift"; sourceTree = "<group>"; };
 		43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clinic+Preview.swift"; sourceTree = "<group>"; };
 		43EF44C02923D9A2005DF084 /* DeprecatedSearchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedSearchable.swift; sourceTree = "<group>"; };
@@ -868,12 +891,13 @@
 				43EF442F292289B0005DF084 /* Utils */,
 				43EF440B2922824B005DF084 /* Views */,
 				43EF44012922808F005DF084 /* Info.plist */,
+				43B9AB1E294395BB0004EEFD /* InfoPlist.strings */,
 				430E7D952936392A009C129D /* GoogleService-Info.plist */,
 				43EF44002922803D005DF084 /* Medsenger.entitlements */,
 				43EF43F229227F74005DF084 /* App.swift */,
 				43EF43F629227F76005DF084 /* Assets.xcassets */,
 				43EF43F829227F76005DF084 /* Preview Content */,
-				43EF44B9292290FE005DF084 /* Localizable.strings */,
+				43B9AB252943A7C10004EEFD /* Localizable.strings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -949,6 +973,7 @@
 				435F9DA6293577540094F93C /* Logger.swift */,
 				435C1830293ADD70009483F6 /* String+uniqueFilename.swift */,
 				43A1664429421ECF0003E1FB /* AnyEncodable.swift */,
+				437BEB5629435AA6008EF4DE /* String+isEmail.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1033,7 +1058,6 @@
 			children = (
 				43EF446C29228DB8005DF084 /* SignInViewModel.swift */,
 				43EF446E29228DCA005DF084 /* SignInView.swift */,
-				43EF447029228DDF005DF084 /* PasswordFieldView.swift */,
 			);
 			path = SignIn;
 			sourceTree = "<group>";
@@ -1082,7 +1106,13 @@
 				43198022293D5107005F43A8 /* NewImagePicker.swift */,
 				43198024293E3C35005F43A8 /* View+hideKeyboard.swift */,
 				43D5057A293F498B00EE3756 /* View+blurEffect.swift */,
-				43A1664F294247600003E1FB /* AlertInfo.swift */,
+				43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */,
+				43758B5229429D45008969FF /* MotionManager.swift */,
+				437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */,
+				437BEB5229434747008EF4DE /* FullscreenImagePreview.swift */,
+				437BEB5829435B1D008EF4DE /* Alertable.swift */,
+				437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */,
+				43EF447029228DDF005DF084 /* PasswordFieldView.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -1093,7 +1123,11 @@
 				43EF44A029228F54005DF084 /* SettingsViewModel.swift */,
 				43EF44A229228F60005DF084 /* SettingsView.swift */,
 				43EF44A629228F83005DF084 /* EditPersonalDataView.swift */,
+				437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */,
 				43EF44A829228FB9005DF084 /* ChangePasswordView.swift */,
+				437BEB542943549A008EF4DE /* SettingsMainFormView.swift */,
+				437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */,
+				43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1157,6 +1191,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 43EF43E629227F74005DF084;
 			packageReferences = (
@@ -1177,10 +1212,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				43EF44B7292290FE005DF084 /* Localizable.strings in Resources */,
+				43B9AB232943A7C10004EEFD /* Localizable.strings in Resources */,
 				43EF43FA29227F76005DF084 /* Preview Assets.xcassets in Resources */,
 				43EF43F729227F76005DF084 /* Assets.xcassets in Resources */,
 				430E7D962936392A009C129D /* GoogleService-Info.plist in Resources */,
+				43B9AB20294395BC0004EEFD /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1200,8 +1236,10 @@
 				43EF446F29228DCA005DF084 /* SignInView.swift in Sources */,
 				43EF441129228641005DF084 /* DoctorHelper+CoreDataClass.swift in Sources */,
 				435C184B293B8044009483F6 /* WaveformImageDrawer+macOS.swift in Sources */,
+				437BEB51294346F9008EF4DE /* View+pinchToZoom.swift in Sources */,
 				435C1838293AEDDB009483F6 /* VoiceMessageView.swift in Sources */,
 				43D505C3293F653700EE3756 /* CoreDataProtocols.swift in Sources */,
+				437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */,
 				434399F32927E0A7001D7C4F /* DeprecatedScrollDismissesKeyboard.swift in Sources */,
 				43EF447829228E59005DF084 /* MessagesResource.swift in Sources */,
 				43D505BB293F625400EE3756 /* BotAction+JsonDeserializer.swift in Sources */,
@@ -1211,6 +1249,7 @@
 				43EF448E29228EB1005DF084 /* BoundaryGenerator.swift in Sources */,
 				435C1854293BCE66009483F6 /* EmptyArchiveChatsView.swift in Sources */,
 				43EF4408292281F4005DF084 /* Medsenger.xcdatamodeld in Sources */,
+				437BEB5729435AA6008EF4DE /* String+isEmail.swift in Sources */,
 				43EF44A929228FB9005DF084 /* ChangePasswordView.swift in Sources */,
 				4376164A29339876001049E6 /* VideoCallViewModel.swift in Sources */,
 				435D56FC2938009F0013B0F4 /* HealthKitRecord.swift in Sources */,
@@ -1219,10 +1258,13 @@
 				435C1851293BCBEB009483F6 /* EmptyChatsView.swift in Sources */,
 				43EF445B29228CE7005DF084 /* Contracts.swift in Sources */,
 				43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */,
+				437BEB5929435B1D008EF4DE /* Alertable.swift in Sources */,
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
 				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
 				43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */,
+				43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */,
+				437BEB552943549A008EF4DE /* SettingsMainFormView.swift in Sources */,
 				43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
@@ -1247,6 +1289,7 @@
 				43EF4428292287CA005DF084 /* Attachment+CoreDataClass.swift in Sources */,
 				435C184D293B8044009483F6 /* TempiFFT.swift in Sources */,
 				43A1664C2942230E0003E1FB /* ScenarioParamView.swift in Sources */,
+				437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */,
 				43D505B5293F60B400EE3756 /* Agent+JsonDeserializer.swift in Sources */,
 				43EF444329228B8B005DF084 /* Account.swift in Sources */,
 				435D56FA293800290013B0F4 /* HealthRecordsResource.swift in Sources */,
@@ -1297,6 +1340,7 @@
 				4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */,
 				43EF449E29228F11005DF084 /* DeprecatedRefreshable.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
+				437BEB5329434747008EF4DE /* FullscreenImagePreview.swift in Sources */,
 				435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */,
 				43D505BD293F631400EE3756 /* AgentTask+JsonDeserializer.swift in Sources */,
 				435C1849293B8044009483F6 /* CircularWaveformRenderer.swift in Sources */,
@@ -1338,6 +1382,7 @@
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
 				43EF440A29228202005DF084 /* PersistenceController.swift in Sources */,
 				43EF44A129228F54005DF084 /* SettingsViewModel.swift in Sources */,
+				43758B51294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift in Sources */,
 				4376163F293389DD001049E6 /* WebRTCClient.swift in Sources */,
 				43EF446129228D13005DF084 /* DeactivateMessagesResource.swift in Sources */,
 				434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */,
@@ -1353,9 +1398,9 @@
 				43D5059F293F5B1200EE3756 /* ClinicRule+JsonDeserializer.swift in Sources */,
 				43F63C682940E22E008D1B9F /* UpdateCommentsResource.swift in Sources */,
 				434399F92927F366001D7C4F /* InfoMaterialsView.swift in Sources */,
+				43758B5329429D45008969FF /* MotionManager.swift in Sources */,
 				43EF444929228BC5005DF084 /* NotificationsResource.swift in Sources */,
 				43EF4416292286BC005DF084 /* ContractParam+CoreDataClass.swift in Sources */,
-				43A16650294247600003E1FB /* AlertInfo.swift in Sources */,
 				43EF441C29228739005DF084 /* AgentTask+CoreDataClass.swift in Sources */,
 				43EF445829228CAF005DF084 /* ArchivesChatsView.swift in Sources */,
 				43EF445429228C8B005DF084 /* ChatsView.swift in Sources */,
@@ -1381,6 +1426,7 @@
 				43198023293D5107005F43A8 /* NewImagePicker.swift in Sources */,
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
+				437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */,
 				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,
 				43D505C1293F649000EE3756 /* PatientHelper+JsonDeserializer.swift in Sources */,
 				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
@@ -1399,10 +1445,19 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		43EF44B9292290FE005DF084 /* Localizable.strings */ = {
+		43B9AB1E294395BB0004EEFD /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				43EF44B8292290FE005DF084 /* en */,
+				43B9AB1F294395BC0004EEFD /* ru */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		43B9AB252943A7C10004EEFD /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				43B9AB242943A7C10004EEFD /* ru */,
+				43B9AB262943A7C40004EEFD /* en */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1414,6 +1469,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1474,6 +1530,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1531,7 +1588,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 161345678;
 				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;
@@ -1539,10 +1596,10 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
-				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "The data needs your permission to share healthkit data with medsenger in order doctor will see it";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "The data needs your permission to share healthkit data with medsenger in order doctor will see it";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = 1.0.0;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can send images to chat or update your avatar";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone in order for you to record voice messages and use the video call feature.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1569,7 +1626,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 161345678;
 				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;
@@ -1577,10 +1634,10 @@
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Medsenger;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
-				INFOPLIST_KEY_NSCameraUsageDescription = "The camera is needed in order to take photos and send them in a chat or add them as an avatar";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "The data needs your permission to share healthkit data with medsenger in order doctor will see it";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "The data needs your permission to share healthkit data with medsenger in order doctor will see it";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = 1.0.0;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera so you can send images to chat or update your avatar";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone in order for you to record voice messages and use the video call feature.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1636,8 +1693,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stasel/WebRTC";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 107.0.0;
+				kind = exactVersion;
+				version = 106.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

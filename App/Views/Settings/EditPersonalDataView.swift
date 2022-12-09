@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct EditPersonalDataView: View {
+    @StateObject private var editPersonalDataViewModel = EditPersonalDataViewModel()
+    
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     @State private var name: String
     @State private var email: String
     @State private var phone: String
     @State private var birthday: Date
-    
-    @State private var showLoading = false
     
     private let avatar: Data?
     
@@ -29,15 +29,6 @@ struct EditPersonalDataView: View {
     }
     
     var body: some View {
-        if #available(iOS 16.0, *) {
-            form
-                .scrollDismissesKeyboard(.interactively)
-        } else {
-            form
-        }
-    }
-    
-    var form: some View {
         Form {
             Section {
                 HStack {
@@ -53,7 +44,7 @@ struct EditPersonalDataView: View {
                         }
                         .frame(width: 95, height: 95)
                         .clipShape(Circle())
-                        Button("New photo") {
+                        Button("New Photo") {
                             settingsViewModel.showSelectAvatarOptions.toggle()
                         }
                     }
@@ -67,46 +58,58 @@ struct EditPersonalDataView: View {
                 DatePicker("Birthday", selection: $birthday, displayedComponents: [.date])
                 TextField("Name", text: $name)
                     .disableAutocorrection(true)
+                    .textContentType(.name)
             }
             
-            Section(footer: Text("Email is a main identificator for your account, also you can recieve notifications to these adress")) {
-                TextField("E-mail", text: $email)
-                //                    .textInputAutocapitalization(.never)
+            Section(footer: Text("Email is the main identifier for your account and an address for sending notifications")) {
+                TextField("Email", text: $email)
+                    .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
             }
             
-            Section(footer: Text("Phone is optional value")) {
+            Section(footer: Text("Phone is optional")) {
                 TextField("Phone", text: $phone)
+                    .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .textContentType(.telephoneNumber)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.phonePad)
             }
         }
         .navigationTitle("Edit personal data")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel", action: settingsViewModel.toggleEditPersonalData)
+                Button("Cancel", action: {
+                    settingsViewModel.showEditProfileData.toggle()
+                })
             }
             
             ToolbarItem(placement: .confirmationAction) {
-                if showLoading {
+                if editPersonalDataViewModel.showLoading {
                     ProgressView()
                 } else {
                     Button("Save", action: {
-                        showLoading = true
-                        settingsViewModel.saveProfileData(name: name, email: email, phone: phone, birthday: birthday, completion: {
-                            settingsViewModel.toggleEditPersonalData()
-                        })
+                        editPersonalDataViewModel.saveProfileData(name: name, email: email, phone: phone, birthday: birthday) {
+                            settingsViewModel.showEditProfileData.toggle()
+                        }
                     })
                 }
             }
         }
+        .deprecatedScrollDismissesKeyboard()
+        .alert(item: $editPersonalDataViewModel.alert, content: { error in
+            Alert(
+                title: Text(error.title),
+                message: Text(error.message),
+                dismissButton: .default(Text("Close"))
+            )
+        })
     }
 }
 
+#if DEBUG
 struct EditPersonalDataView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -122,3 +125,4 @@ struct EditPersonalDataView_Previews: PreviewProvider {
         }
     }
 }
+#endif

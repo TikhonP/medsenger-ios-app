@@ -12,8 +12,8 @@ struct ArchivesChatsView: View {
     @ObservedObject var user: User
     
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
-    
     @EnvironmentObject private var contentViewModel: ContentViewModel
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
 
     @FetchRequest(
         sortDescriptors: [
@@ -73,11 +73,13 @@ struct ArchivesChatsView: View {
         .deprecatedSearchable(text: query)
         .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
         .listStyle(PlainListStyle())
-        .navigationTitle("Archive Chats")
+        .navigationTitle("Archived Chats")
         .onAppear(perform: chatsViewModel.getArchiveContracts)
+        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
 }
 
+#if DEBUG
 struct ArchivesChatsView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -94,3 +96,4 @@ struct ArchivesChatsView_Previews: PreviewProvider {
         }
     }
 }
+#endif

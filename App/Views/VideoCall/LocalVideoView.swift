@@ -78,8 +78,10 @@ struct LocalVideoView: UIViewControllerRepresentable {
     }
 }
 
+#if DEBUG
 struct LocalVideoView_Previews: PreviewProvider {
     static var previews: some View {
         LocalVideoView(webRTCClient: WebRTCClient(contractId: 1234))
     }
 }
+#endif

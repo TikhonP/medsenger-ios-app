@@ -14,6 +14,7 @@ struct ChatsView: View {
     @StateObject private var chatsViewModel = ChatsViewModel()
     
     @EnvironmentObject private var contentViewModel: ContentViewModel
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @FetchRequest(
         sortDescriptors: [
@@ -100,7 +101,7 @@ struct ChatsView: View {
                                                 Button(action: {
                                                     chatsViewModel.declineMessages(contractId: Int(contract.id))
                                                 }, label: {
-                                                    Label("Decline Messages", systemImage: "checkmark.message.fill")
+                                                    Label("Dismiss Messages", systemImage: "checkmark.message.fill")
                                                 })
                                             }
                                             if contract.isWaitingForConclusion {
@@ -164,6 +165,7 @@ struct ChatsView: View {
         })
         .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
         .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
+        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
     
     var archiveRow: some View {
@@ -222,6 +224,7 @@ struct ChatsView: View {
     }
 }
 
+#if DEBUG
 struct ChatsView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -241,3 +244,4 @@ struct ChatsView_Previews: PreviewProvider {
         }
     }
 }
+#endif

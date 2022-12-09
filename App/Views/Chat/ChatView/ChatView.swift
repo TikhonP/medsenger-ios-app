@@ -16,13 +16,12 @@ struct ChatView: View {
     
     @StateObject private var chatViewModel: ChatViewModel
     
+    @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
+    
     @FocusState private var isTextFocused
     
     @State private var navigationSelection: Int? = nil
-    
-    @AppStorage(UserDefaults.Keys.userRoleKey)
-    private var userRole: UserRole = UserDefaults.userRole
-    
+
     init(contract: Contract, user: User) {
         _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
         self.contract = contract
@@ -123,6 +122,7 @@ struct ChatView: View {
     }
 }
 
+#if DEBUG
 struct ChatView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -147,3 +147,4 @@ struct ChatView_Previews: PreviewProvider {
         }
     }
 }
+#endif

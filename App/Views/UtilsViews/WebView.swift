@@ -84,13 +84,19 @@ struct WebViewWrapper : UIViewRepresentable {
     public func updateUIView(_ uiView: WKWebView, context: Context) {
         if uiView.canGoBack, webViewStateModel.goBack {
             uiView.goBack()
-            webViewStateModel.goBack = false
+            DispatchQueue.main.async {
+                webViewStateModel.goBack = false
+            }
         } else if uiView.canGoForward, webViewStateModel.goForward {
             uiView.goForward()
-            webViewStateModel.goForward = false
+            DispatchQueue.main.async {
+                webViewStateModel.goForward = false
+            }
         } else if webViewStateModel.reload {
             uiView.reload()
-            webViewStateModel.reload = false
+            DispatchQueue.main.async {
+                webViewStateModel.reload = false
+            }
         }
     }
     
@@ -363,6 +369,7 @@ struct WebView: View {
     let url: URL
     let name: String
     
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     @StateObject private var webViewStateModel: WebViewStateModel = WebViewStateModel()
     @Environment(\.presentationMode) private var presentationMode
     
@@ -383,10 +390,15 @@ struct WebView: View {
         .navigationBarTitle(name)
         .navigationBarTitleDisplayMode(.inline)
         .edgesIgnoringSafeArea(.bottom)
-        .deprecatedRefreshable {
-            DispatchQueue.main.async {
-                self.webViewStateModel.reload.toggle()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    self.webViewStateModel.reload.toggle()
+                }, label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                })
             }
         }
+        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
 }

@@ -185,6 +185,7 @@ extension TextView.Representable.Coordinator {
     }
 }
 
+#if DEBUG
 struct TextViewRepresentable_Previews: PreviewProvider {
     static var previews: some View {
         TextView.Representable(
@@ -205,3 +206,4 @@ struct TextViewRepresentable_Previews: PreviewProvider {
             allowsRichText: true)
     }
 }
+#endif

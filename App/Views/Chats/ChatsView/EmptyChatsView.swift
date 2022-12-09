@@ -26,8 +26,10 @@ struct EmptyChatsView: View {
     }
 }
 
+#if DEBUG
 struct EmptyChatsView_Previews: PreviewProvider {
     static var previews: some View {
         EmptyChatsView()
     }
 }
+#endif

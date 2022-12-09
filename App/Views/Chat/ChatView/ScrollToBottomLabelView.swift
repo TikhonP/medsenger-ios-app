@@ -26,6 +26,7 @@ struct ScrollToBottomLabelView: View {
     }
 }
 
+#if DEBUG
 struct ScrollToBottomLabelView_Previews: PreviewProvider {
     static var previews: some View {
         ScrollToBottomLabelView()
@@ -33,3 +34,4 @@ struct ScrollToBottomLabelView_Previews: PreviewProvider {
             .previewLayout(PreviewLayout.sizeThatFits)
     }
 }
+#endif

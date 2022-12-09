@@ -47,11 +47,12 @@ struct InfoMaterialsView: View {
                 }
             }
         }
-        .navigationTitle("Info materials")
+        .navigationTitle("Info Materials")
         .deprecatedSearchable(text: query)
     }
 }
 
+#if DEBUG
 struct InfoMaterialsView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -64,3 +65,4 @@ struct InfoMaterialsView_Previews: PreviewProvider {
         InfoMaterialsView(contract: contract1)
     }
 }
+#endif

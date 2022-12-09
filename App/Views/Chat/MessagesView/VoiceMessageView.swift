@@ -163,6 +163,7 @@ struct VoiceMessageView: View {
     }
 }
 
+#if DEBUG
 struct VoiceMessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -175,3 +176,4 @@ struct VoiceMessageView_Previews: PreviewProvider {
         VoiceMessageView(message: message1)
     }
 }
+#endif

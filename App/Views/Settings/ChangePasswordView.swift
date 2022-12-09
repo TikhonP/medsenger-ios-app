@@ -9,7 +9,9 @@
 import SwiftUI
 
 struct ChangePasswordView: View {
-    @StateObject private var settingsViewModel = SettingsViewModel()
+    @StateObject private var changePasswordViewModel = ChangePasswordViewModel()
+    
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     @Environment(\.presentationMode) private var presentationMode
     
@@ -20,71 +22,41 @@ struct ChangePasswordView: View {
     @State private var presentAlert = false
     
     var body: some View {
-        if #available(iOS 16.0, *) {
-            form
-                .scrollDismissesKeyboard(.interactively)
-        } else {
-            form
-        }
-    }
-    
-    var form: some View {
         Form {
-            Section(footer: Text("Password length can be 8 10")) {
-                SecureField("New password", text: $password1)
+            Section(footer: Text("Password must be more than 6 characters")) {
+                PasswordFieldView(password: $password1, placeholder: LocalizedStringKey("New password").stringValue())
+                PasswordFieldView(password: $password2, placeholder: LocalizedStringKey("Repeat password").stringValue())
             }
-            
-            Section {
-                SecureField("Repeat password", text: $password2)
-            }
-            
-            Section {
-                if passwordsValid {
-                    Text("Password valid")
-                } else {
-                    Text("Password invalid")
-                }
-            }
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets())
         }
-        .navigationTitle("Edit personal data")
+        .navigationTitle("Change password")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                if showLoading {
-                    ProgressView()
-                } else {
-                    Button("Save") {
-                        showLoading = true
-                        Login.shared.changePassword(newPassword: password1, completion: { result in
-                            DispatchQueue.main.async {
-                                showLoading = false
-                                switch result {
-                                case .success:
-                                    presentationMode.wrappedValue.dismiss()
-                                case .unknownError:
-                                    presentAlert = true
-                                case .incorrectData:
-                                    presentAlert = true
-                                }
-                            }
-                        })
+                Button(action: {
+                    changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2) {
+                        presentationMode.wrappedValue.dismiss()
                     }
-                    .disabled(!passwordsValid)
-                }
+                }, label: {
+                    if showLoading {
+                        ProgressView()
+                    } else {
+                       Text("Save")
+                    }
+                })
             }
         }
-        .alert(isPresented: $presentAlert) {
-            Alert(title: Text("Incorrect data"), dismissButton: .default(Text("OK")))
-        }
-    }
-    
-    var passwordsValid: Bool {
-        password1 == password2 && password1.count >= 6
+        .deprecatedScrollDismissesKeyboard()
+        .alert(item: $changePasswordViewModel.alert, content: { error in
+            Alert(
+                title: Text(error.title),
+                message: Text(error.message),
+                dismissButton: .default(Text("Close"))
+            )
+        })
     }
 }
 
+#if DEBUG
 struct ChangePasswordView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
@@ -92,3 +64,4 @@ struct ChangePasswordView_Previews: PreviewProvider {
         }
     }
 }
+#endif

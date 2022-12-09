@@ -17,7 +17,7 @@ struct AddContractView: View {
         NavigationView {
             ZStack {
                 Form {
-                    Section(header: Text("Institution"), footer: Text("Choose the clinic for patient")) {
+                    Section(header: Text("Institution"), footer: Text("Choose a clinic for the new patient")) {
                         Picker("Clinic", selection: $addContractViewModel.clinicId, content: {
                             ForEach(clinics) { clinic in
                                 Text(clinic.wrappedName).tag(Int(clinic.id))
@@ -29,7 +29,7 @@ struct AddContractView: View {
                         addContractViewModel.clinic = Clinic.get(id: clinicId)
                     })
                     
-                    Section(footer: Text("Email notes")) {
+                    Section(footer: Text("It is necessary to provide an active email")) {
                         TextField("Patient Email", text: $addContractViewModel.patientEmail)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
@@ -95,7 +95,7 @@ struct AddContractView: View {
             .alert(isPresented: $addContractViewModel.showContractExistsAlert) {
                 Alert(
                     title: Text("Contract already exists"),
-                    message: Text("Please check email. Contract with provided email already exists")
+                    message: Text("Please check email. Contract with provided email already exists.")
                 )
             }
             .onChange(of: addContractViewModel.state, perform: { newState in
@@ -134,7 +134,7 @@ struct AddContractView: View {
                 .disableAutocorrection(true)
             DatePicker("Contract end date", selection: $addContractViewModel.contractEndDate, displayedComponents: [.date])
             if let rules = addContractViewModel.clinic?.rulesArray {
-                Picker("Answer time", selection: $addContractViewModel.clinicRuleId) {
+                Picker("Response time", selection: $addContractViewModel.clinicRuleId) {
                     ForEach(rules) { rule in
                         Text(rule.wrappedName).tag(Int(rule.id))
                     }
@@ -154,15 +154,17 @@ struct AddContractView: View {
     }
     
     var knownPatient: some View {
-        Section(header: Text("Patient Found"), footer: Text("Make sure this is the person to whom you want to open the counseling channel. If not, correct the email and retry the request.")) {
+        Section(header: Text("Patient Found"), footer: Text("Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request.")) {
             Text(addContractViewModel.patientName)
             Text("Birthday: \(addContractViewModel.patientBirthday, formatter: DateFormatter.ddMMyyyy)")
         }
     }
 }
 
+#if DEBUG
 struct AddContractView_Previews: PreviewProvider {
     static var previews: some View {
         AddContractView()
     }
 }
+#endif

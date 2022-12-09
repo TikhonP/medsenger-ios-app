@@ -22,8 +22,10 @@ struct InputAttachmentsView: View {
     }
 }
 
+#if DEBUG
 struct InputAttachmentsView_Previews: PreviewProvider {
     static var previews: some View {
         InputAttachmentsView()
     }
 }
+#endif

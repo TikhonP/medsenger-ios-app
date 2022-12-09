@@ -16,18 +16,20 @@ struct EmptyArchiveChatsView: View {
                 .scaledToFit()
                 .frame(width: 70)
                 .foregroundColor(.secondary)
-            Text("No archive contracts")
+            Text("No archived contracts")
                 .font(.title)
                 .bold()
-            Text("Your archive contracts will appear here.")
+            Text("Your archived contracts will appear here.")
                 .font(.body)
                 .foregroundColor(.secondary)
         }
     }
 }
 
+#if DEBUG
 struct EmptyArchiveChatsView_Previews: PreviewProvider {
     static var previews: some View {
         EmptyArchiveChatsView()
     }
 }
+#endif

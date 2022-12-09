@@ -13,17 +13,22 @@ struct NewImagePicker: UIViewControllerRepresentable {
     public typealias PickedImagesCompletionHandler = (_ media: ImagePickerMedia) -> Void
     
     public let filter: PHPickerFilter?
+    
+    /// Setting the value to 0 sets the selection limit to the maximum that the system supports.
+    public let selectionLimit: Int
+    
     public let pickedCompletionHandler: PickedImagesCompletionHandler
     
-    init(filter: PHPickerFilter? = nil, pickedCompletionHandler: @escaping PickedImagesCompletionHandler) {
+    init(filter: PHPickerFilter? = nil, selectionLimit: Int = 0, pickedCompletionHandler: @escaping PickedImagesCompletionHandler) {
         self.filter = filter
+        self.selectionLimit = selectionLimit
         self.pickedCompletionHandler = pickedCompletionHandler
     }
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var config = PHPickerConfiguration()
         config.filter = filter
-        config.selectionLimit = 0 // Setting the value to 0 sets the selection limit to the maximum that the system supports.
+        config.selectionLimit = selectionLimit
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = context.coordinator
         return picker

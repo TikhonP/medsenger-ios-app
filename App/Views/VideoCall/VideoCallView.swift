@@ -46,8 +46,10 @@ struct VideoCallView: View {
     }
 }
 
+#if DEBUG
 struct VideoCallView_Previews: PreviewProvider {
     static var previews: some View {
         VideoCallView(contractId: 1234, contentViewModel: ContentViewModel())
     }
 }
+#endif

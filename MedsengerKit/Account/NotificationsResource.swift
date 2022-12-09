@@ -9,21 +9,27 @@
 import Foundation
 import os.log
 
-struct NotificationsResource: APIResource {
+class NotificationsResource: APIResource {
     let emailNotify: Bool
     
+    init(emailNotify: Bool) {
+        self.emailNotify = emailNotify
+    }
+    
     typealias ModelType = EmptyModel
-    
-    struct RequestModel: Encodable {
-        let emailNotify: Bool
-    }
 
-    var methodPath = "/account"
+    let methodPath = "/notifications"
     
-    var options: APIResourceOptions {
-        APIResourceOptions(
+    lazy var params: [String: String] = {
+        ["emailNotify": emailNotify ? "on" : "off"]
+    }()
+    
+    lazy var options: APIResourceOptions = {
+        let formData = multipartFormData(textParams: params)
+        return APIResourceOptions(
             method: .POST,
-            httpBody: encodeToJSON(RequestModel(emailNotify: emailNotify))
+            httpBody: formData.httpBody,
+            headers: formData.headers
         )
-    }
+    }()
 }

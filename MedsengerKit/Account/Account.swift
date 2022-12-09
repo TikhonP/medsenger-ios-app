@@ -20,12 +20,18 @@ class Account {
     
     public func changeRole(_ role: UserRole) {
         if let fcmToken = UserDefaults.fcmToken {
-            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
+            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { succeeded in
+                
+            }
         }
         PersistenceController.clearDatabase(withUser: false)
         UserDefaults.userRole = role
         if let fcmToken = UserDefaults.fcmToken {
-            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
+            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true) { succeeded in
+                if !succeeded {
+                    UserDefaults.isPushNotificationsOn = false
+                }
+            }
         }
         Contracts.shared.fetchContracts()
     }
@@ -75,30 +81,44 @@ class Account {
         }
     }
     
-    public func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
+    enum saveProfileDataStates {
+        case succeess, failure, phoneExists
+    }
+    
+    public func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping (_ result: saveProfileDataStates) -> Void) {
         let updateAccountResource = UpdateAccountResource(name: name, email: email, phone: phone, birthday: birthday)
         updateAcountRequest = APIRequest(updateAccountResource)
         updateAcountRequest?.execute { result in
             switch result {
             case .success(_):
-                DispatchQueue.main.async { completion() }
+                completion(.succeess)
             case .failure(let error):
-                processRequestError(error, "save profile data")
+                switch error {
+                case .api(let errorResponse, _):
+                    if errorResponse.errors.contains("Phone exists") {
+                        completion(.phoneExists)
+                    } else {
+                        processRequestError(error, "save profile data")
+                        completion(.failure)
+                    }
+                default:
+                    processRequestError(error, "save profile data")
+                    completion(.failure)
+                }
             }
         }
     }
     
-    public func updateEmailNotiofication(emailNotify: Bool, completion: (() -> Void)? = nil) {
+    public func updateEmailNotiofication(emailNotify: Bool, completion: @escaping (_ succeeded: Bool) -> Void) {
         let notificationsResource = NotificationsResource(emailNotify: emailNotify)
         notificationsRequest = APIRequest(notificationsResource)
         notificationsRequest?.execute { result in
             switch result {
             case .success(_):
-                if let completion = completion {
-                    completion()
-                }
+                completion(true)
             case .failure(let error):
                 processRequestError(error, "update email notification")
+                completion(false)
             }
         }
     }
@@ -107,15 +127,17 @@ class Account {
     /// - Parameters:
     ///   - fcmToken: the `fcmToken`
     ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
-    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool) {
+    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool, completion: @escaping (_ succeeded: Bool) -> Void) {
         let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: storeOrRemove)
         pushNotificationsRequest = APIRequest(pushNotificationsResource)
         pushNotificationsRequest?.execute { result in
             switch result {
             case .success(_):
                 UserDefaults.isPushNotificationsOn = storeOrRemove
+                completion(true)
             case .failure(let error):
                 processRequestError(error, "store device push notification token")
+                completion(false)
             }
         }
     }

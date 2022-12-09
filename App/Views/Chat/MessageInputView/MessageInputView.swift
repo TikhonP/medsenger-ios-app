@@ -45,6 +45,7 @@ struct MessageInputView: View {
     }
 }
 
+#if DEBUG
 struct MessageInputView_Previews: PreviewProvider {
     //    static let persistence = PersistenceController.preview
     //
@@ -60,3 +61,4 @@ struct MessageInputView_Previews: PreviewProvider {
             .previewLayout(PreviewLayout.sizeThatFits)
     }
 }
+#endif

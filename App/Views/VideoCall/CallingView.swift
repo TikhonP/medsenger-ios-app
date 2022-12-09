@@ -46,7 +46,7 @@ struct CallingView: View {
                         .font(.largeTitle)
                         .padding(.top)
                     if videoCallViewModel.finishingCall {
-                        Text("Finishing call...")
+                        Text("Ending call...")
                             .padding(.top)
                         Spacer()
                     } else {
@@ -101,6 +101,7 @@ struct CallingView: View {
     }
 }
 
+#if DEBUG
 struct CallingView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -113,3 +114,4 @@ struct CallingView_Previews: PreviewProvider {
         CallingView(contract: contract1)
     }
 }
+#endif

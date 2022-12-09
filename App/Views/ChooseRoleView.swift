@@ -11,12 +11,17 @@ import SwiftUI
 struct ChooseRoleView: View {
     var body: some View {
         VStack {
-            Text("Your account has access to both the doctor role and the user role. How do you want to enter?")
+            Text("Your account has access to both the doctor and the patient role.")
+                .multilineTextAlignment(.center)
+                .font(.callout)
+                .padding(.horizontal, 30)
+            
+            Text("How do you want to sign in?")
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .padding(.horizontal, 30)
 
-            Button("Sign in as Patient") { Account.shared.changeRole(.patient) }
+            Button("Sign In as Patient") { Account.shared.changeRole(.patient) }
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)
@@ -24,7 +29,7 @@ struct ChooseRoleView: View {
                 .background(Color.accentColor)
                 .clipShape(Capsule())
             
-            Button("Sign in as Doctor") { Account.shared.changeRole(.doctor) }
+            Button("Sign In as Doctor") { Account.shared.changeRole(.doctor) }
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)
@@ -35,8 +40,10 @@ struct ChooseRoleView: View {
     }
 }
 
+#if DEBUG
 struct ChooseRoleView_Previews: PreviewProvider {
     static var previews: some View {
         ChooseRoleView()
     }
 }
+#endif

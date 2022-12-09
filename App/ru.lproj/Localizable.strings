@@ -1,0 +1,432 @@
+/* No comment provided by engineer. */
+"%lld" = "%lld";
+
+/* No comment provided by engineer. */
+"About" = "О сервисе";
+
+/* No comment provided by engineer. */
+"Add attachment" = "Добавить вложение";
+
+/* No comment provided by engineer. */
+"Add Notes" = "Добавить заметку";
+
+/* No comment provided by engineer. */
+"Add Patient" = "Добавить пациента";
+
+/* No comment provided by engineer. */
+"Agent action" = "Действие Агента";
+
+/* No comment provided by engineer. */
+"Agent Actions" = "Действия агента";
+
+/* No comment provided by engineer. */
+"All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again." = "Все интеллектуальные агенты будут отключены, и пациент больше не будет получать информационные уведомления и опросники. При необходимости сценарий можно подключить заново.";
+
+/* No comment provided by engineer. */
+"Apple Health" = "Apple Health";
+
+/* No comment provided by engineer. */
+"Apple Health Sync" = "Синхронизация с Apple Health";
+
+/* No comment provided by engineer. */
+"Archive" = "Архив";
+
+/* No comment provided by engineer. */
+"Archived Chats" = "Архив";
+
+/* No comment provided by engineer. */
+"Are you sure you want to disable the monitoring scenario?" = "Вы уверены, что хотите отключить сценарий мониторинга?";
+
+/* No comment provided by engineer. */
+"Assign a Monitoring Scenario" = "Назначить сценарий мониторинга";
+
+/* No comment provided by engineer. */
+"Assign scenario" = "Назначить сценарий";
+
+/* No comment provided by engineer. */
+"Attachments" = "Вложения";
+
+/* No comment provided by engineer. */
+"Birthday" = "Дата рождения";
+
+/* No comment provided by engineer. */
+"Birthday: %@" = "Дата рождения: %@";
+
+/* No comment provided by engineer. */
+"Browse..." = "Просмотр...";
+
+/* No comment provided by engineer. */
+"Call error" = "Ошибка звонка";
+
+/* No comment provided by engineer. */
+"Call the Clinic" = "Позвонить в клинику";
+
+/* No comment provided by engineer. */
+"Calling..." = "Звонок...";
+
+/* No comment provided by engineer. */
+"Cancel" = "Отмена";
+
+/* No comment provided by engineer. */
+"Change password" = "Изменить пароль";
+
+/* No comment provided by engineer. */
+"Change Profile Photo" = "Изменить фото профиля";
+
+/* No comment provided by engineer. */
+"Chats" = "Чаты";
+
+/* No comment provided by engineer. */
+"Choose a clinic for the new patient" = "Выберите клинику для нового пациента";
+
+/* No comment provided by engineer. */
+"Choose a new profile photo" = "Выбрать новое фото профиля";
+
+/* No comment provided by engineer. */
+"Choose Photo" = "Выбрать фото";
+
+/* No comment provided by engineer. */
+"Clinic" = "Клиника";
+
+/* No comment provided by engineer. */
+"Close" = "Закрыть";
+
+/* No comment provided by engineer. */
+"compliance" = "комплаентность";
+
+/* No comment provided by engineer. */
+"Complience: %lld / %lld" = "комплаентность: %lld / %lld";
+
+/* No comment provided by engineer. */
+"Connecting..." = "Подключение...";
+
+/* No comment provided by engineer. */
+"Contract %@. End: %@" = "Контракт %@. Окончание: %@";
+
+/* No comment provided by engineer. */
+"Contract already exists" = "Контракт уже существует";
+
+/* No comment provided by engineer. */
+"Contract end date" = "Окончание контракта";
+
+/* No comment provided by engineer. */
+"Contract information" = "Информация о контракте";
+
+/* No comment provided by engineer. */
+"Contract Number" = "Номер контракта";
+
+/* No comment provided by engineer. */
+"Contract type" = "Тип контракта";
+
+/* No comment provided by engineer. */
+"Contract: " = "Контракт:";
+
+/* No comment provided by engineer. */
+"Copy" = "Скопировать";
+
+/* No comment provided by engineer. */
+"Devices Control" = "Управление устройствами";
+
+/* No comment provided by engineer. */
+"Disable Scenario" = "Отключить сценарий";
+
+/* No comment provided by engineer. */
+"Dismiss Messages" = "Погасить сообщения";
+
+/* No comment provided by engineer. */
+"Done" = "Готово";
+
+/* No comment provided by engineer. */
+"Edit" = "Изм.";
+
+/* No comment provided by engineer. */
+"Edit Notes" = "Редактировать заметки";
+
+/* No comment provided by engineer. */
+"Edit personal data" = "Изм. личных данных";
+
+/* No comment provided by engineer. */
+"Email" = "Email";
+
+/* No comment provided by engineer. */
+"Email is the main identifier for your account and an address for sending notifications" = "Email — основной идентификатор вашего аккаунта и адрес для отправки уведомлений";
+
+/* No comment provided by engineer. */
+"Email Notifications" = "Уведомления на email";
+
+/* No comment provided by engineer. */
+"End Counseling" = "Завершить Консультирование";
+
+/* No comment provided by engineer. */
+"Ending call..." = "Завершение звонка...";
+
+/* No comment provided by engineer. */
+"Enter number here" = "Введите число";
+
+/* No comment provided by engineer. */
+"Enter text here" = "Введите текст";
+
+/* No comment provided by engineer. */
+"Failed to fetch user" = "Не удалось загрузить пользователя";
+
+/* No comment provided by engineer. */
+"Failed to preview voice message" = "Не удалось загрузить аудиосообщение";
+
+/* No comment provided by engineer. */
+"Filter" = "Фильтр";
+
+/* No comment provided by engineer. */
+"Find patient" = "Найти пациента";
+
+/* No comment provided by engineer. */
+"Heart Rate" = "Пульс";
+
+/* No comment provided by engineer. */
+"How do you want to sign in?" = "Как вы хотите войти?";
+
+/* No comment provided by engineer. */
+"Incorrect data provided" = "Введены некорректные данные";
+
+/* No comment provided by engineer. */
+"Info Materials" = "Информационные материалы";
+
+/* No comment provided by engineer. */
+"Institution" = "Учреждение";
+
+/* No comment provided by engineer. */
+"Internet connection not available" = "Подключение к интернету недоступно";
+
+/* No comment provided by engineer. */
+"Invalid email!" = "Неверный email!";
+
+/* No comment provided by engineer. */
+"Invalid field" = "Неверное значение";
+
+/* No comment provided by engineer. */
+"Invalid password!" = "Неверный пароль!";
+
+/* No comment provided by engineer. */
+"It is necessary to provide an active email" = "Необходимо указать действующий email";
+
+/* No comment provided by engineer. */
+"Loading..." = "Загрузка...";
+
+/* No comment provided by engineer. */
+"Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request." = "Убедитесь, что это тот человек, для которого вы хотите открыть канал консультирования. Если нет, исправьте email и отправьте запрос повторно.";
+
+/* No comment provided by engineer. */
+"Medsenger" = "Medsenger";
+
+/* No comment provided by engineer. */
+"Monitoring" = "Мониторинг";
+
+/* No comment provided by engineer. */
+"Monitoring Scenarios" = "Сценарии мониторинга";
+
+/* No comment provided by engineer. */
+"Name" = "Имя";
+
+/* No comment provided by engineer. */
+"Name cannot be empty!" = "Имя не может быть пустым!";
+
+/* No comment provided by engineer. */
+"New password" = "Новый пароль";
+
+/* No comment provided by engineer. */
+"New Photo" = "Новое фото";
+
+/* No comment provided by engineer. */
+"No archived contracts" = "Нет архивных контрактов";
+
+/* No comment provided by engineer. */
+"No contracts" = "Нет контрактов";
+
+/* No comment provided by engineer. */
+"Notes" = "Заметки";
+
+/* No comment provided by engineer. */
+"Notifications" = "Уведомления";
+
+/* No comment provided by engineer. */
+"Oops! Server error" = "Упс! Ошибка сервера";
+
+/* No comment provided by engineer. */
+"Oxygen Saturation" = "SPO2";
+
+/* No comment provided by engineer. */
+"Password must be more than 6 characters" = "Пароль должен быть длиннее 6 символов";
+
+/* No comment provided by engineer. */
+"Passwords do not match!" = "Пароли не совпадают!";
+
+/* No comment provided by engineer. */
+"Patient" = "Пациент";
+
+/* No comment provided by engineer. */
+"Patient Email" = "Email пациента";
+
+/* No comment provided by engineer. */
+"Patient Found" = "Найден пациент";
+
+/* No comment provided by engineer. */
+"Patient Name" = "Имя пациента";
+
+/* No comment provided by engineer. */
+"Phone" = "Телефон";
+
+/* No comment provided by engineer. */
+"Phone is optional" = "Указывать телефон необязательно";
+
+/* No comment provided by engineer. */
+"Please check email. Contract with provided email already exists." = "Пожалуйста, проверьте email. Контракт с указанным адресом уже существует.";
+
+/* No comment provided by engineer. */
+"Please check if the phone is correct." = "Пожалуйста, проверьте номер телефона.";
+
+/* No comment provided by engineer. */
+"Please check that the passwords are the same." = "Пожалуйста, проверьте, чтобы пароли были одинаковыми.";
+
+/* No comment provided by engineer. */
+"Please check your connection and try again." = "Пожалуйста, проверьте подключение и повторите попытку.";
+
+/* No comment provided by engineer. */
+"Please check your input or contact Medsenger support." = "Проверьте введенные данные или обратитесь в службу поддержки Messenger.";
+
+/* No comment provided by engineer. */
+"Please fill both username and password fields." = "Пожалуйста, заполните оба поля: имя пользователя и пароль.";
+
+/* No comment provided by engineer. */
+"Please provide a name to continue." = "Укажите имя, чтобы продолжить.";
+
+/* No comment provided by engineer. */
+"Provide auth data!" = "Заполните поля";
+
+/* No comment provided by engineer. */
+"Push Notifications" = "Уведомления";
+
+/* No comment provided by engineer. */
+"Push notifications can inform you about new message on your phone" = "Уведомления могут информировать вас о новом сообщении на вашем телефоне";
+
+/* No comment provided by engineer. */
+"Recording failed :(" = "Запись не удалась :(";
+
+/* No comment provided by engineer. */
+"Recording is not permitted" = "Запись не разрешена";
+
+/* No comment provided by engineer. */
+"Refresh" = "Обновить";
+
+/* No comment provided by engineer. */
+"Repeat password" = "Повторите пароль";
+
+/* No comment provided by engineer. */
+"Reply" = "Ответить";
+
+/* No comment provided by engineer. */
+"Reply %@" = "Ответить %@";
+
+/* No comment provided by engineer. */
+"Respiratory Rate" = "Частота дыхания";
+
+/* No comment provided by engineer. */
+"Response time" = "Время на ответ";
+
+/* No comment provided by engineer. */
+"Save" = "Сохранить";
+
+/* No comment provided by engineer. */
+"Settings" = "Настройки";
+
+/* No comment provided by engineer. */
+"Sex" = "Пол";
+
+/* No comment provided by engineer. */
+"Sign In" = "Войти";
+
+/* No comment provided by engineer. */
+"Sign In as Doctor" = "Войти как врач";
+
+/* No comment provided by engineer. */
+"Sign In as Patient" = "Войти как пациент";
+
+/* No comment provided by engineer. */
+"Sign Out" = "Выйти";
+
+/* No comment provided by engineer. */
+"Steps" = "Шаги";
+
+/* No comment provided by engineer. */
+"Support" = "Поддержка";
+
+/* No comment provided by engineer. */
+"Switch to Doctor" = "Перейти в роль врача";
+
+/* No comment provided by engineer. */
+"Switch to Patient" = "Перейти в роль пациента";
+
+/* No comment provided by engineer. */
+"Take Photo" = "Снять фото";
+
+/* No comment provided by engineer. */
+"The Internet connection appears to be offline" = "Нет подключения к интернету";
+
+/* No comment provided by engineer. */
+"The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come." = "Сервис medsenger.ru реализует обмен сообщениями между пациентом и его врачом. С его помощью врачи консультируют своих пациентов, отвечая на их вопросы по мере поступления.";
+
+/* No comment provided by engineer. */
+"The request timed out" = "Время запроса истекло";
+
+/* No comment provided by engineer. */
+"There is no attachments" = "Нет вложений";
+
+/* No comment provided by engineer. */
+"There is no info materials" = "Нет информационных материалов";
+
+/* No comment provided by engineer. */
+"This phone already in use!" = "Этот телефон уже используется в сервисе!";
+
+/* No comment provided by engineer. */
+"Today: %lld / %lld" = "Сегодня: %lld / %lld";
+
+/* No comment provided by engineer. */
+"Turn off Airplane Mode or connect to Wi-Fi." = "Выключите режим полета или подключитесь к Wi-Fi.";
+
+/* No comment provided by engineer. */
+"Unknown user role" = "Не известная роль пользователя";
+
+/* No comment provided by engineer. */
+"User is not activated!" = "Пользователь не активирован!";
+
+/* No comment provided by engineer. */
+"User is not found!" = "Пользователь не найден!";
+
+/* No comment provided by engineer. */
+"Version" = "Версия";
+
+/* No comment provided by engineer. */
+"Version not found" = "Версия не найдена";
+
+/* No comment provided by engineer. */
+"Video Сall" = "Видеозвонок";
+
+/* No comment provided by engineer. */
+"Video Calls" = "Видеозвонки";
+
+/* No comment provided by engineer. */
+"Website" = "Сайт";
+
+/* No comment provided by engineer. */
+"Write your name and select a photo" = "Заполните имя и выберите фотографию";
+
+/* No comment provided by engineer. */
+"Your account has access to both the doctor and the patient role." = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пациента.";
+
+/* No comment provided by engineer. */
+"Your account has access to both the doctor and the user role. How do you want to sign in?" = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пользователя. Как вы хотите войти?";
+
+/* No comment provided by engineer. */
+"Your archived contracts will appear here." = "Здесь появятся ваши архивные контракты.";
+
+/* No comment provided by engineer. */
+"Your contracts will appear here." = "Здесь появятся ваши контракты.";
+

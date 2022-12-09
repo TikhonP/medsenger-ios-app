@@ -103,6 +103,7 @@ struct ChooseScenarioView: View {
     }
 }
 
+#if DEBUG
 struct ChooseScenarioView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -115,3 +116,4 @@ struct ChooseScenarioView_Previews: PreviewProvider {
         ChooseScenarioView(contract: contract1, clinic: contract1.clinic!)
     }
 }
+#endif

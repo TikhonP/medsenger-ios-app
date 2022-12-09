@@ -78,6 +78,7 @@ struct WaitingCallView: View {
     }
 }
 
+#if DEBUG
 struct WaitingCallView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -90,3 +91,4 @@ struct WaitingCallView_Previews: PreviewProvider {
         WaitingCallView(contract: contract1)
     }
 }
+#endif

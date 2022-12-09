@@ -30,7 +30,11 @@ class Login {
                     KeyChain.apiToken = data.api_token
                     User.saveUserFromJson(data)
                     if let fcmToken = UserDefaults.fcmToken, UserDefaults.userRole != .unknown {
-                        Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true)
+                        Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true) { succeeded in
+                            if !succeeded {
+                                UserDefaults.isPushNotificationsOn = false
+                            }
+                        }
                     }
                     completion(.success)
                 } else {
@@ -60,38 +64,30 @@ class Login {
         case success, unknownError, incorrectData
     }
     
-    public func changePassword(newPassword: String, completion: @escaping (_ result: ChangePasswordCompletionCodes) -> Void) {
+    public func changePassword(newPassword: String, completion: @escaping (_ succeeded: Bool) -> Void) {
         let changePasswordResource = ChangePasswordResource(newPassword: newPassword)
         changePasswordRequest = APIRequest(changePasswordResource)
         changePasswordRequest?.execute { result in
             switch result {
             case .success(let data):
                 guard let data = data else {
-                    completion(.unknownError)
+                    completion(false)
                     return
                 }
                 KeyChain.apiToken = data.apiToken
-                completion(.success)
+                completion(true)
             case .failure(let error):
-                switch error {
-                case .api(let errorResponse, _):
-                    if errorResponse.errors.contains("Incorrect data") {
-                        completion(.incorrectData)
-                    } else {
-                        completion(.unknownError)
-                        processRequestError(error, "change password")
-                    }
-                default:
-                    completion(.unknownError)
-                    processRequestError(error, "change password")
-                }
+                processRequestError(error, "change password")
+                completion(false)
             }
         }
     }
     
     public func signOut() {
         if let fcmToken = UserDefaults.fcmToken {
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false)
+            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { succeeded in 
+                
+            }
         }
         KeyChain.apiToken = nil
         User.delete()

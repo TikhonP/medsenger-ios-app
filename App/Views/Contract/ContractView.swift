@@ -21,6 +21,7 @@ struct ContractView: View {
     @State private var showDevices = false
     @State private var showEditNotes = false
     @State private var showDeleteScenarioConfirmation = false
+    @State private var showAvatarImage = false
     
     init(contract: Contract, user: User) {
         self.contract = contract
@@ -56,7 +57,7 @@ struct ContractView: View {
         .sheet(isPresented: $contractViewModel.showChooseScenario) {
             if let clinic = contract.clinic {
                 ChooseScenarioView(contract: contract, clinic: clinic)
-                    .environmentObject(contentViewModel)
+                    .environmentObject(contractViewModel)
             }
         }
         .sheet(isPresented: $showDevices) {
@@ -70,7 +71,7 @@ struct ContractView: View {
                 NavigationLink(destination: {
                     InfoMaterialsView(contract: contract)
                 }, label: {
-                    Label("Info materials", systemImage: "info.circle.fill")
+                    Label("Info Materials", systemImage: "info.circle.fill")
                 })
             }
             NavigationLink(destination: {
@@ -104,14 +105,14 @@ struct ContractView: View {
                 Button(action: {
                     contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
                 }, label: {
-                    Label("Video call", systemImage: "video.fill")
+                    Label("Video Сall", systemImage: "video.fill")
                 })
             }
             if contract.canDecline {
                 Button(action: {
                     contractViewModel.declineMessages()
                 }, label: {
-                    Label("Decline Messages", systemImage: "checkmark.message.fill")
+                    Label("Dismiss Messages", systemImage: "checkmark.message.fill")
                 })
             }
             if contract.isWaitingForConclusion {
@@ -138,7 +139,7 @@ struct ContractView: View {
                     }
                 })
                 .actionSheet(isPresented: $showDeleteScenarioConfirmation) {
-                    ActionSheet(title: Text("Are you sure you want to disable the monitoring script?"),
+                    ActionSheet(title: Text("Are you sure you want to disable the monitoring scenario?"),
                                 message: Text("All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
                                 buttons: [
                                     .destructive(Text("Disable Scenario"), action: contractViewModel.removeScenario),
@@ -150,7 +151,7 @@ struct ContractView: View {
                 Button(action: {
                     contractViewModel.showChooseScenario.toggle()
                 }, label: {
-                    Label("Choose Monitoring Scenario", systemImage: "doc.badge.gearshape")
+                    Label("Assign a Monitoring Scenario", systemImage: "doc.badge.gearshape")
                 })
             }
             if !contract.archive, let clinic = contract.clinic, !clinic.devices.isEmpty {
@@ -174,7 +175,7 @@ struct ContractView: View {
                         })
                     }
                 case .action:
-                    Text("Action")
+                    Text("Agent action")
                 default:
                     if let name = agentAction.name, let link = agentAction.modalLink {
                         NavigationLink(destination: {
@@ -196,6 +197,13 @@ struct ContractView: View {
                     if let avatarData = contract.avatar {
                         Image(data: avatarData)?
                             .resizable()
+                            .onTapGesture {
+
+                                showAvatarImage = true
+                            }
+                            .fullScreenCover(isPresented: $showAvatarImage) {
+                                FullscreenImagePreview(imageData: avatarData)
+                            }
                     } else {
                         ProgressView()
                     }
@@ -228,6 +236,7 @@ struct ContractView: View {
     }
 }
 
+#if DEBUG
 struct ContractView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -245,3 +254,4 @@ struct ContractView_Previews: PreviewProvider {
         ContractView(contract: contract1, user: user)
     }
 }
+#endif

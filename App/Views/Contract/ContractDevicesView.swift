@@ -80,7 +80,7 @@ struct ContractDevicesView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(footer: Text("Here you can control connected devices"), content: {})
+//                Section(), content: {})
                 ForEach(contractDevicesViewModel.devicesAsNodes) { device in
                     DeviceNodeView(deviceNode: device)
                 }
@@ -111,6 +111,7 @@ struct ContractDevicesView: View {
     }
 }
 
+#if DEBUG
 struct ContractDevicesView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -123,3 +124,4 @@ struct ContractDevicesView_Previews: PreviewProvider {
         ContractDevicesView(contract: contract1)
     }
 }
+#endif

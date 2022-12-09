@@ -16,6 +16,14 @@ final class NetworkConnectionMonitor: ObservableObject {
     private let nwMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkConnectionMonitor")
     
+    init() {
+        checkConnection()
+    }
+    
+    deinit {
+        stop()
+    }
+    
     public func checkConnection() {
         nwMonitor.pathUpdateHandler = { [weak self] newPath in
             DispatchQueue.main.async {

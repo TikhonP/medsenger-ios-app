@@ -18,6 +18,7 @@ struct AgentMessageView: View {
     }
 }
 
+#if DEBUG
 struct AgentMessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -31,3 +32,4 @@ struct AgentMessageView_Previews: PreviewProvider {
             .environmentObject(ChatViewModel(contractId: 123))
     }
 }
+#endif

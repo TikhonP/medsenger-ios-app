@@ -107,8 +107,10 @@ public struct TextView: View {
     
 }
 
+#if DEBUG
 struct TextView_Previews: PreviewProvider {
     static var previews: some View {
         TextView(.constant(""))
     }
 }
+#endif

@@ -79,8 +79,10 @@ struct RemoteVideoView: UIViewControllerRepresentable {
     }
 }
 
+#if DEBUG
 struct VideoView_Previews: PreviewProvider {
     static var previews: some View {
         RemoteVideoView(webRTCClient: WebRTCClient(contractId: 1234))
     }
 }
+#endif

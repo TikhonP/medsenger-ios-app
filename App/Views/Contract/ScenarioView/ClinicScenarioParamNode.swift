@@ -19,6 +19,7 @@ class ClinicScenarioParamNode: ObservableObject, Identifiable {
     let required: Bool
     let code: String
     let type: ClinicScenarioParam.ParamType
+    
     var pickerOptions = [ClinicScenarioParamOption]()
     
     init(_ param: ClinicScenarioParam) {
@@ -53,11 +54,11 @@ class ClinicScenarioParamNode: ObservableObject, Identifiable {
         case .checkbox:
             return true
         case .select:
-            return pickerOptions.map { $0.code }.contains(value)
+            return (pickerOptions.map { $0.code }.contains(value)) || !required
         case .number:
-            return Int(value) != nil
+            return Int(value) != nil || !required
         case .text:
-            return true
+            return !value.isEmpty || !required
         case .date:
             return true
         case .hidden:

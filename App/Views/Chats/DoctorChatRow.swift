@@ -83,7 +83,7 @@ struct DoctorChatRow: View {
             
             if !contract.archive {
                 Circle()
-                    .foregroundColor(contract.isOnline ? .green : .red)
+                    .foregroundColor(contract.isOnline ? .green : .pink)
                     .frame(width: 12, height: 12)
                     .overlay(Circle().stroke(Color(UIColor.systemBackground)))
                     .offset(x: -4, y: -4)
@@ -102,6 +102,7 @@ struct DoctorChatRow: View {
     }
 }
 
+#if DEBUG
 struct DoctorChatRow_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -129,3 +130,4 @@ struct DoctorChatRow_Previews: PreviewProvider {
         }
     }
 }
+#endif

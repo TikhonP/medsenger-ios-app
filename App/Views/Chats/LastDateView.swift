@@ -63,6 +63,7 @@ struct LastDateView: View {
     }
 }
 
+#if DEBUG
 struct LastDateView_Previews: PreviewProvider {
     static var previews: some View {
         LastDateView(date: Date())
@@ -71,3 +72,4 @@ struct LastDateView_Previews: PreviewProvider {
             .environment(\.locale, .init(identifier: "ru"))
     }
 }
+#endif

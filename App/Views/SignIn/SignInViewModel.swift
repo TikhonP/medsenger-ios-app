@@ -9,46 +9,28 @@
 import Foundation
 import SwiftUI
 
-struct SignInAlertInfo: AlertInfo {
-    enum AlertType {
-        case fillTheFields
-        case userIsNotActivated
-        case userIsNotFound
-        case invalidPassword
-        case global
-    }
-    
-    let id: AlertType
-    let title: String
-    let message: String
-}
-
-class SignInAlerts {
-    static let fillTheFields = SignInAlertInfo(
-        id: .fillTheFields,
+fileprivate class SignInAlerts {
+    static let fillTheFields = AlertInfo(
         title: LocalizedStringKey("Provide auth data!").stringValue(),
         message: LocalizedStringKey("Please fill both username and password fields.").stringValue())
-    static let userIsNotActivated = SignInAlertInfo(
-        id: .userIsNotActivated,
+    static let userIsNotActivated = AlertInfo(
         title: LocalizedStringKey("User is not activated!").stringValue(),
         message: "")
-    static let userIsNotFound = SignInAlertInfo(
-        id: .userIsNotFound,
+    static let userIsNotFound = AlertInfo(
         title: LocalizedStringKey("User is not found!").stringValue(),
         message: "")
-    static let invalidPassword = SignInAlertInfo(
-        id: .invalidPassword,
+    static let invalidPassword = AlertInfo(
         title: LocalizedStringKey("Invalid password!").stringValue(),
         message: "")
 }
 
-final class SignInViewModel: ObservableObject {
+final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""
     @Published var password: String = ""
     
     @Published var showLoader = false
     
-    @Published var alert: SignInAlertInfo?
+    @Published var alert: AlertInfo?
     
     func auth() {
         guard !login.isEmpty, !password.isEmpty else {
@@ -66,16 +48,13 @@ final class SignInViewModel: ObservableObject {
                 case .success:
                     break
                 case .unknownError:
-                    let globalAlert = ContentViewModel.shared.getGlobalAlert()
-                    if !globalAlert.title.isEmpty {
-                        self.alert = SignInAlertInfo(id: .global, title: globalAlert.title, message: globalAlert.message)
-                    }
+                    self.presentGlobalAlert()
                 case .userIsNotActivated:
-                    self.alert = SignInAlerts.userIsNotActivated
+                    self.presentAlert(SignInAlerts.userIsNotActivated, .error)
                 case .incorrectData:
-                    self.alert = SignInAlerts.userIsNotFound
+                    self.presentAlert(SignInAlerts.userIsNotFound, .error)
                 case .incorrectPassword:
-                    self.alert = SignInAlerts.invalidPassword
+                    self.presentAlert(SignInAlerts.invalidPassword, .error)
                 }
             }
         }

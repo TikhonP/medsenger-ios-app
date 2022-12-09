@@ -52,6 +52,7 @@ struct RecordingVoiceMessageView: View {
     }
 }
 
+#if DEBUG
 struct RecordingVoiceMessageView_Previews: PreviewProvider {
     static var previews: some View {
         RecordingVoiceMessageView()
@@ -59,3 +60,4 @@ struct RecordingVoiceMessageView_Previews: PreviewProvider {
             .previewLayout(PreviewLayout.sizeThatFits)
     }
 }
+#endif

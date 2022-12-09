@@ -40,7 +40,7 @@ struct ScenarioView: View {
                 if scenarioViewModel.showSaveLoading {
                     ProgressView()
                 } else {
-                    Text("Select this scenario")
+                    Text("Assign scenario")
                 }
             })
         }

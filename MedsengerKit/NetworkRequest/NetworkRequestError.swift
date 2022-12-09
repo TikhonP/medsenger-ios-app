@@ -27,14 +27,6 @@ enum NetworkRequestError: Error {
     ///  - statusCode: HTTP status code
     case api(_ errors: ErrorResponse, _ statusCode: Int)
     
-    /// Invalid status code but api decoded succeded
-    /// - Parameter statusCode: HTTP status code
-    case apiWithDecodedData(_ statusCode: Int)
-    
-    /// 404 error from medsenger server
-    /// - Parameter url: requested url
-    case pageNotFound(_ url: URL)
-    
     /// Empty data with HTTP error
     /// - Parameter statusCode: HTTP status code
     case emptyDataStatusCode(_ statusCode: Int)
@@ -70,8 +62,13 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         switch urlError.code {
         case .notConnectedToInternet:
             ContentViewModel.shared.createGlobalAlert(
-                title: LocalizedStringKey("The Internet connection appears to be offline.").stringValue(),
+                title: LocalizedStringKey("The Internet connection appears to be offline").stringValue(),
                 message: LocalizedStringKey("Turn off Airplane Mode or connect to Wi-Fi.").stringValue())
+            Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
+        case .timedOut:
+            ContentViewModel.shared.createGlobalAlert(
+                title: LocalizedStringKey("The request timed out").stringValue(),
+                message: LocalizedStringKey("Please check your connection and try again.").stringValue())
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         default:
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
@@ -80,11 +77,17 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         if errorData.errors.contains("Incorrect token") {
             Login.shared.signOut()
             Logger.urlRequest.info("Incorrect token in request, sign out.")
+        } else if errorData.errors.contains("Incorrect data") {
+            ContentViewModel.shared.createGlobalAlert(
+                title: LocalizedStringKey("Incorrect data provided").stringValue(),
+                message: LocalizedStringKey("Please check your input or contact Medsenger support.").stringValue())
+            Logger.urlRequest.info("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         } else {
+            ContentViewModel.shared.createGlobalAlert(
+                title: LocalizedStringKey("Oops! Server error").stringValue(),
+                message: errorData.errors.joined(separator: " "))
             Logger.urlRequest.error("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         }
-    case .pageNotFound(let url):
-        Logger.urlRequest.error("Request `\(requestName)` error: Page not found with url: \(url)")
     case .emptyDataStatusCode(let statusCode):
         Logger.urlRequest.error("Request `\(requestName)` error: Invalid status code (\(statusCode)) with empty data")
     case .failedToDeserializeError(let statusCode, let decodeDataError):
@@ -125,7 +128,5 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         Logger.urlRequest.error("Request `\(requestName)` error: Failed to get status code")
     case .selfIsNil:
         Logger.urlRequest.error("Request `\(requestName)` error: `self` is `nil`")
-    case .apiWithDecodedData(let statusCode):
-        Logger.urlRequest.error("Request `\(requestName)` error: apiWithDecodedData statusCode: \(statusCode)")
     }
 }

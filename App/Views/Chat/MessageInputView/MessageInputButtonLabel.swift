@@ -29,9 +29,11 @@ struct MessageInputButtonLabel: View {
     }
 }
 
+#if DEBUG
 struct MessageInputButtonLabel_Previews: PreviewProvider {
     static var previews: some View {
         MessageInputButtonLabel(imageSystemName: "paperclip.circle.fill", showProgress: .constant(true))
             .foregroundColor(.accentColor)
     }
 }
+#endif

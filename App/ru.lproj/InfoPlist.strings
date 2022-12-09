@@ -1,0 +1,18 @@
+/* Bundle display name */
+"CFBundleDisplayName" = "Medsenger";
+
+/* Bundle name */
+"CFBundleName" = "Medsenger";
+
+/* Privacy - Camera Usage Description */
+"NSCameraUsageDescription" = "Нам нужен доступ к вашей камере, чтобы вы могли отправлять изображения в чат или обновлять свой аватар";
+
+/* Privacy - Health Share Usage Description */
+"NSHealthShareUsageDescription" = "Нам нужен доступ к вашим данным из приложения «Здоровье», чтобы врач мог жизненные показатели";
+
+/* Privacy - Health Update Usage Description */
+"NSHealthUpdateUsageDescription" = "Нам нужен доступ к вашим данным из приложения «Здоровье», чтобы врач мог жизненные показатели";
+
+/* Privacy - Microphone Usage Description */
+"NSMicrophoneUsageDescription" = "Нам нужен доступ к микрофону, чтобы вы могли записывать голосовые сообщения и использовать функцию видеозвонка";
+

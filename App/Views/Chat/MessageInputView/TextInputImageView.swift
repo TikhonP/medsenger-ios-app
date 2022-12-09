@@ -68,6 +68,7 @@ struct TextInputAttachmentView: View {
     }
 }
 
+#if DEBUG
 struct TextInputImageView_Previews: PreviewProvider {
     static var previews: some View {
 
@@ -81,3 +82,4 @@ struct TextInputImageView_Previews: PreviewProvider {
             .padding()
     }
 }
+#endif

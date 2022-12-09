@@ -66,7 +66,7 @@ struct PatientChatRow: View {
                     
                     if let contractNumber = contract.number {
                         HStack {
-                            Text("Контракт: ")
+                            Text("Contract: ")
                             Text(contractNumber)
                                 .foregroundColor(.secondary)
                         }
@@ -121,6 +121,7 @@ struct PatientChatRow: View {
     }
 }
 
+#if DEBUG
 struct PatientChatRow_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -136,3 +137,4 @@ struct PatientChatRow_Previews: PreviewProvider {
             .padding()
     }
 }
+#endif

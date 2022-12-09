@@ -90,6 +90,7 @@ struct AttachmentsView: View {
     }
 }
 
+#if DEBUG
 struct AttachmentsView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
@@ -102,3 +103,4 @@ struct AttachmentsView_Previews: PreviewProvider {
         AttachmentsView(contract: contract1)
     }
 }
+#endif
