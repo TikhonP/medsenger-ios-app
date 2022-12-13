@@ -33,7 +33,7 @@ extension UserDefaults {
         static let isHealthKitSyncActiveKey = "isHealthKitSyncActive"
     }
     
-    class var userRole: UserRole {
+    static var userRole: UserRole {
         get {
             guard let stringValue = UserDefaults.standard.string(forKey: Keys.userRoleKey) else {
                 return .unknown
@@ -45,7 +45,7 @@ extension UserDefaults {
         }
     }
     
-    class var fcmToken: String? {
+    static var fcmToken: String? {
         get {
             UserDefaults.standard.string(forKey: Keys.fcmTokenKey)
         }
@@ -54,7 +54,7 @@ extension UserDefaults {
         }
     }
     
-    class var isPushNotificationsOn: Bool {
+    static var isPushNotificationsOn: Bool {
         get {
             UserDefaults.standard.bool(forKey: Keys.isPushNotificationsOnKey)
         }
@@ -63,7 +63,7 @@ extension UserDefaults {
         }
     }
     
-    class var isHealthKitSyncActive: Bool {
+    static var isHealthKitSyncActive: Bool {
         get {
             UserDefaults.standard.bool(forKey: Keys.isHealthKitSyncActiveKey)
         }
@@ -72,7 +72,7 @@ extension UserDefaults {
         }
     }
 
-    class func registerDefaultValues() {
+    static func registerDefaultValues() {
         UserDefaults.standard.register(defaults: [
             Keys.userRoleKey: UserRole.unknown.rawValue,
             Keys.isPushNotificationsOnKey: false,

@@ -118,19 +118,13 @@ struct ChatsView: View {
                             })
                         }
                     }
-                    
-                    Section {
-                        NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
-                            ArchivesChatsView(user: user)
-                                .environmentObject(chatsViewModel)
-                        }, label: { archiveRow })
-                        .isDetailLink(false)
-                    }
                 }
             }
         }
-        .deprecatedRefreshable { await chatsViewModel.getContracts() }
-        .deprecatedSearchable(text: query)
+        .animation(.default, value: chatsViewModel.showContractsLoading)
+        .animation(.default, value: contracts.isEmpty)
+        .refreshableIos15Only { await chatsViewModel.getContracts() }
+        .searchableIos16Only(text: query)
         .listStyle(.inset)
         .navigationTitle("Chats")
         .onAppear(perform: {
@@ -146,6 +140,11 @@ struct ChatsView: View {
                     }, label: { Image(systemName: "square.and.pencil") })
                     .id(UUID())
                 }
+                NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
+                    ArchivesChatsView(user: user)
+                        .environmentObject(chatsViewModel)
+                }, label: { Image(systemName: "archivebox") })
+                .isDetailLink(false)
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -166,25 +165,6 @@ struct ChatsView: View {
         .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
         .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
         .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
-    }
-    
-    var archiveRow: some View {
-        HStack {
-            Image(systemName: "archivebox.circle.fill")
-                .resizable()
-                .clipShape(Circle())
-                .frame(width: 60, height: 60)
-            
-            ZStack {
-                VStack(alignment: .leading, spacing: 5) {
-                    HStack {
-                        Text("Archive")
-                            .bold()
-                        Spacer()
-                    }
-                }
-            }
-        }
     }
     
     var tasksTotalToday: Int {

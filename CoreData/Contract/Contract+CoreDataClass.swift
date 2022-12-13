@@ -11,6 +11,71 @@ import os.log
 
 @objc(Contract)
 public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
+    public static func saveAvatar(id: Int, image: Data) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.avatar = image
+            PersistenceController.save(for: context, detailsForLogging: "Contract save avatar")
+        }
+    }
+    
+    public static func updateOnlineStatus(id: Int, isOnline: Bool) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.isOnline = isOnline
+            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
+        }
+    }
+    
+    public static func updateOnlineStatusFromList(_ onlineIds: [Int]) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let fetchRequest = Contract.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "archive == NO")
+            guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive == NO for updating online status") else {
+                return
+            }
+            for contract in fetchedResults {
+                contract.isOnline = onlineIds.contains(Int(contract.id))
+            }
+            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
+        }
+    }
+    
+    public static func updateLastAndFirstFetchedMessage(id: Int, updateGlobal: Bool) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            guard let contract = get(id: id, for: context) else {
+                return
+            }
+            let lastMessage = Message.getLastMessageForContract(for: contract, for: context)
+            contract.lastFetchedMessage = lastMessage
+            if updateGlobal {
+                contract.lastGlobalFetchedMessage = lastMessage
+            }
+            PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
+        }
+    }
+    
+    public static func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.lastReadMessageIdByPatient = Int64(lastReadMessageIdByPatient)
+            PersistenceController.save(for: context, detailsForLogging: "Contract save lastReadMessageIdByPatient")
+        }
+    }
+    
+    public static func updateContractNotes(id: Int, notes: String) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.comments = notes
+            PersistenceController.save(for: context, detailsForLogging: "Contract save updateContractNotes")
+        }
+    }
     
     internal static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,

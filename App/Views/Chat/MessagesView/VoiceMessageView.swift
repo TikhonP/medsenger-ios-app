@@ -29,25 +29,29 @@ struct VoiceMessageView: View {
             if let attachment = attachments.first {
                 if let audioFileURL = attachment.dataPath {
                     HStack {
-                        if chatViewModel.isAudioMessagePlayingWithId != Int(attachment.id) {
-                            Button(action: {
-                                chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
-                            }, label: {
-                                Image(systemName: "play.circle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .padding(10)
-                            })
-                        } else {
-                            Button(action: {
-                                chatViewModel.stopPlaying()
-                            }, label: {
-                                Image(systemName: "stop.circle")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .padding(10)
-                            })
+                        ZStack {
+                            if chatViewModel.isAudioMessagePlayingWithId != Int(attachment.id) {
+                                Button(action: {
+                                    chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
+                                }, label: {
+                                    Image(systemName: "play.circle.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                })
+                                .transition(.scale)
+                            } else {
+                                Button(action: {
+                                    chatViewModel.stopPlaying()
+                                }, label: {
+                                    Image(systemName: "stop.circle.fill")
+                                        .resizable()
+                                        .scaledToFit()
+                                })
+                                .transition(.scale)
+                            }
                         }
+                        .animation(.spring().speed(1.5), value: chatViewModel.isAudioMessagePlayingWithId)
+                        
                         AudioPlayerView(
                             audioFileUrl: audioFileURL,
                             isPlaying: Binding<Bool>(
@@ -56,7 +60,10 @@ struct VoiceMessageView: View {
                                 },
                                 set: { _ in }
                             ),
-                            playingAudioProgress: $chatViewModel.playingAudioProgress)
+                            playingAudioProgress: $chatViewModel.playingAudioProgress,
+                            mainColor: .secondary,
+                            progressColor: .primary
+                        )
                     }
                 } else {
                     HStack {
@@ -70,7 +77,8 @@ struct VoiceMessageView: View {
                 }
             }
         }
-        .frame(height: 50)
+        .frame(height: 30)
+        .padding(10)
     }
 }
 
@@ -78,13 +86,18 @@ struct VoiceMessageView: View {
 struct VoiceMessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
-    static var message1: Message = {
+    static var message: Message = {
         let context = persistence.container.viewContext
-        return Message.getSampleMessage(for: context)
+        let m = Message.getSampleVoiceMessage(for: context)
+        PersistenceController.save(for: context)
+        return m
     }()
     
     static var previews: some View {
-        VoiceMessageView(message: message1)
+        MessageView(viewWidth: 450, message: message)
+            .padding()
+            .previewLayout(.sizeThatFits)
+            .environment(\.managedObjectContext, persistence.container.viewContext)
     }
 }
 #endif

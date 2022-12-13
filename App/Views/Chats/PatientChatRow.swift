@@ -42,8 +42,7 @@ struct PatientChatRow: View {
                             if let text = contract.lastFetchedMessage?.text {
                                 Text(text)
                                     .foregroundColor(.gray)
-                                    .lineLimit(2)
-                                    .frame(height: 50, alignment: .top)
+                                    .lineLimit(1)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.trailing, 40)
                             }
@@ -76,6 +75,9 @@ struct PatientChatRow: View {
                 clinicLogo
                     .frame(width: 60, height: 60)
             }
+        }
+        .onAppear {
+            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
         }
     }
     

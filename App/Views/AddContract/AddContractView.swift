@@ -83,7 +83,7 @@ struct AddContractView: View {
                 }
             }
             .animation(.default, value: addContractViewModel.state)
-            .deprecatedScrollDismissesKeyboard()
+            .scrollDismissesKeyboardIos16Only()
             .navigationTitle("Add Patient")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -93,13 +93,7 @@ struct AddContractView: View {
                     }
                 }
             }
-            .alert(item: $addContractViewModel.alert, content: { error in
-                Alert(
-                    title: Text(error.title),
-                    message: Text(error.message),
-                    dismissButton: .default(Text("Close"))
-                )
-            })
+            .alert(item: $addContractViewModel.alert) { $0.alert }
             .onChange(of: addContractViewModel.state, perform: { newState in
                 if newState == .fetchingUserFromMedsenger {
                     hideKeyboard()

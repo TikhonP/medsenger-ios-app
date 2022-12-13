@@ -57,7 +57,7 @@ struct ChooseScenarioView: View {
             }
             .navigationTitle("Monitoring Scenarios")
             .navigationBarTitleDisplayMode(.inline)
-            .deprecatedSearchable(text: query)
+            .searchableIos16Only(text: query)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {

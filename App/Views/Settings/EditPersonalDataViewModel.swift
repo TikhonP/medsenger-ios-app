@@ -9,28 +9,19 @@
 import Foundation
 import SwiftUI
 
-fileprivate class EditPersonalDataAlerts {
-    static let invalidEmailAlert = AlertInfo(
-        title: LocalizedStringKey("Invalid email!").stringValue(), message: "")
-    static let nameIsEmpty = AlertInfo(
-        title: LocalizedStringKey("Name cannot be empty!").stringValue(),
-        message: LocalizedStringKey("Please provide a name to continue.").stringValue())
-    static let phoneExists = AlertInfo(
-        title: LocalizedStringKey("This phone already in use!").stringValue(),
-        message: LocalizedStringKey("Please check if the phone is correct.").stringValue())
-}
-
 final class EditPersonalDataViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     @Published var showLoading = false
     
     func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
         guard email.isEmail() else {
-            presentAlert(EditPersonalDataAlerts.invalidEmailAlert, .warning)
+            presentAlert(title: "Invalid email!", .warning)
             return
         }
         guard !name.isEmpty else {
-            presentAlert(EditPersonalDataAlerts.nameIsEmpty, .warning)
+            presentAlert(
+                title: "Name cannot be empty!",
+                message: "Please provide a name to continue.", .warning)
             return
         }
         showLoading = true
@@ -43,7 +34,9 @@ final class EditPersonalDataViewModel: ObservableObject, Alertable {
                 case .failure:
                     self?.presentGlobalAlert()
                 case .phoneExists:
-                    self?.presentAlert(EditPersonalDataAlerts.phoneExists, .warning)
+                    self?.presentAlert(
+                        title: "This phone already in use!",
+                        message: "Please check if the phone is correct.", .warning)
                 }
             }
         }

@@ -31,7 +31,7 @@ struct RecordedVoiceMessageView: View {
                                    Image(systemName: "stop.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.init(UIColor.systemBackground))
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
                               })
@@ -40,7 +40,7 @@ struct RecordedVoiceMessageView: View {
                                    Image(systemName: "play.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.init(UIColor.systemBackground))
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
                               })
@@ -52,7 +52,7 @@ struct RecordedVoiceMessageView: View {
                               isPlaying: $chatViewModel.isVoiceMessagePlaying,
                               playingAudioProgress: $chatViewModel.playingAudioProgress,
                               mainColor: .gray,
-                              progressColor: .white,
+                              progressColor: .init(UIColor.systemBackground),
                               width: 2
                          )
                          .padding(.trailing)

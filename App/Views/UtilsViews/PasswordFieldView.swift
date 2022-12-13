@@ -10,9 +10,9 @@ import SwiftUI
 
 struct PasswordFieldView: View {
     @Binding var password: String
-    let placeholder: String
+    let placeholder: LocalizedStringKey
     
-    init(password: Binding<String>, placeholder: String = "Password") {
+    init(password: Binding<String>, placeholder: LocalizedStringKey = "Password") {
         _password = password
         self.placeholder = placeholder
     }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// Main app controller with shared property for using all over the app
 final class ContentViewModel: ObservableObject {
@@ -22,24 +23,24 @@ final class ContentViewModel: ObservableObject {
     @Published private(set) var openChatContractId: Int?
     @Published private(set) var openedChatContractId: Int?
     
-    private var globalAlertTitle = ""
-    private var globalAlertMessage = ""
+    private var globalAlertTitle: LocalizedStringKey?
+    private var globalAlertMessage: LocalizedStringKey?
     
     /// Store alert data for presenting it anywhere
     /// - Parameters:
     ///   - title: Alert title.
     ///   - message: Alert description.
-    public func createGlobalAlert(title: String, message: String) {
+    public func createGlobalAlert(title: LocalizedStringKey, message: LocalizedStringKey?) {
         globalAlertTitle = title
         globalAlertMessage = message
     }
     
     /// Get stored alert data
     /// - Returns: tuple with alert title and description
-    public func getGlobalAlert() -> (title: String, message: String) {
+    public func getGlobalAlert() -> (title: LocalizedStringKey?, message: LocalizedStringKey?) {
         let result = (globalAlertTitle, globalAlertMessage)
-        globalAlertTitle = ""
-        globalAlertMessage = ""
+        globalAlertTitle = nil
+        globalAlertMessage = nil
         return result
     }
     

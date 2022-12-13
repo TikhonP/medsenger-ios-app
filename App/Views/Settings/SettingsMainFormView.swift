@@ -135,7 +135,10 @@ struct SettingsMainFormView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
+    @State private var showAppBuild = false
+    
     private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    private let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     
     var body: some View {
         Form {
@@ -189,7 +192,7 @@ struct SettingsMainFormView: View {
                         }
                     }
                 })
-                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn, perform: settingsMainFormViewModel.updateEmailNotifications)
+                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { settingsMainFormViewModel.updateEmailNotifications($0) }
                 .onChange(of: user.emailNotifications, perform: { value in
                     settingsMainFormViewModel.isEmailNotificationOn = value
                 })
@@ -205,13 +208,7 @@ struct SettingsMainFormView: View {
                 })
                 .onChange(of: settingsMainFormViewModel.isPushNotificationOn, perform: settingsMainFormViewModel.updatePushNotifications)
             }
-            .alert(item: $settingsMainFormViewModel.alert, content: { error in
-                Alert(
-                    title: Text(error.title),
-                    message: Text(error.message),
-                    dismissButton: .default(Text("Close"))
-                )
-            })
+            .alert(item: $settingsMainFormViewModel.alert) { $0.alert }
             
             if user.isPatient && user.isDoctor {
                 Section(footer: Text("Your account has access to both the doctor and the patient role.")) {
@@ -238,7 +235,23 @@ struct SettingsMainFormView: View {
                     Text("Version")
                     Spacer()
                     if let appVersion = appVersion {
-                        Text(appVersion)
+                        HStack {
+                            Text(appVersion)
+                            if showAppBuild {
+                                if let appBuild = appBuild {
+                                    Text("(\(appBuild))")
+                                        .foregroundColor(.secondary)
+                                } else {
+                                    Text("(Build not found)")
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            withAnimation {
+                                showAppBuild.toggle()
+                            }
+                        }
                     } else {
                         Text("Version not found")
                     }

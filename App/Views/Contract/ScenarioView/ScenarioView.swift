@@ -44,7 +44,7 @@ struct ScenarioView: View {
                 }
             })
         }
-        .deprecatedScrollDismissesKeyboard()
+        .scrollDismissesKeyboardIos16Only()
         .navigationTitle(scenario.wrappedName)
         .navigationBarTitleDisplayMode(.inline)
         .alert(isPresented: $scenarioViewModel.showInvalidFieldsAlert, content: {

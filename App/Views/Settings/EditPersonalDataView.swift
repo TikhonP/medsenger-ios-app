@@ -98,14 +98,8 @@ struct EditPersonalDataView: View {
                 }
             }
         }
-        .deprecatedScrollDismissesKeyboard()
-        .alert(item: $editPersonalDataViewModel.alert, content: { error in
-            Alert(
-                title: Text(error.title),
-                message: Text(error.message),
-                dismissButton: .default(Text("Close"))
-            )
-        })
+        .scrollDismissesKeyboardIos16Only()
+        .alert(item: $editPersonalDataViewModel.alert) { $0.alert }
     }
 }
 

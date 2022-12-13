@@ -22,11 +22,15 @@ struct MessageImageView: View {
                     chatViewModel.quickLookDocumentUrl = path
                 }
         } else {
-            ProgressView()
-                .padding()
-                .onAppear {
-                    chatViewModel.fetchImageAttachment(imageAttachment)
-                }
+            HStack {
+                Spacer()
+                ProgressView()
+                    .frame(height: 200)
+                    .onAppear {
+                        chatViewModel.fetchImageAttachment(imageAttachment)
+                    }
+                Spacer()
+            }
         }
     }
 }

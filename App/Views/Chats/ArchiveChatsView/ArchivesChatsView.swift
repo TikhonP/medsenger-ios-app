@@ -70,8 +70,8 @@ struct ArchivesChatsView: View {
                 }
             }
         }
-        .deprecatedSearchable(text: query)
-        .deprecatedRefreshable { await chatsViewModel.getArchiveContracts() }
+        .searchableIos16Only(text: query)
+        .refreshableIos15Only { await chatsViewModel.getArchiveContracts() }
         .listStyle(PlainListStyle())
         .navigationTitle("Archived Chats")
         .onAppear(perform: chatsViewModel.getArchiveContracts)

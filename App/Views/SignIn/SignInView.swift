@@ -99,13 +99,7 @@ struct SignInView: View {
             })
             Spacer()
         }
-        .alert(item: $signInViewModel.alert, content: { error in
-            Alert(
-                title: Text(error.title),
-                message: Text(error.message),
-                dismissButton: .default(Text("Close"))
-            )
-        })
+        .alert(item: $signInViewModel.alert) { $0.alert }
         .animation(.default, value: motionManager.x)
         .animation(.default, value: motionManager.y)
         .animation(.default, value: buttonXoffset)

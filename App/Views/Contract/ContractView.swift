@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct ContractView: View {
-    let contract: Contract
-    let user: User
+    @ObservedObject private var contract: Contract
+    @ObservedObject private var user: User
     
     @StateObject private var contractViewModel: ContractViewModel
     
@@ -51,6 +51,7 @@ struct ContractView: View {
                 agentActions
             }
         }
+        .refreshableIos15Only { await contractViewModel.getContracts() }
         .sheet(isPresented: $showEditNotes) {
             EditNotesView(contract: contract)
         }

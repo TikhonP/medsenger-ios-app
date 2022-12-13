@@ -11,7 +11,7 @@ import SwiftUI
 struct EmptyArchiveChatsView: View {
     var body: some View {
         VStack {
-            Image(systemName: "archiveboxw.fill")
+            Image(systemName: "archivebox.fill")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 70)

@@ -31,12 +31,6 @@ enum NetworkRequestError: Error {
     /// - Parameter statusCode: HTTP status code
     case emptyDataStatusCode(_ statusCode: Int)
     
-    /// Failed to deserialize data with JSON, when got HTTP error
-    /// - Parameters:
-    ///  - statusCode: HTTP status code
-    ///  - decodeDataError: decode JSON from data failure cases
-    case failedToDeserializeError(_ statusCode: Int, _ decodeDataError: Error)
-    
     /// Failed to deserialize data with JSON
     /// - Parameters:
     ///  - statusCode: HTTP status code
@@ -62,13 +56,13 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         switch urlError.code {
         case .notConnectedToInternet:
             ContentViewModel.shared.createGlobalAlert(
-                title: LocalizedStringKey("The Internet connection appears to be offline").stringValue(),
-                message: LocalizedStringKey("Turn off Airplane Mode or connect to Wi-Fi.").stringValue())
+                title: "The Internet connection appears to be offline",
+                message: "Turn off Airplane Mode or connect to Wi-Fi.")
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         case .timedOut:
             ContentViewModel.shared.createGlobalAlert(
-                title: LocalizedStringKey("The request timed out").stringValue(),
-                message: LocalizedStringKey("Please check your connection and try again.").stringValue())
+                title: "The request timed out",
+                message: "Please check your connection and try again.")
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         default:
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
@@ -79,34 +73,17 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
             Logger.urlRequest.info("Incorrect token in request, sign out.")
         } else if errorData.errors.contains("Incorrect data") {
             ContentViewModel.shared.createGlobalAlert(
-                title: LocalizedStringKey("Incorrect data provided").stringValue(),
-                message: LocalizedStringKey("Please check your input or contact Medsenger support.").stringValue())
+                title: "Incorrect data provided",
+                message: "Please check your input or contact Medsenger support.")
             Logger.urlRequest.info("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         } else {
             ContentViewModel.shared.createGlobalAlert(
-                title: LocalizedStringKey("Oops! Server error").stringValue(),
-                message: errorData.errors.joined(separator: " "))
+                title: "Oops! Server error",
+                message: LocalizedStringKey(errorData.errors.joined(separator: " ")))
             Logger.urlRequest.error("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         }
     case .emptyDataStatusCode(let statusCode):
         Logger.urlRequest.error("Request `\(requestName)` error: Invalid status code (\(statusCode)) with empty data")
-    case .failedToDeserializeError(let statusCode, let decodeDataError):
-        if let decodeDataError = decodeDataError as? DecodingError {
-            switch decodeDataError {
-            case .typeMismatch(let type, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Type `\(String(describing: type))` Mismatch, context: \(String(describing: context))")
-            case .valueNotFound(let value, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Value `\(String(describing: value))` not found, context: \(String(describing: context))")
-            case .keyNotFound(let key, let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Key `\(String(describing: key))` not found, context: \(String(describing: context))")
-            case .dataCorrupted(let context):
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Data corrupted, context: \(String(describing: context))")
-            @unknown default:
-                Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(decodeDataError.localizedDescription)")
-            }
-        } else {
-            Logger.urlRequest.error("Request `\(requestName)` error: Failed to deserialize data from error (status code: \(statusCode)): Unknown error: \(decodeDataError.localizedDescription)")
-        }
     case .failedToDeserialize(let statusCode, let decodeDataError):
         if let decodeDataError = decodeDataError as? DecodingError {
             switch decodeDataError {

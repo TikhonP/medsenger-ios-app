@@ -34,4 +34,8 @@ final class ContractViewModel: ObservableObject {
             }
         }
     }
+    
+    func getContracts() {
+        Contracts.shared.fetchContracts()
+    }
 }

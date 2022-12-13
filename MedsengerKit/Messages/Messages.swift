@@ -11,28 +11,48 @@ import Foundation
 final class Messages {
     static let shared = Messages()
     
-    private var getMessagesRequest: APIRequest<MessagesResource>?
+    private var getAllMessagesRequest: APIRequest<MessagesResource>?
+    private var getLast10MessagesRequests = [APIRequest<MessagesResource>]()
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
     private var getAttachmentRequests = [FileRequest]()
     
-    public func fetchMessages(contractId: Int, minId: Int? = nil, maxId: Int? = nil, desc: Bool = false, offset: Int? = nil, limit: Int? = nil, completion: (() -> Void)? = nil) {
+    public func fetchLast10Messages(contractId: Int) {
         let messagesResource = {
-            guard minId == nil, maxId == nil, offset == nil, limit == nil else {
-                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: minId, maxId: maxId, desc: desc, offset: offset, limit: limit)
+            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastGlobalFetchedMessage else {
+                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: 0, limit: 10)
             }
-            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
-                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: 0, limit: 30)
-            }
-            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: desc, offset: nil, limit: nil)
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
         }()
-        
-        getMessagesRequest = APIRequest(messagesResource)
-        getMessagesRequest?.execute { result in
+        let getLast10MessagesRequest = APIRequest(messagesResource)
+        getLast10MessagesRequests.append(getLast10MessagesRequest)
+        getLast10MessagesRequest.execute { result in
             switch result {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId) {
-                        Contract.updateLastAndFirstFetchedMessage(id: contractId)
+                        Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: false)
+                    }
+                }
+            case .failure(let error):
+                processRequestError(error, "get messages for contract \(contractId)")
+            }
+        }
+    }
+    
+    public func fetchMessages(contractId: Int, completion: (() -> Void)? = nil) {
+        let messagesResource = {
+            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastGlobalFetchedMessage else {
+                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
+            }
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
+        }()
+        getAllMessagesRequest = APIRequest(messagesResource)
+        getAllMessagesRequest?.execute { result in
+            switch result {
+            case .success(let data):
+                if let data = data {
+                    Message.saveFromJson(data, contractId: contractId) {
+                        Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: true)
                         if let completion = completion {
                             completion()
                         }
@@ -59,20 +79,30 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId)
-                    Contract.updateLastAndFirstFetchedMessage(id: contractId)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     completion(true)
                 } else {
                     completion(false)
                 }
             case .failure(let failureError):
-                completion(false)
                 switch failureError {
                 case .api(let errorsResponse, _):
+                    completion(false)
                     if errorsResponse.errors.contains("too large file") {
                         print("too large file")
+                    } else {
+                        processRequestError(failureError, "send message for contract \(contractId)")
+                    }
+                case .failedToDeserialize(let statusCode, _):
+                    processRequestError(failureError, "send message for contract \(contractId)")
+                    if statusCode == 200 {
+                        // If request success but response data from server corrupted
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 default:
+                    completion(false)
                     processRequestError(failureError, "send message for contract \(contractId)")
                 }
             }
@@ -97,7 +127,7 @@ final class Messages {
         }
     }
     
-    public func fetchImageAttachmentImage(imageAttachmentId: Int) {
+    public func fetchImageAttachmentImage(imageAttachmentId: Int, completion: (() -> Void)? = nil) {
         let getImageAttachmentImagegetAttachmentRequest = FileRequest(path: "/images/\(imageAttachmentId)/real")
         getAttachmentRequests.append(getImageAttachmentImagegetAttachmentRequest)
         getImageAttachmentImagegetAttachmentRequest.execute { result in
@@ -105,6 +135,9 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     ImageAttachment.saveFile(id: imageAttachmentId, data: data)
+                    if let completion = completion {
+                        completion()
+                    }
                 }
             case .failure(let error):
                 processRequestError(error, "Messages: fetchImageAttachmentImage")

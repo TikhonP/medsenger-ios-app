@@ -9,21 +9,6 @@
 import Foundation
 import SwiftUI
 
-fileprivate class SignInAlerts {
-    static let fillTheFields = AlertInfo(
-        title: LocalizedStringKey("Provide auth data!").stringValue(),
-        message: LocalizedStringKey("Please fill both username and password fields.").stringValue())
-    static let userIsNotActivated = AlertInfo(
-        title: LocalizedStringKey("User is not activated!").stringValue(),
-        message: "")
-    static let userIsNotFound = AlertInfo(
-        title: LocalizedStringKey("User is not found!").stringValue(),
-        message: "")
-    static let invalidPassword = AlertInfo(
-        title: LocalizedStringKey("Invalid password!").stringValue(),
-        message: "")
-}
-
 final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""
     @Published var password: String = ""
@@ -32,7 +17,9 @@ final class SignInViewModel: ObservableObject, Alertable {
     
     func auth() {
         guard !login.isEmpty, !password.isEmpty else {
-            alert = SignInAlerts.fillTheFields
+            presentAlert(
+                title: "Provide auth data!",
+                message: "Please fill both username and password fields.", .warning)
             return
         }
         showLoader = true
@@ -48,11 +35,11 @@ final class SignInViewModel: ObservableObject, Alertable {
                 case .unknownError:
                     self.presentGlobalAlert()
                 case .userIsNotActivated:
-                    self.presentAlert(SignInAlerts.userIsNotActivated, .error)
+                    self.presentAlert(title: "User is not activated!", .error)
                 case .incorrectData:
-                    self.presentAlert(SignInAlerts.userIsNotFound, .error)
+                    self.presentAlert(title: "User is not found!", .error)
                 case .incorrectPassword:
-                    self.presentAlert(SignInAlerts.invalidPassword, .error)
+                    self.presentAlert(title: "Invalid password!", .error)
                 }
             }
         }

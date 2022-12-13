@@ -65,6 +65,9 @@ struct DoctorChatRow: View {
                 }
             }
         }
+        .onAppear {
+            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
+        }
     }
     
     var avatarImage: some View {
@@ -81,9 +84,9 @@ struct DoctorChatRow: View {
             }
             .clipShape(Circle())
             
-            if !contract.archive {
+            if !contract.archive && contract.isOnline {
                 Circle()
-                    .foregroundColor(contract.isOnline ? .green : .pink)
+                    .foregroundColor(.green)
                     .frame(width: 12, height: 12)
                     .overlay(Circle().stroke(Color(UIColor.systemBackground)))
                     .offset(x: -4, y: -4)

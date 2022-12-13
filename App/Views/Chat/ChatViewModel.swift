@@ -59,12 +59,6 @@ final class ChatViewModel: NSObject, ObservableObject {
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
     }
     
-    func fetchMessagesFrom(messageId: Int) {
-        Messages.shared.fetchMessages(contractId: contractId, maxId: messageId, desc: true, limit: 30) {
-            
-        }
-    }
-    
     private var replyToId: Int? {
         guard let replyToMessage = replyToMessage else {
             return nil

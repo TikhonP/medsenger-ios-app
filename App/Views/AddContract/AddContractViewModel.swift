@@ -9,35 +9,17 @@
 import Foundation
 import SwiftUI
 
-enum AddContractViewStates {
-    case inputClinicAndEmail
-    case fetchingUserFromMedsenger
-    case knownClient, unknownClient
-}
-
 enum Sex: String, Codable, CaseIterable {
     case male, female
 }
 
-fileprivate class AddContractAlerts {
-    static let invalidEmailAlert = AlertInfo(
-        title: LocalizedStringKey("Invalid patient email!").stringValue(),
-        message: "Please check patient email to continue.")
-    static let emailIsEmpty = AlertInfo(
-        title: LocalizedStringKey("Invalid patient email!").stringValue(),
-        message: "Please provide patient email to continue.")
-    static let contractExistsAlert = AlertInfo(
-        title: LocalizedStringKey("Contract already exists").stringValue(),
-        message: LocalizedStringKey("Please check email. Contract with provided email already exists.").stringValue())
-    static let nameIsEmpty = AlertInfo(
-        title: LocalizedStringKey("Patient name cannot be empty!").stringValue(),
-        message: LocalizedStringKey("Please provide a name to continue.").stringValue())
-    static let contractDateAreOlderThanNow = AlertInfo(
-        title: LocalizedStringKey("Contract end date are older than now!").stringValue(),
-        message: LocalizedStringKey("Please check contract end date and correct it.").stringValue())
-}
-
 final class AddContractViewModel: ObservableObject, Alertable {
+    enum AddContractViewStates {
+        case inputClinicAndEmail
+        case fetchingUserFromMedsenger
+        case knownClient, unknownClient
+    }
+    
     @Published var alert: AlertInfo?
     
     @Published var clinicId: Int = {
@@ -66,15 +48,19 @@ final class AddContractViewModel: ObservableObject, Alertable {
     
     private var userExists: Bool?
     
-    let welcomeMessage = "" // FIXME: !!!
+    private let welcomeMessage = "" // FIXME: !!!
     
     func findPatient() {
         guard !patientEmail.isEmpty else {
-            presentAlert(AddContractAlerts.emailIsEmpty, .warning)
+            presentAlert(
+                title: "Invalid patient email!",
+                message: "Please provide patient email to continue.", .warning)
             return
         }
         guard patientEmail.isEmail() else {
-            presentAlert(AddContractAlerts.invalidEmailAlert, .warning)
+            presentAlert(
+                title: "Invalid patient email!",
+                message: "Please check patient email to continue.", .warning)
             return
         }
         state = .fetchingUserFromMedsenger
@@ -88,7 +74,9 @@ final class AddContractViewModel: ObservableObject, Alertable {
         DoctorActions.shared.findUser(clinicId: clinicId, email: patientEmail, completion: { [weak self] data, contractExists in
             DispatchQueue.main.async {
                 if contractExists {
-                    self?.presentAlert(AddContractAlerts.contractExistsAlert, .warning)
+                    self?.presentAlert(
+                        title: "Contract already exists",
+                        message: "Please check email. Contract with provided email already exists.", .warning)
                     self?.state = .inputClinicAndEmail
                 } else if let data = data {
                     self?.userExists = data.found
@@ -113,11 +101,15 @@ final class AddContractViewModel: ObservableObject, Alertable {
     
     func addContract(completion: @escaping () -> Void) {
         guard !patientName.isEmpty else {
-            presentAlert(AddContractAlerts.nameIsEmpty, .warning)
+            presentAlert(
+                title: "Patient name cannot be empty!",
+                message: "Please provide a name to continue.", .warning)
             return
         }
         guard contractEndDate > Date() else {
-            presentAlert(AddContractAlerts.contractDateAreOlderThanNow, .warning)
+            presentAlert(
+                title: "Contract end date are older than now!",
+                message: "Please check contract end date and correct it.", .warning)
             return
         }
         guard let userExists = userExists else {

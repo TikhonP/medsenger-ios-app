@@ -16,7 +16,7 @@ public class ImageAttachment: NSManagedObject, CoreDataIdGetable {
         category: String(describing: ImageAttachment.self)
     )
     
-    private func saveFile(_ data: Data) {
+    func saveFile(_ data: Data) {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
             ImageAttachment.logger.error("FileManager.default.urls directory is nil")
             return

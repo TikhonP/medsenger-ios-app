@@ -112,12 +112,7 @@ struct MessagesView: View {
                             VStack(spacing: 0) {
                                 LazyVStack {
                                     ForEach(messages) { message in
-                                        MessageView(message: message, viewWidth: reader.size.width)
-                                            .onAppear {
-                                                if message.id == contract.firstFetchedMessage?.id {
-                                                    chatViewModel.fetchMessagesFrom(messageId: Int(message.id))
-                                                }
-                                            }
+                                        MessageView(viewWidth: reader.size.width, message: message)
                                     }
                                 }
                                 Color.clear.id(-1)
@@ -146,6 +141,10 @@ struct MessagesView: View {
                             .onAppear {
                                 scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
                                 
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                                }
+                                
                                 keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
                                     if !showScrollDownButton {
                                         scrollTo(messageID: -1, scrollReader: scrollReader)
@@ -169,6 +168,13 @@ struct MessagesView: View {
                             .onChange(of: contract.lastFetchedMessage, perform: { lastFetchedMessage in
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
+                                }
+                            })
+                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    if !showScrollDownButton {
+                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                                    }
                                 }
                             })
                             .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in

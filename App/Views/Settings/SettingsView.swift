@@ -27,7 +27,7 @@ struct SettingsView: View {
                         EditPersonalDataView(user: user)
                     } else {
                         SettingsMainFormView(presentationMode: presentationMode, user: user)
-                            .deprecatedRefreshable { await settingsViewModel.updateProfile() }
+                            .refreshableIos15Only { await settingsViewModel.updateProfile() }
                             .onAppear(perform: settingsViewModel.updateProfile)
                             .navigationTitle("Settings")
                             .navigationBarTitleDisplayMode(.inline)

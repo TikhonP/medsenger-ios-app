@@ -10,7 +10,7 @@ import Foundation
 
 extension Message {
     public var wrappedText: String {
-        text ?? "Unknown text"
+        text ?? ""
     }
     
     public var attachmentsArray: [Attachment] {

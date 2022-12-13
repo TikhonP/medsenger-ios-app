@@ -48,7 +48,7 @@ struct InfoMaterialsView: View {
             }
         }
         .navigationTitle("Info Materials")
-        .deprecatedSearchable(text: query)
+        .searchableIos16Only(text: query)
     }
 }
 

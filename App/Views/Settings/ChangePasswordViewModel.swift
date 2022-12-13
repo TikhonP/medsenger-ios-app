@@ -11,11 +11,13 @@ import SwiftUI
 
 fileprivate class ChangePasswordAlerts {
     static let passwordsAreNotEqual = AlertInfo(
-        title: LocalizedStringKey("Passwords do not match!").stringValue(),
-        message: LocalizedStringKey("Please check that the passwords are the same.").stringValue())
+        title: "Passwords do not match!",
+        message: "Please check that the passwords are the same."
+    )
     static let passwordLengthDoNotMatch = AlertInfo(
-        title: LocalizedStringKey("Password must be more than 6 characters").stringValue(),
-        message: "")
+        title: "Password must be more than 6 characters",
+        message: ""
+    )
 }
 
 final class ChangePasswordViewModel: ObservableObject, Alertable {

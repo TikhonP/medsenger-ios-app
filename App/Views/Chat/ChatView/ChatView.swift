@@ -9,7 +9,7 @@
 import SwiftUI
 
 extension View {
-    fileprivate func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
+    func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
         background(
             GeometryReader { geometryProxy in
                 Color.clear
@@ -31,6 +31,7 @@ struct ChatView: View {
     @ObservedObject private var user: User
     
     @EnvironmentObject private var contentViewModel: ContentViewModel
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @StateObject private var chatViewModel: ChatViewModel
     
@@ -63,7 +64,7 @@ struct ChatView: View {
                         inputViewHeight = size.height
                     }
             }
-            .deprecatedScrollDismissesKeyboard()
+            .scrollDismissesKeyboardIos16Only()
             .environmentObject(chatViewModel)
             .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
                 guard !providers.isEmpty else {
@@ -108,11 +109,28 @@ struct ChatView: View {
                         Text(contract.wrappedShortName)
                             .foregroundColor(.primary)
                             .bold()
-                        if userRole == .patient {
-                            Text(contract.wrappedRole)
-                                .foregroundColor(.secondary)
-                                .font(.caption)
+                        ZStack {
+                            if networkConnectionMonitor.isConnected {
+                                if userRole == .patient {
+                                    Text(contract.wrappedRole)
+                                        .foregroundColor(.accentColor)
+                                } else if userRole == .doctor {
+                                    if contract.isOnline {
+                                        Text("online")
+                                            .foregroundColor(.accentColor)
+                                    } else {
+                                        Text("offline")
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            } else {
+                                Text("no connection")
+                                    .foregroundColor(.pink)
+                            }
                         }
+                        .font(.caption)
+                        .animation(.default, value: networkConnectionMonitor.isConnected)
+                        .animation(.default, value: contract.isOnline)
                     }
                 })
             }

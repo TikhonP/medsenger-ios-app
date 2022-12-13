@@ -24,35 +24,29 @@ struct ChangePasswordView: View {
     var body: some View {
         Form {
             Section(footer: Text("Password must be more than 6 characters")) {
-                PasswordFieldView(password: $password1, placeholder: LocalizedStringKey("New password").stringValue())
-                PasswordFieldView(password: $password2, placeholder: LocalizedStringKey("Repeat password").stringValue())
+                PasswordFieldView(password: $password1, placeholder: "New password")
+                PasswordFieldView(password: $password2, placeholder: "Repeat password")
             }
         }
         .navigationTitle("Change password")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2) {
                         presentationMode.wrappedValue.dismiss()
                     }
-                }, label: {
+                } label: {
                     if showLoading {
                         ProgressView()
                     } else {
                        Text("Save")
                     }
-                })
+                }
             }
         }
-        .deprecatedScrollDismissesKeyboard()
-        .alert(item: $changePasswordViewModel.alert, content: { error in
-            Alert(
-                title: Text(error.title),
-                message: Text(error.message),
-                dismissButton: .default(Text("Close"))
-            )
-        })
+        .scrollDismissesKeyboardIos16Only()
+        .alert(item: $changePasswordViewModel.alert) { $0.alert }
     }
 }
 

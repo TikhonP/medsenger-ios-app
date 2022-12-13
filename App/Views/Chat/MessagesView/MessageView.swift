@@ -8,19 +8,16 @@
 
 import SwiftUI
 
-struct MessageView: View {
-    @ObservedObject var message: Message
-    let viewWidth: CGFloat
-    
+struct MessageBodyView: View {
+    @ObservedObject private var message: Message
     @EnvironmentObject private var chatViewModel: ChatViewModel
-    
     @Environment(\.colorScheme) private var colorScheme
-    
     @FetchRequest private var imageAttachments: FetchedResults<ImageAttachment>
     
-    init(message: Message, viewWidth: CGFloat) {
+    @State private var addTrailingPadding = false
+    
+    init(message: Message) {
         self.message = message
-        self.viewWidth = viewWidth
         _imageAttachments = FetchRequest(
             entity: ImageAttachment.entity(),
             sortDescriptors: [],
@@ -28,117 +25,94 @@ struct MessageView: View {
     }
     
     var body: some View {
-        HStack {
-            messageBody
-                .foregroundColor(.primary)
-                .background(message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor"))
-                .cornerRadius(20)
-                .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
-                .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .contextMenu {
-                    Button(action: {
-                        chatViewModel.replyToMessage = message
-                    }, label: {
-                        Label("Reply", systemImage: "arrowshape.turn.up.left")
-                    })
-                    if let text = message.text, !text.isEmpty {
-                        Button(action: {
-                            UIPasteboard.general.string = text
-                        }, label: {
-                            Label("Copy", systemImage: "doc.on.doc")
-                        })
-                    }
+        ZStack(alignment: .bottomTrailing) {
+            VStack(alignment: .leading, spacing: 0) {
+                
+                // Reply:
+                if let replyedMessage = message.replyToMessage {
+                    ReplyPreviewView(replyedMessage: replyedMessage)
+                    Divider()
                 }
-        }
-        .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
-        .id(Int(message.id))
-    }
-    
-    var messageBody: some View {
-        ZStack {
-            if message.isVoiceMessage {
-                VStack(alignment: .leading, spacing: 0) {
-                    if let replyedMessage = message.replyToMessage {
-                        Button(action: {
-                            chatViewModel.scrollToMessageId = Int(replyedMessage.id)
-                        }, label: {
-                            VStack(spacing: 0) {
-                                ZStack {
-                                    Color.secondary
-                                    Text(replyedMessage.wrappedText)
-                                        .foregroundColor(Color(UIColor.darkText))
-                                        .lineLimit(2)
-                                        .padding(7)
-                                }
-                                Divider()
-                            }
-                        })
-                    }
+                
+                // Voice message:
+                if message.isVoiceMessage {
                     VoiceMessageView(message: message)
-                        .padding(9)
                 }
-            } else if message.wrappedText.isEmpty && imageAttachments.count == 1 {
-                if let image = imageAttachments.first {
-                    MessageImageView(imageAttachment: image)
+                
+                // Text:
+                if !message.wrappedText.isEmpty && !message.isVoiceMessage {
+                    TextMessageView(message: message)
                 }
-            } else {
-                VStack(alignment: .leading, spacing: 0) {
-                    if let replyedMessage = message.replyToMessage {
-                        Button(action: {
-                            chatViewModel.scrollToMessageId = Int(replyedMessage.id)
-                        }, label: {
-                            VStack(spacing: 0) {
-                                ZStack {
-                                    Color.secondary
-                                    Text(replyedMessage.wrappedText)
-                                        .foregroundColor(Color(UIColor.darkText))
-                                        .lineLimit(2)
-                                        .padding(7)
-                                }
-                                Divider()
-                            }
-                        })
-                    }
-                    
-                    if !message.wrappedText.isEmpty {
-                        if message.isAgent, let actionDeadline = message.actionDeadline, actionDeadline > Date(), !message.actionUsed {
-                            Text(.init(HtmlParser.getMarkdownString(from: message.wrappedText)))
-                                .accentColor(colorScheme == .light ? .blue : .accentColor)
-                                .padding(10)
-                        } else {
-                            Text(message.wrappedText)
-                                .padding(10)
-                        }
-                    }
-                    
-                    ForEach(message.attachmentsArray) { attachment in
-                        if let name = attachment.name {
-                            Divider()
-                            Button(action: {
-                                chatViewModel.showAttachmentPreview(attachment)
-                            }, label: {
-                                HStack {
-                                    Label(name, systemImage: attachment.iconAsSystemImageName)
-                                    if chatViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
-                                        ProgressView()
-                                            .padding(.leading)
-                                    }
-                                }
-                                .padding(10)
-                            })
-                        }
-                    }
-                    
-                    if !imageAttachments.isEmpty {
+                
+                // Attachments
+                if !message.isVoiceMessage {
+                    if !message.attachmentsArray.isEmpty && hasNonAttachmentContent {
                         Divider()
                     }
-                    
-                    ForEach(imageAttachments) { image in
-                        MessageImageView(imageAttachment: image)
+                    ForEach(message.attachmentsArray) { attachment in
+                        MessageAttachmentView(attachment: attachment)
                     }
                 }
+                
+                // Images:
+                if !imageAttachments.isEmpty && hasNonImageContent {
+                    Divider()
+                }
+                
+                ForEach(imageAttachments) { image in
+                    MessageImageView(imageAttachment: image)
+                }
             }
+            .padding(.trailing, addTrailingPadding ? 30 : 0)
+            .readSize { size in
+                if size.height < 49 {
+                    addTrailingPadding = true
+                }
+            }
+            MessageTimeBadge(message: message)
         }
+    }
+    
+    var hasNonAttachmentContent: Bool {
+        message.isVoiceMessage || !message.wrappedText.isEmpty
+    }
+    
+    var hasNonImageContent: Bool {
+        hasNonAttachmentContent || !message.attachmentsArray.isEmpty
+    }
+    
+    var isNoAttachments: Bool {
+        imageAttachments.isEmpty && message.attachmentsArray.isEmpty
+    }
+}
+
+struct MessageView: View {
+    let viewWidth: CGFloat
+    @ObservedObject var message: Message
+    @EnvironmentObject private var chatViewModel: ChatViewModel
+    
+    var body: some View {
+        MessageBodyView(message: message)
+            .foregroundColor(.primary)
+            .background(message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor"))
+            .cornerRadius(20)
+            .contextMenu {
+                Button(action: {
+                    chatViewModel.replyToMessage = message
+                }, label: {
+                    Label("Reply", systemImage: "arrowshape.turn.up.left")
+                })
+                if let text = message.text, !text.isEmpty {
+                    Button(action: {
+                        UIPasteboard.general.string = text
+                    }, label: {
+                        Label("Copy", systemImage: "doc.on.doc")
+                    })
+                }
+            }
+            .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+            .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
+            .id(Int(message.id))
     }
 }
 
@@ -158,17 +132,17 @@ struct MessageView_Previews: PreviewProvider {
     
     static var previews: some View {
         Group {
-            MessageView(message: message1, viewWidth: 450)
+            MessageView(viewWidth: 450, message: message1)
                 .padding()
                 .previewLayout(.sizeThatFits)
             
-            MessageView(message: message2, viewWidth: 450)
+            MessageView(viewWidth: 450, message: message2)
                 .padding()
                 .previewLayout(.sizeThatFits)
         }
     }
 }
-#endif
+
 
 struct BubbleShape: Shape {
     var myMessage : Bool
@@ -207,3 +181,4 @@ struct BubbleShape: Shape {
         return Path(bezierPath.cgPath)
     }
 }
+#endif
