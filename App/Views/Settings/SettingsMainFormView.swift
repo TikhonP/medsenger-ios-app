@@ -189,9 +189,7 @@ struct SettingsMainFormView: View {
                         }
                     }
                 })
-                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn, perform: { value in
-                    settingsMainFormViewModel.updateEmailNotifications()
-                })
+                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn, perform: settingsMainFormViewModel.updateEmailNotifications)
                 .onChange(of: user.emailNotifications, perform: { value in
                     settingsMainFormViewModel.isEmailNotificationOn = value
                 })
@@ -205,9 +203,7 @@ struct SettingsMainFormView: View {
                         }
                     }
                 })
-                .onChange(of: settingsMainFormViewModel.isPushNotificationOn, perform: { value in
-                    settingsMainFormViewModel.updatePushNotifications()
-                })
+                .onChange(of: settingsMainFormViewModel.isPushNotificationOn, perform: settingsMainFormViewModel.updatePushNotifications)
             }
             .alert(item: $settingsMainFormViewModel.alert, content: { error in
                 Alert(

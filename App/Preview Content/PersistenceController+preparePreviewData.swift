@@ -6,6 +6,7 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+#if DEBUG
 import Foundation
 import CoreData
 
@@ -26,3 +27,4 @@ extension PersistenceController {
         PersistenceController.save(for: viewContext)
     }
 }
+#endif

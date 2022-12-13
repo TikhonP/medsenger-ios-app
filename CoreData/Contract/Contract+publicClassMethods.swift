@@ -52,13 +52,14 @@ extension Contract {
         }
     }
     
-    public static func updateLastFetchedMessage(id: Int) {
+    public static func updateLastAndFirstFetchedMessage(id: Int) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             guard let contract = get(id: id, for: context) else {
                 return
             }
             contract.lastFetchedMessage = Message.getLastMessageForContract(for: contract, for: context)
+            contract.firstFetchedMessage = Message.getFirstMessageForContract(for: contract, for: context)
             PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
         }
     }

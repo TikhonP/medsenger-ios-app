@@ -20,13 +20,16 @@ struct ContentView: View {
         if let user = users.first {
             if userRole == .unknown {
                 ChooseRoleView()
+                    .transition(.opacity)
             } else {
                 NavigationView {
                     ChatsView(user: user)
                 }
+                .navigationViewStyle(.stack)
                 .environmentObject(contentViewModel)
                 .environmentObject(networkConnectionMonitor)
                 .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
+                .transition(.opacity)
                 .onOpenURL(perform: contentViewModel.processDeeplink)
                 .fullScreenCover(isPresented: $contentViewModel.isCalling) {
                     if let videoCallContractId = contentViewModel.videoCallContractId {
@@ -38,6 +41,7 @@ struct ContentView: View {
         } else {
             SignInView()
                 .environmentObject(networkConnectionMonitor)
+                .transition(.opacity)
                 .onAppear(perform: {
                     PersistenceController.clearDatabase(withUser: true)
                 })

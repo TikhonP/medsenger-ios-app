@@ -8,28 +8,33 @@
 
 import Foundation
 
-struct PushNotificationsResource: APIResource {
+class PushNotificationsResource: APIResource {
     let fcmToken: String
     
     /// Store or remove token from remote, if true save token, otherwise remove
     let store: Bool
     
+    init(fcmToken: String, store: Bool) {
+        self.fcmToken = fcmToken
+        self.store = store
+    }
+    
     typealias ModelType = EmptyModel
     
-    var methodPath: String {
+    lazy var methodPath: String = {
         "/\(UserDefaults.userRole.rawValue)/android\(store ? "" : "/remove")"
-    }
+    }()
     
-    var params: [String: String] {
+    lazy var params: [String: String] = {
         ["key": fcmToken]
-    }
+    }()
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             method: .POST,
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }
+    }()
 }

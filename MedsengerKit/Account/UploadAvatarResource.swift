@@ -8,12 +8,16 @@
 
 import Foundation
 
-struct UploadAvatarResource: APIResource {
+class UploadAvatarResource: APIResource {
     let image: ImagePickerMedia
 
+    init(image: ImagePickerMedia) {
+        self.image = image
+    }
+    
     typealias ModelType = User.JsonDecoder
     
-    var files: [MultipartFormData.Part] {
+    lazy var files: [MultipartFormData.Part] = {
         [MultipartFormData.Part(
             contentDisposition: ContentDisposition(
                 name: Name(asPercentEncoded: "photo"),
@@ -22,16 +26,16 @@ struct UploadAvatarResource: APIResource {
             contentType: ContentType(representing: MIMEType(text: image.mimeType)),
             content: image.data
         )]
-    }
+    }()
     
     var methodPath = "/photo"
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let result = multipartFormData(files: files)
         return APIResourceOptions(
             method: .POST,
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }
+    }()
 }

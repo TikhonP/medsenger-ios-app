@@ -25,7 +25,7 @@ struct ChooseRoleView: View {
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)
-                .padding(.horizontal, 50)
+                .frame(width: 250)
                 .background(Color.accentColor)
                 .clipShape(Capsule())
             
@@ -33,7 +33,7 @@ struct ChooseRoleView: View {
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)
-                .padding(.horizontal, 50)
+                .frame(width: 250)
                 .background(Color.accentColor)
                 .clipShape(Capsule())
         }
@@ -44,6 +44,7 @@ struct ChooseRoleView: View {
 struct ChooseRoleView_Previews: PreviewProvider {
     static var previews: some View {
         ChooseRoleView()
+            .environment(\.locale, .init(identifier: "ru"))
     }
 }
 #endif

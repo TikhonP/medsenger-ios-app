@@ -14,6 +14,8 @@ struct MessageView: View {
     
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     @FetchRequest private var imageAttachments: FetchedResults<ImageAttachment>
     
     init(message: Message, viewWidth: CGFloat) {
@@ -99,8 +101,14 @@ struct MessageView: View {
                     }
                     
                     if !message.wrappedText.isEmpty {
-                        Text(message.wrappedText)
-                            .padding(10)
+                        if message.isAgent, let actionDeadline = message.actionDeadline, actionDeadline > Date(), !message.actionUsed {
+                            Text(.init(HtmlParser.getMarkdownString(from: message.wrappedText)))
+                                .accentColor(colorScheme == .light ? .blue : .accentColor)
+                                .padding(10)
+                        } else {
+                            Text(message.wrappedText)
+                                .padding(10)
+                        }
                     }
                     
                     ForEach(message.attachmentsArray) { attachment in

@@ -8,11 +8,18 @@
 
 import Foundation
 
-struct UpdateAccountResource: APIResource {
+class UpdateAccountResource: APIResource {
     let name: String
     let email: String
     let phone: String
     let birthday: Date
+    
+    init(name: String, email: String, phone: String, birthday: Date) {
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.birthday = birthday
+    }
     
     typealias ModelType = User.JsonDecoder
     
@@ -20,16 +27,16 @@ struct UpdateAccountResource: APIResource {
         return DateFormatter.ddMMyyyy.string(from: birthday)
     }
     
-    var params: [String: String] {
+    lazy var params: [String: String] = {
         ["name": name,
          "email": email,
          "phone": phone,
          "birthday": birthdayAsString]
-    }
+    }()
     
     var methodPath = "/account"
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             parseResponse: false,
@@ -37,5 +44,5 @@ struct UpdateAccountResource: APIResource {
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }
+    }()
 }

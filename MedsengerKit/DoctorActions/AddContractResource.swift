@@ -74,19 +74,23 @@ struct AddContractRequestModel: Encodable {
     }
 }
 
-struct AddContractResource: APIResource {
+class AddContractResource: APIResource {
     let addContractRequestModel: AddContractRequestModel
+    
+    init(addContractRequestModel: AddContractRequestModel) {
+        self.addContractRequestModel = addContractRequestModel
+    }
     
     typealias ModelType = EmptyModel
     
     internal var methodPath = "/add_contract"
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let formData = multipartFormData(textParams: addContractRequestModel.params)
         return APIResourceOptions(
             method: .POST,
             httpBody: formData.httpBody,
             headers: formData.headers
         )
-    }
+    }()
 }

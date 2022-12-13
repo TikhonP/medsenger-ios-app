@@ -59,6 +59,12 @@ final class ChatViewModel: NSObject, ObservableObject {
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
     }
     
+    func fetchMessagesFrom(messageId: Int) {
+        Messages.shared.fetchMessages(contractId: contractId, maxId: messageId, desc: true, limit: 30) {
+            
+        }
+    }
+    
     private var replyToId: Int? {
         guard let replyToMessage = replyToMessage else {
             return nil
@@ -98,15 +104,6 @@ final class ChatViewModel: NSObject, ObservableObject {
 // MARK: - Send Message extention
 extension ChatViewModel {
     func sendMessage() {
-        if showRecordedMessage {
-            guard let recordedMessageUrl = recordedMessageUrl, let data = try? Data(contentsOf: recordedMessageUrl) else {
-                return
-            }
-            messageAttachments.append(
-                ChatViewAttachment(
-                    data: data, extention: "m4a", realFilename: recordedMessageUrl.lastPathComponent, type: .audio))
-            message = Constants.voiceMessageText
-        }
         guard !message.isEmpty || !messageAttachments.isEmpty else {
             return
         }
@@ -121,9 +118,30 @@ extension ChatViewModel {
                     if succeeded {
                         self?.messageAttachments = []
                         self?.message = ""
+                    }
+                }
+            }
+    }
+    
+    func sendVoiceMessage() {
+        guard showRecordedMessage, let recordedMessageUrl = recordedMessageUrl, let data = try? Data(contentsOf: recordedMessageUrl) else {
+            return
+        }
+        let attachment = ChatViewAttachment(data: data, extention: "m4a", realFilename: recordedMessageUrl.lastPathComponent, type: .audio)
+        if isVoiceMessagePlaying {
+            stopPlaying()
+        }
+        showSendingMessageLoading = true
+        Messages.shared.sendMessage(
+            Constants.voiceMessageText,
+            for: contractId,
+            replyToId: replyToId,
+            attachments: [attachment]) { [weak self] succeeded in
+                DispatchQueue.main.async {
+                    self?.showSendingMessageLoading = false
+                    if succeeded {
                         self?.isRecordingVoiceMessage = false
                         self?.showRecordedMessage = false
-                        self?.isVoiceMessagePlaying = false
                     }
                 }
             }

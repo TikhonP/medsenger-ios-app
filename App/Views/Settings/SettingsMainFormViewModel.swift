@@ -21,28 +21,28 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
     
     @Published var alert: AlertInfo?
     
-    func updateEmailNotifications() {
-        guard User.get()?.emailNotifications != isEmailNotificationOn else {
+    func updateEmailNotifications(_ value: Bool) {
+        guard User.get()?.emailNotifications != value else {
             return
         }
         showEmailNotificationUpdateRequestLoading = true
-        Account.shared.updateEmailNotiofication(emailNotify: showEmailNotificationUpdateRequestLoading) { [weak self] succeeded in
+        Account.shared.updateEmailNotiofication(emailNotify: value) { [weak self] succeeded in
             DispatchQueue.main.async {
                 self?.showEmailNotificationUpdateRequestLoading = false
                 if succeeded {
                     Account.shared.updateProfile()
                 } else {
                     self?.presentGlobalAlert()
-//                    self?.showEmailNotificationUpdateRequestLoading = true
+                    self?.showEmailNotificationUpdateRequestLoading = !value
                 }
             }
         }
     }
     
-    func updatePushNotifications() {
+    func updatePushNotifications(_ value: Bool) {
         if let fcmToken = UserDefaults.fcmToken {
             showPushNotificationUpdateRequestLoading = true
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: isPushNotificationOn) { [weak self] succeeded in
+            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: value) { [weak self] succeeded in
                 DispatchQueue.main.async {
                     self?.showPushNotificationUpdateRequestLoading = false
                     if !succeeded {

@@ -8,15 +8,20 @@
 
 import Foundation
 
-struct UpdateCommentsResource: APIResource {
+class UpdateCommentsResource: APIResource {
     let contractId: Int
     let comment: String
     
+    init(contractId: Int, comment: String) {
+        self.contractId = contractId
+        self.comment = comment
+    }
+    
     typealias ModelType = EmptyModel
     
-    var methodPath: String { "/comments/\(contractId)" }
+    lazy var methodPath: String = { "/comments/\(contractId)" }()
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let formdata = multipartFormData(textParams: [
             "comments": comment
         ])
@@ -25,5 +30,5 @@ struct UpdateCommentsResource: APIResource {
             httpBody: formdata.httpBody,
             headers: formdata.headers
         )
-    }
+    }()
 }

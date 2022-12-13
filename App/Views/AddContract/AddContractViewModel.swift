@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum AddContractViewStates {
     case inputClinicAndEmail
@@ -18,7 +19,27 @@ enum Sex: String, Codable, CaseIterable {
     case male, female
 }
 
-final class AddContractViewModel: ObservableObject {
+fileprivate class AddContractAlerts {
+    static let invalidEmailAlert = AlertInfo(
+        title: LocalizedStringKey("Invalid patient email!").stringValue(),
+        message: "Please check patient email to continue.")
+    static let emailIsEmpty = AlertInfo(
+        title: LocalizedStringKey("Invalid patient email!").stringValue(),
+        message: "Please provide patient email to continue.")
+    static let contractExistsAlert = AlertInfo(
+        title: LocalizedStringKey("Contract already exists").stringValue(),
+        message: LocalizedStringKey("Please check email. Contract with provided email already exists.").stringValue())
+    static let nameIsEmpty = AlertInfo(
+        title: LocalizedStringKey("Patient name cannot be empty!").stringValue(),
+        message: LocalizedStringKey("Please provide a name to continue.").stringValue())
+    static let contractDateAreOlderThanNow = AlertInfo(
+        title: LocalizedStringKey("Contract end date are older than now!").stringValue(),
+        message: LocalizedStringKey("Please check contract end date and correct it.").stringValue())
+}
+
+final class AddContractViewModel: ObservableObject, Alertable {
+    @Published var alert: AlertInfo?
+    
     @Published var clinicId: Int = {
         if let clinic = Clinic.objectsAll().first {
             return Int(clinic.id)
@@ -41,8 +62,6 @@ final class AddContractViewModel: ObservableObject {
     @Published var clinicClassifierId: Int = 0
     @Published var videoEnabled = false
     
-    @Published var showContractExistsAlert = false
-    
     @Published var submittingAddPatient = false
     
     private var userExists: Bool?
@@ -50,6 +69,14 @@ final class AddContractViewModel: ObservableObject {
     let welcomeMessage = "" // FIXME: !!!
     
     func findPatient() {
+        guard !patientEmail.isEmpty else {
+            presentAlert(AddContractAlerts.emailIsEmpty, .warning)
+            return
+        }
+        guard patientEmail.isEmail() else {
+            presentAlert(AddContractAlerts.invalidEmailAlert, .warning)
+            return
+        }
         state = .fetchingUserFromMedsenger
         clinic = Clinic.get(id: clinicId)
         if let rule = clinic?.rulesArray.first {
@@ -61,13 +88,9 @@ final class AddContractViewModel: ObservableObject {
         DoctorActions.shared.findUser(clinicId: clinicId, email: patientEmail, completion: { [weak self] data, contractExists in
             DispatchQueue.main.async {
                 if contractExists {
-                    self?.showContractExistsAlert = true
+                    self?.presentAlert(AddContractAlerts.contractExistsAlert, .warning)
                     self?.state = .inputClinicAndEmail
-                } else {
-                    guard let data = data else {
-                        self?.state = .inputClinicAndEmail
-                        return
-                    }
+                } else if let data = data {
                     self?.userExists = data.found
                     self?.patientName = ""
                     self?.patientBirthday = Date()
@@ -80,14 +103,24 @@ final class AddContractViewModel: ObservableObject {
                     } else {
                         self?.state = .unknownClient
                     }
+                } else {
+                    self?.state = .inputClinicAndEmail
+                    self?.presentGlobalAlert()
                 }
             }
         })
     }
     
     func addContract(completion: @escaping () -> Void) {
+        guard !patientName.isEmpty else {
+            presentAlert(AddContractAlerts.nameIsEmpty, .warning)
+            return
+        }
+        guard contractEndDate > Date() else {
+            presentAlert(AddContractAlerts.contractDateAreOlderThanNow, .warning)
+            return
+        }
         guard let userExists = userExists else {
-            print("lol")
             return
         }
         submittingAddPatient = true
@@ -110,6 +143,8 @@ final class AddContractViewModel: ObservableObject {
                 self?.submittingAddPatient = false
                 if succeeded {
                     completion()
+                } else {
+                    self?.presentGlobalAlert()
                 }
             }
         }

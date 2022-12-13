@@ -14,18 +14,21 @@ struct MessageInputButtonLabel: View {
     private let height: CGFloat = 38
     
     var body: some View {
-        if showProgress {
-            ZStack {
-                Circle()
-                ProgressView()
+        ZStack {
+            if showProgress {
+                ZStack {
+                    Circle()
+                    ProgressView()
+                }
+                .frame(width: height, height: height)
+            } else {
+                Image(systemName: imageSystemName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: height)
             }
-            .frame(width: height, height: height)
-        } else {
-            Image(systemName: imageSystemName)
-                .resizable()
-                .scaledToFit()
-                .frame(height: height)
         }
+        .animation(.default, value: showProgress)
     }
 }
 

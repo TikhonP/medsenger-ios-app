@@ -16,32 +16,32 @@ struct MessageInputView: View {
             Divider()
                 .edgesIgnoringSafeArea(.horizontal)
             VStack {
-                ZStack {
-                    if let replyToMessage = chatViewModel.replyToMessage {
-                        ReplyedMessageView(message: replyToMessage)
-                    }
+                if let replyToMessage = chatViewModel.replyToMessage {
+                    ReplyedMessageView(message: replyToMessage)
+                        .transition(.move(edge: .bottom))
                 }
-                .transition(.slide)
-                .animation(.default, value: chatViewModel.replyToMessage)
                 
-                ZStack {
-                    if !chatViewModel.messageAttachments.isEmpty {
-                        InputAttachmentsView()
-                    }
+                if !chatViewModel.messageAttachments.isEmpty {
+                    InputAttachmentsView()
+                        .transition(.move(edge: .bottom))
                 }
-                .transition(.slide)
-                .animation(.default, value: chatViewModel.messageAttachments)
                 
                 if !chatViewModel.isRecordingVoiceMessage && !chatViewModel.showRecordedMessage {
                     MainInputView()
-                } else {
+                } else if chatViewModel.isRecordingVoiceMessage {
                     RecordingVoiceMessageView()
+                } else if chatViewModel.showRecordedMessage {
+                    RecordedVoiceMessageView()
                 }
             }
             .padding(.horizontal, 7)
             .padding(.vertical, 5)
         }
         .blurEffect(ignoresSafeAreaEdges: .all)
+        .animation(.default, value: chatViewModel.messageAttachments)
+        .animation(.default, value: chatViewModel.replyToMessage)
+        .animation(.default, value: chatViewModel.isRecordingVoiceMessage)
+        .animation(.default, value: chatViewModel.showRecordedMessage)
     }
 }
 

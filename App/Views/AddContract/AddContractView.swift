@@ -82,6 +82,7 @@ struct AddContractView: View {
                     }
                 }
             }
+            .animation(.default, value: addContractViewModel.state)
             .deprecatedScrollDismissesKeyboard()
             .navigationTitle("Add Patient")
             .navigationBarTitleDisplayMode(.inline)
@@ -92,12 +93,13 @@ struct AddContractView: View {
                     }
                 }
             }
-            .alert(isPresented: $addContractViewModel.showContractExistsAlert) {
+            .alert(item: $addContractViewModel.alert, content: { error in
                 Alert(
-                    title: Text("Contract already exists"),
-                    message: Text("Please check email. Contract with provided email already exists.")
+                    title: Text(error.title),
+                    message: Text(error.message),
+                    dismissButton: .default(Text("Close"))
                 )
-            }
+            })
             .onChange(of: addContractViewModel.state, perform: { newState in
                 if newState == .fetchingUserFromMedsenger {
                     hideKeyboard()

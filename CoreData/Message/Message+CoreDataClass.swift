@@ -24,4 +24,13 @@ public class Message: NSManagedObject, CoreDataIdGetable {
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getLastMessageForContract")
         return fetchedResults?.first
     }
+    
+    public static func getFirstMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
+        let fetchRequest = Message.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: true)]
+        fetchRequest.fetchLimit = 1
+        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getFirstMessageForContract")
+        return fetchedResults?.first
+    }
 }

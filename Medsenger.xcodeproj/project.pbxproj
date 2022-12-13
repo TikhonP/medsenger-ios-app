@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4301873229478FF600DC8776 /* HtmlMessageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4301873129478FF600DC8776 /* HtmlMessageParser.swift */; };
 		430E7D90293635C1009C129D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 430E7D8F293635C1009C129D /* FirebaseAnalytics */; };
 		430E7D92293635C1009C129D /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 430E7D91293635C1009C129D /* FirebaseMessaging */; };
 		430E7D962936392A009C129D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 430E7D952936392A009C129D /* GoogleService-Info.plist */; };
@@ -26,6 +27,8 @@
 		434399FB2927F6DD001D7C4F /* AttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FA2927F6DC001D7C4F /* AttachmentsView.swift */; };
 		434399FD2928142A001D7C4F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FC2928142A001D7C4F /* WebView.swift */; };
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
+		4351CE182946858B00DF6830 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE172946858B00DF6830 /* AudioView.swift */; };
+		4351CE1A29468C6300DF6830 /* RecordedVoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */; };
 		435C1831293ADD70009483F6 /* String+uniqueFilename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1830293ADD70009483F6 /* String+uniqueFilename.swift */; };
 		435C1838293AEDDB009483F6 /* VoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1837293AEDDB009483F6 /* VoiceMessageView.swift */; };
 		435C1846293B8044009483F6 /* WaveformImageDrawer+iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C183C293B8044009483F6 /* WaveformImageDrawer+iOS.swift */; };
@@ -230,6 +233,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4301873129478FF600DC8776 /* HtmlMessageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HtmlMessageParser.swift; sourceTree = "<group>"; };
 		430E7D952936392A009C129D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		430E7D99293645BA009C129D /* PushNotificationsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsResource.swift; sourceTree = "<group>"; };
 		430E7D9D29366D9D009C129D /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
@@ -247,6 +251,8 @@
 		434399FA2927F6DC001D7C4F /* AttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsView.swift; sourceTree = "<group>"; };
 		434399FC2928142A001D7C4F /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
+		4351CE172946858B00DF6830 /* AudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
+		4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = RecordedVoiceMessageView.swift; sourceTree = "<group>"; };
 		435C1830293ADD70009483F6 /* String+uniqueFilename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+uniqueFilename.swift"; sourceTree = "<group>"; };
 		435C1837293AEDDB009483F6 /* VoiceMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessageView.swift; sourceTree = "<group>"; };
 		435C183A293B8033009483F6 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -622,6 +628,7 @@
 				43A1663A294158640003E1FB /* MessageInputButtonLabel.swift */,
 				43A1663C294163350003E1FB /* RecordingVoiceMessageView.swift */,
 				43A166402941F3520003E1FB /* ChatViewAttachment.swift */,
+				4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */,
 			);
 			path = MessageInputView;
 			sourceTree = "<group>";
@@ -634,6 +641,7 @@
 				435C1837293AEDDB009483F6 /* VoiceMessageView.swift */,
 				435C1859293BFAA2009483F6 /* AgentMessageView.swift */,
 				435C185B293BFDF4009483F6 /* MessageImageView.swift */,
+				4301873129478FF600DC8776 /* HtmlMessageParser.swift */,
 			);
 			path = MessagesView;
 			sourceTree = "<group>";
@@ -1113,6 +1121,7 @@
 				437BEB5829435B1D008EF4DE /* Alertable.swift */,
 				437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */,
 				43EF447029228DDF005DF084 /* PasswordFieldView.swift */,
+				4351CE172946858B00DF6830 /* AudioView.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -1263,6 +1272,7 @@
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
 				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
 				43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */,
+				4351CE182946858B00DF6830 /* AudioView.swift in Sources */,
 				43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */,
 				437BEB552943549A008EF4DE /* SettingsMainFormView.swift in Sources */,
 				43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */,
@@ -1391,6 +1401,8 @@
 				435D5732293A9EEA0013B0F4 /* ContractDevicesView.swift in Sources */,
 				43EF446629228D54005DF084 /* Websockets.swift in Sources */,
 				43EF44B229229068005DF084 /* PersistenceController+preparePreviewData.swift in Sources */,
+				4301873229478FF600DC8776 /* HtmlMessageParser.swift in Sources */,
+				4351CE1A29468C6300DF6830 /* RecordedVoiceMessageView.swift in Sources */,
 				435D5705293A109C0013B0F4 /* APIRequest.swift in Sources */,
 				43EF445229228C70005DF084 /* ChatsViewModel.swift in Sources */,
 				435D5728293A95700013B0F4 /* ChooseScenarioView.swift in Sources */,

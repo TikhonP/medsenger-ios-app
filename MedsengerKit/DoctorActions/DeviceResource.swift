@@ -9,28 +9,33 @@
 import Foundation
 import os.log
 
-struct DeviceResource: APIResource {
+class DeviceResource: APIResource {
     let devices: [DeviceNode]
     let contractId: Int
     
+    init(devices: [DeviceNode], contractId: Int) {
+        self.devices = devices
+        self.contractId = contractId
+    }
+    
     typealias ModelType = EmptyModel
     
-    var methodPath: String { "/contracts/\(contractId)/agents" }
+    lazy var methodPath: String = { "/contracts/\(contractId)/agents" }()
     
-    var params: [String: String] {
+    lazy var params: [String: String] = {
         var data = [String: String]()
         for device in devices {
             data["agent_\(device.id)"] = "\(device.isEnabled)"
         }
         return data
-    }
+    }()
     
-    var options: APIResourceOptions {
+    lazy var options: APIResourceOptions = {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             method: .POST,
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }
+    }()
 }

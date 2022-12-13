@@ -17,8 +17,8 @@ extension String {
     static func uniqueFilename(withPrefix prefix: String? = nil) -> String {
         let uniqueString = ProcessInfo.processInfo.globallyUniqueString
         
-        if prefix != nil {
-            return "\(prefix!)-\(uniqueString)"
+        if let prefix = prefix {
+            return "\(prefix)-\(uniqueString)"
         }
         
         return uniqueString

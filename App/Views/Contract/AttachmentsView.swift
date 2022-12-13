@@ -57,7 +57,7 @@ struct AttachmentsView: View {
             entity: Attachment.entity(),
             sortDescriptors: [NSSortDescriptor(key: "message.sent", ascending: true)],
             predicate: NSPredicate(format: "message.contract == %@", contract),
-            animation: .easeIn
+            animation: .default
         )
         self.contract = contract
     }

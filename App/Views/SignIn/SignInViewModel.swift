@@ -27,9 +27,7 @@ fileprivate class SignInAlerts {
 final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""
     @Published var password: String = ""
-    
     @Published var showLoader = false
-    
     @Published var alert: AlertInfo?
     
     func auth() {

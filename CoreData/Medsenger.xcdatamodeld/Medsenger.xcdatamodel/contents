@@ -199,6 +199,7 @@
         <relationship name="botActions" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BotAction" inverseName="contract" inverseEntity="BotAction"/>
         <relationship name="clinic" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Clinic" inverseName="contracts" inverseEntity="Clinic"/>
         <relationship name="doctorHelpers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
+        <relationship name="firstFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="firstFetchContract" inverseEntity="Message"/>
         <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
         <relationship name="lastFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="lastFetchContract" inverseEntity="Message"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
@@ -291,6 +292,7 @@
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="message" inverseEntity="Attachment"/>
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="messages" inverseEntity="Contract"/>
+        <relationship name="firstFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="firstFetchedMessage" inverseEntity="Contract"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
         <relationship name="lastFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastFetchedMessage" inverseEntity="Contract"/>
         <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>

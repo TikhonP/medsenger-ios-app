@@ -64,7 +64,7 @@ extension APIResource {
         data.append(contentsOf: files)
         
         let multipartFormData = MultipartFormData(
-            uniqueAndValidLengthBoundary: "boundary",
+            uniqueAndValidLengthBoundary: RandomBoundaryGenerator.generate(),
             body: data
         )
         

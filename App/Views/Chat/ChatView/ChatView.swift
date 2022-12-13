@@ -8,6 +8,24 @@
 
 import SwiftUI
 
+extension View {
+    fileprivate func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
+        background(
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .preference(key: SizePreferenceKey.self, value: geometryProxy.size)
+            }
+        )
+        .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
+    }
+}
+
+fileprivate struct SizePreferenceKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
+}
+
+
 struct ChatView: View {
     @ObservedObject private var contract: Contract
     @ObservedObject private var user: User
@@ -20,8 +38,9 @@ struct ChatView: View {
     
     @FocusState private var isTextFocused
     
-    @State private var navigationSelection: Int? = nil
-
+    @State private var inputViewHeight: CGFloat = 48.33
+    @State private var openContractView = false
+    
     init(contract: Contract, user: User) {
         _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
         self.contract = contract
@@ -29,62 +48,61 @@ struct ChatView: View {
     }
     
     var body: some View {
-        VStack {
-            if contract.messagesArray.isEmpty {
-                Spacer()
-                ProgressView()
-                Spacer()
-            } else {
-                ZStack(alignment: .bottom) {
-                    MessagesView(contract: contract)
-                    MessageInputView()
-                }
-                .deprecatedScrollDismissesKeyboard()
-                .environmentObject(chatViewModel)
-                .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
-                    guard !providers.isEmpty else {
-                        return false
-                    }
-                    for itemProvider in providers {
-                        guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
-                            continue
-                        }
-                        itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
-                            if let error = error {
-                                print(error.localizedDescription)
-                            }
-                            guard let url = url else {
-                                return
-                            }
-                            do {
-                                let data = try Data(contentsOf: url)
-                                DispatchQueue.main.async {
-                                    chatViewModel.messageAttachments.append(ChatViewAttachment(
-                                        data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
-                                }
-                            } catch {
-                                print(error.localizedDescription)
-                            }
-                        }
-                    }
-                    return true
-                })
-            }
-            
-            NavigationLink(
-                tag: 1, selection: $navigationSelection,
-                destination: {
-                    ContractView(contract: contract, user: user)
-                } , label: {
-                    EmptyView()
-                })
+        ZStack {
+            NavigationLink(isActive: $openContractView, destination: {
+                ContractView(contract: contract, user: user)
+            }, label: {
+                EmptyView()
+            })
             .isDetailLink(false)
+            
+            ZStack(alignment: .bottom) {
+                MessagesView(contract: contract, inputViewHeight: $inputViewHeight)
+                MessageInputView()
+                    .readSize { size in
+                        inputViewHeight = size.height
+                    }
+            }
+            .deprecatedScrollDismissesKeyboard()
+            .environmentObject(chatViewModel)
+            .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
+                guard !providers.isEmpty else {
+                    return false
+                }
+                for itemProvider in providers {
+                    guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
+                        continue
+                    }
+                    itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
+                        if let error = error {
+                            print(error.localizedDescription)
+                        }
+                        guard let url = url else {
+                            return
+                        }
+                        do {
+                            let data = try Data(contentsOf: url)
+                            DispatchQueue.main.async {
+                                chatViewModel.messageAttachments.append(ChatViewAttachment(
+                                    data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
+                            }
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                    }
+                }
+                return true
+            })
+            
+            if contract.messagesArray.isEmpty {
+                ProgressView()
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Button(action: {
-                    navigationSelection = 1
+                    openContractView = true
                 }, label: {
                     VStack {
                         Text(contract.wrappedShortName)
@@ -101,7 +119,7 @@ struct ChatView: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    navigationSelection = 1
+                    openContractView = true
                 }, label: {
                     if let image = contract.avatar {
                         Image(data: image)?
@@ -116,9 +134,9 @@ struct ChatView: View {
             contentViewModel.markChatAsOpened(contractId: Int(contract.id))
             chatViewModel.onChatViewAppear(contract: contract)
         }
-//        .onDisappear {
-//            contentViewModel.markChatAsClosed()
-//        }
+        //        .onDisappear {
+        //            contentViewModel.markChatAsClosed()
+        //        }
     }
 }
 

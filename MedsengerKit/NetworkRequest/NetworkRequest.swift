@@ -91,8 +91,6 @@ extension NetworkRequest {
                 completion(.failure(.selfIsNil))
                 return
             }
-//            print(url)
-//            print(String(decoding: data ?? Data(), as: UTF8.self))
             guard let data = data else {
                 completion(.failure(.emptyDataStatusCode(httpResponse.statusCode)))
                 return

@@ -9,6 +9,7 @@
 import Foundation
 import Network
 
+/// An observer that you use to monitor and react to network connect state.
 final class NetworkConnectionMonitor: ObservableObject {
     @Published private(set) var isConnected = false
     @Published private(set) var isCellular = false
@@ -17,14 +18,14 @@ final class NetworkConnectionMonitor: ObservableObject {
     private let queue = DispatchQueue(label: "NetworkConnectionMonitor")
     
     init() {
-        checkConnection()
+        start()
     }
     
     deinit {
         stop()
     }
     
-    public func checkConnection() {
+    public func start() {
         nwMonitor.pathUpdateHandler = { [weak self] newPath in
             DispatchQueue.main.async {
                 self?.isConnected = newPath.status == .satisfied

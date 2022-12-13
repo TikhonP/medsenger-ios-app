@@ -30,7 +30,7 @@ struct InfoMaterialsView: View {
             entity: InfoMaterial.entity(),
             sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)],
             predicate: NSPredicate(format: "contract == %@", contract),
-            animation: .easeIn
+            animation: .default
         )
         self.contract = contract
     }

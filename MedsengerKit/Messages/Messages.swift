@@ -15,12 +15,15 @@ final class Messages {
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
     private var getAttachmentRequests = [FileRequest]()
     
-    public func fetchMessages(contractId: Int, completion: (() -> Void)? = nil) {
+    public func fetchMessages(contractId: Int, minId: Int? = nil, maxId: Int? = nil, desc: Bool = false, offset: Int? = nil, limit: Int? = nil, completion: (() -> Void)? = nil) {
         let messagesResource = {
-            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
-                return MessagesResource(for: contractId)
+            guard minId == nil, maxId == nil, offset == nil, limit == nil else {
+                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: minId, maxId: maxId, desc: desc, offset: offset, limit: limit)
             }
-            return MessagesResource(for: contractId, fromMessageId: Int(lastFetchedMessage.id))
+            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
+                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: 0, limit: 30)
+            }
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: desc, offset: nil, limit: nil)
         }()
         
         getMessagesRequest = APIRequest(messagesResource)
@@ -29,7 +32,7 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId) {
-                        Contract.updateLastFetchedMessage(id: contractId)
+                        Contract.updateLastAndFirstFetchedMessage(id: contractId)
                         if let completion = completion {
                             completion()
                         }
@@ -56,7 +59,7 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId)
-                    Contract.updateLastFetchedMessage(id: contractId)
+                    Contract.updateLastAndFirstFetchedMessage(id: contractId)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     completion(true)
                 } else {

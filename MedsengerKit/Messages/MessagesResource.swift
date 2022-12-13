@@ -13,21 +13,14 @@ struct MessagesResource: APIResource {
     let contractId: Int
     let fromMessageId: Int?
     
-    /// Get list of messages for contract
-    /// - Parameter contractId: Contract id
-    init(for contractId: Int) {
-        self.contractId = contractId
-        self.fromMessageId = nil
-    }
+    let minId: Int?
+    let maxId: Int?
     
-    /// Get list of last messages for contract
-    /// - Parameters:
-    ///   - contractId: Contract id
-    ///   - fromMessageId: Message id from start fetch
-    init(for contractId: Int, fromMessageId: Int) {
-        self.contractId = contractId
-        self.fromMessageId = fromMessageId
-    }
+    // If true then acsending from first to last
+    let desc: Bool
+
+    let offset: Int?
+    let limit: Int?
     
     typealias ModelType = Array<Message.JsonDeserializer>
     
@@ -39,8 +32,29 @@ struct MessagesResource: APIResource {
         }
     }
     
-    var options = APIResourceOptions(
-        parseResponse: true,
-        dateDecodingStrategy: .secondsSince1970
-    )
+    var params: [URLQueryItem] {
+        var params = [URLQueryItem]()
+        if let minId = minId {
+            params.append(URLQueryItem(name: "min_id", value: String(minId)))
+        }
+        if let maxId = maxId {
+            params.append(URLQueryItem(name: "max_id", value: String(maxId)))
+        }
+        params.append(URLQueryItem(name: "desc", value: String(desc)))
+        if let offset = offset {
+            params.append(URLQueryItem(name: "offset", value: String(offset)))
+        }
+        if let limit = limit {
+            params.append(URLQueryItem(name: "limit", value: String(limit)))
+        }
+        return params
+    }
+    
+    var options: APIResourceOptions {
+        APIResourceOptions(
+            parseResponse: true,
+            params: params,
+            dateDecodingStrategy: .secondsSince1970
+        )
+    }
 }

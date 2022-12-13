@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import SwiftUI
 
+/// Main app controller with shared property for using all over the app
 final class ContentViewModel: ObservableObject {
     static let shared = ContentViewModel()
     
@@ -19,71 +19,81 @@ final class ContentViewModel: ObservableObject {
     @Published var isCalling: Bool = false
     @Published private(set) var videoCallContractId: Int?
     @Published private(set) var isCaller: Bool = false
-    
     @Published private(set) var openChatContractId: Int?
-    
     @Published private(set) var openedChatContractId: Int?
     
     private var globalAlertTitle = ""
     private var globalAlertMessage = ""
     
-    func createGlobalAlert(title: String, message: String) {
+    /// Store alert data for presenting it anywhere
+    /// - Parameters:
+    ///   - title: Alert title.
+    ///   - message: Alert description.
+    public func createGlobalAlert(title: String, message: String) {
         globalAlertTitle = title
         globalAlertMessage = message
     }
     
-    func getGlobalAlert() -> (title: String, message: String) {
+    /// Get stored alert data
+    /// - Returns: tuple with alert title and description
+    public func getGlobalAlert() -> (title: String, message: String) {
         let result = (globalAlertTitle, globalAlertMessage)
         globalAlertTitle = ""
         globalAlertMessage = ""
         return result
     }
     
-    func showCall(contractId: Int, isCaller: Bool) {
+    /// Show call modal
+    /// - Parameters:
+    ///   - contractId: Contract Id for call.
+    ///   - isCaller: Is user caller when opening.
+    public func showCall(contractId: Int, isCaller: Bool) {
         DispatchQueue.main.async {
-            withAnimation {
-                self.videoCallContractId = contractId
-                self.isCaller = isCaller
-                self.isCalling = true
-            }
+            self.videoCallContractId = contractId
+            self.isCaller = isCaller
+            self.isCalling = true
         }
     }
     
+    /// Stop call and close call modal
     func hideCall() {
         DispatchQueue.main.async {
-            withAnimation {
-                self.isCalling = false
-            }
+            self.isCalling = false
         }
     }
     
-    func openChat(with contractId: Int) {
-        DispatchQueue.main.async {
-            self.openChatContractId = contractId
-        }
-    }
-    
+    /// Mark chat as opened for disable notifications for this chat
+    /// - Parameter contractId: Chat contract Id.
     func markChatAsOpened(contractId: Int) {
         DispatchQueue.main.async {
             self.openedChatContractId = contractId
         }
     }
     
+    /// Mark chat as closed for enabling notifications for any
     func markChatAsClosed() {
         DispatchQueue.main.async {
             self.openedChatContractId = nil
         }
     }
     
+    /// Open chat from deeplink or notification
+    /// - Parameter contractId: Chat contract Id
+    func openChat(with contractId: Int) {
+        DispatchQueue.main.async {
+            self.openChatContractId = contractId
+        }
+    }
+    
+    /// Process open app from url
+    /// - Parameter url: Url from app opened
     func processDeeplink(_ url: URL) {
-        guard let urlComponents = URLComponents(string: url.absoluteString) else { return }
-        guard let queryItems = urlComponents.queryItems else { return }
-        for queryItem in queryItems {
-            if queryItem.name == "c" {
-                if let contractId = queryItem.value,  let contractId = Int(contractId) {
-                    openChat(with: contractId)
-                }
-            }
+        DispatchQueue.main.async {
+            let paramKey = "c"
+            guard let urlComponents = URLComponents(string: url.absoluteString),
+                  let stringValue = urlComponents.queryItems?.first(where: { $0.name == paramKey })?.value,
+                  let contractId = Int(stringValue) else { return }
+            self.openChat(with: contractId)
         }
     }
 }
