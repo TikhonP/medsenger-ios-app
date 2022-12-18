@@ -11,9 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var contentViewModel = ContentViewModel.shared
     @StateObject private var networkConnectionMonitor = NetworkConnectionMonitor()
-    
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
-    
     @FetchRequest(sortDescriptors: [], animation: .default) private var users: FetchedResults<User>
     
     var body: some View {
@@ -28,7 +26,7 @@ struct ContentView: View {
                 .navigationViewStyle(.stack)
                 .environmentObject(contentViewModel)
                 .environmentObject(networkConnectionMonitor)
-                .onAppear(perform:  Login.shared.deauthIfTokenIsNotExists)
+                .onAppear(perform: Login.shared.deauthIfTokenIsNotExists)
                 .transition(.opacity)
                 .onOpenURL(perform: contentViewModel.processDeeplink)
                 .fullScreenCover(isPresented: $contentViewModel.isCalling) {

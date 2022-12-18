@@ -27,6 +27,8 @@ struct MessageBodyView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             VStack(alignment: .leading, spacing: 0) {
+                MessageTitleView(message: message)
+                Divider()
                 
                 // Reply:
                 if let replyedMessage = message.replyToMessage {
@@ -42,6 +44,19 @@ struct MessageBodyView: View {
                 // Text:
                 if !message.wrappedText.isEmpty && !message.isVoiceMessage {
                     TextMessageView(message: message)
+                }
+                
+                // Action link:
+                if message.isAgent, message.actionLink != nil {
+                    Button(action: {
+                        chatViewModel.openMessageActionLink(message: message)
+                    }, label: {
+                        Text(message.wrappedActionName)
+                            .padding(10)
+                            .background(Color.secondary)
+                            .cornerRadius(15)
+                            .padding(5)
+                    })
                 }
                 
                 // Attachments
@@ -89,30 +104,49 @@ struct MessageBodyView: View {
 struct MessageView: View {
     let viewWidth: CGFloat
     @ObservedObject var message: Message
-    @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     var body: some View {
-        MessageBodyView(message: message)
-            .foregroundColor(.primary)
-            .background(message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor"))
-            .cornerRadius(20)
-            .contextMenu {
-                Button(action: {
-                    chatViewModel.replyToMessage = message
-                }, label: {
-                    Label("Reply", systemImage: "arrowshape.turn.up.left")
-                })
-                if let text = message.text, !text.isEmpty {
+        if message.isVideoCallMessageFromDoctor {
+            VideoCallMessageView(message: message)
+                .id(Int(message.id))
+        } else {
+            MessageBodyView(message: message)
+                .foregroundColor(.primary)
+                .background(messageBackground)
+                .cornerRadius(20)
+                .contextMenu {
                     Button(action: {
-                        UIPasteboard.general.string = text
+                        messageInputViewModel.replyToMessage = message
                     }, label: {
-                        Label("Copy", systemImage: "doc.on.doc")
+                        Label("Reply", systemImage: "arrowshape.turn.up.left")
                     })
+                    if let text = message.text, !text.isEmpty {
+                        Button(action: {
+                            UIPasteboard.general.string = text
+                        }, label: {
+                            Label("Copy", systemImage: "doc.on.doc")
+                        })
+                    }
                 }
+                .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+                .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
+                .id(Int(message.id))
+        }
+    }
+    
+    var messageBackground: Color {
+        if message.isAgent {
+            if message.isUrgent {
+                return .pink
+            } else if message.isWarning {
+                return .yellow
+            } else {
+                return message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor")
             }
-            .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
-            .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
-            .id(Int(message.id))
+        } else {
+            return message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor")
+        }
     }
 }
 

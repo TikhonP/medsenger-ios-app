@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TextInputAttachmentView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     let attachment: ChatViewAttachment
     
@@ -54,8 +55,8 @@ struct TextInputAttachmentView: View {
             }
             
             Button(action: {
-                if let index = chatViewModel.messageAttachments.firstIndex(of: attachment) {
-                    chatViewModel.messageAttachments.remove(at: index)
+                if let index = messageInputViewModel.messageAttachments.firstIndex(of: attachment) {
+                    messageInputViewModel.messageAttachments.remove(at: index)
                 }
             }, label: {
                 Image(systemName: "xmark.circle.fill")

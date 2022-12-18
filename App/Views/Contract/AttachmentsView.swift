@@ -9,26 +9,32 @@
 import SwiftUI
 import QuickLook
 
-fileprivate final class AttachmentViewModel: ObservableObject {
+fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
     @Published var quickLookDocumentUrl: URL?
     
     @Published var loadingAttachmentIds = [Int]()
     @Published var loadingImageIds = [Int]()
+    
+    @Published var alert: AlertInfo?
     
     func showFilePreview(_ attachment: Attachment) {
         if let dataPath = attachment.dataPath {
             quickLookDocumentUrl =  dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
-            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                        self.loadingAttachmentIds.remove(at: index)
+            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) { [weak self] succeeded in
+                if succeeded {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        if let index = self?.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
+                            self?.loadingAttachmentIds.remove(at: index)
+                        }
+                        guard let dataPath = Attachment.get(id: Int(attachment.id))?.dataPath else {
+                            return
+                        }
+                        self?.quickLookDocumentUrl = dataPath
                     }
-                    guard let dataPath = Attachment.get(id: Int(attachment.id))?.dataPath else {
-                        return
-                    }
-                    self.quickLookDocumentUrl = dataPath
+                } else {
+                    self?.presentGlobalAlert()
                 }
             }
         }
@@ -39,15 +45,19 @@ fileprivate final class AttachmentViewModel: ObservableObject {
             quickLookDocumentUrl = dataPath
         } else {
             loadingImageIds.append(Int(image.id))
-            Messages.shared.fetchImageAttachmentImage(imageAttachmentId: Int(image.id)) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
-                        self.loadingImageIds.remove(at: index)
+            Messages.shared.fetchImageAttachmentImage(imageAttachmentId: Int(image.id)) { [weak self] succeeded in
+                if succeeded {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        if let index = self?.loadingImageIds.firstIndex(of: Int(image.id)) {
+                            self?.loadingImageIds.remove(at: index)
+                        }
+                        guard let dataPath = ImageAttachment.get(id: Int(image.id))?.dataPath else {
+                            return
+                        }
+                        self?.quickLookDocumentUrl = dataPath
                     }
-                    guard let dataPath = ImageAttachment.get(id: Int(image.id))?.dataPath else {
-                        return
-                    }
-                    self.quickLookDocumentUrl = dataPath
+                } else {
+                    self?.presentGlobalAlert()
                 }
             }
         }
@@ -189,6 +199,7 @@ struct AttachmentsView: View {
         .searchableIos16Only(text: query)
         .quickLookPreview($attachmentViewModel.quickLookDocumentUrl)
         .animation(.default, value: attachmentsType)
+        .alert(item: $attachmentViewModel.alert) { $0.alert }
     }
 }
 

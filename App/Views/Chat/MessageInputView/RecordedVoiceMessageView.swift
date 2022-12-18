@@ -9,13 +9,13 @@
 import SwiftUI
 
 struct RecordedVoiceMessageView: View {
-     @EnvironmentObject private var chatViewModel: ChatViewModel
+     @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
      @Environment(\.colorScheme) var colorScheme
      
      var body: some View {
           HStack {
                Button(action: {
-                    chatViewModel.showRecordedMessage = false
+                    messageInputViewModel.showRecordedMessage = false
                }, label: {
                     Image(systemName: "trash")
                          .resizable()
@@ -26,8 +26,8 @@ struct RecordedVoiceMessageView: View {
                
                HStack {
                     ZStack {
-                         if chatViewModel.isVoiceMessagePlaying {
-                              Button(action: chatViewModel.stopPlaying, label: {
+                         if messageInputViewModel.isVoiceMessagePlaying {
+                              Button(action: messageInputViewModel.stopPlaying, label: {
                                    Image(systemName: "stop.fill")
                                         .resizable()
                                         .scaledToFit()
@@ -36,7 +36,7 @@ struct RecordedVoiceMessageView: View {
                                         .padding([.vertical, .trailing], 10)
                               })
                          } else {
-                              Button(action: chatViewModel.startPlayingRecordedVoiceMessage, label: {
+                              Button(action: messageInputViewModel.startPlayingRecordedVoiceMessage, label: {
                                    Image(systemName: "play.fill")
                                         .resizable()
                                         .scaledToFit()
@@ -46,11 +46,11 @@ struct RecordedVoiceMessageView: View {
                               })
                          }
                     }
-                    if let recordedMessageUrl = chatViewModel.recordedMessageUrl {
+                    if let recordedMessageUrl = messageInputViewModel.recordedMessageUrl {
                          AudioPlayerView(
                               audioFileUrl: recordedMessageUrl,
-                              isPlaying: $chatViewModel.isVoiceMessagePlaying,
-                              playingAudioProgress: $chatViewModel.playingAudioProgress,
+                              isPlaying: $messageInputViewModel.isVoiceMessagePlaying,
+                              playingAudioProgress: $messageInputViewModel.playingAudioProgress,
                               mainColor: .gray,
                               progressColor: .init(UIColor.systemBackground),
                               width: 2
@@ -67,8 +67,8 @@ struct RecordedVoiceMessageView: View {
                .background(colorScheme == .light ? Color.accentColor : Color.white)
                .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
                
-               Button(action: chatViewModel.sendVoiceMessage, label: {
-                    MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $chatViewModel.showSendingMessageLoading)
+               Button(action: messageInputViewModel.sendVoiceMessage, label: {
+                    MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                          .foregroundColor(.accentColor)
                })
           }

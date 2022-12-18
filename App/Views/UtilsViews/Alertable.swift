@@ -33,7 +33,7 @@ struct AlertInfo: Identifiable {
 /// First create view model conforming to protocol:
 ///
 ///     final class ContentViewModel: ObservableObject, Alertable {
-///         @Published var alert: AlertInfo
+///         @Published var alert: AlertInfo?
 ///     }
 ///
 /// Then use it in the view:
@@ -83,7 +83,7 @@ extension Alertable {
     ///   - dismissButton: The button that dismisses the alert.
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
     internal func presentAlert(title: LocalizedStringKey, message: LocalizedStringKey? = nil, dismissButton: Alert.Button? = nil, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        self.presentAlert(.init(title: title, message: message), feedbackType)
+        self.presentAlert(.init(title: title, message: message, dismissButton: dismissButton), feedbackType)
     }
     
     /// Throws a global alert.

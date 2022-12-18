@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct MainInputView: View {
-    @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     @State private var selectedMedia: ImagePickerMedia?
     @State private var showFilePickerModal = false
@@ -26,25 +26,19 @@ struct MainInputView: View {
                     .foregroundColor(.secondary.opacity(0.7))
             })
             
-            TextView($chatViewModel.message, placeholder: "Message")
+            TextView($messageInputViewModel.message, placeholder: "Message")
                 .padding(.horizontal, 10)
                 .background(Color(UIColor.systemBackground))
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
             
-            if chatViewModel.message.isEmpty && chatViewModel.messageAttachments.isEmpty && !chatViewModel.showRecordedMessage {
-                Button(action: chatViewModel.startRecording, label: {
+            if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {
+                Button(action: messageInputViewModel.startRecording, label: {
                     MessageInputButtonLabel(imageSystemName: "waveform.circle.fill", showProgress: .constant(false))
                         .foregroundColor(.secondary.opacity(0.7))
                 })
-                .alert(isPresented: $chatViewModel.showAlertRecordingIsNotPermited) {
-                    Alert(title: Text("Recording is not permitted"))
-                }
-                .alert(isPresented: $chatViewModel.showRecordingfailedAlert) {
-                    Alert(title: Text("Recording failed :("))
-                }
             } else {
-                Button(action: chatViewModel.sendMessage, label: {
-                    MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $chatViewModel.showSendingMessageLoading)
+                Button(action: messageInputViewModel.sendMessage, label: {
+                    MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                         .foregroundColor(.accentColor)
                 })
             }
@@ -65,7 +59,7 @@ struct MainInputView: View {
                         ])
         }
         .sheet(isPresented: $showSelectPhotosSheet) {
-            NewImagePicker(pickedCompletionHandler: chatViewModel.addImagesAttachments)
+            NewImagePicker(pickedCompletionHandler: messageInputViewModel.addImagesAttachments)
                 .edgesIgnoringSafeArea(.all)
         }
         .fullScreenCover(isPresented: $showTakeImageSheet) {
@@ -73,10 +67,10 @@ struct MainInputView: View {
                 .edgesIgnoringSafeArea(.all)
         }
         .sheet(isPresented: $showFilePickerModal) {
-            FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: chatViewModel.addFilesAttachments)
+            FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: messageInputViewModel.addFilesAttachments)
                 .edgesIgnoringSafeArea(.all)
         }
-        .onChange(of: selectedMedia, perform: chatViewModel.addImagesAttachments)
+        .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
     }
 }
 

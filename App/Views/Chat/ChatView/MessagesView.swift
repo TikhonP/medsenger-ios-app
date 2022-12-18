@@ -9,6 +9,39 @@
 import SwiftUI
 import QuickLook
 
+extension ScrollView {
+    
+    public func fixFlickering() -> some View {
+        
+        return self.fixFlickering { (scrollView) in
+            
+            return scrollView
+        }
+    }
+    
+    public func fixFlickering<T: View>(@ViewBuilder configurator: @escaping (ScrollView<AnyView>) -> T) -> some View {
+        
+        GeometryReader { geometryWithSafeArea in
+            GeometryReader { geometry in
+                configurator(
+                ScrollView<AnyView>(self.axes, showsIndicators: self.showsIndicators) {
+                    AnyView(
+                    VStack {
+                        self.content
+                    }
+                    .padding(.top, geometryWithSafeArea.safeAreaInsets.top)
+                    .padding(.bottom, geometryWithSafeArea.safeAreaInsets.bottom)
+                    .padding(.leading, geometryWithSafeArea.safeAreaInsets.leading)
+                    .padding(.trailing, geometryWithSafeArea.safeAreaInsets.trailing)
+                    )
+                }
+                )
+            }
+            .edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+
 fileprivate struct ChildSizeReader<Content: View>: View {
     @Binding var size: CGSize
     
@@ -81,6 +114,7 @@ struct MessagesView: View {
             predicate: NSPredicate(format: "contract == %@", contract),
             animation: .default
         )
+        UIScrollView.appearance().decelerationRate = .fast
     }
     
     var body: some View {
@@ -101,6 +135,27 @@ struct MessagesView: View {
             .animation(.spring(response: 0.2, dampingFraction: 0.5), value: showScrollDownButton)
         }
         .animation(.default, value: inputViewHeight)
+        .alert(item: $chatViewModel.alert) { $0.alert }
+        .sheet(isPresented: $chatViewModel.showActionWebViewModal) {
+            if let agentActionUrl = chatViewModel.agentActionUrl, let agentActionName = chatViewModel.agentActionName {
+                NavigationView {
+                    WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true)
+                }
+            }
+        }
+    }
+    
+    var messagesArray: Array<Message> {
+        Array(messages)
+    }
+    
+    func isSameDay(date1: Date, date2: Date) -> Bool {
+        let diff = Calendar.current.dateComponents([.day], from: date1, to: date2)
+        if diff.day == 0 {
+            return true
+        } else {
+            return false
+        }
     }
     
     var scrollView: some View {
@@ -111,8 +166,13 @@ struct MessagesView: View {
                         ChildSizeReader(size: $scrollViewSize) {
                             VStack(spacing: 0) {
                                 LazyVStack {
-                                    ForEach(messages) { message in
-                                        MessageView(viewWidth: reader.size.width, message: message)
+                                    ForEach(Array(zip(messagesArray.indices, messagesArray)), id: \.0) { index, message in
+                                        if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
+                                            Text(messageSent, formatter: DateFormatter.ddMMyyyy)
+                                        }
+                                        if message.showMessage {
+                                            MessageView(viewWidth: reader.size.width, message: message)
+                                        }
                                     }
                                 }
                                 Color.clear.id(-1)
@@ -198,6 +258,7 @@ struct MessagesView: View {
                         }
                     }
                 }
+                .fixFlickering()
                 .coordinateSpace(name: spaceName)
             }
         }

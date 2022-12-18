@@ -126,7 +126,7 @@ struct ChatsView: View {
         .refreshableIos15Only { await chatsViewModel.getContracts() }
         .searchableIos16Only(text: query)
         .listStyle(.inset)
-        .navigationTitle("Chats")
+        .navigationTitle("Consultations")
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
             chatsViewModel.getContracts()
@@ -134,17 +134,19 @@ struct ChatsView: View {
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                if userRole == .doctor {
-                    Button(action: {
-                        showNewContractModal.toggle()
-                    }, label: { Image(systemName: "square.and.pencil") })
-                    .id(UUID())
+                HStack {
+                    if userRole == .doctor {
+                        Button(action: {
+                            showNewContractModal.toggle()
+                        }, label: { Image(systemName: "square.and.pencil") })
+                        .id(UUID())
+                    }
+                    NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
+                        ArchivesChatsView(user: user)
+                            .environmentObject(chatsViewModel)
+                    }, label: { Image(systemName: "archivebox") })
+                    .isDetailLink(false)
                 }
-                NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
-                    ArchivesChatsView(user: user)
-                        .environmentObject(chatsViewModel)
-                }, label: { Image(systemName: "archivebox") })
-                .isDetailLink(false)
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftUI
 
 final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""

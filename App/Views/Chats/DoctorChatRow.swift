@@ -50,8 +50,7 @@ struct DoctorChatRow: View {
                         if let text = contract.lastFetchedMessage?.text {
                             Text(text)
                                 .foregroundColor(.gray)
-                                .lineLimit(2)
-                                .frame(height: 50, alignment: .top)
+                                .lineLimit(1)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.trailing, 40)
                         }
@@ -65,9 +64,9 @@ struct DoctorChatRow: View {
                 }
             }
         }
-        .onAppear {
-            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
-        }
+//        .onAppear {
+//            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
+//        }
     }
     
     var avatarImage: some View {

@@ -34,7 +34,6 @@ struct PatientChatRow: View {
                                 Text(clinic.wrappedName)
                                     .font(.caption)
                             }
-                            
                             if let endDate = contract.endDate {
                                 Text("Contract \(contract.wrappedNumber). End: \(endDate, formatter: DateFormatter.ddMMyyyy)")
                                     .font(.caption)
@@ -55,29 +54,24 @@ struct PatientChatRow: View {
                 }
             }
             
-            HStack {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(contract.wrappedRole)
-                    if let scenarioName = contract.scenarioName {
-                        Text(scenarioName)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(contract.wrappedRole)
+                if let scenarioName = contract.scenarioName {
+                    Text(scenarioName)
+                        .foregroundColor(.secondary)
+                }
+                
+                if let contractNumber = contract.number {
+                    HStack {
+                        Text("Contract: ")
+                        Text(contractNumber)
                             .foregroundColor(.secondary)
                     }
-                    
-                    if let contractNumber = contract.number {
-                        HStack {
-                            Text("Contract: ")
-                            Text(contractNumber)
-                                .foregroundColor(.secondary)
-                        }
-                    }
                 }
-                Spacer()
-                clinicLogo
-                    .frame(width: 60, height: 60)
             }
-        }
-        .onAppear {
-            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
+            
+            clinicLogo
+                .frame(height: 70)
         }
     }
     
@@ -102,7 +96,6 @@ struct PatientChatRow: View {
                     .resizable()
                     .scaledToFit()
                     .cornerRadius(10)
-                    .shadow(radius: 5)
             } else {
                 ProgressView()
                     .onAppear(perform: {

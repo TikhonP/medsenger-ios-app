@@ -12,7 +12,7 @@ struct PasswordFieldView: View {
     @Binding var password: String
     let placeholder: LocalizedStringKey
     
-    init(password: Binding<String>, placeholder: LocalizedStringKey = "Password") {
+    init(password: Binding<String>, placeholder: LocalizedStringKey = "") {
         _password = password
         self.placeholder = placeholder
     }
@@ -30,12 +30,13 @@ struct PasswordFieldView: View {
             Button(action: { hidePassword.toggle() }, label: {
                 Image(systemName: hidePassword ? "eye.slash.fill" : "eye.fill")
                     .foregroundColor(.gray)
-                    .padding(.trailing)
+                    .padding(.trailing, 10)
             })
         }
         .autocapitalization(.none)
         .disableAutocorrection(true)
         .textContentType(.password)
+        .animation(.default, value: hidePassword)
     }
 }
 

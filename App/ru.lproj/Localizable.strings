@@ -29,9 +29,6 @@
 "Apple Health Sync" = "Синхронизация с Apple Health";
 
 /* No comment provided by engineer. */
-"Archive" = "Архив";
-
-/* No comment provided by engineer. */
 "Archived Chats" = "Архив";
 
 /* No comment provided by engineer. */
@@ -89,9 +86,6 @@
 "Clinic" = "Клиника";
 
 /* No comment provided by engineer. */
-"Close" = "Закрыть";
-
-/* No comment provided by engineer. */
 "compliance" = "комплаентность";
 
 /* No comment provided by engineer. */
@@ -99,6 +93,9 @@
 
 /* No comment provided by engineer. */
 "Connecting..." = "Подключение...";
+
+/* No comment provided by engineer. */
+"Consultations" = "Консультации";
 
 /* No comment provided by engineer. */
 "Contract %@. End: %@" = "Контракт %@. Окончание: %@";
@@ -173,6 +170,9 @@
 "Failed to preview voice message" = "Не удалось загрузить аудиосообщение";
 
 /* No comment provided by engineer. */
+"Files" = "Файлы";
+
+/* No comment provided by engineer. */
 "Filter" = "Фильтр";
 
 /* No comment provided by engineer. */
@@ -183,6 +183,9 @@
 
 /* No comment provided by engineer. */
 "How do you want to sign in?" = "Как вы хотите войти?";
+
+/* No comment provided by engineer. */
+"Images" = "Изображения";
 
 /* No comment provided by engineer. */
 "Incorrect data provided" = "Введены некорректные данные";
@@ -215,7 +218,10 @@
 "Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request." = "Убедитесь, что это тот человек, для которого вы хотите открыть канал консультирования. Если нет, исправьте email и отправьте запрос повторно.";
 
 /* No comment provided by engineer. */
-"Medsenger" = "Medsenger";
+"Media" = "Медиа";
+
+/* No comment provided by engineer. */
+"Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON." = "Чтобы Вы могли отправлять голосовые сообщения, Medsenger нужен доступ к микрофону.\n\nПожалуйста, включите доступ для Medsenger в настройках устройства > Конфиденциальность > Микрофон.";
 
 /* No comment provided by engineer. */
 "Monitoring" = "Мониторинг";
@@ -242,16 +248,25 @@
 "No contracts" = "Нет контрактов";
 
 /* No comment provided by engineer. */
+"Not Now" = "Не сейчас";
+
+/* No comment provided by engineer. */
 "Notes" = "Заметки";
 
 /* No comment provided by engineer. */
 "Notifications" = "Уведомления";
 
 /* No comment provided by engineer. */
+"online" = "в сети";
+
+/* No comment provided by engineer. */
 "Oops! Server error" = "Упс! Ошибка сервера";
 
 /* No comment provided by engineer. */
 "Oxygen Saturation" = "SPO2";
+
+/* No comment provided by engineer. */
+"Password" = "Пароль";
 
 /* No comment provided by engineer. */
 "Password must be more than 6 characters" = "Пароль должен быть длиннее 6 символов";
@@ -276,6 +291,9 @@
 
 /* No comment provided by engineer. */
 "Phone is optional" = "Указывать телефон необязательно";
+
+/* No comment provided by engineer. */
+"Please Allow Access" = "Разрешите доступ";
 
 /* No comment provided by engineer. */
 "Please check email. Contract with provided email already exists." = "Пожалуйста, проверьте email. Контракт с указанным адресом уже существует.";
@@ -306,12 +324,6 @@
 
 /* No comment provided by engineer. */
 "Push notifications can inform you about new message on your phone" = "Уведомления могут информировать вас о новом сообщении на вашем телефоне";
-
-/* No comment provided by engineer. */
-"Recording failed :(" = "Запись не удалась :(";
-
-/* No comment provided by engineer. */
-"Recording is not permitted" = "Запись не разрешена";
 
 /* No comment provided by engineer. */
 "Refresh" = "Обновить";

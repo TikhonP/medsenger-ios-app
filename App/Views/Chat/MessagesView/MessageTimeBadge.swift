@@ -20,7 +20,7 @@ struct MessageTimeBadge: View {
     var body: some View {
         if let date = message.sent {
             Text(date, formatter: MessageTimeBadge.formatter)
-                .font(.caption)
+                .font(.caption2)
                 .foregroundColor(.secondary)
                 .padding(1)
                 .background(

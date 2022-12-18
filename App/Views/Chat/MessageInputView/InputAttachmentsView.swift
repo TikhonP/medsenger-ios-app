@@ -9,12 +9,12 @@
 import SwiftUI
 
 struct InputAttachmentsView: View {
-    @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     var body: some View {
         ScrollView(.horizontal) {
             HStack{
-                ForEach(chatViewModel.messageAttachments) { attachment in
+                ForEach(messageInputViewModel.messageAttachments) { attachment in
                     TextInputAttachmentView(attachment: attachment)
                 }
             }

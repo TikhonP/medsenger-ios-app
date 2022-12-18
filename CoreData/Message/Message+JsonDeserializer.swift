@@ -57,7 +57,13 @@ extension Message {
         let message = get(id: data.id, for: context) ?? Message(context: context)
         
         message.id = Int64(data.id)
-        message.text = data.text
+        
+        if data.is_agent ?? false {
+            message.text = HtmlParser.getMarkdownString(from: data.text)
+        } else {
+            message.text = data.text
+        }
+        
         message.sent = data.sentAsDate
         message.deadline = data.deadlineAsDate
         message.isAnswered = data.isAnswered

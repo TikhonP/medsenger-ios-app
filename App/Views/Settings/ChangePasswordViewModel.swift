@@ -9,28 +9,19 @@
 import Foundation
 import SwiftUI
 
-fileprivate class ChangePasswordAlerts {
-    static let passwordsAreNotEqual = AlertInfo(
-        title: "Passwords do not match!",
-        message: "Please check that the passwords are the same."
-    )
-    static let passwordLengthDoNotMatch = AlertInfo(
-        title: "Password must be more than 6 characters",
-        message: ""
-    )
-}
-
 final class ChangePasswordViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     @Published var showLoading = false
     
     func changePasswordRequest(password1: String, password2: String, completion: @escaping () -> Void) {
         guard password1.count > 6 else {
-            presentAlert(ChangePasswordAlerts.passwordLengthDoNotMatch, .warning)
+            presentAlert(
+                title: "Passwords do not match!",
+                message: "Please check that the passwords are the same.", .warning)
             return
         }
         guard password1 == password2 else {
-            presentAlert(ChangePasswordAlerts.passwordsAreNotEqual, .warning)
+            presentAlert(title: "Password must be more than 6 characters", .warning)
             return
         }
         showLoading = true

@@ -34,6 +34,7 @@ struct ChatView: View {
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @StateObject private var chatViewModel: ChatViewModel
+    @StateObject private var messageInputViewModel: MessageInputViewModel
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
@@ -44,6 +45,7 @@ struct ChatView: View {
     
     init(contract: Contract, user: User) {
         _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
+        _messageInputViewModel = StateObject(wrappedValue: MessageInputViewModel(contractId: Int(contract.id)))
         self.contract = contract
         self.user = user
     }
@@ -66,6 +68,7 @@ struct ChatView: View {
             }
             .scrollDismissesKeyboardIos16Only()
             .environmentObject(chatViewModel)
+            .environmentObject(messageInputViewModel)
             .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
                 guard !providers.isEmpty else {
                     return false
@@ -84,7 +87,7 @@ struct ChatView: View {
                         do {
                             let data = try Data(contentsOf: url)
                             DispatchQueue.main.async {
-                                chatViewModel.messageAttachments.append(ChatViewAttachment(
+                                messageInputViewModel.messageAttachments.append(ChatViewAttachment(
                                     data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
                             }
                         } catch {

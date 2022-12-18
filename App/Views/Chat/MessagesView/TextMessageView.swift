@@ -13,14 +13,9 @@ struct TextMessageView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        if message.isAgent, let actionDeadline = message.actionDeadline, actionDeadline > Date(), !message.actionUsed {
-            Text(.init(HtmlParser.getMarkdownString(from: message.wrappedText)))
-                .accentColor(colorScheme == .light ? .blue : .accentColor)
-                .padding(10)
-        } else {
-            Text(message.wrappedText)
-                .padding(10)
-        }
+        Text(.init(message.wrappedText))
+            .accentColor(colorScheme == .light ? .blue : .accentColor)
+            .padding(10)
     }
 }
 

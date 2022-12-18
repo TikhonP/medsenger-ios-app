@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct RecordingVoiceMessageView: View {
-    @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     var body: some View {
         HStack {
@@ -20,10 +20,10 @@ struct RecordingVoiceMessageView: View {
                 .font(.caption)
             Spacer()
             Button("Cancel") {
-                chatViewModel.finishRecording(success: false)
+                messageInputViewModel.finishRecording(success: false)
             }
             Spacer()
-            Button(action: { chatViewModel.finishRecording(success: true) }, label: {
+            Button(action: { messageInputViewModel.finishRecording(success: true) }, label: {
                 MessageInputButtonLabel(imageSystemName: "stop.circle.fill", showProgress: .constant(false))
                     .foregroundColor(.primary.opacity(0.7))
             })
@@ -31,8 +31,8 @@ struct RecordingVoiceMessageView: View {
     }
     
     private var timeLabel: String {
-        let minutes = Int(chatViewModel.currentVoiceMessageTime / 60)
-        let seconds = Int(chatViewModel.currentVoiceMessageTime.truncatingRemainder(dividingBy: 60))
+        let minutes = Int(messageInputViewModel.currentVoiceMessageTime / 60)
+        let seconds = Int(messageInputViewModel.currentVoiceMessageTime.truncatingRemainder(dividingBy: 60))
 //        let minutesString = minutes < 10 ? "0\(minutes)" : "\(minutes)"
         let secondsString = seconds < 10 ? "0\(seconds)" : "\(seconds)"
         return "\(minutes):\(secondsString)"

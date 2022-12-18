@@ -11,6 +11,8 @@ import SwiftUI
 struct ReplyedMessageView: View {
     @ObservedObject var message: Message
     @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
+    
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
@@ -38,7 +40,7 @@ struct ReplyedMessageView: View {
             }
             Spacer()
             Button(action: {
-                chatViewModel.replyToMessage = nil
+                messageInputViewModel.replyToMessage = nil
             }, label: {
                 Image(systemName: "xmark")
                     .resizable()

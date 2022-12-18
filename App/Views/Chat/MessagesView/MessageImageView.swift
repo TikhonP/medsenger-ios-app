@@ -14,24 +14,26 @@ struct MessageImageView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
     var body: some View {
-        if let path = imageAttachment.dataPath, let uiImage = UIImage(contentsOfFile: path.path) {
-            Image(uiImage: uiImage)
-                .resizable()
-                .scaledToFit()
-                .onTapGesture {
-                    chatViewModel.quickLookDocumentUrl = path
-                }
-        } else {
-            HStack {
-                Spacer()
-                ProgressView()
-                    .frame(height: 200)
-                    .onAppear {
-                        chatViewModel.fetchImageAttachment(imageAttachment)
+        ZStack {
+            if let path = imageAttachment.dataPath, let uiImage = UIImage(contentsOfFile: path.path) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .onTapGesture {
+                        chatViewModel.quickLookDocumentUrl = path
                     }
-                Spacer()
+            } else {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .onAppear {
+                            chatViewModel.fetchImageAttachment(imageAttachment)
+                        }
+                    Spacer()
+                }
             }
         }
+        .frame(width: 200, height: 300)
     }
 }
 

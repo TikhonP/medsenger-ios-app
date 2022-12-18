@@ -11,10 +11,15 @@ import os.log
 
 @objc(Message)
 public class Message: NSManagedObject, CoreDataIdGetable {
+    
     internal static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: Message.self)
     )
+    
+    public enum ActionType: String {
+        case zoom, url, action
+    }
     
     public static func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
         let fetchRequest = Message.fetchRequest()

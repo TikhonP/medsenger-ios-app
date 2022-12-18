@@ -39,7 +39,7 @@ final class Messages {
         }
     }
     
-    public func fetchMessages(contractId: Int, completion: (() -> Void)? = nil) {
+    public func fetchMessages(contractId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
         let messagesResource = {
             guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastGlobalFetchedMessage else {
                 return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
@@ -53,12 +53,13 @@ final class Messages {
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId) {
                         Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: true)
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion(true)
                     }
+                } else {
+                    completion(false)
                 }
             case .failure(let error):
+                completion(false)
                 processRequestError(error, "get messages for contract \(contractId)")
             }
         }
@@ -79,6 +80,7 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     Message.saveFromJson(data, contractId: contractId)
+                    Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: false)
                     Websockets.shared.messageUpdate(contractId: contractId)
                     completion(true)
                 } else {
@@ -109,7 +111,7 @@ final class Messages {
         }
     }
     
-    public func fetchAttachmentData(attachmentId: Int, completion: (() -> Void)? = nil) {
+    public func fetchAttachmentData(attachmentId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
         let getAttachmentRequest = FileRequest(path: "/attachments/\(attachmentId)")
         getAttachmentRequests.append(getAttachmentRequest)
         getAttachmentRequest.execute { result in
@@ -117,17 +119,18 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     Attachment.saveFile(id: attachmentId, data: data)
-                    if let completion = completion {
-                        completion()
-                    }
+                    completion(true)
+                } else {
+                    completion(false)
                 }
             case .failure(let error):
+                completion(false)
                 processRequestError(error, "Messages: fetchAttachmentData")
             }
         }
     }
     
-    public func fetchImageAttachmentImage(imageAttachmentId: Int, completion: (() -> Void)? = nil) {
+    public func fetchImageAttachmentImage(imageAttachmentId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
         let getImageAttachmentImagegetAttachmentRequest = FileRequest(path: "/images/\(imageAttachmentId)/real")
         getAttachmentRequests.append(getImageAttachmentImagegetAttachmentRequest)
         getImageAttachmentImagegetAttachmentRequest.execute { result in
@@ -135,11 +138,12 @@ final class Messages {
             case .success(let data):
                 if let data = data {
                     ImageAttachment.saveFile(id: imageAttachmentId, data: data)
-                    if let completion = completion {
-                        completion()
-                    }
+                    completion(true)
+                } else {
+                    completion(false)
                 }
             case .failure(let error):
+                completion(false)
                 processRequestError(error, "Messages: fetchImageAttachmentImage")
             }
         }

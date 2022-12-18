@@ -148,7 +148,7 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Messages.shared.fetchMessages(contractId: data.contract_id)
+        Messages.shared.fetchMessages(contractId: data.contract_id) { _ in }
     }
 }
 

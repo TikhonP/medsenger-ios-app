@@ -367,18 +367,25 @@ public struct WebPresenterView: View {
 
 struct WebView: View {
     let url: URL
-    let name: String
+    let title: String
+    let showCloseButton: Bool
     
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     @StateObject private var webViewStateModel: WebViewStateModel = WebViewStateModel()
     @Environment(\.presentationMode) private var presentationMode
+    
+    init(url: URL, title: String = "", showCloseButton: Bool = false) {
+        self.url = url
+        self.title = title
+        self.showCloseButton = showCloseButton
+    }
     
     var body: some View {
         LoadingView(isShowing: .constant(webViewStateModel.loading)) {
             WebPresenterView(
                 webViewData: WebViewData.url(url),
                 webViewStateModel: webViewStateModel,
-                title: name,
+                title: title,
                 onNavigationAction: { navigationAction in
                     print("Navigation action: \(navigationAction)")
                 },
@@ -387,10 +394,17 @@ struct WebView: View {
                 credential: nil
             )
         }
-        .navigationBarTitle(name)
+        .navigationBarTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .edgesIgnoringSafeArea(.bottom)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if showCloseButton {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     self.webViewStateModel.reload.toggle()

@@ -9,28 +9,28 @@
 import SwiftUI
 
 struct MessageInputView: View {
-    @EnvironmentObject private var chatViewModel: ChatViewModel
+    @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
     var body: some View {
         VStack(spacing: 0) {
             Divider()
                 .edgesIgnoringSafeArea(.horizontal)
             VStack {
-                if let replyToMessage = chatViewModel.replyToMessage {
+                if let replyToMessage = messageInputViewModel.replyToMessage {
                     ReplyedMessageView(message: replyToMessage)
                         .transition(.move(edge: .bottom))
                 }
                 
-                if !chatViewModel.messageAttachments.isEmpty {
+                if !messageInputViewModel.messageAttachments.isEmpty {
                     InputAttachmentsView()
                         .transition(.move(edge: .bottom))
                 }
                 
-                if !chatViewModel.isRecordingVoiceMessage && !chatViewModel.showRecordedMessage {
+                if !messageInputViewModel.isRecordingVoiceMessage && !messageInputViewModel.showRecordedMessage {
                     MainInputView()
-                } else if chatViewModel.isRecordingVoiceMessage {
+                } else if messageInputViewModel.isRecordingVoiceMessage {
                     RecordingVoiceMessageView()
-                } else if chatViewModel.showRecordedMessage {
+                } else if messageInputViewModel.showRecordedMessage {
                     RecordedVoiceMessageView()
                 }
             }
@@ -38,10 +38,11 @@ struct MessageInputView: View {
             .padding(.vertical, 5)
         }
         .blurEffect(ignoresSafeAreaEdges: .all)
-        .animation(.default, value: chatViewModel.messageAttachments)
-        .animation(.default, value: chatViewModel.replyToMessage)
-        .animation(.default, value: chatViewModel.isRecordingVoiceMessage)
-        .animation(.default, value: chatViewModel.showRecordedMessage)
+        .alert(item: $messageInputViewModel.alert) { $0.alert }
+        .animation(.default, value: messageInputViewModel.messageAttachments)
+        .animation(.default, value: messageInputViewModel.replyToMessage)
+        .animation(.default, value: messageInputViewModel.isRecordingVoiceMessage)
+        .animation(.default, value: messageInputViewModel.showRecordedMessage)
     }
 }
 

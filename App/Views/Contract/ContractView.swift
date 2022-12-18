@@ -180,7 +180,7 @@ struct ContractView: View {
                 default:
                     if let name = agentAction.name, let link = agentAction.modalLink {
                         NavigationLink(destination: {
-                            WebView(url: link, name: name)
+                            WebView(url: link, title: name)
                         }, label: {
                             Label(name, systemImage: "person.icloud.fill")
                         })
@@ -220,7 +220,7 @@ struct ContractView: View {
                     
                     if let infoUrl = contract.infoUrl {
                         Link(destination: infoUrl) {
-                            Image(systemName: "link.circle.fill")
+                            Image(systemName: "info.circle")
                                 .font(.largeTitle)
                         }
                     }
