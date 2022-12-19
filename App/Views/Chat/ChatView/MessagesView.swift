@@ -139,7 +139,11 @@ struct MessagesView: View {
         .sheet(isPresented: $chatViewModel.showActionWebViewModal) {
             if let agentActionUrl = chatViewModel.agentActionUrl, let agentActionName = chatViewModel.agentActionName {
                 NavigationView {
-                    WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true)
+                    WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true) {
+                        if let actionMessageId = chatViewModel.actionMessageId {
+                            Message.markActionMessageAsUsed(id: actionMessageId)
+                        }
+                    }
                 }
             }
         }
@@ -165,16 +169,26 @@ struct MessagesView: View {
                     ScrollViewReader { scrollReader in
                         ChildSizeReader(size: $scrollViewSize) {
                             VStack(spacing: 0) {
+                                
+                                //                                LazyVStack {
+                                //                                    ForEach(Array(zip(messagesArray.indices, messagesArray)), id: \.0) { index, message in
+                                //                                        if message.showMessage {
+                                //                                            if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
+                                //                                                Text(messageSent, formatter: DateFormatter.ddMMyyyy)
+                                //                                            }
+                                //                                            MessageView(viewWidth: reader.size.width, message: message)
+                                //                                        }
+                                //                                    }
+                                //                                }
+                                
                                 LazyVStack {
-                                    ForEach(Array(zip(messagesArray.indices, messagesArray)), id: \.0) { index, message in
+                                    ForEach(messages) { message in
                                         if message.showMessage {
-                                            if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
-                                                Text(messageSent, formatter: DateFormatter.ddMMyyyy)
-                                            }
                                             MessageView(viewWidth: reader.size.width, message: message)
                                         }
                                     }
                                 }
+                                
                                 Color.clear.id(-1)
                                     .padding(.bottom, inputViewHeight)
                             }
@@ -201,10 +215,10 @@ struct MessagesView: View {
                             .onAppear {
                                 scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
                                 
-                                //                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                //                                    scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                                //                                }
-                                //
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    scrollTo(messageID: -1, scrollReader: scrollReader)
+                                }
+                                
                                 keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
                                     if !showScrollDownButton {
                                         scrollTo(messageID: -1, scrollReader: scrollReader)
@@ -230,13 +244,13 @@ struct MessagesView: View {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
                                 }
                             })
-                            //                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
-                            //                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            //                                    if !showScrollDownButton {
-                            //                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                            //                                    }
-                            //                                }
-                            //                            })
+                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    if !showScrollDownButton {
+                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                                    }
+                                }
+                            })
                             .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
                                 if let scrollToMessageId = scrollToMessageId {
                                     scrollTo(messageID: Int(scrollToMessageId), anchor: .center, scrollReader: scrollReader)
@@ -249,11 +263,11 @@ struct MessagesView: View {
                                     scrollToBottom = false
                                 }
                             })
-                            //                            .onChange(of: inputViewHeight, perform: { _ in
-                            //                                if !showScrollDownButton {
-                            //                                    scrollTo(messageID: -1, scrollReader: scrollReader)
-                            //                                }
-                            //                            })
+                            .onChange(of: inputViewHeight, perform: { _ in
+                                if !showScrollDownButton {
+                                    scrollTo(messageID: -1, scrollReader: scrollReader)
+                                }
+                            })
                         }
                     }
                 }

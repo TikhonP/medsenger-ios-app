@@ -16,14 +16,17 @@ struct VideoCallMessageView: View {
         VStack {
             Label("Call from the Doctor", systemImage: "phone")
             Text(message.wrappedText)
-            MessageTimeBadge(message: message)
+                .frame(width: 230)
+            if let date = message.sent {
+                Text(date, formatter: DateFormatter.HHmm)
+            }
         }
-        .padding(10)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 5)
         .background(
-            Color.secondary
+            Color.secondary.opacity(0.5)
         )
         .cornerRadius(25)
-        .frame(width: 450)
     }
 }
 

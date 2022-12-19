@@ -37,5 +37,6 @@ final class ContractViewModel: ObservableObject {
     
     func getContracts() {
         Contracts.shared.fetchContracts()
+        Contracts.shared.fetchConsiliumContracts()
     }
 }

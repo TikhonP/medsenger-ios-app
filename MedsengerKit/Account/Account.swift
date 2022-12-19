@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Account {
     static let shared = Account()
@@ -19,21 +20,22 @@ class Account {
     private var pushNotificationsRequest: APIRequest<PushNotificationsResource>?
     
     public func changeRole(_ role: UserRole) {
-        if let fcmToken = UserDefaults.fcmToken {
-            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { succeeded in
-                
-            }
-        }
-        PersistenceController.clearDatabase(withUser: false)
-        UserDefaults.userRole = role
-        if let fcmToken = UserDefaults.fcmToken {
-            updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true) { succeeded in
-                if !succeeded {
-                    UserDefaults.isPushNotificationsOn = false
+        DispatchQueue.global(qos: .background).async {
+            PersistenceController.clearDatabase(withUser: false)
+            UserDefaults.userRole = role
+            if let fcmToken = UserDefaults.fcmToken {
+                self.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { [weak self] succeeded in
+                    if let fcmToken = UserDefaults.fcmToken {
+                        self?.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true) { succeeded in
+                            if !succeeded {
+                                UserDefaults.isPushNotificationsOn = false
+                            }
+                        }
+                    }
                 }
             }
+            ChatsViewModel.shared.getContracts()
         }
-        Contracts.shared.fetchContracts()
     }
     
     public func fetchAvatar() {
@@ -127,6 +129,9 @@ class Account {
     ///   - fcmToken: the `fcmToken`
     ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
     public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool, completion: @escaping (_ succeeded: Bool) -> Void) {
+        DispatchQueue.main.async {
+            UIApplication.shared.applicationIconBadgeNumber = 0
+        }
         let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: storeOrRemove)
         pushNotificationsRequest = APIRequest(pushNotificationsResource)
         pushNotificationsRequest?.execute { result in

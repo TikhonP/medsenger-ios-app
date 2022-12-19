@@ -113,6 +113,7 @@ final class DoctorActions {
             switch result {
             case .success(_):
                 Contracts.shared.fetchContracts()
+                Contracts.shared.fetchArchiveContracts()
                 completion(true)
             case .failure(let error):
                 completion(false)

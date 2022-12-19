@@ -11,15 +11,9 @@ import SwiftUI
 struct MessageTimeBadge: View {
     @ObservedObject var message: Message
     
-    static let formatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
-    
     var body: some View {
         if let date = message.sent {
-            Text(date, formatter: MessageTimeBadge.formatter)
+            Text(date, formatter: DateFormatter.HHmm)
                 .font(.caption2)
                 .foregroundColor(.secondary)
                 .padding(1)

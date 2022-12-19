@@ -85,9 +85,7 @@ class Login {
     
     public func signOut() {
         if let fcmToken = UserDefaults.fcmToken {
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { succeeded in 
-                
-            }
+            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { _ in }
         }
         KeyChain.apiToken = nil
         User.delete()

@@ -129,6 +129,7 @@ struct UpdateInterfaceWebsocketResponse: WebsocketResponse {
     
     func processResponse(_ data: Model) {
         Contracts.shared.fetchContracts()
+        Contracts.shared.fetchArchiveContracts()
     }
 }
 

@@ -19,21 +19,24 @@ extension DateFormatter {
     static let ddMMyyyy: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy"
-        formatter.calendar = Calendar(identifier: .iso8601)
         return formatter
     }()
     
     static let ddMMyyyyAndTimeWithParentheses: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy (HH:mm)"
-        formatter.calendar = Calendar(identifier: .iso8601)
         return formatter
     }()
     
     static let ddMMyyyyAndTime: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.calendar = Calendar(identifier: .iso8601)
+        return formatter
+    }()
+    
+    static let HHmm: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
         return formatter
     }()
 }

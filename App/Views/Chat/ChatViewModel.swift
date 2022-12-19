@@ -39,6 +39,7 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
     @Published var showActionWebViewModal = false
     @Published var agentActionUrl: URL?
     @Published var agentActionName: String?
+    @Published var actionMessageId: Int?
     
     init(contractId: Int) {
         self.contractId = contractId
@@ -83,6 +84,7 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
     
     func openMessageActionLink(message: Message) {
         if let actionType = message.wrappedActionType {
+            actionMessageId = Int(message.id)
             switch actionType {
             case .zoom:
                 presentAlert(title: "Zoom action is not supported now")

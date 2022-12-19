@@ -383,15 +383,17 @@ struct WebView: View {
     let url: URL
     let title: String
     let showCloseButton: Bool
+    let onCloseSucces: (() -> Void)?
     
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     @StateObject private var webViewStateModel: WebViewStateModel = WebViewStateModel()
     @Environment(\.presentationMode) private var presentationMode
     
-    init(url: URL, title: String = "", showCloseButton: Bool = false) {
+    init(url: URL, title: String = "", showCloseButton: Bool = false, onCloseSucces: (() -> Void)? = nil) {
         self.url = url
         self.title = title
         self.showCloseButton = showCloseButton
+        self.onCloseSucces = onCloseSucces
     }
     
     var body: some View {
@@ -404,10 +406,15 @@ struct WebView: View {
                     switch navigationAction {
                     case .didReceiveScriptMessage(_, let message):
                         if let body = message.body as? String, (body == "close-modal-success" || body == "close-modal") {
+                            if let onCloseSucces = onCloseSucces {
+                                DispatchQueue.main.async {
+                                    onCloseSucces()
+                                }
+                            }
                             presentationMode.wrappedValue.dismiss()
                         }
                     default:
-                        print("Navigation action: \(navigationAction)")
+                        break
                     }
                 },
                 allowedHosts: nil,

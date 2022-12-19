@@ -9,6 +9,8 @@
 import Foundation
 
 final class ChatsViewModel: ObservableObject {
+    static let shared = ChatsViewModel()
+    
     @Published var showContractsLoading = false
     @Published var showArchiveContractsLoading = false
     

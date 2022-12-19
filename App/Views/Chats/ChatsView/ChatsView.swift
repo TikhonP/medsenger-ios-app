@@ -11,7 +11,7 @@ import SwiftUI
 struct ChatsView: View {
     @ObservedObject var user: User
     
-    @StateObject private var chatsViewModel = ChatsViewModel()
+    @StateObject private var chatsViewModel = ChatsViewModel.shared
     
     @EnvironmentObject private var contentViewModel: ContentViewModel
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor

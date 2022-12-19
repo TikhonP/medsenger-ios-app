@@ -38,4 +38,12 @@ public class Message: NSManagedObject, CoreDataIdGetable {
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getFirstMessageForContract")
         return fetchedResults?.first
     }
+    
+    public static func markActionMessageAsUsed(id: Int) {
+        PersistenceController.shared.container.performBackgroundTask { context in
+            let message = get(id: id, for: context)
+            message?.actionUsed = true
+            PersistenceController.save(for: context, detailsForLogging: "markActionMessageAsUsed")
+        }
+    }
 }
