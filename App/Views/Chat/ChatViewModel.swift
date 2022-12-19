@@ -47,9 +47,6 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
     func onChatViewAppear(contract: Contract) {
         Messages.shared.fetchMessages(contractId: contractId) { _ in }
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
-        if contract.lastGlobalFetchedMessage == nil {
-            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
-        }
     }
     
     func fetchAttachment(_ attachment: Attachment, completion: ((_ succeeded: Bool) -> Void)? = nil) {
@@ -94,22 +91,22 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
                     UIApplication.shared.open(actionLink)
                 }
             case .action:
-//                guard let apiActionLink = message.apiActionLink, var urlComponents = URLComponents(url: apiActionLink, resolvingAgainstBaseURL: false) else {
-//                    return
-//                }
-//                urlComponents.queryItems = {
-//                    if var queryItems = urlComponents.queryItems {
-//                        queryItems.append(URLQueryItem(name: "api_token", value: KeyChain.apiToken))
-//                        return queryItems
-//                    } else {
-//                        return [URLQueryItem(name: "api_token", value: KeyChain.apiToken)]
-//                    }
-//                }()
-                guard let apiActionLink = message.actionLink?.absoluteString else {
+                guard let apiActionLink = message.apiActionLink, var urlComponents = URLComponents(url: apiActionLink, resolvingAgainstBaseURL: false) else {
+                    return
+                }
+                urlComponents.queryItems = {
+                    if var queryItems = urlComponents.queryItems {
+                        queryItems.append(URLQueryItem(name: "api_token", value: KeyChain.apiToken))
+                        return queryItems
+                    } else {
+                        return [URLQueryItem(name: "api_token", value: KeyChain.apiToken)]
+                    }
+                }()
+                guard let finalLink = urlComponents.url?.absoluteString.removingPercentEncoding else {
                     return
                 }
                 DispatchQueue.main.async {
-                    self.agentActionUrl = URL(string: apiActionLink + "&api_token=\(KeyChain.apiToken ?? "")")
+                    self.agentActionUrl = URL(string: finalLink)
                     self.agentActionName = message.actionName
                     self.showActionWebViewModal = true
                 }
@@ -172,6 +169,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
     func stopPlaying() {
         audioPlayer?.stop()
         isAudioMessagePlayingWithId = nil
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
     func startPlayingRecordedVoiceMessage() {
@@ -182,7 +180,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
     
     internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         do {
-            try AVAudioSession.sharedInstance().setActive(false)
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         } catch {
             ChatViewModel.logger.error("audioPlayerDidFinishPlaying: Failed to setActive(false): \(error.localizedDescription)")
         }
@@ -197,5 +195,6 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         } else {
             ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
         }
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 }

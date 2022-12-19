@@ -41,7 +41,7 @@ final class Messages {
     
     public func fetchMessages(contractId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
         let messagesResource = {
-            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastGlobalFetchedMessage else {
+            guard let contract = Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
                 return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
             }
             return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)

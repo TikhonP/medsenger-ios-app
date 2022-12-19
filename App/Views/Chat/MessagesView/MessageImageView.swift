@@ -18,7 +18,7 @@ struct MessageImageView: View {
             if let path = imageAttachment.dataPath, let uiImage = UIImage(contentsOfFile: path.path) {
                 Image(uiImage: uiImage)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
                     .onTapGesture {
                         chatViewModel.quickLookDocumentUrl = path
                     }
@@ -33,7 +33,7 @@ struct MessageImageView: View {
                 }
             }
         }
-        .frame(width: 200, height: 300)
+//        .frame(width: 200, height: 300)
     }
 }
 

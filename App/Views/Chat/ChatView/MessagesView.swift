@@ -24,17 +24,17 @@ extension ScrollView {
         GeometryReader { geometryWithSafeArea in
             GeometryReader { geometry in
                 configurator(
-                ScrollView<AnyView>(self.axes, showsIndicators: self.showsIndicators) {
-                    AnyView(
-                    VStack {
-                        self.content
+                    ScrollView<AnyView>(self.axes, showsIndicators: self.showsIndicators) {
+                        AnyView(
+                            VStack {
+                                self.content
+                            }
+                                .padding(.top, geometryWithSafeArea.safeAreaInsets.top)
+                                .padding(.bottom, geometryWithSafeArea.safeAreaInsets.bottom)
+                                .padding(.leading, geometryWithSafeArea.safeAreaInsets.leading)
+                                .padding(.trailing, geometryWithSafeArea.safeAreaInsets.trailing)
+                        )
                     }
-                    .padding(.top, geometryWithSafeArea.safeAreaInsets.top)
-                    .padding(.bottom, geometryWithSafeArea.safeAreaInsets.bottom)
-                    .padding(.leading, geometryWithSafeArea.safeAreaInsets.leading)
-                    .padding(.trailing, geometryWithSafeArea.safeAreaInsets.trailing)
-                    )
-                }
                 )
             }
             .edgesIgnoringSafeArea(.all)
@@ -167,10 +167,10 @@ struct MessagesView: View {
                             VStack(spacing: 0) {
                                 LazyVStack {
                                     ForEach(Array(zip(messagesArray.indices, messagesArray)), id: \.0) { index, message in
-                                        if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
-                                            Text(messageSent, formatter: DateFormatter.ddMMyyyy)
-                                        }
                                         if message.showMessage {
+                                            if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
+                                                Text(messageSent, formatter: DateFormatter.ddMMyyyy)
+                                            }
                                             MessageView(viewWidth: reader.size.width, message: message)
                                         }
                                     }
@@ -201,10 +201,10 @@ struct MessagesView: View {
                             .onAppear {
                                 scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                                }
-                                
+                                //                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                //                                    scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                                //                                }
+                                //
                                 keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
                                     if !showScrollDownButton {
                                         scrollTo(messageID: -1, scrollReader: scrollReader)
@@ -230,13 +230,13 @@ struct MessagesView: View {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
                                 }
                             })
-                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    if !showScrollDownButton {
-                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                                    }
-                                }
-                            })
+                            //                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
+                            //                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            //                                    if !showScrollDownButton {
+                            //                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                            //                                    }
+                            //                                }
+                            //                            })
                             .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
                                 if let scrollToMessageId = scrollToMessageId {
                                     scrollTo(messageID: Int(scrollToMessageId), anchor: .center, scrollReader: scrollReader)
@@ -249,22 +249,21 @@ struct MessagesView: View {
                                     scrollToBottom = false
                                 }
                             })
-                            .onChange(of: inputViewHeight, perform: { _ in
-                                if !showScrollDownButton {
-                                    scrollTo(messageID: -1, scrollReader: scrollReader)
-                                }
-                            })
-                            .environmentObject(chatViewModel)
+                            //                            .onChange(of: inputViewHeight, perform: { _ in
+                            //                                if !showScrollDownButton {
+                            //                                    scrollTo(messageID: -1, scrollReader: scrollReader)
+                            //                                }
+                            //                            })
                         }
                     }
                 }
-                .fixFlickering()
+                //                .fixFlickering()
                 .coordinateSpace(name: spaceName)
             }
         }
     }
     
-    func scrollTo(messageID: Int, anchor: UnitPoint? = .bottomTrailing, animation: Animation? = .default, scrollReader: ScrollViewProxy) {
+    func scrollTo(messageID: Int, anchor: UnitPoint? = .bottom, animation: Animation? = .easeIn, scrollReader: ScrollViewProxy) {
         DispatchQueue.main.async {
             withAnimation(animation) {
                 scrollReader.scrollTo(messageID, anchor: anchor)

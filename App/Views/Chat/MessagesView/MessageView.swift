@@ -28,12 +28,10 @@ struct MessageBodyView: View {
         ZStack(alignment: .bottomTrailing) {
             VStack(alignment: .leading, spacing: 0) {
                 MessageTitleView(message: message)
-                Divider()
                 
                 // Reply:
                 if let replyedMessage = message.replyToMessage {
                     ReplyPreviewView(replyedMessage: replyedMessage)
-                    Divider()
                 }
                 
                 // Voice message:
@@ -80,7 +78,7 @@ struct MessageBodyView: View {
             }
             .padding(.trailing, addTrailingPadding ? 30 : 0)
             .readSize { size in
-                if size.height < 49 {
+                if imageAttachments.isEmpty, size.height < 49 {
                     addTrailingPadding = true
                 }
             }

@@ -44,6 +44,9 @@
 "Attachments" = "Вложения";
 
 /* No comment provided by engineer. */
+"Automatic message" = "Автоматическое сообщение";
+
+/* No comment provided by engineer. */
 "Birthday" = "Дата рождения";
 
 /* No comment provided by engineer. */
@@ -93,6 +96,9 @@
 
 /* No comment provided by engineer. */
 "Connecting..." = "Подключение...";
+
+/* No comment provided by engineer. */
+"Consilium" = "Консилиум";
 
 /* No comment provided by engineer. */
 "Consultations" = "Консультации";

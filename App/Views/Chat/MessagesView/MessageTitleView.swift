@@ -17,12 +17,19 @@ struct MessageTitleView: View {
             Text(message.wrappedAuthor)
                 .font(.caption2)
                 .fontWeight(.bold)
-            Text(message.wrappedAuthorRole)
-                .font(.caption2)
-                .foregroundColor(.secondary)
+            if message.isAgent {
+                Text("Automatic message")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            } else {
+                Text(message.wrappedAuthorRole)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
         }
         .padding(.horizontal, 10)
-        .padding(.vertical, 5)
+        .padding(.top, 10)
+        .padding(.bottom, 5)
     }
 }
 

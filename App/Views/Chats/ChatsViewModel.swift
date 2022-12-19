@@ -31,6 +31,7 @@ final class ChatsViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.showContractsLoading = true
         }
+        Contracts.shared.fetchConsiliumContracts()
         Contracts.shared.fetchContracts { [weak self] in
             DispatchQueue.main.async {
                 self?.showContractsLoading = false

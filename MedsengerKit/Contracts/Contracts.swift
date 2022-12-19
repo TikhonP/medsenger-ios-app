@@ -21,6 +21,7 @@ class Contracts {
     private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
     private var contractsArchiveRequestAsPatientRequest: APIRequest<ContractsArchiveRequestAsPatientResource>?
     private var contractsArchiveRequestAsDoctorRequest: APIRequest<ContractsArchiveRequestAsDoctorResource>?
+    private var consiliumContractsRequest: APIRequest<ConsiliumContractsResource>?
     private var getImageRequests = [FileRequest]()
     
     public func fetchContracts(completion: (() -> Void)? = nil) {
@@ -101,17 +102,59 @@ class Contracts {
         }
     }
     
-    public func fetchContractAvatar(_ contractId: Int) {
-        let getAvatarRequest = FileRequest(path: "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractId)/photo")
-        getImageRequests.append(getAvatarRequest)
-        getAvatarRequest.execute { result in
+    public func fetchConsiliumContracts() {
+        let consiliumContractsResource = ConsiliumContractsResource()
+        consiliumContractsRequest = APIRequest(consiliumContractsResource)
+        consiliumContractsRequest?.execute { result in
             switch result {
             case .success(let data):
                 if let data = data {
-                    Contract.saveAvatar(id: contractId, image: data)
+                    Contract.saveFromJson(data, archive: false, isConsilium: true)
                 }
             case .failure(let error):
-                processRequestError(error, "get contract avatar")
+                processRequestError(error, "get consilium contracts request")
+            }
+        }
+    }
+    
+    public func fetchContractAvatar(_ contractId: Int) {
+        if let contract = Contract.get(id: contractId), contract.isConsilium {
+            let getDoctorAvatarRequest = FileRequest(path: "/patients/\(contractId)/photo")
+            getDoctorAvatarRequest.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveAvatar(id: contractId, image: data, type: .doctor)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get doctors contract avatar")
+                }
+            }
+            let getPatientsAvatarRequest = FileRequest(path: "/doctors/\(contractId)/photo")
+            getPatientsAvatarRequest.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveAvatar(id: contractId, image: data, type: .patient)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get patients contract avatar")
+                }
+            }
+            getImageRequests.append(getDoctorAvatarRequest)
+            getImageRequests.append(getPatientsAvatarRequest)
+        } else {
+            let getAvatarRequest = FileRequest(path: "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractId)/photo")
+            getImageRequests.append(getAvatarRequest)
+            getAvatarRequest.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveAvatar(id: contractId, image: data)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get contract avatar")
+                }
             }
         }
     }

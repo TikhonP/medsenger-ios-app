@@ -11,21 +11,22 @@ import WebKit
 
 @available(iOS 13.0, *)
 public struct LoadingView<Content>: View where Content: View {
-
+    
     @Binding var isShowing: Bool
     var content: () -> Content
-
+    
     public var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .center) {
-                self.content()
-                    .disabled(self.isShowing)
-
+        ZStack(alignment: .center) {
+            self.content()
+                .disabled(self.isShowing)
+            
+            if isShowing {
                 ProgressView()
+                    .shadow(radius: 30)
             }
         }
+        .animation(.default, value: isShowing)
     }
-
 }
 
 public enum WebViewData {
@@ -66,7 +67,12 @@ struct WebViewWrapper : UIViewRepresentable {
     }
     
     public func makeUIView(context: Context) -> WKWebView  {
-        let view = WKWebView()
+        let config = WKWebViewConfiguration()
+        let source = "window.addEventListener('message', function() { window.webkit.messageHandlers.iosListener.postMessage(event.data); })"
+        let script = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        config.userContentController.addUserScript(script)
+        config.userContentController.add(context.coordinator, name: "iosListener")
+        let view = WKWebView(frame: .zero, configuration: config)
         view.navigationDelegate = context.coordinator
         
         switch webViewData {
@@ -298,6 +304,13 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
 }
 
 @available(iOS 13.0, *)
+extension WebViewWrapper.Coordinator: WKScriptMessageHandler {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        action?(.didReceiveScriptMessage(userContentController, message))
+    }
+}
+
+@available(iOS 13.0, *)
 class WebViewStateModel: ObservableObject {
     @Published var pageTitle: String = "Loading..."
     @Published var loading: Bool = false
@@ -319,6 +332,7 @@ public struct WebPresenterView: View {
         case didFinish(WKWebView, WKNavigation)
         case didFailProvisionalNavigation(WKWebView, WKNavigation, Error)
         case didFail(WKWebView, WKNavigation, Error)
+        case didReceiveScriptMessage(WKUserContentController, WKScriptMessage)
     }
     
     @ObservedObject var webViewStateModel: WebViewStateModel
@@ -381,13 +395,20 @@ struct WebView: View {
     }
     
     var body: some View {
-        LoadingView(isShowing: .constant(webViewStateModel.loading)) {
+        LoadingView(isShowing: $webViewStateModel.loading) {
             WebPresenterView(
                 webViewData: WebViewData.url(url),
                 webViewStateModel: webViewStateModel,
                 title: title,
                 onNavigationAction: { navigationAction in
-                    print("Navigation action: \(navigationAction)")
+                    switch navigationAction {
+                    case .didReceiveScriptMessage(_, let message):
+                        if let body = message.body as? String, (body == "close-modal-success" || body == "close-modal") {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    default:
+                        print("Navigation action: \(navigationAction)")
+                    }
                 },
                 allowedHosts: nil,
                 forbiddenHosts: nil,

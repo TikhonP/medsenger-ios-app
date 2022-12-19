@@ -11,11 +11,22 @@ import os.log
 
 @objc(Contract)
 public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
-    public static func saveAvatar(id: Int, image: Data) {
+    public enum AvatarType {
+        case `default`, doctor, patient
+    }
+    
+    public static func saveAvatar(id: Int, image: Data, type: AvatarType = .default) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             let contract = get(id: id, for: context)
-            contract?.avatar = image
+            switch type {
+            case .default:
+                contract?.avatar = image
+            case .doctor:
+                contract?.doctorAvatar = image
+            case .patient:
+                contract?.patientAvatar = image
+            }
             PersistenceController.save(for: context, detailsForLogging: "Contract save avatar")
         }
     }
@@ -86,9 +97,9 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     /// - Parameters:
     ///   - validContractIds: The contract ids that exists in JSON from Medsenger
     ///   - context: Core Data context
-    internal class func cleanRemoved(validContractIds: [Int], archive: Bool, for context: NSManagedObjectContext) {
+    internal class func cleanRemoved(validContractIds: [Int], archive: Bool, for context: NSManagedObjectContext, isConsilium: Bool = false) {
         let fetchRequest = Contract.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "archive == %@", NSNumber(value: archive))
+        fetchRequest.predicate = NSPredicate(format: "archive == %@ AND isConsilium == %@", NSNumber(value: archive), NSNumber(value: isConsilium))
         guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive for removing") else {
             return
         }

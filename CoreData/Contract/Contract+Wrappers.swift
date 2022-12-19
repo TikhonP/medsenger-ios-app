@@ -44,6 +44,14 @@ extension Contract {
         comments ?? ""
     }
     
+    public var wrappedPatientName: String {
+        patientName ?? "Unknown patient name"
+    }
+    
+    public var wrappedDoctorName: String {
+        doctorName ?? "Unknown doctor name"
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)
@@ -56,7 +64,7 @@ extension Contract {
     
     public var agentActionsArray: [AgentAction] {
         let set = agentActions as? Set<AgentAction> ?? []
-        return Array(set)
+        return set.sorted(by: { $0.id > $1.id })
     }
     
     public var agentTasksArray: [AgentTask] {

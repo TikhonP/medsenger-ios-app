@@ -15,18 +15,32 @@ struct PatientChatRow: View {
     var body: some View {
         VStack {
             HStack {
-                avatarImage
-                    .frame(width: 60, height: 60)
+                if contract.isConsilium {
+                    consiliumAvators
+                        .frame(width: 60)
+                } else {
+                    avatarImage
+                        .frame(width: 60, height: 60)
+                }
                 
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        Text(contract.wrappedShortName)
-                            .bold()
+                        if contract.isConsilium {
+                            Text("Consilium")
+                        } else {
+                            Text(contract.wrappedShortName)
+                                .bold()
+                        }
                         Spacer()
                         if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
                             LastDateView(date: lastFetchedMessageSent)
                                 .font(.caption)
                         }
+                    }
+                    if contract.isConsilium {
+                        Text("Doctor: \(contract.wrappedDoctorName)")
+                        Text("Patient: \(contract.wrappedPatientName)")
+                        Text("You: \(contract.wrappedRole)")
                     }
                     HStack {
                         VStack(alignment: .leading, spacing: 0) {
@@ -87,6 +101,25 @@ struct PatientChatRow: View {
             }
         }
         .clipShape(Circle())
+    }
+    
+    var consiliumAvators: some View {
+        ZStack {
+            if let patientAvatar = contract.`patientAvatar`, let doctorAvatar = contract.doctorAvatar {
+                Image(data: patientAvatar)?
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(Circle())
+                Image(data: doctorAvatar)?
+                    .resizable()
+                    .scaledToFit()
+                    .clipShape(Circle())
+                    .offset(y: -30)
+            } else {
+                ProgressView()
+                    .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
+            }
+        }
     }
     
     var clinicLogo: some View {

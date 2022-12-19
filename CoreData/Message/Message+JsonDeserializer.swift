@@ -80,11 +80,21 @@ extension Message {
             message.isAgent = isAgent
         }
         message.actionType = data.action_type
-        if let actionLink = data.action_link, let urlEncoded = actionLink.urlEncoded {
-            message.actionLink = URL(string: urlEncoded)
+        if let actionLink = data.action_link {
+            let components = actionLink.split(separator: "?")
+            if components.count > 1, let urlEncoded = components.suffix(components.count - 1).joined(separator: "?").urlEncoded {
+                message.actionLink = URL(string: components[0] + "?" + urlEncoded)
+            } else {
+                message.actionLink = URL(string: actionLink)
+            }
         }
-        if let apiActionLink = data.api_action_link, let urlEncoded = apiActionLink.urlEncoded {
-            message.apiActionLink = URL(string: urlEncoded)
+        if let apiActionLink = data.api_action_link {
+            let components = apiActionLink.split(separator: "?")
+            if components.count > 1, let urlEncoded = components.suffix(components.count - 1).joined(separator: "?").urlEncoded {
+                message.apiActionLink = URL(string: components[0] + "?" + urlEncoded)
+            } else {
+                message.apiActionLink = URL(string: apiActionLink)
+            }
         }
         message.actionName = data.action_name
         message.actionDeadline = data.action_deadline

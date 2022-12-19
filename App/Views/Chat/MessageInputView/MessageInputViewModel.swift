@@ -22,7 +22,6 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     
     private var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
-    private var recordingSession: AVAudioSession?
     
     @Published var alert: AlertInfo?
     
@@ -67,6 +66,8 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                         self?.messageAttachments = []
                         self?.message = ""
                         self?.replyToMessage = nil
+                    } else {
+                        self?.presentGlobalAlert()
                     }
                 }
             }
@@ -92,6 +93,8 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                         self?.isRecordingVoiceMessage = false
                         self?.showRecordedMessage = false
                         self?.replyToMessage = nil
+                    } else {
+                        self?.presentGlobalAlert()
                     }
                 }
             }
@@ -121,6 +124,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                     fileURL.stopAccessingSecurityScopedResource()
                 }
             } catch {
+                presentAlert(title: "Failed to add attachment")
                 print("Failed to load file: \(error.localizedDescription)")
             }
         }
@@ -128,21 +132,14 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
 }
 
 extension MessageInputViewModel: AVAudioRecorderDelegate {
-    func initRecordingSession() {
-        recordingSession = AVAudioSession.sharedInstance()
-        do {
-            try recordingSession?.setCategory(.playAndRecord, mode: .default)
-            try recordingSession?.setActive(true)
-        } catch {
-            MessageInputViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
-        }
-    }
-    
     func startRecording() {
-        if recordingSession == nil {
-            initRecordingSession()
-        }
-        guard let recordingSession = recordingSession else {
+        let recordingSession = AVAudioSession.sharedInstance()
+        do {
+            try recordingSession.setCategory(.playAndRecord, mode: .default)
+            try recordingSession.setActive(true)
+        } catch {
+            presentAlert(title: "Failed to prepare audio recording")
+            MessageInputViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
             return
         }
         recordingSession.requestRecordPermission() { [weak self] allowed in
@@ -224,56 +221,64 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
     
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
         print("audioRecorderEncodeErrorDidOccur")
+        try? AVAudioSession.sharedInstance().setActive(false)
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         print("audioRecorderDidFinishRecording")
+        try? AVAudioSession.sharedInstance().setActive(false)
     }
 }
 
 extension MessageInputViewModel: AVAudioPlayerDelegate {
     func startPlaying(_ url: URL, attachmentId: Int? = nil, completion: (() -> Void)? = nil) {
-        let playSession = AVAudioSession.sharedInstance()
-        
+        let audioSession = AVAudioSession.sharedInstance()
         do {
-            try playSession.overrideOutputAudioPort(AVAudioSession.PortOverride.speaker)
+            try audioSession.setCategory(.playback)
+            try audioSession.setActive(true)
         } catch {
-            MessageInputViewModel.logger.error("Failed to override output audio port: \(error.localizedDescription)")
+            presentAlert(title: "Failed to setup audio on your device", .error)
+            MessageInputViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
+            return
         }
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
-            audioPlayer?.delegate = self
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-            totalAudioMessageTime = audioPlayer?.duration
-            if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
-                self.playingAudioProgress = currentTime / duration
-            }
-            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
-                guard let self = self else {
-                    timer.invalidate()
-                    return
-                }
-                if !self.isVoiceMessagePlaying {
-                    timer.invalidate()
-                } else {
-                    if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
-                        self.playingAudioProgress = currentTime / duration
-                    }
-                }
-            }
-            if let completion = completion {
-                completion()
-            }
         } catch {
+            presentAlert(title: "Failed to play audio on your device", .error)
             MessageInputViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
+            return
+        }
+        
+        audioPlayer?.delegate = self
+        audioPlayer?.prepareToPlay()
+        audioPlayer?.play()
+        totalAudioMessageTime = audioPlayer?.duration
+        if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+            self.playingAudioProgress = currentTime / duration
+        }
+        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+            guard let self = self else {
+                timer.invalidate()
+                return
+            }
+            if !self.isVoiceMessagePlaying {
+                timer.invalidate()
+            } else {
+                if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+                    self.playingAudioProgress = currentTime / duration
+                }
+            }
+        }
+        if let completion = completion {
+            completion()
         }
     }
     
     func stopPlaying() {
         audioPlayer?.stop()
         isVoiceMessagePlaying = false
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
     func startPlayingRecordedVoiceMessage() {
@@ -288,6 +293,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         DispatchQueue.main.async {
             self.isVoiceMessagePlaying = false
         }
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
     internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
@@ -296,5 +302,6 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         } else {
             MessageInputViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
         }
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 }

@@ -93,6 +93,10 @@ struct DoctorChatRow: View {
         }
     }
     
+//    var consiliumAvatar: some View {
+//        
+//    }
+    
     func badgeView(_ count: Int, color: Color) -> some View {
         Text("\(count)")
             .padding(5)

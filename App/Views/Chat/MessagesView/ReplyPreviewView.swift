@@ -26,7 +26,8 @@ struct ReplyPreviewView: View {
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
             }
-            .padding(10)
+            .padding(.horizontal, 10)
+            .padding(.bottom, 5)
         })
     }
 }

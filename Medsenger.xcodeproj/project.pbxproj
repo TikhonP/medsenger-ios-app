@@ -95,6 +95,7 @@
 		437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */; };
 		437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */; };
 		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
+		437F092C2950A2C500478082 /* ConsiliumContractsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */; };
 		43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1662F294131380003E1FB /* ReplyedMessageView.swift */; };
 		43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16631294132670003E1FB /* InputAttachmentsView.swift */; };
 		43A16634294133450003E1FB /* MainInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16633294133450003E1FB /* MainInputView.swift */; };
@@ -327,6 +328,7 @@
 		437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataViewModel.swift; sourceTree = "<group>"; };
 		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
+		437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResource.swift; sourceTree = "<group>"; };
 		43A1662F294131380003E1FB /* ReplyedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyedMessageView.swift; sourceTree = "<group>"; };
 		43A16631294132670003E1FB /* InputAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAttachmentsView.swift; sourceTree = "<group>"; };
 		43A16633294133450003E1FB /* MainInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInputView.swift; sourceTree = "<group>"; };
@@ -1092,6 +1094,7 @@
 				43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */,
 				43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */,
 				434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */,
+				437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -1413,6 +1416,7 @@
 				43D505EE293F966C00EE3756 /* ClinicScenario+Wrappers.swift in Sources */,
 				43A1663D294163350003E1FB /* RecordingVoiceMessageView.swift in Sources */,
 				43A166412941F3520003E1FB /* ChatViewAttachment.swift in Sources */,
+				437F092C2950A2C500478082 /* ConsiliumContractsResource.swift in Sources */,
 				435D5701293A0FF40013B0F4 /* NetworkRequestError.swift in Sources */,
 				43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */,
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,
@@ -1644,7 +1648,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.0.5;
 				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;
@@ -1682,7 +1686,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = App/Medsenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.0.5;
 				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = CRF22TKXX5;
 				ENABLE_PREVIEWS = YES;

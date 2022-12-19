@@ -15,7 +15,7 @@ struct TextMessageView: View {
     var body: some View {
         Text(.init(message.wrappedText))
             .accentColor(colorScheme == .light ? .blue : .accentColor)
-            .padding(10)
+            .padding([.horizontal, .bottom], 10)
     }
 }
 

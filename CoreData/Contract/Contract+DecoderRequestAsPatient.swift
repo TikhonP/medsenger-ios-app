@@ -62,7 +62,7 @@ extension Contract {
         }
     }
     
-    private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Contract {
+    private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext, isConsilium: Bool) -> Contract {
         let contract = get(id: data.contract, for: context) ?? Contract(context: context)
         
         contract.id = Int64(data.contract)
@@ -95,11 +95,12 @@ extension Contract {
         contract.scenarioDescription = data.scenario?.description
         contract.scenarioPreset = data.scenario?.preset
         contract.sortRating = 0
+        contract.isConsilium = isConsilium
         
         return contract
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool) {
+    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool = false) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
@@ -109,7 +110,7 @@ extension Contract {
             for contractData in data {
                 gotContractIds.append(contractData.contract)
                 
-                let contract = saveFromJson(contractData, for: context)
+                let contract = saveFromJson(contractData, for: context, isConsilium: isConsilium)
                 
                 contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
 
@@ -128,7 +129,7 @@ extension Contract {
             }
                                        
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context)
+                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context, isConsilium: isConsilium)
             }
             
             PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
