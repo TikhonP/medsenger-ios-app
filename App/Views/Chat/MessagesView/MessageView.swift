@@ -49,11 +49,11 @@ struct MessageBodyView: View {
                     Button(action: {
                         chatViewModel.openMessageActionLink(message: message)
                     }, label: {
-                        Text(message.wrappedActionName)
+                        Label(message.wrappedActionName, systemImage: "bolt.fill")
                             .padding(10)
-                            .background(Color.secondary)
+                            .background(Color("medsengerBlue"))
                             .cornerRadius(15)
-                            .padding(5)
+                            .padding(10)
                     })
                 }
                 
@@ -103,47 +103,111 @@ struct MessageView: View {
     let viewWidth: CGFloat
     @ObservedObject var message: Message
     @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
+    @Environment(\.colorScheme) private var colorScheme
+    @GestureState private var isDragging = false
+    @State private var dragGestureOffset: CGFloat = .zero
+    @State private var isReplying = false
+    
+    private let swipeGestureConstant: CGFloat = 70
     
     var body: some View {
         if message.isVideoCallMessageFromDoctor {
             VideoCallMessageView(message: message)
                 .id(Int(message.id))
         } else {
-            MessageBodyView(message: message)
-                .foregroundColor(.primary)
-                .background(messageBackground)
-                .cornerRadius(20)
-                .contextMenu {
-                    Button(action: {
-                        messageInputViewModel.replyToMessage = message
-                    }, label: {
-                        Label("Reply", systemImage: "arrowshape.turn.up.left")
-                    })
-                    if let text = message.text, !text.isEmpty {
-                        Button(action: {
-                            UIPasteboard.general.string = text
-                        }, label: {
-                            Label("Copy", systemImage: "doc.on.doc")
-                        })
-                    }
+            ZStack(alignment: .trailing) {
+                if isReplying {
+                    Image(systemName: "arrowshape.turn.up.left.fill")
+                        .foregroundColor(.secondary)
+                        .padding(.trailing)
+                        .transition(.scale)
                 }
-                .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
-                .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
-                .id(Int(message.id))
+                MessageBodyView(message: message)
+                    .foregroundColor(foregroundColor)
+                    .background(backgroundColor)
+                    .cornerRadius(20)
+                    .contextMenu {
+                        Button(action: {
+                            messageInputViewModel.replyToMessage = message
+                        }, label: {
+                            Label("Reply", systemImage: "arrowshape.turn.up.left")
+                        })
+                        if let text = message.text, !text.isEmpty {
+                            Button(action: {
+                                UIPasteboard.general.string = text
+                            }, label: {
+                                Label("Copy", systemImage: "doc.on.doc")
+                            })
+                        }
+                    }
+                    .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+                    .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
+                    .id(Int(message.id))
+                    .offset(x: dragGestureOffset)
+                    .gesture(
+                        DragGesture()
+                            .updating($isDragging, body: { _, out, _ in
+                                out = true
+                            })
+                            .onChanged({ value in
+                                if isDragging {
+                                    let translation = value.translation.width
+                                    if translation > 0 {
+                                        dragGestureOffset = translation / 10
+                                        isReplying = false
+                                    } else if -translation < swipeGestureConstant {
+                                        isReplying = false
+                                        dragGestureOffset = translation
+                                    } else {
+                                        isReplying = true
+                                        dragGestureOffset = -swipeGestureConstant + (translation + swipeGestureConstant) / 10
+                                    }
+                                }
+                            })
+                            .onEnded({ value in
+                                if isReplying {
+                                    messageInputViewModel.replyToMessage = message
+                                    isReplying = false
+                                }
+                                withAnimation {
+                                    dragGestureOffset = 0
+                                }
+                            })
+                    )
+                    .onChange(of: isDragging, perform: { newValue in
+                        if newValue {
+                            HapticFeedback.shared.preparePlay()
+                        }
+                    })
+                    .onChange(of: isReplying, perform: { newValue in
+                        HapticFeedback.shared.play(.light)
+                    })
+            }
+            .animation(.spring(response: 0.2, dampingFraction: 0.5), value: isReplying)
         }
     }
     
-    var messageBackground: Color {
-        if message.isAgent {
-            if message.isUrgent {
-                return .pink
-            } else if message.isWarning {
-                return .yellow
-            } else {
-                return message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor")
-            }
+    var backgroundColor: Color {
+        if message.isAgent, message.isUrgent {
+            return Color("MessageDangerColor")
+        } else if message.isAgent, message.isWarning {
+            return Color("MessageWarningColor")
+        } else if message.isMessageSent {
+            return Color("SendedMessageBackgroundColor")
         } else {
-            return message.isMessageSent ? Color("SendedMessageBackgroundColor") : Color("RecievedMessageBackgroundColor")
+            return Color("RecievedMessageBackgroundColor")
+        }
+    }
+    
+    var foregroundColor: Color {
+        if message.isAgent, message.isUrgent {
+            return .white
+        } else if message.isAgent, message.isWarning {
+            return .white
+        } else if colorScheme == .light, !message.isMessageSent {
+            return .white
+        } else {
+            return .primary
         }
     }
 }
@@ -172,45 +236,6 @@ struct MessageView_Previews: PreviewProvider {
                 .padding()
                 .previewLayout(.sizeThatFits)
         }
-    }
-}
-
-
-struct BubbleShape: Shape {
-    var myMessage : Bool
-    func path(in rect: CGRect) -> Path {
-        let width = rect.width
-        let height = rect.height
-        
-        let bezierPath = UIBezierPath()
-        if !myMessage {
-            bezierPath.move(to: CGPoint(x: 20, y: height))
-            bezierPath.addLine(to: CGPoint(x: width - 15, y: height))
-            bezierPath.addCurve(to: CGPoint(x: width, y: height - 15), controlPoint1: CGPoint(x: width - 8, y: height), controlPoint2: CGPoint(x: width, y: height - 8))
-            bezierPath.addLine(to: CGPoint(x: width, y: 15))
-            bezierPath.addCurve(to: CGPoint(x: width - 15, y: 0), controlPoint1: CGPoint(x: width, y: 8), controlPoint2: CGPoint(x: width - 8, y: 0))
-            bezierPath.addLine(to: CGPoint(x: 20, y: 0))
-            bezierPath.addCurve(to: CGPoint(x: 5, y: 15), controlPoint1: CGPoint(x: 12, y: 0), controlPoint2: CGPoint(x: 5, y: 8))
-            bezierPath.addLine(to: CGPoint(x: 5, y: height - 10))
-            bezierPath.addCurve(to: CGPoint(x: 0, y: height), controlPoint1: CGPoint(x: 5, y: height - 1), controlPoint2: CGPoint(x: 0, y: height))
-            bezierPath.addLine(to: CGPoint(x: -1, y: height))
-            bezierPath.addCurve(to: CGPoint(x: 12, y: height - 4), controlPoint1: CGPoint(x: 4, y: height + 1), controlPoint2: CGPoint(x: 8, y: height - 1))
-            bezierPath.addCurve(to: CGPoint(x: 20, y: height), controlPoint1: CGPoint(x: 15, y: height), controlPoint2: CGPoint(x: 20, y: height))
-        } else {
-            bezierPath.move(to: CGPoint(x: width - 20, y: height))
-            bezierPath.addLine(to: CGPoint(x: 15, y: height))
-            bezierPath.addCurve(to: CGPoint(x: 0, y: height - 15), controlPoint1: CGPoint(x: 8, y: height), controlPoint2: CGPoint(x: 0, y: height - 8))
-            bezierPath.addLine(to: CGPoint(x: 0, y: 15))
-            bezierPath.addCurve(to: CGPoint(x: 15, y: 0), controlPoint1: CGPoint(x: 0, y: 8), controlPoint2: CGPoint(x: 8, y: 0))
-            bezierPath.addLine(to: CGPoint(x: width - 20, y: 0))
-            bezierPath.addCurve(to: CGPoint(x: width - 5, y: 15), controlPoint1: CGPoint(x: width - 12, y: 0), controlPoint2: CGPoint(x: width - 5, y: 8))
-            bezierPath.addLine(to: CGPoint(x: width - 5, y: height - 12))
-            bezierPath.addCurve(to: CGPoint(x: width, y: height), controlPoint1: CGPoint(x: width - 5, y: height - 1), controlPoint2: CGPoint(x: width, y: height))
-            bezierPath.addLine(to: CGPoint(x: width + 1, y: height))
-            bezierPath.addCurve(to: CGPoint(x: width - 12, y: height - 4), controlPoint1: CGPoint(x: width - 4, y: height + 1), controlPoint2: CGPoint(x: width - 8, y: height - 1))
-            bezierPath.addCurve(to: CGPoint(x: width - 20, y: height), controlPoint1: CGPoint(x: width - 15, y: height), controlPoint2: CGPoint(x: width - 20, y: height))
-        }
-        return Path(bezierPath.cgPath)
     }
 }
 #endif

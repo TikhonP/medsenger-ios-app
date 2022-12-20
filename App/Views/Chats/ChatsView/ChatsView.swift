@@ -18,16 +18,16 @@ struct ChatsView: View {
     
     @FetchRequest(
         sortDescriptors: [
+            NSSortDescriptor(key: "unread", ascending: false),
             NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
-            NSSortDescriptor(key: "unread", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == NO"),
         animation: .default)
     private var contracts: FetchedResults<Contract>
     
-    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
-    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.scenePhase) private var scenePhase
     
     @State private var showSettingsModal: Bool = false
     @State private var showNewContractModal: Bool = false
@@ -58,18 +58,15 @@ struct ChatsView: View {
                 } else {
                     EmptyChatsView()
                         .onTapGesture {
-                            chatsViewModel.getContracts()
+                            chatsViewModel.getContracts(presentFailedAlert: true)
                         }
                 }
             } else {
+                EmptyView()
+                    .alert(item: $chatsViewModel.alert) { $0.alert }
                 List {
-                    if userRole == .patient && (tasksTotalToday != 0 || tasksTotalThisWeek != 0) {
-                        Section(header: Text("compliance")) {
-                            VStack {
-                                Text("Today: \(tasksCompletedToday) / \(tasksTotalToday)")
-                                Text("Today: \(tasksTotalThisWeek) / \(tasksTotalThisWeek)")
-                            }
-                        }
+                    if userRole == .patient {
+                        ComplianceView(contracts: Array(contracts), user: user)
                     }
                     
                     Section {
@@ -79,20 +76,34 @@ struct ChatsView: View {
                             }, label: {
                                 switch userRole {
                                 case .patient:
-                                    PatientChatRow(contract: contract)
-                                        .environmentObject(chatsViewModel)
-                                        .contextMenu {
-                                            if let phoneNumber = contract.clinic?.phone {
+                                    ZStack {
+                                        if contract.isConsilium {
+                                            ConsiliumChatRow(contract: contract)
+                                        } else {
+                                            PatientChatRow(contract: contract)
+                                        }
+                                    }
+                                    .environmentObject(chatsViewModel)
+                                    .contextMenu {
+                                        if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
+                                            Button(action: {
+                                                chatsViewModel.callClinic(phone: phoneNumber)
+                                            }, label: {
+                                                Label("Call the Clinic", systemImage: "phone.fill")
+                                            })
+                                        }
+                                    }
+                                    .swipeActionsIos15Only {
+                                        ZStack {
+                                            if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
                                                 Button(action: {
-                                                    let telephone = "tel://"
-                                                    let formattedString = telephone + phoneNumber
-                                                    guard let url = URL(string: formattedString) else { return }
-                                                    UIApplication.shared.open(url)
+                                                    chatsViewModel.callClinic(phone: phoneNumber)
                                                 }, label: {
                                                     Label("Call the Clinic", systemImage: "phone.fill")
                                                 })
                                             }
                                         }
+                                    }
                                 case .doctor:
                                     DoctorChatRow(contract: contract)
                                         .environmentObject(chatsViewModel)
@@ -123,13 +134,13 @@ struct ChatsView: View {
         }
         .animation(.default, value: chatsViewModel.showContractsLoading)
         .animation(.default, value: contracts.isEmpty)
-        .refreshableIos15Only { await chatsViewModel.getContracts() }
+        .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
         .searchableIos16Only(text: query)
         .listStyle(.inset)
         .navigationTitle("Consultations")
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
-            chatsViewModel.getContracts()
+            chatsViewModel.getContracts(presentFailedAlert: false)
             contentViewModel.markChatAsClosed()
         })
         .toolbar {
@@ -168,60 +179,15 @@ struct ChatsView: View {
         .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
         .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
-    
-    var tasksTotalToday: Int {
-        var total = 0
-        for contract in contracts {
-            for agentTask in contract.agentTasksArray {
-                total += Int(agentTask.targetNumber)
-            }
-        }
-        return total
-    }
-    
-    var tasksCompletedToday: Int {
-        var total = 0
-        for contract in contracts {
-            for agentTask in contract.agentTasksArray {
-                total += Int(agentTask.number)
-            }
-        }
-        return total
-    }
-    
-    var tasksTotalThisWeek: Int {
-        var total = 0
-        for contract in contracts {
-            total += Int(contract.complianceAvailible)
-        }
-        return total
-    }
-    
-    var tasksCompletedThisWeek: Int {
-        var total = 0
-        for contract in contracts {
-            total += Int(contract.complianceDone)
-        }
-        return total
-    }
 }
 
 #if DEBUG
 struct ChatsView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var user: User = {
-        let context = persistence.container.viewContext
-        return User.createSampleUser(for: context)
-    }()
-    
     static var previews: some View {
-        let context = PersistenceController.preview.container.viewContext
-        _ = Contract.createSampleContract1(for: context)
         UserDefaults.userRole = .patient
         return NavigationView {
-            ChatsView(user: user)
-                .environment(\.managedObjectContext, context)
+            ChatsView(user: UserPreview.userForChatsViewPreview)
+                .environment(\.managedObjectContext, UserPreview.context)
                 .environmentObject(ContentViewModel())
         }
     }

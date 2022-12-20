@@ -113,15 +113,8 @@ struct ContractDevicesView: View {
 
 #if DEBUG
 struct ContractDevicesView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
     static var previews: some View {
-        ContractDevicesView(contract: contract1)
+        ContractDevicesView(contract: ContractPreviews.contractForPatientChatRowPreview)
     }
 }
 #endif

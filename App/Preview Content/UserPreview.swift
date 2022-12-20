@@ -1,5 +1,5 @@
 //
-//  User+Preview.swift
+//  UserPreview.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 13.11.2022.
@@ -8,11 +8,13 @@
 
 import Foundation
 import CoreData
-
-#if DEBUG
 import UIKit
 
-extension User {
+struct UserPreview {
+    static let context = PersistenceController.preview.container.viewContext
+    
+    static let userForChatsViewPreview = createSampleUser(for: context)
+    
     static func createSampleUser(for viewContext: NSManagedObjectContext) -> User {
         let user = User(context: viewContext)
         
@@ -39,4 +41,3 @@ extension User {
         return user
     }
 }
-#endif

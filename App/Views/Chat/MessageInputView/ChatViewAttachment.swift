@@ -8,6 +8,7 @@
 
 import Foundation
 import UniformTypeIdentifiers
+import os.log
 
 class ChatViewAttachment: Identifiable, Equatable {
     enum ChatViewAttachmentType: String {
@@ -81,7 +82,7 @@ class ChatViewAttachment: Identifiable, Equatable {
             do {
                 try FileManager.default.removeItem(at: fileUrl)
             } catch {
-                print("Could not clear temp folder: \(error)")
+                Logger.defaultLogger.error("Failed to remove file preview: \(error.localizedDescription)")
             }
         }
     }

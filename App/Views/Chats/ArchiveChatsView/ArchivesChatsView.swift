@@ -14,10 +14,10 @@ struct ArchivesChatsView: View {
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     @EnvironmentObject private var contentViewModel: ContentViewModel
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
-
+    
     @FetchRequest(
         sortDescriptors: [
-//            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
+            //            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
             NSSortDescriptor(key: "endDate", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == YES"),
@@ -50,7 +50,7 @@ struct ArchivesChatsView: View {
                 } else {
                     EmptyArchiveChatsView()
                         .onTapGesture {
-                            chatsViewModel.getArchiveContracts()
+                            chatsViewModel.getArchiveContracts(presentFailedAlert: true)
                         }
                 }
             } else {
@@ -71,29 +71,31 @@ struct ArchivesChatsView: View {
             }
         }
         .searchableIos16Only(text: query)
-        .refreshableIos15Only { await chatsViewModel.getArchiveContracts() }
+        .refreshableIos15Only { await chatsViewModel.getArchiveContracts(presentFailedAlert: true) }
         .listStyle(PlainListStyle())
         .navigationTitle("Archived Chats")
-        .onAppear(perform: chatsViewModel.getArchiveContracts)
+        .onAppear {
+            chatsViewModel.getArchiveContracts(presentFailedAlert: false)
+        }
         .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
 }
 
 #if DEBUG
-struct ArchivesChatsView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var user: User = {
-        let context = persistence.container.viewContext
-        return User.createSampleUser(for: context)
-    }()
-    
-    static var previews: some View {
-        NavigationView {
-            ArchivesChatsView(user: user)
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(ChatsViewModel())
-        }
-    }
-}
+//struct ArchivesChatsView_Previews: PreviewProvider {
+//    static let persistence = PersistenceController.preview
+//    
+//    static var user: User = {
+//        let context = persistence.container.viewContext
+//        return User.createSampleUser(for: context)
+//    }()
+//    
+//    static var previews: some View {
+//        NavigationView {
+//            ArchivesChatsView(user: user)
+//                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//                .environmentObject(ChatsViewModel())
+//        }
+//    }
+//}
 #endif

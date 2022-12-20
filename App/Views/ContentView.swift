@@ -22,6 +22,8 @@ struct ContentView: View {
             } else {
                 NavigationView {
                     ChatsView(user: user)
+                    
+                    Text("Select a Color")
                 }
                 .navigationViewStyle(.stack)
                 .environmentObject(contentViewModel)

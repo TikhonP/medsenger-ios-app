@@ -19,6 +19,8 @@ class Account {
     private var notificationsRequest: APIRequest<NotificationsResource>?
     private var pushNotificationsRequest: APIRequest<PushNotificationsResource>?
     
+    /// Change user role: patient or doctor
+    /// - Parameter role: The user role
     public func changeRole(_ role: UserRole) {
         DispatchQueue.global(qos: .background).async {
             PersistenceController.clearDatabase(withUser: false)
@@ -34,10 +36,11 @@ class Account {
                     }
                 }
             }
-            ChatsViewModel.shared.getContracts()
+            ChatsViewModel.shared.getContracts(presentFailedAlert: true)
         }
     }
     
+    /// Fetch user avatar image
     public func fetchAvatar() {
         getAvatarRequest = FileRequest(path: "/photo/")
         getAvatarRequest?.execute { result in
@@ -47,12 +50,14 @@ class Account {
                     User.saveAvatar(data)
                 }
             case .failure(let error):
-                processRequestError(error, "get user avatar")
+                processRequestError(error, "fetch user avatar")
             }
         }
     }
     
-    public func updateProfile() {
+    /// Fetch user data
+    /// - Parameter completion: Request completion
+    public func updateProfile(completion: @escaping APIRequestCompletion) {
         let checkResource = CheckResource()
         checkRequest = APIRequest(checkResource)
         checkRequest?.execute { [weak self] result in
@@ -61,14 +66,22 @@ class Account {
                 if let data = data {
                     User.saveUserFromJson(data)
                     self?.fetchAvatar()
+                    completion(true)
+                } else {
+                    completion(false)
                 }
             case .failure(let error):
                 processRequestError(error, "get profile data")
+                completion(false)
             }
         }
     }
     
-    public func uploadAvatar(_ image: ImagePickerMedia) {
+    /// Update avatar image for user profile
+    /// - Parameters:
+    ///   - image: Image data
+    ///   - completion: Request completion
+    public func uploadAvatar(_ image: ImagePickerMedia, completion: @escaping APIRequestCompletion) {
         User.saveAvatar(nil)
         let uploadAvatarResource = UploadAvatarResource(image: image)
         uploadAvatarRequest = APIRequest(uploadAvatarResource)
@@ -76,8 +89,10 @@ class Account {
             switch result {
             case .success(_):
                 self?.fetchAvatar()
+                completion(true)
             case .failure(let error):
                 processRequestError(error, "upload user avatar")
+                completion(false)
             }
         }
     }
@@ -86,6 +101,13 @@ class Account {
         case succeess, failure, phoneExists
     }
     
+    /// Update profile data
+    /// - Parameters:
+    ///   - name: User name
+    ///   - email: User email
+    ///   - phone: User phone
+    ///   - birthday: User birthday
+    ///   - completion: Request completion
     public func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping (_ result: saveProfileDataStates) -> Void) {
         let updateAccountResource = UpdateAccountResource(name: name, email: email, phone: phone, birthday: birthday)
         updateAcountRequest = APIRequest(updateAccountResource)
@@ -110,8 +132,12 @@ class Account {
         }
     }
     
-    public func updateEmailNotiofication(emailNotify: Bool, completion: @escaping (_ succeeded: Bool) -> Void) {
-        let notificationsResource = NotificationsResource(emailNotify: emailNotify)
+    /// Update user email notifications state
+    /// - Parameters:
+    ///   - isEmailNotificationsOn: Email notifications state
+    ///   - completion: Request completion
+    public func updateEmailNotiofication(isEmailNotificationsOn: Bool, completion: @escaping APIRequestCompletion) {
+        let notificationsResource = NotificationsResource(emailNotify: isEmailNotificationsOn)
         notificationsRequest = APIRequest(notificationsResource)
         notificationsRequest?.execute { result in
             switch result {
@@ -128,7 +154,7 @@ class Account {
     /// - Parameters:
     ///   - fcmToken: the `fcmToken`
     ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
-    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool, completion: @escaping (_ succeeded: Bool) -> Void) {
+    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool, completion: @escaping APIRequestCompletion) {
         DispatchQueue.main.async {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }

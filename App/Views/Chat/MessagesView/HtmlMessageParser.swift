@@ -37,58 +37,48 @@ struct HtmlParser {
     }
     
     private static func matches(for regex: String, in text: String) -> [String] {
-        do {
-            let regex = try NSRegularExpression(pattern: regex)
-            let results = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
-            return results.map {
-                String(text[Range($0.range, in: text)!])
-            }
-        } catch {
-            print("Invalid regex: \(error.localizedDescription)")
-            return []
+        let regex = try! NSRegularExpression(pattern: regex)
+        let results = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+        return results.map {
+            String(text[Range($0.range, in: text)!])
         }
     }
     
     private static func getUrlAndCaptionFromA(for regex: String, in text: String) -> (url: String?, caption: String?) {
-        do {
-            let textRange = NSRange(
-                text.startIndex..<text.endIndex,
-                in: text
-            )
-            
-            let capturePattern = regex
-            let captureRegex = try NSRegularExpression(
-                pattern: capturePattern,
-                options: []
-            )
-            
-            let matches = captureRegex.matches(
-                in: text,
-                options: [],
-                range: textRange
-            )
-            
-            for match in matches {
-                var result = [String]()
-                for rangeIndex in 0..<match.numberOfRanges {
-                    let matchRange = match.range(at: rangeIndex)
-                    
-                    // Ignore matching the entire username string
-                    if matchRange == textRange { continue }
-                    
-                    // Extract the substring matching the capture group
-                    if let substringRange = Range(matchRange, in: text) {
-                        let capture = String(text[substringRange])
-                        result.append(capture)
-                    }
+        let textRange = NSRange(
+            text.startIndex..<text.endIndex,
+            in: text
+        )
+        
+        let capturePattern = regex
+        let captureRegex = try! NSRegularExpression(
+            pattern: capturePattern,
+            options: []
+        )
+        
+        let matches = captureRegex.matches(
+            in: text,
+            options: [],
+            range: textRange
+        )
+        
+        for match in matches {
+            var result = [String]()
+            for rangeIndex in 0..<match.numberOfRanges {
+                let matchRange = match.range(at: rangeIndex)
+                
+                // Ignore matching the entire username string
+                if matchRange == textRange { continue }
+                
+                // Extract the substring matching the capture group
+                if let substringRange = Range(matchRange, in: text) {
+                    let capture = String(text[substringRange])
+                    result.append(capture)
                 }
-                return (result[safe: 0], result[safe: 1])
             }
-            return (nil, nil)
-        } catch {
-            print("Invalid regex: \(error.localizedDescription)")
-            return (nil, nil)
+            return (result[safe: 0], result[safe: 1])
         }
+        return (nil, nil)
     }
     
     public static func parseHtml(from text: String) -> [MessageTextComponent] {

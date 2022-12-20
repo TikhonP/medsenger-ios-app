@@ -7,11 +7,13 @@
 //
 
 import Foundation
+import UIKit
 
-final class ContractViewModel: ObservableObject {
+final class ContractViewModel: ObservableObject, Alertable {
     @Published var showRemoveScenarioLoading = false
     @Published var showChooseScenario = false
-
+    @Published var alert: AlertInfo?
+    
     let contractId: Int
     
     init(contractId: Int) {
@@ -19,11 +21,19 @@ final class ContractViewModel: ObservableObject {
     }
     
     func declineMessages() {
-        DoctorActions.shared.deactivateMessages(contractId)
+        DoctorActions.shared.deactivateMessages(contractId) { [weak self] succeeded in
+            if !succeeded {
+                self?.presentGlobalAlert()
+            }
+        }
     }
     
     func concludeContract() {
-        DoctorActions.shared.concludeContract(contractId)
+        DoctorActions.shared.concludeContract(contractId) { [weak self] succeeded in
+            if !succeeded {
+                self?.presentGlobalAlert()
+            }
+        }
     }
     
     func removeScenario() {
@@ -36,7 +46,14 @@ final class ContractViewModel: ObservableObject {
     }
     
     func getContracts() {
-        Contracts.shared.fetchContracts()
+        Contracts.shared.fetchContracts() { _ in }
         Contracts.shared.fetchConsiliumContracts()
+    }
+    
+    func callClinic(phone: String) {
+        let formattedString = "tel://" + phone.replacingOccurrences(
+            of: #"[^\d]"#, with: "", options: .regularExpression)
+        guard let url = URL(string: formattedString) else { return }
+        UIApplication.shared.open(url)
     }
 }

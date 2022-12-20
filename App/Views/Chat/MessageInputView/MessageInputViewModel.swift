@@ -125,9 +125,38 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                 }
             } catch {
                 presentAlert(title: "Failed to add attachment")
-                print("Failed to load file: \(error.localizedDescription)")
+                MessageInputViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func addOnDropAttachments(_ providers: [NSItemProvider]) -> Bool {
+        guard !providers.isEmpty else {
+            return false
+        }
+        for itemProvider in providers {
+            guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
+                continue
+            }
+            itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] url, error in
+                if let error = error {
+                    MessageInputViewModel.logger.error("Failed to load file representation on drop: \(error.localizedDescription)")
+                }
+                guard let url = url else {
+                    return
+                }
+                do {
+                    let data = try Data(contentsOf: url)
+                    DispatchQueue.main.async {
+                        self?.messageAttachments.append(ChatViewAttachment(
+                            data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
+                    }
+                } catch {
+                    MessageInputViewModel.logger.error("Failed to load data from file on drop: \(error.localizedDescription)")
+                }
+            }
+        }
+        return true
     }
 }
 
@@ -220,12 +249,13 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
     }
     
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        print("audioRecorderEncodeErrorDidOccur")
+        if let error = error {
+            MessageInputViewModel.logger.error("audioRecorderEncodeErrorDidOccur: \(error.localizedDescription)")
+        }
         try? AVAudioSession.sharedInstance().setActive(false)
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        print("audioRecorderDidFinishRecording")
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 }

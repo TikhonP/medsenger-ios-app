@@ -8,14 +8,27 @@
 
 import Foundation
 import SwiftUI
+import os.log
 
-final class SettingsViewModel: ObservableObject {
+final class SettingsViewModel: ObservableObject, Alertable {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: SettingsViewModel.self)
+    )
+    
     @Published var isHealthKitSyncActive: Bool = UserDefaults.isHealthKitSyncActive
     
     @Published var showEditProfileData: Bool = false
     
     @Published var showSelectAvatarOptions = false
     @Published var selectedAvatarImage: ImagePickerMedia?
+    
+    @Published var showSelectPhotosSheet = false
+    @Published var showTakeImageSheet = false
+    @Published var showFilePickerModal = false
+    
+    @Published var alert: AlertInfo?
     
     func getAvatar() {
         Account.shared.fetchAvatar()
@@ -25,12 +38,20 @@ final class SettingsViewModel: ObservableObject {
         Login.shared.signOut()
     }
     
-    func updateProfile() {
-        Account.shared.updateProfile()
+    func updateProfile(presentFailedAlert: Bool) {
+        Account.shared.updateProfile { [weak self] succeeded in
+            if !succeeded, presentFailedAlert {
+                self?.presentGlobalAlert()
+            }
+        }
     }
     
     func uploadAvatar(image: ImagePickerMedia) {
-        Account.shared.uploadAvatar(image)
+        Account.shared.uploadAvatar(image) { [weak self] succeeded in
+            if !succeeded {
+                self?.presentGlobalAlert()
+            }
+        }
     }
     
     func updateHealthKitSync() {
@@ -62,7 +83,7 @@ final class SettingsViewModel: ObservableObject {
                 uploadAvatar(image: ImagePickerMedia(data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .image))
             }
         } catch {
-            print("Failed to load file: \(error.localizedDescription)")
+            SettingsViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
         }
     }
     

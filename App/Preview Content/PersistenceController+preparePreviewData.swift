@@ -21,7 +21,7 @@ extension PersistenceController {
     static func preparePreviewData(for viewContext: NSManagedObjectContext) {
         // ** Prepare all sample data for previews here ** //
         
-        _ = User.createSampleUser(for: viewContext)
+//        _ = User.createSampleUser(for: viewContext)
         Contract.createSampleContracts(for: viewContext)
         
         PersistenceController.save(for: viewContext)

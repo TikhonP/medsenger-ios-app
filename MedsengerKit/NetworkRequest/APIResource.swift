@@ -74,7 +74,7 @@ extension APIResource {
     /// Get httpBody and header as multipartFormData from string params
     /// - Parameters:
     ///   - textParams: Parameters with string key and string value
-    ///   - files: ``MultipartFormData.Part`` objects with files
+    ///   - files: `MultipartFormData.Part` objects with files
     /// - Returns: Tuple with httpBody and headers
     public func multipartFormData(textParams: [String: String] = [:], files: [MultipartFormData.Part] = []) -> (httpBody: Data?, headers: [String: String]) {
         let multipartFormData = getMultipartFormData(textParams: textParams, files: files)
@@ -126,8 +126,8 @@ struct APIResourceOptions {
     
     /// Create options for ``APIResource``
     /// - Parameters:
-    ///   - parseResponse: Parse or not response with ``NetworkRequest.decode()``. If `false` result data wiil be `nil`
-    ///   - method: The HTTP request method. Default is ``HttpMethod.GET``
+    ///   - parseResponse: Parse or not response with `NetworkRequest.decode()`. If `false` result data wiil be `nil`
+    ///   - method: The HTTP request method. Default is `HttpMethod.GET`
     ///   - params: An array of query items for the URL in the order in which they appear in the original query string.
     ///   - httpBody: The data sent as the message body of a request, such as for an HTTP POST request.
     ///   - headers: Header fields

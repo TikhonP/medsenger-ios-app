@@ -142,6 +142,17 @@ struct AttachmentsView: View {
                                     .animation(.default, value: attachmentViewModel.loadingImageIds)
                                     
                                     Text(image.wrappedName)
+                                    
+                                    if let message = image.message {
+                                        Spacer()
+                                        if message.isMessageSent {
+                                            Text("Вы")
+                                                .foregroundColor(.secondary)
+                                        } else {
+                                            Text(message.wrappedAuthor)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -177,6 +188,17 @@ struct AttachmentsView: View {
                                         .animation(.default, value: attachmentViewModel.loadingAttachmentIds)
                                         
                                         Text(attachment.wrappedName)
+                                        
+                                        if let message = attachment.message {
+                                            Spacer()
+                                            if message.isMessageSent {
+                                                Text("Вы")
+                                                    .foregroundColor(.secondary)
+                                            } else {
+                                                Text(message.wrappedAuthor)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -205,15 +227,8 @@ struct AttachmentsView: View {
 
 #if DEBUG
 struct AttachmentsView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
     static var previews: some View {
-        AttachmentsView(contract: contract1)
+        AttachmentsView(contract: ContractPreviews.contractForPatientChatRowPreview)
     }
 }
 #endif

@@ -26,11 +26,11 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
             return
         }
         showEmailNotificationUpdateRequestLoading = true
-        Account.shared.updateEmailNotiofication(emailNotify: value) { [weak self] succeeded in
+        Account.shared.updateEmailNotiofication(isEmailNotificationsOn: value) { [weak self] succeeded in
             DispatchQueue.main.async {
                 self?.showEmailNotificationUpdateRequestLoading = false
                 if succeeded {
-                    Account.shared.updateProfile()
+                    Account.shared.updateProfile { _ in }
                 } else {
                     self?.presentGlobalAlert()
                     self?.showEmailNotificationUpdateRequestLoading = !value

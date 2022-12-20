@@ -42,7 +42,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         // Setup firebase notifications
-        
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         
@@ -75,21 +74,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         UserDefaults.fcmToken = fcmToken
-        AppDelegate.logger.debug("Device token: \(String(describing: fcmToken))")
     }
 }
 
 extension AppDelegate : UNUserNotificationCenterDelegate {
-    
-    // Receive displayed notifications for iOS 10 devices.
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        
-        if let messageID = userInfo[gcmMessageIDKey] {
-            AppDelegate.logger.debug("Message ID: \(String(describing: messageID))")
-        }
-        
-        AppDelegate.logger.debug("\(userInfo)")
         
         if let contracId = userInfo["contract_id"] as? String, let contracId = Int(contracId) {
             if contracId == ContentViewModel.shared.openedChatContractId {
@@ -106,25 +96,14 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        
+        AppDelegate.logger.error("Failed register push notifications: \(error.localizedDescription)")
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                didReceive response: UNNotificationResponse,
-                                withCompletionHandler completionHandler: @escaping () -> Void) {
-        AppDelegate.logger.debug("\(response)")
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        
-        if let messageID = userInfo[gcmMessageIDKey] {
-            print("Message ID from userNotificationCenter didReceive: \(messageID)")
-        }
-        
         if let contracId = userInfo["contract_id"] as? String, let contracId = Int(contracId) {
             ContentViewModel.shared.openChat(with: contracId)
         }
-        
-        print(userInfo)
-        
         completionHandler()
     }
 }

@@ -69,37 +69,16 @@ struct ChatView: View {
             .scrollDismissesKeyboardIos16Only()
             .environmentObject(chatViewModel)
             .environmentObject(messageInputViewModel)
-            .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: { providers in
-                guard !providers.isEmpty else {
-                    return false
-                }
-                for itemProvider in providers {
-                    guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
-                        continue
-                    }
-                    itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
-                        if let error = error {
-                            print(error.localizedDescription)
-                        }
-                        guard let url = url else {
-                            return
-                        }
-                        do {
-                            let data = try Data(contentsOf: url)
-                            DispatchQueue.main.async {
-                                messageInputViewModel.messageAttachments.append(ChatViewAttachment(
-                                    data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
-                            }
-                        } catch {
-                            print(error.localizedDescription)
-                        }
-                    }
-                }
-                return true
-            })
+            .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: messageInputViewModel.addOnDropAttachments)
             
             if contract.messagesArray.isEmpty {
-                ProgressView()
+                VStack(alignment: .center) {
+                    ProgressView()
+                    Text("The first time you open a chat, all messages are loaded, this may take some time.")
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -162,28 +141,28 @@ struct ChatView: View {
 }
 
 #if DEBUG
-struct ChatView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        let contract = Contract.createSampleContract1(for: context)
-        PersistenceController.save(for: context)
-        return contract
-    }()
-    
-    static var user: User = {
-        let context = persistence.container.viewContext
-        let user = User.createSampleUser(for: context)
-        PersistenceController.save(for: context)
-        return user
-    }()
-    
-    static var previews: some View {
-        NavigationView {
-            ChatView(contract: contract1, user: user)
-                .environment(\.managedObjectContext, persistence.container.viewContext)
-        }
-    }
-}
+//struct ChatView_Previews: PreviewProvider {
+//    static let persistence = PersistenceController.preview
+//    
+//    static var contract1: Contract = {
+//        let context = persistence.container.viewContext
+//        let contract = Contract.createSampleContract1(for: context)
+//        PersistenceController.save(for: context)
+//        return contract
+//    }()
+//    
+//    static var user: User = {
+//        let context = persistence.container.viewContext
+//        let user = User.createSampleUser(for: context)
+//        PersistenceController.save(for: context)
+//        return user
+//    }()
+//    
+//    static var previews: some View {
+//        NavigationView {
+//            ChatView(contract: contract1, user: user)
+//                .environment(\.managedObjectContext, persistence.container.viewContext)
+//        }
+//    }
+//}
 #endif

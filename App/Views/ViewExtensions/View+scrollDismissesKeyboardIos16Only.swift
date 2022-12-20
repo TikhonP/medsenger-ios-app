@@ -8,6 +8,14 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
+fileprivate struct ScrollDismissesKeyboardIos16OnlyModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.scrollDismissesKeyboard(.interactively)
+    }
+    
+}
+
 extension View {
     @ViewBuilder
     func scrollDismissesKeyboardIos16Only() -> some View {

@@ -69,17 +69,22 @@ extension Contract {
     
     public var agentTasksArray: [AgentTask] {
         let set = agentTasks as? Set<AgentTask> ?? []
-        return Array(set)
+        return set.sorted(by: { $0.id > $1.id })
     }
     
     public var doctorHelpersArray: [DoctorHelper] {
         let set = doctorHelpers as? Set<DoctorHelper> ?? []
-        return Array(set)
+        return set.sorted(by: { $0.id > $1.id })
     }
     
     public var patientHelpersArray: [PatientHelper] {
         let set = patientHelpers as? Set<PatientHelper> ?? []
-        return Array(set)
+        return set.sorted(by: { $0.id > $1.id })
+    }
+    
+    public var paramsArray: [ContractParam] {
+        let set = params as? Set<ContractParam> ?? []
+        return set.sorted(by: { $0.id > $1.id })
     }
     
     public var devices: [Agent] {

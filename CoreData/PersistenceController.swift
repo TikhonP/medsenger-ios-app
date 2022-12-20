@@ -43,11 +43,6 @@ extension PersistenceController {
     ///   - context: Managed object context
     ///   - detailsForLogging: if error appears while saving provide object that saved for logging and debugging
     public class func save(for context: NSManagedObjectContext, detailsForLogging: String? = nil) {
-//        if let detailsForLogging = detailsForLogging {
-//            print("Core Data: Called save: \(detailsForLogging)")
-//        } else {
-//            print("Core Data: Called save")
-//        }
         if context.hasChanges {
             do {
                 try context.save()
@@ -89,6 +84,11 @@ extension PersistenceController {
         }
     }
     
+    /// Clear database with optional clearing user
+    ///
+    /// Use it for sign out or changing user role
+    ///
+    /// - Parameter withUser: clear user or not
     public class func clearDatabase(withUser: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             Contract.erase(for: context)

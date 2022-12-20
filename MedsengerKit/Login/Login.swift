@@ -14,12 +14,17 @@ class Login {
     private var request: APIRequest<SignInResource>?
     private var changePasswordRequest: APIRequest<ChangePasswordResource>?
     
-    class var isSignedIn: Bool { KeyChain.apiToken != nil }
+    var isSignedIn: Bool { KeyChain.apiToken != nil }
     
     enum SignInCompletionCodes {
         case success, unknownError, userIsNotActivated, incorrectData, incorrectPassword
     }
     
+    /// Sign in into Medsenger account and get api key
+    /// - Parameters:
+    ///   - login: User login
+    ///   - password: User password
+    ///   - completion: Request completion
     public func signIn(login: String, password: String, completion: @escaping (_ result: SignInCompletionCodes) -> Void) {
         let resource = SignInResource(email: login, password: password)
         request = APIRequest(resource)
@@ -64,7 +69,11 @@ class Login {
         case success, unknownError, incorrectData
     }
     
-    public func changePassword(newPassword: String, completion: @escaping (_ succeeded: Bool) -> Void) {
+    /// Change password for account
+    /// - Parameters:
+    ///   - newPassword: New password
+    ///   - completion: Request completion
+    public func changePassword(newPassword: String, completion: @escaping APIRequestCompletion) {
         let changePasswordResource = ChangePasswordResource(newPassword: newPassword)
         changePasswordRequest = APIRequest(changePasswordResource)
         changePasswordRequest?.execute { result in
@@ -83,17 +92,20 @@ class Login {
         }
     }
     
+    /// Sign out from account
     public func signOut() {
-        if let fcmToken = UserDefaults.fcmToken {
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { _ in }
+        DispatchQueue.global(qos: .background).async {
+            if let fcmToken = UserDefaults.fcmToken {
+                Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { _ in }
+            }
+            KeyChain.apiToken = nil
+            User.delete()
+            UserDefaults.userRole = .unknown
         }
-        KeyChain.apiToken = nil
-        User.delete()
-        UserDefaults.userRole = .unknown
     }
     
     public func deauthIfTokenIsNotExists() {
-        if !Login.isSignedIn {
+        if !isSignedIn {
             signOut()
         }
     }

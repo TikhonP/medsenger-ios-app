@@ -33,7 +33,7 @@ class ClinicScenarioParamNode: ObservableObject, Identifiable {
                     self.toggleValue = toggleValue
                 }
             } else if self.type == .date {
-                print("Date value: \(param.wrappedDefaultValue)")
+                // print("Date value: \(param.wrappedDefaultValue)")
             } else if self.type == .select {
                 self.pickerOptions = param.optionsArray
                 self.value = param.defaultOtionCode

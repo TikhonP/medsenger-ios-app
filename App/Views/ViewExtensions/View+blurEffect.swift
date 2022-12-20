@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct UIBlur: UIViewRepresentable {
+fileprivate struct UIBlur: UIViewRepresentable {
     var style: UIBlurEffect.Style = .systemMaterial
     
     func makeUIView(context: Context) -> UIVisualEffectView {
@@ -20,11 +20,21 @@ struct UIBlur: UIViewRepresentable {
     }
 }
 
+@available(iOS 15.0, *)
+fileprivate struct BlurEffectIos15OnlyModifier: ViewModifier {
+    let edges: Edge.Set
+    
+    func body(content: Content) -> some View {
+        content.background(.regularMaterial, ignoresSafeAreaEdges: edges)
+    }
+    
+}
+
 extension View {
     @ViewBuilder
     func blurEffect(ignoresSafeAreaEdges edges: Edge.Set = []) -> some View {
         if #available(iOS 15.0, *) {
-            self.background(.regularMaterial, ignoresSafeAreaEdges: edges)
+            self.modifier(BlurEffectIos15OnlyModifier(edges: edges))
         } else {
             self.background(
                 UIBlur().edgesIgnoringSafeArea(edges)

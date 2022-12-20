@@ -37,6 +37,8 @@ struct ContractView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
             
+            contractInfoSection
+            
             if userRole == .doctor {
                 actionsForDoctor
                 if let clinic = contract.clinic, !clinic.scenariosArray.isEmpty, !contract.archive {
@@ -49,6 +51,15 @@ struct ContractView: View {
             
             if !contract.agentActionsArray.isEmpty {
                 agentActions
+            }
+            if userRole == .patient, !contract.agentTasksArray.isEmpty {
+                tasksForTheDay
+            }
+            if !contract.doctorHelpersArray.isEmpty {
+                consultants
+            }
+            if !contract.patientHelpersArray.isEmpty {
+                guardianship
             }
         }
         .refreshableIos15Only { await contractViewModel.getContracts() }
@@ -63,6 +74,87 @@ struct ContractView: View {
         }
         .sheet(isPresented: $showDevices) {
             ContractDevicesView(contract: contract)
+        }
+    }
+    
+    var tasksForTheDay: some View {
+        Section(header: Text("Tasks for the day")) {
+            ForEach(contract.agentTasksArray) { agentTask in
+                HStack {
+                    Text(agentTask.wrappedText)
+                    Spacer()
+                    if agentTask.isDone {
+                        Text("done")
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text("\(agentTask.number) / \(agentTask.targetNumber)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        }
+    }
+    
+    var consultants: some View {
+        Section(header: Text("Consultants")) {
+            ForEach(contract.doctorHelpersArray) { doctorHelper in
+                VStack(alignment: .leading) {
+                    Text(doctorHelper.wrappedName)
+                    Text(doctorHelper.wrappedRole)
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                }
+            }
+        }
+    }
+    
+    var guardianship: some View {
+        Section(header: Text("Relatives and care")) {
+            ForEach(contract.patientHelpersArray) { patientHelper in
+                VStack(alignment: .leading) {
+                    Text(patientHelper.wrappedName)
+                    Text(patientHelper.wrappedRole)
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                }
+            }
+        }
+    }
+    
+    var contractInfoSection: some View {
+        Section(header: Text("Contract Information")) {
+            VStack(alignment: .leading) {
+                Text(contract.wrappedNumber)
+                Text("Contract number")
+                    .foregroundColor(.secondary)
+                    .font(.caption)
+            }
+            
+            if let startDate = contract.startDate, let endDate = contract.endDate {
+                VStack(alignment: .leading) {
+                    Text("From \(startDate, style: .date) to \(endDate, style: .date)")
+                    Text("Validity")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                }
+            }
+            
+            ForEach(contract.paramsArray) { param in
+                VStack(alignment: .leading) {
+                    Text(param.wrappedValue)
+                    Text(param.wrappedName)
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                }
+            }
+            
+            if let clinic = contract.clinic, clinic.phonePaid, let phoneNumber = clinic.phone, !phoneNumber.isEmpty {
+                Button(action: {
+                    contractViewModel.callClinic(phone: phoneNumber)
+                }, label: {
+                    Label("Call the Clinic", systemImage: "phone.fill")
+                })
+            }
         }
     }
     
@@ -124,6 +216,7 @@ struct ContractView: View {
                 })
             }
         }
+        .alert(item: $contractViewModel.alert) { $0.alert }
     }
     
     var monitoringSection: some View {
@@ -166,13 +259,13 @@ struct ContractView: View {
     }
     
     var agentActions: some View {
-        Section(header: Text("Agent Actions")) {
+        Section(header: Text("Actions")) {
             ForEach(contract.agentActionsArray) { agentAction in
                 switch agentAction.type {
                 case .url:
                     if let name = agentAction.name, let link = agentAction.apiLink {
                         Link(destination: link, label: {
-                            Label(name, systemImage: "person.icloud.fill")
+                            Label(name, systemImage: "link")
                         })
                     }
                 case .action:
@@ -182,7 +275,7 @@ struct ContractView: View {
                         NavigationLink(destination: {
                             WebView(url: link, title: name)
                         }, label: {
-                            Label(name, systemImage: "person.icloud.fill")
+                            Label(name, systemImage: "bolt.fill")
                         })
                     }
                 }
@@ -199,7 +292,7 @@ struct ContractView: View {
                         Image(data: avatarData)?
                             .resizable()
                             .onTapGesture {
-
+                                
                                 showAvatarImage = true
                             }
                             .fullScreenCover(isPresented: $showAvatarImage) {
@@ -212,24 +305,25 @@ struct ContractView: View {
                 .frame(width: 95, height: 95)
                 .clipShape(Circle())
                 
+                
+                Text(contract.name ?? "Data reading error")
+                    .font(.title3)
+                    .bold()
+                    .multilineTextAlignment(.center)
+                
+                
+                
                 HStack {
-                    Text(contract.name ?? "Data reading error")
-                        .font(.title3)
-                        .bold()
-                        .multilineTextAlignment(.center)
-                    
+                    if let role = contract.role, !role.isEmpty {
+                        Text(role)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                     if let infoUrl = contract.infoUrl {
                         Link(destination: infoUrl) {
                             Image(systemName: "info.circle")
-                                .font(.largeTitle)
                         }
                     }
-                }
-                
-                if let role = contract.role, !role.isEmpty {
-                    Text(role)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
             }
             Spacer()
@@ -238,21 +332,21 @@ struct ContractView: View {
 }
 
 #if DEBUG
-struct ContractView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
-    static var user: User = {
-        let context = persistence.container.viewContext
-        return User.createSampleUser(for: context)
-    }()
-    
-    static var previews: some View {
-        ContractView(contract: contract1, user: user)
-    }
-}
+//struct ContractView_Previews: PreviewProvider {
+//    static let persistence = PersistenceController.preview
+//    
+//    static var contract1: Contract = {
+//        let context = persistence.container.viewContext
+//        return Contract.createSampleContract1(for: context)
+//    }()
+//    
+//    static var user: User = {
+//        let context = persistence.container.viewContext
+//        return User.createSampleUser(for: context)
+//    }()
+//    
+//    static var previews: some View {
+//        ContractView(contract: contract1, user: user)
+//    }
+//}
 #endif

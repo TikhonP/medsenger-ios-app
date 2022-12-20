@@ -10,7 +10,7 @@ import SwiftUI
 
 struct EditPersonalDataView: View {
     @StateObject private var editPersonalDataViewModel = EditPersonalDataViewModel()
-    
+    @ObservedObject private var user: User
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     @State private var name: String
@@ -18,14 +18,12 @@ struct EditPersonalDataView: View {
     @State private var phone: String
     @State private var birthday: Date
     
-    private let avatar: Data?
-    
     init(user: User) {
-        _name = State(initialValue: user.name ?? "")
-        _email = State(initialValue: user.email ?? "")
-        _phone = State(initialValue: user.phone ?? "")
+        _name = State(initialValue: user.wrappedName)
+        _email = State(initialValue: user.wrappedEmail)
+        _phone = State(initialValue: user.wrappedPhone)
         _birthday = State(initialValue: user.birthday ?? Date())
-        self.avatar = user.avatar
+        self.user = user
     }
     
     var body: some View {
@@ -34,16 +32,7 @@ struct EditPersonalDataView: View {
                 HStack {
                     Spacer()
                     VStack {
-                        ZStack {
-                            if let avatarData = avatar {
-                                Image(data: avatarData)?
-                                    .resizable()
-                            } else {
-                                ProgressView()
-                            }
-                        }
-                        .frame(width: 95, height: 95)
-                        .clipShape(Circle())
+                        SettingsProfileImageView(user: user)
                         Button("New Photo") {
                             settingsViewModel.showSelectAvatarOptions.toggle()
                         }
@@ -104,19 +93,19 @@ struct EditPersonalDataView: View {
 }
 
 #if DEBUG
-struct EditPersonalDataView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var user: User = {
-        let context = persistence.container.viewContext
-        return User.createSampleUser(for: context)
-    }()
-    
-    static var previews: some View {
-        NavigationView {
-            EditPersonalDataView(user: user)
-                .environmentObject(SettingsViewModel())
-        }
-    }
-}
+//struct EditPersonalDataView_Previews: PreviewProvider {
+//    static let persistence = PersistenceController.preview
+//    
+//    static var user: User = {
+//        let context = persistence.container.viewContext
+//        return User.createSampleUser(for: context)
+//    }()
+//    
+//    static var previews: some View {
+//        NavigationView {
+//            EditPersonalDataView(user: user)
+//                .environmentObject(SettingsViewModel())
+//        }
+//    }
+//}
 #endif

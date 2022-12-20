@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SettingsProfileImageView: View {
     @ObservedObject var user: User
-    
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @State private var showAvatarImage = false
     
     var body: some View {
@@ -30,6 +30,34 @@ struct SettingsProfileImageView: View {
         }
         .frame(width: 95, height: 95)
         .clipShape(Circle())
+        .actionSheet(isPresented: $settingsViewModel.showSelectAvatarOptions) {
+            ActionSheet(title: Text("Choose a new profile photo"),
+                        buttons: [
+                            .default(Text("Take Photo")) {
+                                settingsViewModel.showTakeImageSheet = true
+                            },
+                            .default(Text("Choose Photo")) {
+                                settingsViewModel.showSelectPhotosSheet = true
+                            },
+                            .default(Text("Browse...")) {
+                                settingsViewModel.showFilePickerModal = true
+                            },
+                            .cancel()
+                        ])
+        }
+        .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
+            NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: settingsViewModel.updateAvatarFromImage)
+            .edgesIgnoringSafeArea(.all)
+        }
+        .fullScreenCover(isPresented: $settingsViewModel.showTakeImageSheet) {
+            ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
+                .edgesIgnoringSafeArea(.all)
+        }
+        .sheet(isPresented: $settingsViewModel.showFilePickerModal) {
+            FilePicker(types: [.image], allowMultiple: false, onPicked: settingsViewModel.updateAvatarFromFile)
+                .edgesIgnoringSafeArea(.all)
+        }
+        .onChange(of: settingsViewModel.selectedAvatarImage, perform: settingsViewModel.updateAvatarFromImage)
     }
 }
 
@@ -38,20 +66,20 @@ struct SettingsProfileTextView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
-            Text(user.name ?? "Data reading error")
+            Text(user.wrappedName)
                 .font(.title3)
                 .bold()
                 .multilineTextAlignment(.center)
             
-            if let email = user.email {
-                Text(email)
+            if !user.wrappedEmail.isEmpty {
+                Text(user.wrappedEmail)
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
             }
             
-            if let phone = user.phone {
-                Text(phone)
+            if !user.wrappedPhone.isEmpty {
+                Text(user.wrappedPhone)
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)

@@ -87,7 +87,7 @@ import Accelerate
     private var complexBuffer: DSPSplitComplex!
 
     /// Instantiate the FFT.
-    /// - Parameter withSize: The length of the sample buffer we'll be analyzing. Must be a power of 2. The resulting ```magnitudes``` are of length ```inSize/2```.
+    /// - Parameter withSize: The length of the sample buffer we'll be analyzing. Must be a power of 2. The resulting `magnitudes` are of length `inSize/2`.
     /// - Parameter sampleRate: Sampling rate of the provided audio data.
     init(withSize inSize:Int, sampleRate inSampleRate: Float) {
 
@@ -252,7 +252,7 @@ import Accelerate
     }
 
     /// Get the magnitude of the requested frequency in the spectrum.
-    /// - Parameter inFrequency: The requested frequency. Must be less than the Nyquist frequency (```sampleRate/2```).
+    /// - Parameter inFrequency: The requested frequency. Must be less than the Nyquist frequency (`sampleRate/2`).
     /// - Returns: A magnitude.
     func magnitudeAtFrequency(_ inFrequency: Float) -> Float {
         assert(hasPerformedFFT, "*** Perform the FFT first.")
@@ -269,7 +269,7 @@ import Accelerate
         return self.bandFrequencies[inBand]
     }
 
-    /// A convenience function that converts a linear magnitude (like those stored in ```magnitudes```) to db (which is log 10).
+    /// A convenience function that converts a linear magnitude (like those stored in `magnitudes`) to db (which is log 10).
     class func toDB(_ inMagnitude: Float) -> Float {
         // ceil to 128db in order to avoid log10'ing 0
         let magnitude = max(inMagnitude, 0.000000000001)

@@ -128,8 +128,7 @@ struct UpdateInterfaceWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Contracts.shared.fetchContracts()
-        Contracts.shared.fetchArchiveContracts()
+        ChatsViewModel.shared.getContracts(presentFailedAlert: false)
     }
 }
 
@@ -149,7 +148,11 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Messages.shared.fetchMessages(contractId: data.contract_id) { _ in }
+        if let openedChatContractId = ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
+            Messages.shared.fetchMessages(contractId: data.contract_id) { _ in }
+        } else {
+            ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+        }
     }
 }
 
@@ -162,6 +165,7 @@ struct AllReadWebsocketResponse: WebsocketResponse {
     
     func processResponse(_ data: Model) {
         Contract.updateLastReadMessageIdByPatient(id: data.contract_id, lastReadMessageIdByPatient: data.last_read_id)
+        ChatsViewModel.shared.getContracts(presentFailedAlert: false)
         Logger.websockets.info("WebsocketResponse: AllReadWebsocketResponse: \(String(describing: data), privacy: .private)")
     }
 }

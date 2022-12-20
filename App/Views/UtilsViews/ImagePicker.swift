@@ -8,6 +8,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import os.log
 
 enum ImagePickerMediaTypes: String {
     case image = "public.image"
@@ -15,6 +16,12 @@ enum ImagePickerMediaTypes: String {
 }
 
 struct ImagePickerMedia: Equatable {
+    
+    internal static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: ImagePickerMedia.self)
+    )
+    
     let data: Data
     let extention: String
     let realFilename: String?
@@ -100,14 +107,14 @@ struct ImagePicker: UIViewControllerRepresentable {
                     switch type {
                     case .image:
                         guard let imageURL = info[.imageURL] as? URL, let imageData = try? Data(contentsOf: imageURL) else {
-                            print("Failed to get data for selectedMedia.imageURL")
+                            ImagePickerMedia.logger.error("Failed to get data for selectedMedia.imageURL")
                             return
                         }
                         url = imageURL
                         data = imageData
                     case .movie:
                         guard let mediaURL = info[.mediaURL] as? URL, let mediaData = try? Data(contentsOf: mediaURL) else {
-                            print("Failed to get data for selectedMedia.mediaURL")
+                            ImagePickerMedia.logger.error("Failed to get data for selectedMedia.mediaURL")
                             return
                         }
                         url = mediaURL
@@ -119,7 +126,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                     switch type {
                     case .image:
                         guard let image = info[.originalImage] as? UIImage, let imageData = image.upOrientationImage()?.pngData() else {
-                            print("Failed to get data for camera .originalImage")
+                            ImagePickerMedia.logger.error("Failed to get data for camera .originalImage")
                             return
                         }
                         extention = "png"
@@ -127,7 +134,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                         realFilename = nil
                     case .movie:
                         guard let mediaURL = info[.mediaURL] as? URL, let mediaData = try? Data(contentsOf: mediaURL) else {
-                            print("Failed to get data for camera selectedMedia.mediaURL")
+                            ImagePickerMedia.logger.error("Failed to get data for camera selectedMedia.mediaURL")
                             return
                         }
                         extention = mediaURL.pathExtension
@@ -137,7 +144,6 @@ struct ImagePicker: UIViewControllerRepresentable {
                 }
             }
             let ImagePickerMedia = ImagePickerMedia(data: data, extention: extention, realFilename: realFilename, type: type)
-            print(ImagePickerMedia)
             parent.selectedMedia = ImagePickerMedia
         }
     }

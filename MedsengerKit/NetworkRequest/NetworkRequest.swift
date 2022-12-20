@@ -53,7 +53,7 @@ extension NetworkRequest {
     /// - Parameters:
     ///   - method: The HTTP request method.
     ///   - url: The URL for the request.
-    ///   - parseResponse: Parse or not response with ``NetworkRequest.decode()``. If `false` result data wiil be `nil`
+    ///   - parseResponse: Parse or not response with `NetworkRequest.decode()`. If `false` result data wiil be `nil`
     ///   - data: The data sent as the message body of a request, such as for an HTTP POST request.
     ///   - headers: The  header fields.
     ///   - timeoutInterval: The request’s timeout interval, in seconds.

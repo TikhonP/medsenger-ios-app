@@ -7,23 +7,25 @@
 //
 
 import CoreData
-import UIKit
 
-extension Clinic {
-    static func createSampleClinic(for viewContext: NSManagedObjectContext) -> Clinic {
+struct ClinicPreviews {
+    static let context = PersistenceController.preview.container.viewContext
+    
+    static func createSampleClinic(
+        name: String,
+        videoEnabled: Bool,
+        logo: Data?,
+        for viewContext: NSManagedObjectContext
+    ) -> Clinic {
         let clinic = Clinic(context: viewContext)
         
-        clinic.name = "Клиника практологии доктора Изюмского"
-        clinic.id = 456
-        clinic.videoEnabled = false
+        clinic.id = Int64.random(in: 0...1000)
+        clinic.name = name
+        clinic.videoEnabled = videoEnabled
         clinic.esiaEnabled = false
         clinic.delayedContractsEnabled = false
+        clinic.logo = logo
         
-        if let img = UIImage(named: "UserAvatarExample") {
-            guard let data = img.jpegData(compressionQuality: 1) else { return clinic }
-            clinic.logo = data
-        }
-
         return clinic
     }
 }

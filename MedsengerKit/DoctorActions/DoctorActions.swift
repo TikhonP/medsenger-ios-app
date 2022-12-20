@@ -54,7 +54,7 @@ final class DoctorActions {
     /// - Parameters:
     ///   - addContractRequestModel: Contract data
     ///   - completion: Request completion
-    public func addContract(_ addContractRequestModel: AddContractRequestModel, completion: @escaping (_ succeeded: Bool) -> Void) {
+    public func addContract(_ addContractRequestModel: AddContractRequestModel, completion: @escaping APIRequestCompletion) {
         let addContractResource = AddContractResource(addContractRequestModel: addContractRequestModel)
         addContractRequest = APIRequest(addContractResource)
         addContractRequest?.execute { result in
@@ -72,16 +72,15 @@ final class DoctorActions {
     /// - Parameters:
     ///   - contractId: Contract Id
     ///   - completion: Request completion
-    public func deactivateMessages(_ contractId: Int, completion: (() -> Void)? = nil) {
+    public func deactivateMessages(_ contractId: Int, completion: @escaping APIRequestCompletion) {
         let deactivateMessagesResource = DeactivateMessagesResource(contractId: contractId)
         deactivateMessagesRequest = APIRequest(deactivateMessagesResource)
         deactivateMessagesRequest?.execute { result in
             switch result {
             case .success(_):
-                if let completion = completion {
-                    completion()
-                }
+                completion(true)
             case .failure(let error):
+                completion(false)
                 processRequestError(error, "DoctorActions: deactivateMessages")
             }
         }
@@ -91,29 +90,32 @@ final class DoctorActions {
     /// - Parameters:
     ///   - contractId: Contract Id
     ///   - completion: Request completion
-    public func concludeContract(_ contractId: Int, completion: (() -> Void)? = nil) {
+    public func concludeContract(_ contractId: Int, completion: @escaping APIRequestCompletion) {
         let concludeContract = ConcludeContractResource(contractId: contractId)
         concludeContractRequest = APIRequest(concludeContract)
         concludeContractRequest?.execute { result in
             switch result {
             case .success(_):
-                if let completion = completion {
-                    completion()
-                }
+                completion(true)
             case .failure(let error):
+                completion(false)
                 processRequestError(error, "DoctorActions: concludeContract")
             }
         }
     }
     
-    public func deviceState(devices: [DeviceNode], contractId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
+    /// Update connected devices
+    /// - Parameters:
+    ///   - devices: List of device node with states
+    ///   - contractId: Contract Id
+    ///   - completion: Request completion
+    public func deviceState(devices: [DeviceNode], contractId: Int, completion: @escaping APIRequestCompletion) {
         let deviceResource = DeviceResource(devices: devices, contractId: contractId)
         deviceStateRequest = APIRequest(deviceResource)
         deviceStateRequest?.execute { result in
             switch result {
             case .success(_):
-                Contracts.shared.fetchContracts()
-                Contracts.shared.fetchArchiveContracts()
+                ChatsViewModel.shared.getContracts(presentFailedAlert: false)
                 completion(true)
             case .failure(let error):
                 completion(false)
@@ -122,7 +124,12 @@ final class DoctorActions {
         }
     }
     
-    public func updateContractNotes(contractId: Int, notes: String, completion: @escaping (_ succeeded: Bool) -> Void) {
+    /// Update notes for doctor with any string
+    /// - Parameters:
+    ///   - contractId: Contract Id
+    ///   - notes: Notes string
+    ///   - completion: Request completion
+    public func updateContractNotes(contractId: Int, notes: String, completion: @escaping APIRequestCompletion) {
         let updateCommentsResource = UpdateCommentsResource(contractId: contractId, comment: notes)
         updateCommentsRequest = APIRequest(updateCommentsResource)
         updateCommentsRequest?.execute { result in
@@ -137,7 +144,11 @@ final class DoctorActions {
         }
     }
     
-    public func removeScenario(contractId: Int, completion: @escaping (_ succeeded: Bool) -> Void) {
+    /// Clear scenario from contract
+    /// - Parameters:
+    ///   - contractId: Contract Id
+    ///   - completion: Request completion
+    public func removeScenario(contractId: Int, completion: @escaping APIRequestCompletion) {
         let removeScenarioResource = RemoveScenarioResource(contractId: contractId)
         removeScenarioRequest = APIRequest(removeScenarioResource)
         removeScenarioRequest?.execute { result in
@@ -151,7 +162,13 @@ final class DoctorActions {
         }
     }
     
-    public func addScenario(contractId: Int, scenarioId: Int, params: [ClinicScenarioParamNode], completion: @escaping (_ succeeded: Bool) -> Void) {
+    /// Start scenario for contract
+    /// - Parameters:
+    ///   - contractId: Contract Id
+    ///   - scenarioId: Scenario Id
+    ///   - params: Scenario params, that configured when selecting scenario
+    ///   - completion: Request completion
+    public func addScenario(contractId: Int, scenarioId: Int, params: [ClinicScenarioParamNode], completion: @escaping APIRequestCompletion) {
         let addScenarioResource = AddScenarioResource(contractId: contractId, scenarioId: scenarioId, params: params)
         addScenarioRequest = APIRequest(addScenarioResource)
         addScenarioRequest?.execute { result in

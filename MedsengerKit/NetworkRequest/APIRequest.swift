@@ -8,12 +8,16 @@
 
 import Foundation
 
+/// Standart request completion
+/// - Parameter succeeded: Is request completed success
+typealias APIRequestCompletion = (_ succeeded: Bool) -> Void
+
+/// `medsenger.ru` response base model
 enum Wrapper<T: Decodable> {
     case success(T)
     case error(ErrorResponse)
 }
 
-/// `medsenger.ru` response base model
 extension Wrapper: Decodable {
     enum status: String, Decodable {
         case success, error, failed

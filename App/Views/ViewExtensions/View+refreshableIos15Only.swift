@@ -8,11 +8,21 @@
 
 import SwiftUI
 
+@available(iOS 15.0, *)
+fileprivate struct RefreshableIos15OnlyModifier: ViewModifier {
+    let action: @Sendable () async -> Void
+
+    func body(content: Content) -> some View {
+        content.refreshable(action: action)
+    }
+    
+}
+
 extension View {
     @ViewBuilder
     func refreshableIos15Only(action: @escaping @Sendable () async -> Void) -> some View {
         if #available(iOS 15.0, *) {
-            self.refreshable(action: action)
+            self.modifier(RefreshableIos15OnlyModifier(action: action))
         } else {
             self
         }

@@ -80,15 +80,8 @@ struct WaitingCallView: View {
 
 #if DEBUG
 struct WaitingCallView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
     static var previews: some View {
-        WaitingCallView(contract: contract1)
+        WaitingCallView(contract: ContractPreviews.contractForPatientChatRowPreview)
     }
 }
 #endif

@@ -25,8 +25,36 @@ struct MainInputView: View {
                 MessageInputButtonLabel(imageSystemName: "paperclip.circle.fill", showProgress: .constant(false))
                     .foregroundColor(.secondary.opacity(0.7))
             })
+            .actionSheet(isPresented: $showSelectImageOptions) {
+                ActionSheet(title: Text("Add attachment"),
+                            buttons: [
+                                .default(Text("Take Photo")) {
+                                    showTakeImageSheet = true
+                                },
+                                .default(Text("Choose Photo")) {
+                                    showSelectPhotosSheet = true
+                                },
+                                .default(Text("Browse...")) {
+                                    showFilePickerModal = true
+                                },
+                                .cancel()
+                            ])
+            }
+            .sheet(isPresented: $showSelectPhotosSheet) {
+                NewImagePicker(pickedCompletionHandler: messageInputViewModel.addImagesAttachments)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            .fullScreenCover(isPresented: $showTakeImageSheet) {
+                ImagePicker(selectedMedia: $selectedMedia, sourceType: .camera, mediaTypes: [.image, .movie], edit: false)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            .sheet(isPresented: $showFilePickerModal) {
+                FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: messageInputViewModel.addFilesAttachments)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
             
-            TextView($messageInputViewModel.message, placeholder: "Message")
+            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("Message", comment: "Message input placeholder"))
                 .padding(.horizontal, 10)
                 .background(Color(UIColor.systemBackground))
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
@@ -39,38 +67,10 @@ struct MainInputView: View {
             } else {
                 Button(action: messageInputViewModel.sendMessage, label: {
                     MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
-                        .foregroundColor(.accentColor)
+                        .foregroundColor(Color("medsengerBlue"))
                 })
             }
         }
-        .actionSheet(isPresented: $showSelectImageOptions) {
-            ActionSheet(title: Text("Add attachment"),
-                        buttons: [
-                            .default(Text("Take Photo")) {
-                                showTakeImageSheet = true
-                            },
-                            .default(Text("Choose Photo")) {
-                                showSelectPhotosSheet = true
-                            },
-                            .default(Text("Browse...")) {
-                                showFilePickerModal = true
-                            },
-                            .cancel()
-                        ])
-        }
-        .sheet(isPresented: $showSelectPhotosSheet) {
-            NewImagePicker(pickedCompletionHandler: messageInputViewModel.addImagesAttachments)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .fullScreenCover(isPresented: $showTakeImageSheet) {
-            ImagePicker(selectedMedia: $selectedMedia, sourceType: .camera, mediaTypes: [.image, .movie], edit: false)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .sheet(isPresented: $showFilePickerModal) {
-            FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: messageInputViewModel.addFilesAttachments)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
     }
 }
 

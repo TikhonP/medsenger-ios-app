@@ -8,8 +8,15 @@
 
 import SwiftUI
 import PhotosUI
+import os.log
 
 struct NewImagePicker: UIViewControllerRepresentable {
+    
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: String(describing: ImagePickerMedia.self)
+    )
+    
     public typealias PickedImagesCompletionHandler = (_ media: ImagePickerMedia) -> Void
     
     public let filter: PHPickerFilter?
@@ -75,7 +82,7 @@ struct NewImagePicker: UIViewControllerRepresentable {
         private func loadFromFile(_ itemProvider: NSItemProvider, _ typeIdentifier: String, _ utType: UTType) {
             itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
                 if let error = error {
-                    print(error.localizedDescription)
+                    NewImagePicker.logger.error("Failed to load file representation: \(error.localizedDescription)")
                 }
                 guard let url = url else {
                     return
@@ -93,7 +100,7 @@ struct NewImagePicker: UIViewControllerRepresentable {
                         )
                     }
                 } catch {
-                    print(error.localizedDescription)
+                    NewImagePicker.logger.error("Failed to load data from file: \(error.localizedDescription)")
                 }
             }
         }
@@ -102,7 +109,7 @@ struct NewImagePicker: UIViewControllerRepresentable {
             if itemProvider.canLoadObject(ofClass: UIImage.self) {
                 itemProvider.loadObject(ofClass: UIImage.self) { data, error in
                     if let error = error {
-                        print("Failed load photo: \(error.localizedDescription)")
+                        NewImagePicker.logger.error("Failed to load object: \(error.localizedDescription)")
                     }
                     if let image = data as? UIImage, let imageData = image.upOrientationImage()?.pngData() {
                         DispatchQueue.main.async {

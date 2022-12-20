@@ -15,10 +15,6 @@ struct SettingsView: View {
     
     @FetchRequest(sortDescriptors: [], animation: .default) private var users: FetchedResults<User>
     
-    @State private var showSelectPhotosSheet = false
-    @State private var showTakeImageSheet = false
-    @State private var showFilePickerModal = false
-    
     var body: some View {
         NavigationView {
             if let user = users.first {
@@ -27,8 +23,10 @@ struct SettingsView: View {
                         EditPersonalDataView(user: user)
                     } else {
                         SettingsMainFormView(presentationMode: presentationMode, user: user)
-                            .refreshableIos15Only { await settingsViewModel.updateProfile() }
-                            .onAppear(perform: settingsViewModel.updateProfile)
+                            .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
+                            .onAppear {
+                                settingsViewModel.updateProfile(presentFailedAlert: false)
+                            }
                             .navigationTitle("Settings")
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
@@ -46,39 +44,14 @@ struct SettingsView: View {
                     }
                 }
                 .animation(.default, value: settingsViewModel.showEditProfileData)
+                
+                EmptyView()
+                    .alert(item: $settingsViewModel.alert) { $0.alert }
             } else {
                 Text("Failed to fetch user")
             }
         }
         .environmentObject(settingsViewModel)
-        .actionSheet(isPresented: $settingsViewModel.showSelectAvatarOptions) {
-            ActionSheet(title: Text("Choose a new profile photo"),
-                        buttons: [
-                            .default(Text("Take Photo")) {
-                                showTakeImageSheet = true
-                            },
-                            .default(Text("Choose Photo")) {
-                                showSelectPhotosSheet = true
-                            },
-                            .default(Text("Browse...")) {
-                                showFilePickerModal = true
-                            },
-                            .cancel()
-                        ])
-        }
-        .sheet(isPresented: $showSelectPhotosSheet) {
-            NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: settingsViewModel.updateAvatarFromImage)
-            .edgesIgnoringSafeArea(.all)
-        }
-        .fullScreenCover(isPresented: $showTakeImageSheet) {
-            ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .sheet(isPresented: $showFilePickerModal) {
-            FilePicker(types: [.image], allowMultiple: false, onPicked: settingsViewModel.updateAvatarFromFile)
-                .edgesIgnoringSafeArea(.all)
-        }
-        .onChange(of: settingsViewModel.selectedAvatarImage, perform: settingsViewModel.updateAvatarFromImage)
     }
 }
 

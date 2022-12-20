@@ -57,9 +57,9 @@ struct DoctorChatRow: View {
                     }
                     Spacer()
                     if contract.state == .warning || contract.state == .deadlined {
-                        badgeView(max(Int(contract.unread), Int(contract.unanswered)), color: .red)
+                        MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .red)
                     } else if (contract.unread != 0) || (contract.unanswered != 0) {
-                        badgeView(max(Int(contract.unread), Int(contract.unanswered)), color: .secondary)
+                        MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .secondary)
                     }
                 }
             }
@@ -110,16 +110,12 @@ struct DoctorChatRow: View {
 
 #if DEBUG
 struct DoctorChatRow_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
     static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
+        ContractPreviews.contractForPatientChatRowPreview
     }()
     
     static var contract2: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract2Archive(for: context)
+        ContractPreviews.contractForPatientChatRowPreview
     }()
     
     static var previews: some View {

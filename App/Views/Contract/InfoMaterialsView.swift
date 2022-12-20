@@ -54,15 +54,8 @@ struct InfoMaterialsView: View {
 
 #if DEBUG
 struct InfoMaterialsView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
     static var previews: some View {
-        InfoMaterialsView(contract: contract1)
+        InfoMaterialsView(contract: ContractPreviews.contractForPatientChatRowPreview)
     }
 }
 #endif

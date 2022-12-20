@@ -80,24 +80,27 @@ struct ChooseScenarioView: View {
             .onAppear {
                 categoryChoices = ClinicScenario.getScenariosCategories(clinic: clinic) + ["all"]
             }
-            .onChange(of: category, perform: updateCategoryFilter)
+            .onChange(of: category, perform: { newCategory in
+                if #available(iOS 15.0, *) {
+                    updateCategoryFilter(newCategory)
+                }
+            })
         }
     }
     
+    @available(iOS 15.0, *)
     func updateCategoryFilter(_ category: String) {
-        if #available(iOS 15.0, *) {
-            if category == "all" {
-                if searchText.isEmpty {
-                    scenarios.nsPredicate = NSPredicate(format: "clinic == %@", clinic)
-                } else {
-                    scenarios.nsPredicate = NSPredicate(format: "(name CONTAINS[cd] %@ OR scenarioDescription CONTAINS[cd] %@) AND clinic == %@", searchText, searchText, clinic)
-                }
+        if category == "all" {
+            if searchText.isEmpty {
+                scenarios.nsPredicate = NSPredicate(format: "clinic == %@", clinic)
             } else {
-                if searchText.isEmpty {
-                    scenarios.nsPredicate = NSPredicate(format: "clinic == %@ AND category == %@", clinic, category)
-                } else {
-                    scenarios.nsPredicate = NSPredicate(format: "(name CONTAINS[cd] %@ OR scenarioDescription CONTAINS[cd] %@) AND clinic == %@ AND category == %@", searchText, searchText, clinic, category)
-                }
+                scenarios.nsPredicate = NSPredicate(format: "(name CONTAINS[cd] %@ OR scenarioDescription CONTAINS[cd] %@) AND clinic == %@", searchText, searchText, clinic)
+            }
+        } else {
+            if searchText.isEmpty {
+                scenarios.nsPredicate = NSPredicate(format: "clinic == %@ AND category == %@", clinic, category)
+            } else {
+                scenarios.nsPredicate = NSPredicate(format: "(name CONTAINS[cd] %@ OR scenarioDescription CONTAINS[cd] %@) AND clinic == %@ AND category == %@", searchText, searchText, clinic, category)
             }
         }
     }
@@ -105,15 +108,8 @@ struct ChooseScenarioView: View {
 
 #if DEBUG
 struct ChooseScenarioView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        return Contract.createSampleContract1(for: context)
-    }()
-    
     static var previews: some View {
-        ChooseScenarioView(contract: contract1, clinic: contract1.clinic!)
+        ChooseScenarioView(contract: ContractPreviews.contractForPatientChatRowPreview, clinic: ContractPreviews.contractForPatientChatRowPreview.clinic!)
     }
 }
 #endif

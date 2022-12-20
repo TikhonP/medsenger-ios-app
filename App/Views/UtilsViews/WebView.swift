@@ -8,6 +8,7 @@
 
 import SwiftUI
 import WebKit
+import os.log
 
 @available(iOS 13.0, *)
 public struct LoadingView<Content>: View where Content: View {
@@ -74,7 +75,6 @@ struct WebViewWrapper : UIViewRepresentable {
         config.userContentController.add(context.coordinator, name: "iosListener")
         let view = WKWebView(frame: .zero, configuration: config)
         view.navigationDelegate = context.coordinator
-        
         switch webViewData {
         case .url(let url):
             view.load(URLRequest(url: url))
@@ -118,6 +118,11 @@ struct WebViewWrapper : UIViewRepresentable {
     }
     
     final public class Coordinator: NSObject {
+        private static let logger = Logger(
+            subsystem: Bundle.main.bundleIdentifier!,
+            category: String(describing: Coordinator.self)
+        )
+        
         @ObservedObject var webViewStateModel: WebViewStateModel
         let title: String?
         let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
@@ -163,7 +168,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                 var allowed = false
                 allowedHosts.forEach { (allowedHost) in
                     if host.contains(allowedHost) {
-                        print("WebView -> Found allowed host: \(allowedHost)")
+                        WebViewWrapper.Coordinator.logger.info("WebView -> Found allowed host: \(allowedHost)")
                         allowed = true
                     }
                 }
@@ -172,14 +177,14 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                     decisionHandler(.allow)
                     action?(.decidePolicy(webView, navigationAction, .allow))
                 } else {
-                    print("WebView -> Did not find allowed hosts for: \(host)")
+                    WebViewWrapper.Coordinator.logger.error("WebView -> Did not find allowed hosts for: \(host)")
                     decisionHandler(.cancel)
                     action?(.decidePolicy(webView, navigationAction, .cancel))
                 }
             }
             
         } else {
-            print("WebView -> No allowed host are set")
+            WebViewWrapper.Coordinator.logger.notice("WebView -> No allowed host are set")
             decisionHandler(.allow)
             action?(.decidePolicy(webView, navigationAction, .allow))
         }
@@ -197,7 +202,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                 var forbidden = false
                 forbiddenHosts.forEach { (forbiddenHost) in
                     if host.contains(forbiddenHost) {
-                        print("WebView -> Found forbidden host: \(forbiddenHost)")
+                        WebViewWrapper.Coordinator.logger.error("WebView -> Found forbidden host: \(forbiddenHost)")
                         forbidden = true
                     }
                 }
@@ -206,7 +211,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
                     decisionHandler(.cancel)
                     action?(.decidePolicy(webView, navigationAction, .cancel))
                 } else {
-                    print("WebView -> Did not find forbidden hosts for: \(host)")
+                    WebViewWrapper.Coordinator.logger.info("WebView -> Did not find forbidden hosts for: \(host)")
                     handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
                 }
                 
@@ -216,7 +221,7 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
             }
             
         } else {
-            print("WebView -> No forbidden host are set")
+            WebViewWrapper.Coordinator.logger.notice("WebView -> No forbidden host are set")
             handleAllowedHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
         }
     }

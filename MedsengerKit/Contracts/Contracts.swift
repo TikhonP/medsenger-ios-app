@@ -24,7 +24,9 @@ class Contracts {
     private var consiliumContractsRequest: APIRequest<ConsiliumContractsResource>?
     private var getImageRequests = [FileRequest]()
     
-    public func fetchContracts(completion: (() -> Void)? = nil) {
+    /// Fetch user contracts
+    /// - Parameter completion: Request completion
+    public func fetchContracts(completion: @escaping APIRequestCompletion) {
         switch UserDefaults.userRole {
         case .patient:
             let contractsRequestAsPatientResource = ContractsRequestAsPatientResource()
@@ -34,12 +36,13 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: false)
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts request as patient")
+                    completion(false)
                 }
             }
         case .doctor:
@@ -50,20 +53,24 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: false)
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts request as doctor")
+                    completion(false)
                 }
             }
         case .unknown:
             Contracts.logger.error("Failed to fetch contracts: User role unknown")
+            completion(false)
         }
     }
     
-    public func fetchArchiveContracts(completion: (() -> Void)? = nil) {
+    /// Fetch archive contracts for user
+    /// - Parameter completion: Request completion
+    public func fetchArchiveContracts(completion: @escaping APIRequestCompletion) {
         switch UserDefaults.userRole {
         case .patient:
             let contractsArchiveRequestAsPatientResource = ContractsArchiveRequestAsPatientResource()
@@ -73,12 +80,13 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: true)
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts archive request as patient")
+                    completion(false)
                 }
             }
         case .doctor:
@@ -89,19 +97,22 @@ class Contracts {
                 case .success(let data):
                     if let data = data {
                         Contract.saveFromJson(data, archive: true)
-                        if let completion = completion {
-                            completion()
-                        }
+                        completion(true)
+                    } else {
+                        completion(false)
                     }
                 case .failure(let error):
                     processRequestError(error, "get contracts archive request as doctor")
+                    completion(false)
                 }
             }
         case .unknown:
             Contracts.logger.error("Failed to fetch archive contracts: User role unknown")
+            completion(false)
         }
     }
     
+    /// Fetch helper contracts
     public func fetchConsiliumContracts() {
         let consiliumContractsResource = ConsiliumContractsResource()
         consiliumContractsRequest = APIRequest(consiliumContractsResource)
@@ -117,6 +128,8 @@ class Contracts {
         }
     }
     
+    /// Fetch avatar for contract
+    /// - Parameter contractId: Contract Id
     public func fetchContractAvatar(_ contractId: Int) {
         if let contract = Contract.get(id: contractId), contract.isConsilium {
             let getDoctorAvatarRequest = FileRequest(path: "/patients/\(contractId)/photo")
@@ -159,6 +172,8 @@ class Contracts {
         }
     }
     
+    /// Fetch logo image for clinic
+    /// - Parameter contractId: Contract Id
     public func fetchClinicLogo(_ contractId: Int) {
         guard let contract = Contract.get(id: contractId), let clinic = contract.clinic else {
             return

@@ -9,39 +9,6 @@
 import SwiftUI
 import QuickLook
 
-extension ScrollView {
-    
-    public func fixFlickering() -> some View {
-        
-        return self.fixFlickering { (scrollView) in
-            
-            return scrollView
-        }
-    }
-    
-    public func fixFlickering<T: View>(@ViewBuilder configurator: @escaping (ScrollView<AnyView>) -> T) -> some View {
-        
-        GeometryReader { geometryWithSafeArea in
-            GeometryReader { geometry in
-                configurator(
-                    ScrollView<AnyView>(self.axes, showsIndicators: self.showsIndicators) {
-                        AnyView(
-                            VStack {
-                                self.content
-                            }
-                                .padding(.top, geometryWithSafeArea.safeAreaInsets.top)
-                                .padding(.bottom, geometryWithSafeArea.safeAreaInsets.bottom)
-                                .padding(.leading, geometryWithSafeArea.safeAreaInsets.leading)
-                                .padding(.trailing, geometryWithSafeArea.safeAreaInsets.trailing)
-                        )
-                    }
-                )
-            }
-            .edgesIgnoringSafeArea(.all)
-        }
-    }
-}
-
 fileprivate struct ChildSizeReader<Content: View>: View {
     @Binding var size: CGSize
     
@@ -96,14 +63,14 @@ struct MessagesView: View {
     @State private var wholeSize: CGSize = .zero
     @State private var scrollViewSize: CGSize = .zero
     
+    @State private var keyboardDidShowNotificationObserver: NSObjectProtocol?
+    @State private var keyboardDidHideNotificationObserver: NSObjectProtocol?
+    
     private let spaceName = "scroll"
     private let bottomScrollConstant: Double = 50
     
     private let scrollToBottomOffset: CGFloat = 60
     private let scrollViewBottomPadding: CGFloat = 45
-    
-    @State private var keyboardDidShowNotificationObserver: NSObjectProtocol?
-    @State private var keyboardDidHideNotificationObserver: NSObjectProtocol?
     
     init(contract: Contract, inputViewHeight: Binding<CGFloat>) {
         self.contract = contract
@@ -181,10 +148,11 @@ struct MessagesView: View {
                                 //                                    }
                                 //                                }
                                 
-                                LazyVStack {
+                                LazyVStack(spacing: 0) {
                                     ForEach(messages) { message in
                                         if message.showMessage {
                                             MessageView(viewWidth: reader.size.width, message: message)
+                                                .padding(.top, 10)
                                         }
                                     }
                                 }
@@ -288,17 +256,8 @@ struct MessagesView: View {
 
 #if DEBUG
 struct MessagesView_Previews: PreviewProvider {
-    static let persistence = PersistenceController.preview
-    
-    static var contract1: Contract = {
-        let context = persistence.container.viewContext
-        let contract = Contract.createSampleContract1(for: context)
-        PersistenceController.save(for: context)
-        return contract
-    }()
-    
     static var previews: some View {
-        MessagesView(contract: contract1, inputViewHeight: .constant(0))
+        MessagesView(contract: ContractPreviews.contractForPatientChatRowPreview, inputViewHeight: .constant(0))
     }
 }
 #endif
