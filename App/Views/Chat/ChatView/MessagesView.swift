@@ -116,19 +116,6 @@ struct MessagesView: View {
         }
     }
     
-    var messagesArray: Array<Message> {
-        Array(messages)
-    }
-    
-    func isSameDay(date1: Date, date2: Date) -> Bool {
-        let diff = Calendar.current.dateComponents([.day], from: date1, to: date2)
-        if diff.day == 0 {
-            return true
-        } else {
-            return false
-        }
-    }
-    
     var scrollView: some View {
         GeometryReader { reader in
             ChildSizeReader(size: $wholeSize) {
@@ -137,20 +124,13 @@ struct MessagesView: View {
                         ChildSizeReader(size: $scrollViewSize) {
                             VStack(spacing: 0) {
                                 
-                                //                                LazyVStack {
-                                //                                    ForEach(Array(zip(messagesArray.indices, messagesArray)), id: \.0) { index, message in
-                                //                                        if message.showMessage {
-                                //                                            if let previousMessageSent = messagesArray[safe: index - 1]?.sent, let messageSent = message.sent, !isSameDay(date1: previousMessageSent, date2: messageSent) {
-                                //                                                Text(messageSent, formatter: DateFormatter.ddMMyyyy)
-                                //                                            }
-                                //                                            MessageView(viewWidth: reader.size.width, message: message)
-                                //                                        }
-                                //                                    }
-                                //                                }
-                                
                                 LazyVStack(spacing: 0) {
                                     ForEach(messages) { message in
                                         if message.showMessage {
+                                            if let previousMessageSent = message.previousMessage?.sent, let messageSent = message.sent, !previousMessageSent.isInSameDay(as: messageSent) {
+                                                MessageTimeDividerView(date: messageSent)
+                                                    .padding(.top, 10)
+                                            }
                                             MessageView(viewWidth: reader.size.width, message: message)
                                                 .padding(.top, 10)
                                         }

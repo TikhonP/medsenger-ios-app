@@ -11,17 +11,17 @@ import SwiftUI
 struct ChooseRoleView: View {
     var body: some View {
         VStack {
-            Text("Your account has access to both the doctor and the patient role.")
+            Text("ChooseRoleView.chooseRoleLabel", comment: "Your account has access to both the doctor and the patient role.")
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .padding(.horizontal, 30)
             
-            Text("How do you want to sign in?")
+            Text("ChooseRoleView.chooseRoleQuestion", comment: "How do you want to sign in?")
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .padding(.horizontal, 30)
 
-            Button("Sign In as Patient") { Account.shared.changeRole(.patient) }
+            Button("ChooseRoleView.SignInAsPatient.Button") { Account.shared.changeRole(.patient) }
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)
@@ -29,7 +29,7 @@ struct ChooseRoleView: View {
                 .background(Color.accentColor)
                 .clipShape(Capsule())
             
-            Button("Sign In as Doctor") { Account.shared.changeRole(.doctor) }
+            Button("ChooseRoleView.SignInAsDoctor.Button") { Account.shared.changeRole(.doctor) }
                 .font(.headline)
                 .foregroundColor(Color(UIColor.systemBackground))
                 .padding(.vertical)

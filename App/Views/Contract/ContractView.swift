@@ -78,13 +78,13 @@ struct ContractView: View {
     }
     
     var tasksForTheDay: some View {
-        Section(header: Text("Tasks for the day")) {
+        Section(header: Text("ContractView.tasksForDay.Header", comment: "Tasks for the day")) {
             ForEach(contract.agentTasksArray) { agentTask in
                 HStack {
                     Text(agentTask.wrappedText)
                     Spacer()
                     if agentTask.isDone {
-                        Text("done")
+                        Text("ContractView.taskForDayDone", comment: "done")
                             .foregroundColor(.secondary)
                     } else {
                         Text("\(agentTask.number) / \(agentTask.targetNumber)")
@@ -96,7 +96,7 @@ struct ContractView: View {
     }
     
     var consultants: some View {
-        Section(header: Text("Consultants")) {
+        Section(header: Text("ContractView.Consultants.Header", comment: "Consultants")) {
             ForEach(contract.doctorHelpersArray) { doctorHelper in
                 VStack(alignment: .leading) {
                     Text(doctorHelper.wrappedName)
@@ -109,7 +109,7 @@ struct ContractView: View {
     }
     
     var guardianship: some View {
-        Section(header: Text("Relatives and care")) {
+        Section(header: Text("ContractView.RelativesAndCare.Header", comment: "Relatives and care")) {
             ForEach(contract.patientHelpersArray) { patientHelper in
                 VStack(alignment: .leading) {
                     Text(patientHelper.wrappedName)
@@ -122,18 +122,18 @@ struct ContractView: View {
     }
     
     var contractInfoSection: some View {
-        Section(header: Text("Contract Information")) {
+        Section(header: Text("ContractView.ContractInformation.Header", comment: "Contract Information")) {
             VStack(alignment: .leading) {
                 Text(contract.wrappedNumber)
-                Text("Contract number")
+                Text("ContractView.contractNumber", comment: "Contract number")
                     .foregroundColor(.secondary)
                     .font(.caption)
             }
             
             if let startDate = contract.startDate, let endDate = contract.endDate {
                 VStack(alignment: .leading) {
-                    Text("From \(startDate, style: .date) to \(endDate, style: .date)")
-                    Text("Validity")
+                    Text("ContractView.fromDate \(startDate, style: .date) ContractView.toDate \(endDate, style: .date)", comment: "from %@ to %@")
+                    Text("ContractView.Validity", comment: "Validity")
                         .foregroundColor(.secondary)
                         .font(.caption)
                 }
@@ -152,7 +152,7 @@ struct ContractView: View {
                 Button(action: {
                     contractViewModel.callClinic(phone: phoneNumber)
                 }, label: {
-                    Label("Call the Clinic", systemImage: "phone.fill")
+                    Label("ContractView.CallTheClinic.label", systemImage: "phone.fill")
                 })
             }
         }
@@ -164,19 +164,19 @@ struct ContractView: View {
                 NavigationLink(destination: {
                     InfoMaterialsView(contract: contract)
                 }, label: {
-                    Label("Info Materials", systemImage: "info.circle.fill")
+                    Label("ContractView.InfoMaterials.label", systemImage: "info.circle.fill")
                 })
             }
             NavigationLink(destination: {
                 AttachmentsView(contract: contract)
             }, label: {
-                Label("Attachments", systemImage: "doc.fill")
+                Label("ContractView.Attachments.label", systemImage: "doc.fill")
             })
         }
     }
     
     var notesSection: some View {
-        Section(header: Text("Notes")) {
+        Section(header: Text("ContractView.notes.Header", comment: "Notes")) {
             if !contract.wrappedComments.isEmpty {
                 Text(contract.wrappedComments)
             }
@@ -184,9 +184,9 @@ struct ContractView: View {
                 showEditNotes.toggle()
             }, label: {
                 if contract.wrappedComments.isEmpty {
-                    Label("Add Notes", systemImage: "note.text.badge.plus")
+                    Label("ContractView.AddNotes.label", systemImage: "note.text.badge.plus")
                 } else {
-                    Label("Edit Notes", systemImage: "note.text")
+                    Label("ContractView.EditNotes.label", systemImage: "note.text")
                 }
             })
         }
@@ -198,21 +198,21 @@ struct ContractView: View {
                 Button(action: {
                     contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
                 }, label: {
-                    Label("Video Сall", systemImage: "video.fill")
+                    Label("ContractView.VideoСall.label", systemImage: "video.fill")
                 })
             }
             if contract.canDecline {
                 Button(action: {
                     contractViewModel.declineMessages()
                 }, label: {
-                    Label("Dismiss Messages", systemImage: "checkmark.message.fill")
+                    Label("ContractView.DismissMessages.label", systemImage: "checkmark.message.fill")
                 })
             }
             if contract.isWaitingForConclusion {
                 Button(action: {
                     contractViewModel.concludeContract()
                 }, label: {
-                    Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
+                    Label("ContractView.EndCounseling.label", systemImage: "person.crop.circle.badge.checkmark")
                 })
             }
         }
@@ -220,7 +220,7 @@ struct ContractView: View {
     }
     
     var monitoringSection: some View {
-        Section(header: Text("Monitoring")) {
+        Section(header: Text("ContractView.Monitoring.Header", comment: "Monitoring")) {
             if let scenarioName = contract.scenarioName {
                 Text(scenarioName)
                 Button(action: {
@@ -229,14 +229,14 @@ struct ContractView: View {
                     if contractViewModel.showRemoveScenarioLoading {
                         ProgressView()
                     } else {
-                        Label("Disable Scenario", systemImage: "trash")
+                        Label("ContractView.DisableScenario.Label", systemImage: "trash")
                     }
                 })
                 .actionSheet(isPresented: $showDeleteScenarioConfirmation) {
-                    ActionSheet(title: Text("Are you sure you want to disable the monitoring scenario?"),
-                                message: Text("All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
+                    ActionSheet(title: Text("ContractView.disableMonitoringAlertTitle", comment: "Are you sure you want to disable the monitoring scenario?"),
+                                message: Text("ContractView.disableMonitoringAlertMessage", comment: "All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
                                 buttons: [
-                                    .destructive(Text("Disable Scenario"), action: contractViewModel.removeScenario),
+                                    .destructive(Text("ContractView.disableMonitoringAlertButton", comment: "Disable Scenario"), action: contractViewModel.removeScenario),
                                     .cancel()
                                 ])
                 }
@@ -245,21 +245,21 @@ struct ContractView: View {
                 Button(action: {
                     contractViewModel.showChooseScenario.toggle()
                 }, label: {
-                    Label("Assign a Monitoring Scenario", systemImage: "doc.badge.gearshape")
+                    Label("ContractView.AssignMonitoringScenario.Label", systemImage: "doc.badge.gearshape")
                 })
             }
             if !contract.archive, let clinic = contract.clinic, !clinic.devices.isEmpty {
                 Button(action: {
                     showDevices.toggle()
                 }, label: {
-                    Label("Devices Control", systemImage: "lightbulb")
+                    Label("ContractView.DevicesControl.Label", systemImage: "lightbulb")
                 })
             }
         }
     }
     
     var agentActions: some View {
-        Section(header: Text("Actions")) {
+        Section(header: Text("ContractView.actions.Header", comment: "Actions")) {
             ForEach(contract.agentActionsArray) { agentAction in
                 switch agentAction.type {
                 case .url:
@@ -269,7 +269,7 @@ struct ContractView: View {
                         })
                     }
                 case .action:
-                    Text("Agent action")
+                    Text("ContractView.AgentActionPlaceholder", comment: "Agent action")
                 default:
                     if let name = agentAction.name, let link = agentAction.modalLink {
                         NavigationLink(destination: {
@@ -306,7 +306,7 @@ struct ContractView: View {
                 .clipShape(Circle())
                 
                 
-                Text(contract.name ?? "Data reading error")
+                Text(contract.wrappedName)
                     .font(.title3)
                     .bold()
                     .multilineTextAlignment(.center)

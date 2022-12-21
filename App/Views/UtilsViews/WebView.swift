@@ -433,7 +433,7 @@ struct WebView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if showCloseButton {
-                    Button("Cancel") {
+                    Button("WebView.Cancel.Button") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -442,7 +442,7 @@ struct WebView: View {
                 Button(action: {
                     self.webViewStateModel.reload.toggle()
                 }, label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("WebView.Refresh.Label", systemImage: "arrow.clockwise")
                 })
             }
         }

@@ -18,7 +18,7 @@ struct MessageTitleView: View {
                 .font(.caption2)
                 .fontWeight(.bold)
             if message.isAgent {
-                Text("Automatic message")
+                Text("MessageTitleView.AutomaticMessage", comment: "Automatic message")
                     .font(.caption2)
                     .foregroundColor(.secondary)
             } else {

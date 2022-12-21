@@ -27,17 +27,17 @@ struct SettingsView: View {
                             .onAppear {
                                 settingsViewModel.updateProfile(presentFailedAlert: false)
                             }
-                            .navigationTitle("Settings")
+                            .navigationTitle("SettingsView.NavigationTitle")
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbar {
                                 ToolbarItem(placement: .confirmationAction) {
-                                    Button("Done") {
+                                    Button("SettingsView.Done.Button") {
                                         presentationMode.wrappedValue.dismiss()
                                     }
                                 }
                                 
                                 ToolbarItem(placement: .navigationBarLeading) {
-                                    Button("Edit", action: { settingsViewModel.showEditProfileData.toggle()
+                                    Button("SettingsView.Edit.Button", action: { settingsViewModel.showEditProfileData.toggle()
                                     })
                                 }
                             }
@@ -47,8 +47,6 @@ struct SettingsView: View {
                 
                 EmptyView()
                     .alert(item: $settingsViewModel.alert) { $0.alert }
-            } else {
-                Text("Failed to fetch user")
             }
         }
         .environmentObject(settingsViewModel)
@@ -58,13 +56,8 @@ struct SettingsView: View {
 #if DEBUG
 struct SettingsView_Previews: PreviewProvider {
     struct SettingsView_PreviewsContainer: View {
-        @State private var showSettingsModal: Bool = true
-        
         var body: some View {
-            Text("Chats")
-                .sheet(isPresented: $showSettingsModal, content: {
-                    SettingsView()
-                })
+            SettingsView()
         }
     }
     

@@ -16,7 +16,7 @@ struct ConsiliumChatRow: View {
         HStack {
             consiliumAvators
                 .frame(width: 70)
-                .accessibilityLabel("Doctor and patient photo")
+                .accessibilityLabel("ConsiliumChatRow.doctorAndPatientPhoto.accessibilityLabel")
             
             VStack(alignment: .leading) {
                 HStack {
@@ -30,12 +30,12 @@ struct ConsiliumChatRow: View {
                     }
                 }
                 
-                Text("Doctor: \(contract.wrappedDoctorName)")
-                Text("You: \(contract.wrappedRole)")
+                Text("ConsiliumChatRow.Doctor: \(contract.wrappedDoctorName)", comment: "Doctor: %@")
+                Text("ConsiliumChatRow.you \(contract.wrappedRole)", comment: "You: %@")
                     .padding(.bottom, 5)
 
                 if let scenarioName = contract.scenarioName {
-                    Text("Monitoring: \(scenarioName)")
+                    Text("ConsiliumChatRow.Monitoring: \(scenarioName)", comment: "Monitoring: %@")
                         .foregroundColor(.secondary)
                         .padding(.bottom, 5)
                 }
@@ -49,7 +49,7 @@ struct ConsiliumChatRow: View {
             
             if (contract.unread != 0) {
                 MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
-                    .accessibilityLabel("Unread: \(Int(contract.unread))")
+                    .accessibilityLabel("ConsiliumChatRow.unread.accessibilityLabel \(Int(contract.unread))")
             }
         }
         .animation(.default, value: contract.unread)

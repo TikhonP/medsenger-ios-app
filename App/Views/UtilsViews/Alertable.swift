@@ -18,12 +18,8 @@ struct AlertInfo: Identifiable {
         self.alert = alert
     }
     
-    init(title: LocalizedStringKey, message: LocalizedStringKey? = nil, dismissButton: Alert.Button? = nil) {
-        if let message = message {
-            self.alert = Alert(title: Text(title), message: Text(message), dismissButton: dismissButton)
-        } else {
-            self.alert = Alert(title: Text(title), dismissButton: dismissButton)
-        }
+    init(title: Text, message: Text? = nil, dismissButton: Alert.Button? = nil) {
+        self.alert = Alert(title: title, message: message, dismissButton: dismissButton)
     }
 }
 
@@ -82,8 +78,8 @@ extension Alertable {
     ///   - message: The message to display in the body of the alert.
     ///   - dismissButton: The button that dismisses the alert.
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
-    internal func presentAlert(title: LocalizedStringKey, message: LocalizedStringKey? = nil, dismissButton: Alert.Button? = nil, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        self.presentAlert(.init(title: title, message: message, dismissButton: dismissButton), feedbackType)
+    internal func presentAlert(title: Text, message: Text? = nil, dismissButton: Alert.Button? = nil, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
+        self.presentAlert(AlertInfo(title: title, message: message, dismissButton: dismissButton), feedbackType)
     }
     
     /// Throws a global alert.
@@ -91,7 +87,7 @@ extension Alertable {
     internal func presentGlobalAlert(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = .error) {
         let result = ContentViewModel.shared.getGlobalAlert()
         if let title = result.title {
-            self.presentAlert(.init(title: title, message: result.message), feedbackType)
+            self.presentAlert(AlertInfo(title: title, message: result.message), feedbackType)
         }
     }
 }

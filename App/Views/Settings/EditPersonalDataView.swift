@@ -33,7 +33,7 @@ struct EditPersonalDataView: View {
                     Spacer()
                     VStack {
                         SettingsProfileImageView(user: user)
-                        Button("New Photo") {
+                        Button("EditPersonalDataView.newPhotoButton") {
                             settingsViewModel.showSelectAvatarOptions.toggle()
                         }
                     }
@@ -43,34 +43,34 @@ struct EditPersonalDataView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
             
-            Section(footer: Text("Write your name and select a photo")) {
-                DatePicker("Birthday", selection: $birthday, displayedComponents: [.date])
-                TextField("Name", text: $name)
+            Section(footer: Text("EditPersonalDataView.nameAndBirthDayFooter", comment: "Write your name and select a photo")) {
+                DatePicker("EditPersonalDataView.BirthdayDatePicker", selection: $birthday, displayedComponents: [.date])
+                TextField("EditPersonalDataView.nameTextFieldPlaceholder", text: $name)
                     .disableAutocorrection(true)
                     .textContentType(.name)
             }
             
-            Section(footer: Text("Email is the main identifier for your account and an address for sending notifications")) {
-                TextField("Email", text: $email)
+            Section(footer: Text("EditPersonalDataView.emailFooter", comment: "Email is the main identifier for your account and an address for sending notifications")) {
+                TextField("EditPersonalDataView.emailTextFieldPlaceholder", text: $email)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
             }
             
-            Section(footer: Text("Phone is optional")) {
-                TextField("Phone", text: $phone)
+            Section(footer: Text("EditPersonalDataView.phoneFooter", comment: "Phone is optional")) {
+                TextField("EditPersonalDataView.phoneTextFieldPlaceholder", text: $phone)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .textContentType(.telephoneNumber)
                     .keyboardType(.phonePad)
             }
         }
-        .navigationTitle("Edit personal data")
+        .navigationTitle("EditPersonalDataView.navigationTitle")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel", action: {
+                Button("EditPersonalDataView.navigationCancelButton", action: {
                     settingsViewModel.showEditProfileData.toggle()
                 })
             }
@@ -79,7 +79,7 @@ struct EditPersonalDataView: View {
                 if editPersonalDataViewModel.showLoading {
                     ProgressView()
                 } else {
-                    Button("Save", action: {
+                    Button("EditPersonalDataView.navigationSaveButton", action: {
                         editPersonalDataViewModel.saveProfileData(name: name, email: email, phone: phone, birthday: birthday) {
                             settingsViewModel.showEditProfileData.toggle()
                         }

@@ -10,7 +10,6 @@ import SwiftUI
 
 struct LastDateView: View {
     let date: Date
-    let currentDate = Date()
     
     let dayOfWeekFormatter = {
         let dateFormatter = DateFormatter()
@@ -31,34 +30,14 @@ struct LastDateView: View {
     }()
     
     var body: some View {
-        if Calendar.current.isDateInToday(date) {
+        if date.isInToday {
             Text(date, style: .time)
-        } else if isSameWeek(date1: date, date2: currentDate) {
+        } else if date.isInThisWeek {
             Text(date, formatter: dayOfWeekFormatter)
-        } else if isSameYear(date1: date, date2: currentDate) {
+        } else if date.isInThisYear {
             Text(date, formatter: ddMMFormatter)
         } else {
             Text(date, formatter: ddMMYYYYFormatter)
-        }
-    }
-    
-    func isSameWeek(date1: Date, date2: Date) -> Bool {
-        guard let diff = Calendar.current.dateComponents([.day], from: date1, to: date2).day else {
-            return false
-        }
-        if diff < 7 {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-    func isSameYear(date1: Date, date2: Date) -> Bool {
-        let diff = Calendar.current.dateComponents([.year], from: date1, to: date2)
-        if diff.day == 0 {
-            return true
-        } else {
-            return false
         }
     }
 }

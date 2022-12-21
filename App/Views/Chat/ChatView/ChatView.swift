@@ -74,7 +74,7 @@ struct ChatView: View {
             if contract.messagesArray.isEmpty {
                 VStack(alignment: .center) {
                     ProgressView()
-                    Text("The first time you open a chat, all messages are loaded, this may take some time.")
+                    Text("ChatView.loadingText", comment: "The first time you open a chat, all messages are loaded, this may take some time.")
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .padding()
@@ -98,15 +98,15 @@ struct ChatView: View {
                                         .foregroundColor(.accentColor)
                                 } else if userRole == .doctor {
                                     if contract.isOnline {
-                                        Text("online")
+                                        Text("ChatView.online", comment: "online")
                                             .foregroundColor(.accentColor)
                                     } else {
-                                        Text("offline")
+                                        Text("ChatView.offline", comment: "offline")
                                             .foregroundColor(.secondary)
                                     }
                                 }
                             } else {
-                                Text("no connection")
+                                Text("ChatView.noConnection", comment: "no connection")
                                     .foregroundColor(.pink)
                             }
                         }

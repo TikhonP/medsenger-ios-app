@@ -116,30 +116,30 @@ struct ComplianceView: View {
     
     var body: some View {
         if complianceViewModel.tasksTotalToday != 0 || complianceViewModel.tasksTotalThisWeek != 0 {
-            Section(header: Text("Compliance")) {
+            Section(header: Text("ComplianceView.complianceHeader", comment: "Compliance")) {
                 VStack(alignment: .leading) {
                     if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday == 0) {
-                        Text("\(complianceViewModel.emojiPrefix) Amazing, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.Amazing \(user.firstName)!", comment: "%@ Amazing, %@!")
                     } else if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday != 0) {
-                        Text("\(complianceViewModel.emojiPrefix) Go on, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.GoOn \(user.firstName)!", comment: "%@ Go on, %@!")
                     } else if complianceViewModel.level ?? 100 <= 2 {
-                        Text("\(complianceViewModel.emojiPrefix) Subpress, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.Subpress \(user.firstName)!", comment: "%@ Subpress, %@!")
                     } else if complianceViewModel.level ?? 100 <= 4 {
-                        Text("\(complianceViewModel.emojiPrefix) Good job, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.GoodJob, \(user.firstName)!", comment: "%@ Good job, %@!")
                     } else if complianceViewModel.level ?? 100 <= 6 {
-                        Text("\(complianceViewModel.emojiPrefix) Wow, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.Wow, \(user.firstName)!", comment: "%@ Wow, %@!")
                     } else {
-                        Text("\(complianceViewModel.emojiPrefix) Great, \(user.firstName)!")
+                        Text("\(complianceViewModel.emojiPrefix) ComplianceView.Great, \(user.firstName)!", comment: "%@ Great, %@!")
                     }
                     
                     if (complianceViewModel.tasksCompletedToday == 0), (complianceViewModel.tasksToDoToday == 0) {
-                        Text("You don't have any appointments from the doctor today.")
+                        Text("ComplianceView.youDontHaveAnyAppointmentsToday", comment: "You don't have any appointments from the doctor today.")
                     } else if (complianceViewModel.tasksCompletedToday == 0), (complianceViewModel.tasksToDoToday != 0) {
-                        Text("Tasks for today: \(complianceViewModel.tasksToDoToday)")
+                        Text("ComplianceView.tasksForToday \(complianceViewModel.tasksToDoToday)", comment: "Tasks for today: %lld")
                     } else if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday != 0) {
-                        Text("Сегодня Вы выполнили \(complianceViewModel.tasksCompletedToday)/\(complianceViewModel.tasksTotalToday) заданий")
+                        Text("ComplianceView.todayYouDidTasks \(complianceViewModel.tasksCompletedToday)/\(complianceViewModel.tasksTotalToday)", comment: "Сегодня Вы выполнили %lld/%lld заданий")
                     } else if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday == 0) {
-                        Text("All assignments for today completed!")
+                        Text("ComplianceView.allAssignmentsToday", comment: "All assignments for today completed!")
                     }
                     
                     ProgressView(value: Float(complianceViewModel.progress) / 100)

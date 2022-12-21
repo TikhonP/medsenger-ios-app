@@ -117,7 +117,7 @@ struct AttachmentsView: View {
             case .images:
                 ZStack {
                     if images.isEmpty {
-                        Text("There is no images")
+                        Text("AttachmentsView.noImages", comment: "There is no images")
                     } else {
                         List(images) { image in
                             Button {
@@ -146,7 +146,7 @@ struct AttachmentsView: View {
                                     if let message = image.message {
                                         Spacer()
                                         if message.isMessageSent {
-                                            Text("Вы")
+                                            Text("AttachmentsView.You", comment: "You")
                                                 .foregroundColor(.secondary)
                                         } else {
                                             Text(message.wrappedAuthor)
@@ -162,7 +162,7 @@ struct AttachmentsView: View {
             case.files:
                 ZStack {
                     if attachments.isEmpty {
-                        Text("There is no attachments")
+                        Text("AttachmentsView.noAttachments", comment: "There is no attachments")
                     } else {
                         List(attachments) { attachment in
                             if let message = attachment.message, !message.isVoiceMessage {
@@ -192,7 +192,7 @@ struct AttachmentsView: View {
                                         if let message = attachment.message {
                                             Spacer()
                                             if message.isMessageSent {
-                                                Text("Вы")
+                                                Text("AttachmentsView.You", comment: "You")
                                                     .foregroundColor(.secondary)
                                             } else {
                                                 Text(message.wrappedAuthor)
@@ -208,12 +208,11 @@ struct AttachmentsView: View {
                 .transition(.move(edge: .trailing))
             }
         }
-        .navigationTitle("Media")
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Picker("Attachments Type", selection: $attachmentsType) {
-                    Text("Images").tag(AttachmentsType.images)
-                    Text("Files").tag(AttachmentsType.files)
+                Picker("AttachmentsView.AttachmentsType.Picker", selection: $attachmentsType) {
+                    Text("AttachmentsView.images", comment: "Images").tag(AttachmentsType.images)
+                    Text("AttachmentsView.files", comment: "Files").tag(AttachmentsType.files)
                 }
                 .pickerStyle(SegmentedPickerStyle())
             }

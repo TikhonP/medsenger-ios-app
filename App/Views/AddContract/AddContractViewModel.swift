@@ -53,14 +53,14 @@ final class AddContractViewModel: ObservableObject, Alertable {
     func findPatient() {
         guard !patientEmail.isEmpty else {
             presentAlert(
-                title: "Invalid patient email!",
-                message: "Please provide patient email to continue.", .warning)
+                title: Text("AddContractViewModel.emailIsEmptyAlertTitle", comment: "Email is empty!"),
+                message: Text("AddContractViewModel.emailIsEmptyMessage", comment: "Please fill the email field."), .warning)
             return
         }
         guard patientEmail.isEmail() else {
             presentAlert(
-                title: "Invalid patient email!",
-                message: "Please check patient email to continue.", .warning)
+                title: Text("AddContractViewModel.invalidEmailAlertTitle", comment: "Invalid patient email!"),
+                message: Text("AddContractViewModel.invalidEmailAlertMessage", comment: "Please check patient email to continue."), .warning)
             return
         }
         state = .fetchingUserFromMedsenger
@@ -75,8 +75,8 @@ final class AddContractViewModel: ObservableObject, Alertable {
             DispatchQueue.main.async {
                 if contractExists {
                     self?.presentAlert(
-                        title: "Contract already exists",
-                        message: "Please check email. Contract with provided email already exists.", .warning)
+                        title: Text("AddContractViewModel.contractAlreadyExistsAlertTitle", comment: "Contract already exists"),
+                        message: Text("AddContractViewModel.contractAlreadyExistsAlertMessage", comment: "Please check email. Contract with provided email already exists."), .warning)
                     self?.state = .inputClinicAndEmail
                 } else if let data = data {
                     self?.userExists = data.found
@@ -102,14 +102,14 @@ final class AddContractViewModel: ObservableObject, Alertable {
     func addContract(completion: @escaping () -> Void) {
         guard !patientName.isEmpty else {
             presentAlert(
-                title: "Patient name cannot be empty!",
-                message: "Please provide a name to continue.", .warning)
+                title: Text("AddContractViewModel.nameIsEmptyAlertTitle", comment: "Patient name cannot be empty!"),
+                message: Text("AddContractViewModel.nameIsEmptyAlertMessage", comment: "Please provide a name to continue."), .warning)
             return
         }
         guard contractEndDate > Date() else {
             presentAlert(
-                title: "Contract end date are older than now!",
-                message: "Please check contract end date and correct it.", .warning)
+                title: Text("AddContractViewModel.contractAndDateAreOlderThanNowAlertTitle", comment: "Contract end date are older than now!"),
+                message: Text("AddContractViewModel.contractAndDateAreOlderThanNowAlertMessage", comment: "Please check contract end date and correct it."), .warning)
             return
         }
         guard let userExists = userExists else {

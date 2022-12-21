@@ -16,17 +16,13 @@ struct PatientChatRow: View {
         HStack {
             avatarImage
                 .frame(height: 70)
-                .accessibilityLabel("Doctor photo")
+                .accessibilityLabel("PatientChatRow.DoctorPhoto.accessibilityLabel")
             
             VStack(alignment: .leading) {
                 HStack {
-                    if contract.isConsilium {
-                        Text("Consilium")
-                    } else {
-                        Text(contract.wrappedName)
-                            .font(.headline)
-                            .accessibilityAddTraits(.isHeader)
-                    }
+                    Text(contract.wrappedName)
+                        .font(.headline)
+                        .accessibilityAddTraits(.isHeader)
                     Spacer()
                     if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
                         LastDateView(date: lastFetchedMessageSent)
@@ -40,7 +36,7 @@ struct PatientChatRow: View {
                     .padding(.bottom, 5)
                 
                 if let scenarioName = contract.scenarioName {
-                    Text("Monitoring: \(scenarioName)")
+                    Text("PatientChatRow.Monitoring \(scenarioName)", comment: "Monitoring: %@")
                         .foregroundColor(.secondary)
                         .padding(.bottom, 5)
                 }
@@ -51,14 +47,14 @@ struct PatientChatRow: View {
                 
                 clinicLogo
                     .frame(height: 80)
-                    .accessibilityLabel("Clinic logo")
+                    .accessibilityLabel("PatientChatRow.ClinicLogo.accessibilityLabel")
             }
             
             Spacer()
             
             if (contract.unread != 0) {
                 MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
-                    .accessibilityLabel("Unread: \(Int(contract.unread))")
+                    .accessibilityLabel("PatientChatRow.Unread.accessibilityLabel \(Int(contract.unread))")
             }
         }
         .animation(.default, value: contract.unread)

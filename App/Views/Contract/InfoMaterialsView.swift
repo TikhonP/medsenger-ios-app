@@ -38,7 +38,7 @@ struct InfoMaterialsView: View {
     var body: some View {
         ZStack {
             if infoMaterials.isEmpty {
-                Text("There is no info materials")
+                Text("InfoMaterialsView.noInfoMaterials", comment: "There is no info materials")
             } else {
                 List(infoMaterials) { infoMaterial in
                     if let name = infoMaterial.name, let link = infoMaterial.link {
@@ -47,7 +47,7 @@ struct InfoMaterialsView: View {
                 }
             }
         }
-        .navigationTitle("Info Materials")
+        .navigationTitle("InfoMaterialsView.navigationTitle")
         .searchableIos16Only(text: query)
     }
 }

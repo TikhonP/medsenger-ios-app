@@ -19,7 +19,7 @@ struct RecordingVoiceMessageView: View {
             Text(timeLabel)
                 .font(.caption)
             Spacer()
-            Button("Cancel") {
+            Button("RecordingVoiceMessageView.Cancel.Button") {
                 messageInputViewModel.finishRecording(success: false)
             }
             Spacer()

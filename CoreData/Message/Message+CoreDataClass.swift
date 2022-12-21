@@ -41,9 +41,24 @@ public class Message: NSManagedObject, CoreDataIdGetable {
     
     public static func markActionMessageAsUsed(id: Int) {
         PersistenceController.shared.container.performBackgroundTask { context in
-            let message = get(id: id, for: context)
-            message?.actionUsed = true
+            guard let message = get(id: id, for: context), message.actionOnetime else {
+                return
+            }
+            message.actionUsed = true
             PersistenceController.save(for: context, detailsForLogging: "markActionMessageAsUsed")
+        }
+    }
+    
+    internal static func markNextAndPreviousMessages(for contract: Contract, for context: NSManagedObjectContext) {
+        let fetchRequest = Message.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: true)]
+        guard let results = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "get messages for markNextAndPreviousMessages") else {
+            return
+        }
+        let resultsArray = Array(results)
+        for (index, message) in resultsArray.enumerated() {
+            message.previousMessage = resultsArray[safe: index - 1]
         }
     }
 }

@@ -7,13 +7,14 @@
 //
 
 import Foundation
+import SwiftUI
 
-final class ScenarioViewModel: ObservableObject {
+final class ScenarioViewModel: ObservableObject, Alertable {
     @Published var paramsAsNodes = [ClinicScenarioParamNode]()
     @Published var showSaveLoading = false
     
     @Published var invalidFieldName: String = ""
-    @Published var showInvalidFieldsAlert = false
+    @Published var alert: AlertInfo?
     
     private let scenarioId: Int
     private let contractId: Int
@@ -38,7 +39,7 @@ final class ScenarioViewModel: ObservableObject {
     
     func save(completion: @escaping () -> Void) {
         guard validateFields() else {
-            showInvalidFieldsAlert = true
+            presentAlert(title: Text("ScenarioViewModel.invalidFieldAlertTitle", comment: "Invalid field"), message: Text(invalidFieldName))
             return
         }
         showSaveLoading = true

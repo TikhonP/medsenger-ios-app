@@ -85,7 +85,7 @@ struct ContractDevicesView: View {
                     DeviceNodeView(deviceNode: device)
                 }
             }
-            .navigationTitle("Devices Control")
+            .navigationTitle("ContractDevicesView.navigationTitle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -96,13 +96,13 @@ struct ContractDevicesView: View {
                             if contractDevicesViewModel.showLoading {
                                 ProgressView()
                             } else {
-                                Text("Save")
+                                Text("ContractDevicesView.Save.Button")
                             }
                         })
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("ContractDevicesView.Cancel.Button") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

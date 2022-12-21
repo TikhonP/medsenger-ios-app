@@ -17,9 +17,9 @@ extension View {
                     VStack {
                         HStack {
                             Image(systemName: "wifi.exclamationmark")
-                            Text("Internet connection not available")
+                            Text("internetOfflineWarningInBottomBar.title", comment: "Internet connection not available")
                         }
-                        Text("Turn off Airplane Mode or connect to Wi-Fi.")
+                        Text("internetOfflineWarningInBottomBar.message", comment: "Turn off Airplane Mode or connect to Wi-Fi.")
                             .foregroundColor(.secondary)
                     }
                     .font(.caption)

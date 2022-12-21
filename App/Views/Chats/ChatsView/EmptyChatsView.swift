@@ -16,10 +16,10 @@ struct EmptyChatsView: View {
                 .scaledToFit()
                 .frame(width: 70)
                 .foregroundColor(.secondary)
-            Text("No contracts")
+            Text("EmptyChatsView.noContracts", comment: "No contracts")
                 .font(.title)
                 .bold()
-            Text("Your contracts will appear here.")
+            Text("EmptyChatsView.yourContractsAppearHere", comment: "Your contracts will appear here.")
                 .font(.body)
                 .foregroundColor(.secondary)
         }

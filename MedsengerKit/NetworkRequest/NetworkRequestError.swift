@@ -56,13 +56,13 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
         switch urlError.code {
         case .notConnectedToInternet:
             ContentViewModel.shared.createGlobalAlert(
-                title: "The Internet connection appears to be offline",
-                message: "Turn off Airplane Mode or connect to Wi-Fi.")
+                title: Text("processRequestError.internaetConnectionOfflineAlertTitle", comment: "The Internet connection appears to be offline"),
+                message: Text("processRequestError.internaetConnectionOfflineAlertMessage", comment: "Turn off Airplane Mode or connect to Wi-Fi."))
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         case .timedOut:
             ContentViewModel.shared.createGlobalAlert(
-                title: "The request timed out",
-                message: "Please check your connection and try again.")
+                title: Text("processRequestError.timeOutAlertTitle", comment: "The request timed out"),
+                message: Text("processRequestError.timeOutAlertMessage", comment: "Please check your connection and try again."))
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
         default:
             Logger.urlRequest.error("Request `\(requestName)` error: \(urlError.localizedDescription)")
@@ -73,13 +73,13 @@ func processRequestError(_ requestError: NetworkRequestError, _ requestName: Str
             Logger.urlRequest.info("Incorrect token in request, sign out.")
         } else if errorData.errors.contains("Incorrect data") {
             ContentViewModel.shared.createGlobalAlert(
-                title: "Incorrect data provided",
-                message: "Please check your input or contact Medsenger support.")
+                title: Text("processRequestError.incorrectDataProvidedAlertTitle", comment: "Incorrect data provided"),
+                message: Text("processRequestError.IncorrectDataProvidedAlertMessage", comment: "Please check your input or contact Medsenger support."))
             Logger.urlRequest.info("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         } else {
             ContentViewModel.shared.createGlobalAlert(
-                title: "Oops! Server error",
-                message: LocalizedStringKey(errorData.errors.joined(separator: " ")))
+                title: Text("processRequestError.serverErrorAlertTitle", comment: "Oops! Server error"),
+                message: Text(errorData.errors.joined(separator: " ")))
             Logger.urlRequest.error("Request `\(requestName)` error: medsenger server status code: \(statusCode), message: \(errorData)")
         }
     case .emptyDataStatusCode(let statusCode):

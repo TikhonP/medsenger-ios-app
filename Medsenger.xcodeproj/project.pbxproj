@@ -114,6 +114,8 @@
 		43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */; };
 		43B9AB20294395BC0004EEFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB1E294395BB0004EEFD /* InfoPlist.strings */; };
 		43B9AB232943A7C10004EEFD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB252943A7C10004EEFD /* Localizable.strings */; };
+		43C510FA29530F6200C91CE5 /* MessageTimeDividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */; };
+		43C510FC2953137E00C91CE5 /* Date+isEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510FB2953137E00C91CE5 /* Date+isEqual.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
 		43D4CFC72951E46200A9C51B /* View+swipeActionsIos15Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */; };
 		43D4CFC92951EB0200A9C51B /* ConsiliumChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4CFC82951EB0200A9C51B /* ConsiliumChatRow.swift */; };
@@ -361,6 +363,8 @@
 		43B9AB1F294395BC0004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		43B9AB242943A7C10004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43B9AB262943A7C40004EEFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeDividerView.swift; sourceTree = "<group>"; };
+		43C510FB2953137E00C91CE5 /* Date+isEqual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+isEqual.swift"; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+swipeActionsIos15Only.swift"; sourceTree = "<group>"; };
 		43D4CFC82951EB0200A9C51B /* ConsiliumChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumChatRow.swift; sourceTree = "<group>"; };
@@ -702,6 +706,7 @@
 				430E7D9D29366D9D009C129D /* MessagesView.swift */,
 				43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */,
 				436AEA46294B55F1000919D8 /* UIScrollMessagesView.swift */,
+				43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */,
 			);
 			path = ChatView;
 			sourceTree = "<group>";
@@ -735,6 +740,7 @@
 				43A18A20292E61E500465281 /* Data+mimeType.swift */,
 				433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */,
 				435F9DA6293577540094F93C /* Logger.swift */,
+				43C510FB2953137E00C91CE5 /* Date+isEqual.swift */,
 			);
 			path = ObjectExtensions;
 			sourceTree = "<group>";
@@ -1325,6 +1331,7 @@
 			files = (
 				435D572B293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift in Sources */,
 				43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */,
+				43C510FC2953137E00C91CE5 /* Date+isEqual.swift in Sources */,
 				43EF44C12923D9A2005DF084 /* View+searchableIos16Only.swift in Sources */,
 				435C184E293B8044009483F6 /* WaveformAnalyzer.swift in Sources */,
 				435C185C293BFDF4009483F6 /* MessageImageView.swift in Sources */,
@@ -1452,6 +1459,7 @@
 				43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */,
 				43D4CFDA2952249500A9C51B /* CoreDataErasable.swift in Sources */,
 				43D505D5293F716500EE3756 /* Clinic+JsonDeserializer.swift in Sources */,
+				43C510FA29530F6200C91CE5 /* MessageTimeDividerView.swift in Sources */,
 				435C184C293B8044009483F6 /* WaveformImageDrawer.swift in Sources */,
 				43D505B9293F616B00EE3756 /* AgentAction+JsonDeserializer.swift in Sources */,
 				435C1847293B8044009483F6 /* WaveformImageTypes.swift in Sources */,
@@ -1720,7 +1728,6 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need this so that you can record and share voice messages and videos with sound.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -1758,7 +1765,6 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "We need access to your data from the health app so that the doctor can monitor vital signs";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need this so that you can record and share voice messages and videos with sound.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

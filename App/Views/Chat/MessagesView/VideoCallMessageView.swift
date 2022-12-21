@@ -14,7 +14,7 @@ struct VideoCallMessageView: View {
     
     var body: some View {
         VStack {
-            Label("Call from the Doctor", systemImage: "phone")
+            Label("VideoCallMessageView.CallFromDoctor.Label", systemImage: "phone")
             Text(message.wrappedText)
                 .frame(width: 230)
             if let date = message.sent {

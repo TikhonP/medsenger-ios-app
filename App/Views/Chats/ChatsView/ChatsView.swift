@@ -89,7 +89,7 @@ struct ChatsView: View {
                                             Button(action: {
                                                 chatsViewModel.callClinic(phone: phoneNumber)
                                             }, label: {
-                                                Label("Call the Clinic", systemImage: "phone.fill")
+                                                Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
                                             })
                                         }
                                     }
@@ -99,7 +99,7 @@ struct ChatsView: View {
                                                 Button(action: {
                                                     chatsViewModel.callClinic(phone: phoneNumber)
                                                 }, label: {
-                                                    Label("Call the Clinic", systemImage: "phone.fill")
+                                                    Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
                                                 })
                                             }
                                         }
@@ -112,19 +112,19 @@ struct ChatsView: View {
                                                 Button(action: {
                                                     chatsViewModel.declineMessages(contractId: Int(contract.id))
                                                 }, label: {
-                                                    Label("Dismiss Messages", systemImage: "checkmark.message.fill")
+                                                    Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
                                                 })
                                             }
                                             if contract.isWaitingForConclusion {
                                                 Button(action: {
                                                     chatsViewModel.concludeContract(contractId: Int(contract.id))
                                                 }, label: {
-                                                    Label("End Counseling", systemImage: "person.crop.circle.badge.checkmark")
+                                                    Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
                                                 })
                                             }
                                         }
                                 default:
-                                    Text("Unknown user role")
+                                    EmptyView()
                                 }
                             })
                         }
@@ -137,7 +137,7 @@ struct ChatsView: View {
         .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
         .searchableIos16Only(text: query)
         .listStyle(.inset)
-        .navigationTitle("Consultations")
+        .navigationTitle("ChatsView.navigationTitle")
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
             chatsViewModel.getContracts(presentFailedAlert: false)

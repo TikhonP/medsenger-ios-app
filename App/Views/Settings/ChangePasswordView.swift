@@ -23,12 +23,12 @@ struct ChangePasswordView: View {
     
     var body: some View {
         Form {
-            Section(footer: Text("Password must be more than 6 characters")) {
-                PasswordFieldView(password: $password1, placeholder: "New password")
-                PasswordFieldView(password: $password2, placeholder: "Repeat password")
+            Section(footer: Text("ChangePasswordView.passwordFields.Footer", comment: "Password must be more than 6 characters")) {
+                PasswordFieldView(password: $password1, placeholder: "ChangePasswordView.NewPassword.TextField")
+                PasswordFieldView(password: $password2, placeholder: "ChangePasswordView.RepeatPassword.TextField")
             }
         }
-        .navigationTitle("Change password")
+        .navigationTitle("ChangePasswordView.navigationTitle")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -40,7 +40,7 @@ struct ChangePasswordView: View {
                     if showLoading {
                         ProgressView()
                     } else {
-                       Text("Save")
+                       Text("ChangePasswordView.Save.Button")
                     }
                 }
             }

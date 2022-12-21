@@ -130,13 +130,13 @@ struct MessageView: View {
                         Button(action: {
                             messageInputViewModel.replyToMessage = message
                         }, label: {
-                            Label("Reply", systemImage: "arrowshape.turn.up.left")
+                            Label("MessageView.Reply.Button", systemImage: "arrowshape.turn.up.left")
                         })
                         if let text = message.text, !text.isEmpty {
                             Button(action: {
                                 UIPasteboard.general.string = text
                             }, label: {
-                                Label("Copy", systemImage: "doc.on.doc")
+                                Label("MessageView.Reply.Copy", systemImage: "doc.on.doc")
                             })
                         }
                     }
@@ -175,7 +175,7 @@ struct MessageView: View {
                             })
                     )
                     .onChange(of: isDragging, perform: { newValue in
-                        if newValue {
+                        if newValue, isDragging {
                             HapticFeedback.shared.preparePlay()
                         }
                     })

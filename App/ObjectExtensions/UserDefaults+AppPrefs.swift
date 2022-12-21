@@ -31,6 +31,7 @@ extension UserDefaults {
         static let fcmTokenKey = "fcmToken"
         static let isPushNotificationsOnKey = "isPushNotificationsOn"
         static let isHealthKitSyncActiveKey = "isHealthKitSyncActive"
+        static let showFullPreviewForImagesKey = "showFullPreviewForImages"
     }
     
     static var userRole: UserRole {
@@ -71,12 +72,22 @@ extension UserDefaults {
             UserDefaults.standard.set(newValue, forKey: Keys.isHealthKitSyncActiveKey)
         }
     }
+    
+    static var showFullPreviewForImages: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: Keys.showFullPreviewForImagesKey)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: Keys.showFullPreviewForImagesKey)
+        }
+    }
 
     static func registerDefaultValues() {
         UserDefaults.standard.register(defaults: [
             Keys.userRoleKey: UserRole.unknown.rawValue,
             Keys.isPushNotificationsOnKey: false,
-            Keys.isHealthKitSyncActiveKey: false
+            Keys.isHealthKitSyncActiveKey: false,
+            Keys.showFullPreviewForImagesKey: true
         ])
     }
 }

@@ -23,10 +23,10 @@ struct SignInView: View {
             if !networkConnectionMonitor.isConnected {
                 Image(systemName: "wifi.exclamationmark")
                     .imageScale(.large)
-                Text("Internet connection not available")
+                Text("SignInView.internetNotAvailableTitle", comment: "Internet connection not available")
                     .font(.body)
                     .fontWeight(.bold)
-                Text("Turn off Airplane Mode or connect to Wi-Fi.")
+                Text("SignInView.internetNotAvailableMessage", comment: "Turn off Airplane Mode or connect to Wi-Fi.")
                     .font(.body)
                     .foregroundColor(Color.gray)
                     .multilineTextAlignment(.center)
@@ -34,7 +34,7 @@ struct SignInView: View {
                     .padding(.trailing, 40)
                 Spacer()
             }
-            TextField("Email", text: $signInViewModel.login)
+            TextField("SignInView.Email.TextField", text: $signInViewModel.login)
                 .padding()
                 .textContentType(.username)
                 .keyboardType(.emailAddress)
@@ -45,7 +45,7 @@ struct SignInView: View {
                         .foregroundColor(.accentColor)
                 )
                 .padding(.horizontal)
-            PasswordFieldView(password: $signInViewModel.password, placeholder: "Password")
+            PasswordFieldView(password: $signInViewModel.password, placeholder: "TextField.Password.TextField")
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -59,7 +59,7 @@ struct SignInView: View {
                     if signInViewModel.showLoader {
                         ProgressView()
                     } else {
-                        Text("Sign In")
+                        Text("SignInView.signIn.Button", comment: "Sign In")
                     }
                 }
                 .font(.headline)

@@ -148,6 +148,10 @@ extension Message {
             if !contract.messagesArray.contains(message) {
                 contract.addToMessages(message)
             }
+            
+            markNextAndPreviousMessages(for: contract, for: context)
+            
+            PersistenceController.save(for: context, detailsForLogging: "save message from json")
         }
     }
     
@@ -189,7 +193,7 @@ extension Message {
                     maxMessageId = messageData.id
                 }
             }
-            
+            markNextAndPreviousMessages(for: contract, for: context)
             PersistenceController.save(for: context, detailsForLogging: "Message from JsonDeserializer")
             if let completion = completion {
                 completion()

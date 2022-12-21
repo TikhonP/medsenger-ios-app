@@ -26,15 +26,15 @@ struct MainInputView: View {
                     .foregroundColor(.secondary.opacity(0.7))
             })
             .actionSheet(isPresented: $showSelectImageOptions) {
-                ActionSheet(title: Text("Add attachment"),
+                ActionSheet(title: Text("MainInputView.addAttachment.ActionSheetTitle", comment: "Add attachment"),
                             buttons: [
-                                .default(Text("Take Photo")) {
+                                .default(Text("MainInputView.TakePhoto.Button", comment: "Take Photo")) {
                                     showTakeImageSheet = true
                                 },
-                                .default(Text("Choose Photo")) {
+                                .default(Text("MainInputView.ChoosePhoto.Button", comment: "Choose Photo")) {
                                     showSelectPhotosSheet = true
                                 },
-                                .default(Text("Browse...")) {
+                                .default(Text("MainInputView.Browse.Button", comment: "Browse...")) {
                                     showFilePickerModal = true
                                 },
                                 .cancel()
@@ -54,7 +54,7 @@ struct MainInputView: View {
             }
             .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
             
-            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("Message", comment: "Message input placeholder"))
+            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("MainInputView.Message.TextView", comment: "Message input placeholder"))
                 .padding(.horizontal, 10)
                 .background(Color(UIColor.systemBackground))
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))

@@ -23,21 +23,21 @@ final class ContentViewModel: ObservableObject {
     @Published private(set) var openChatContractId: Int?
     @Published private(set) var openedChatContractId: Int?
     
-    private var globalAlertTitle: LocalizedStringKey?
-    private var globalAlertMessage: LocalizedStringKey?
+    private var globalAlertTitle: Text?
+    private var globalAlertMessage: Text?
     
     /// Store alert data for presenting it anywhere
     /// - Parameters:
     ///   - title: Alert title.
     ///   - message: Alert description.
-    public func createGlobalAlert(title: LocalizedStringKey, message: LocalizedStringKey?) {
+    public func createGlobalAlert(title: Text, message: Text?) {
         globalAlertTitle = title
         globalAlertMessage = message
     }
     
     /// Get stored alert data
     /// - Returns: tuple with alert title and description
-    public func getGlobalAlert() -> (title: LocalizedStringKey?, message: LocalizedStringKey?) {
+    public func getGlobalAlert() -> (title: Text?, message: Text?) {
         let result = (globalAlertTitle, globalAlertMessage)
         globalAlertTitle = nil
         globalAlertMessage = nil

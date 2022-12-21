@@ -32,14 +32,14 @@ struct WaitingCallView: View {
             if videoCallViewModel.answered {
                 switch videoCallViewModel.rtcState {
                 case .new:
-                    Text("Loading...")
+                    Text("WaitingCallView.Loading", comment: "Loading...")
                 case .checking:
-                    Text("Connecting...")
+                    Text("WaitingCallView.Connecting", comment: "Connecting...")
                 default:
-                    Text("Connecting...")
+                    Text("WaitingCallView.Connecting", comment: "Connecting...")
                 }
             } else {
-                Text("Calling...")
+                Text("WaitingCallView.Calling", comment: "Calling...")
             }
             Spacer()
             if videoCallViewModel.isCaller {

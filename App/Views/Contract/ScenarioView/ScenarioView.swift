@@ -40,16 +40,14 @@ struct ScenarioView: View {
                 if scenarioViewModel.showSaveLoading {
                     ProgressView()
                 } else {
-                    Text("Assign scenario")
+                    Text("ScenarioView.AssignScenario.Button", comment: "Assign scenario")
                 }
             })
         }
         .scrollDismissesKeyboardIos16Only()
         .navigationTitle(scenario.wrappedName)
         .navigationBarTitleDisplayMode(.inline)
-        .alert(isPresented: $scenarioViewModel.showInvalidFieldsAlert, content: {
-            Alert(title: Text("Invalid field"), message: Text(scenarioViewModel.invalidFieldName))
-        })
+        .alert(item: $scenarioViewModel.alert) { $0.alert }
     }
 }
 

@@ -40,11 +40,11 @@ struct DoctorChatRow: View {
                                 .font(.caption)
                         }
                         if let endDate = contract.endDate {
-                            Text("Contract \(contract.wrappedNumber). End: \(endDate, formatter: DateFormatter.ddMMyyyy)")
+                            Text("DoctorChatRow.Contract \(contract.wrappedNumber). End: \(endDate, formatter: DateFormatter.ddMMyyyy)", comment: "Contract %@. End: %@")
                                 .font(.caption)
                         }
                         if (contract.complianceAvailible != 0) {
-                            Text("Complience: \(contract.complianceDone) / \(contract.complianceAvailible)")
+                            Text("DoctorChatRow.Complience \(contract.complianceDone) / \(contract.complianceAvailible)", comment: "Complience: %lld / %lld")
                                 .font(.caption)
                         }
                         if let text = contract.lastFetchedMessage?.text {

@@ -16,10 +16,10 @@ struct EmptyArchiveChatsView: View {
                 .scaledToFit()
                 .frame(width: 70)
                 .foregroundColor(.secondary)
-            Text("No archived contracts")
+            Text("EmptyArchiveChatsView.noArchivedContracts", comment: "No archived contracts")
                 .font(.title)
                 .bold()
-            Text("Your archived contracts will appear here.")
+            Text("EmptyArchiveChatsView.yourContractsWillAppearHere", comment: "Your archived contracts will appear here.")
                 .font(.body)
                 .foregroundColor(.secondary)
         }

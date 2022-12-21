@@ -28,7 +28,7 @@ struct ReplyedMessageView: View {
                 .padding(.leading)
             VStack(alignment: .leading) {
                 if let contract = message.contract {
-                    Text("Reply \(contract.wrappedShortName)")
+                    Text("ReplyedMessageView.Reply \(contract.wrappedShortName)", comment: "Reply %@")
                         .bold()
                 }
                 Text(message.wrappedText)

@@ -17,8 +17,10 @@ struct AddContractView: View {
         NavigationView {
             ZStack {
                 Form {
-                    Section(header: Text("Institution"), footer: Text("Choose a clinic for the new patient")) {
-                        Picker("Clinic", selection: $addContractViewModel.clinicId, content: {
+                    Section(
+                        header: Text("AddContractView.institution.Header", comment: "Institution"),
+                        footer: Text("AddContractView.institution.Footer", comment: "Choose a clinic for the new patient")) {
+                        Picker("AddContractView.ClinicPicker", selection: $addContractViewModel.clinicId, content: {
                             ForEach(clinics) { clinic in
                                 Text(clinic.wrappedName).tag(Int(clinic.id))
                             }
@@ -29,8 +31,8 @@ struct AddContractView: View {
                         addContractViewModel.clinic = Clinic.get(id: clinicId)
                     })
                     
-                    Section(footer: Text("It is necessary to provide an active email")) {
-                        TextField("Patient Email", text: $addContractViewModel.patientEmail)
+                    Section(footer: Text("AddContractView.email.Footer", comment: "It is necessary to provide an active email")) {
+                        TextField("AddContractView.patientEmail.TextField", text: $addContractViewModel.patientEmail)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                             .textContentType(.emailAddress)
@@ -44,7 +46,7 @@ struct AddContractView: View {
                     if addContractViewModel.state == .inputClinicAndEmail {
                         HStack {
                             Spacer()
-                            Button("Find patient", action: addContractViewModel.findPatient)
+                            Button("AddContractView.findPatient.Button", action: addContractViewModel.findPatient)
                             Spacer()
                         }
                     } else if addContractViewModel.state == .fetchingUserFromMedsenger {
@@ -74,7 +76,7 @@ struct AddContractView: View {
                                 if addContractViewModel.submittingAddPatient {
                                     ProgressView()
                                 } else {
-                                    Text("Add Patient")
+                                    Text("AddContractView.addPatient.Button")
                                 }
                                 Spacer()
                             }
@@ -84,11 +86,11 @@ struct AddContractView: View {
             }
             .animation(.default, value: addContractViewModel.state)
             .scrollDismissesKeyboardIos16Only()
-            .navigationTitle("Add Patient")
+            .navigationTitle("AddContractView.navigationTitle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") {
+                    Button("AddContractView.done.Button") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -108,51 +110,53 @@ struct AddContractView: View {
     }
     
     var patientDataForm: some View {
-        Section(header: Text("Patient")) {
-            TextField("Patient Name", text: $addContractViewModel.patientName)
+        Section(header: Text("AddContractView.patientData.Header", comment: "Patient")) {
+            TextField("AddContractView.patientName.TextField", text: $addContractViewModel.patientName)
                 .textContentType(.name)
-            Picker("Sex", selection: $addContractViewModel.patientSex) {
+            Picker("AddContractView.sex.Picker", selection: $addContractViewModel.patientSex) {
                 ForEach(Sex.allCases, id: \.self) { sex in
                     Text(sex.rawValue).tag(sex)
                 }
             }
-            TextField("Phone", text: $addContractViewModel.patientPhone)
+            TextField("AddContractView.phone.TextField", text: $addContractViewModel.patientPhone)
                 .disableAutocorrection(true)
                 .textContentType(.telephoneNumber)
                 .keyboardType(.numberPad)
-            DatePicker("Birthday", selection: $addContractViewModel.patientBirthday, displayedComponents: [.date])
+            DatePicker("AddContractView.birthday.DatePicker", selection: $addContractViewModel.patientBirthday, displayedComponents: [.date])
         }
     }
     
     var contractDataForm: some View {
-        Section(header: Text("Contract information")) {
-            TextField("Contract Number", text: $addContractViewModel.contractNumber)
+        Section(header: Text("AddContractView.contractData.Header", comment: "Contract information")) {
+            TextField("AddContractView.contractNumber.TextField", text: $addContractViewModel.contractNumber)
                 .disableAutocorrection(true)
-            DatePicker("Contract end date", selection: $addContractViewModel.contractEndDate, displayedComponents: [.date])
+            DatePicker("AddContractView.contractEndDate.DatePicker", selection: $addContractViewModel.contractEndDate, displayedComponents: [.date])
             if let rules = addContractViewModel.clinic?.rulesArray {
-                Picker("Response time", selection: $addContractViewModel.clinicRuleId) {
+                Picker("AddContractView.responseTime.Picker", selection: $addContractViewModel.clinicRuleId) {
                     ForEach(rules) { rule in
                         Text(rule.wrappedName).tag(Int(rule.id))
                     }
                 }
             }
             if let classifiers = addContractViewModel.clinic?.classifiersArray {
-                Picker("Contract type", selection: $addContractViewModel.clinicClassifierId) {
+                Picker("AddContractView.contractType.Picker", selection: $addContractViewModel.clinicClassifierId) {
                     ForEach(classifiers) { classifier in
                         Text(classifier.wrappedName).tag(Int(classifier.id))
                     }
                 }
             }
             if let clinic = addContractViewModel.clinic, clinic.videoEnabled {
-                Toggle("Video Calls", isOn: $addContractViewModel.videoEnabled)
+                Toggle("AddContractView.videoCalls.Toggle", isOn: $addContractViewModel.videoEnabled)
             }
         }
     }
     
     var knownPatient: some View {
-        Section(header: Text("Patient Found"), footer: Text("Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request.")) {
+        Section(
+            header: Text("AddContractView.knownPatient.Header", comment: "Patient Found"),
+            footer: Text("AddContractView.knownPatient.Footer", comment: "Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request.")) {
             Text(addContractViewModel.patientName)
-            Text("Birthday: \(addContractViewModel.patientBirthday, formatter: DateFormatter.ddMMyyyy)")
+            Text("AddContractView.birthday: \(addContractViewModel.patientBirthday, formatter: DateFormatter.ddMMyyyy)")
         }
     }
 }

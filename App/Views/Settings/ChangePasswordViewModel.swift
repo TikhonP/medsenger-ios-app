@@ -16,12 +16,12 @@ final class ChangePasswordViewModel: ObservableObject, Alertable {
     func changePasswordRequest(password1: String, password2: String, completion: @escaping () -> Void) {
         guard password1.count > 6 else {
             presentAlert(
-                title: "Passwords do not match!",
-                message: "Please check that the passwords are the same.", .warning)
+                title: Text("ChangePasswordViewModel.passwordsDoNotMatchAlertTitle", comment: "Passwords do not match!"),
+                message: Text("ChangePasswordViewModel.passwordsDoNotMatchAlertMessage", comment: "Please check that the passwords are the same."), .warning)
             return
         }
         guard password1 == password2 else {
-            presentAlert(title: "Password must be more than 6 characters", .warning)
+            presentAlert(title: Text("ChangePasswordViewModel.passwordMustBeMoreThan6charactersAlertTitle", comment: "Password must be more than 6 characters"), .warning)
             return
         }
         showLoading = true

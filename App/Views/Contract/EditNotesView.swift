@@ -44,7 +44,7 @@ struct EditNotesView: View {
         NavigationView {
             TextEditor(text: $editNotesViewModel.note)
                 .padding(.horizontal)
-                .navigationTitle("Edit Notes")
+                .navigationTitle("EditNotesViewModel.NavigationTitle")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
@@ -55,13 +55,13 @@ struct EditNotesView: View {
                                 if editNotesViewModel.showLoading {
                                     ProgressView()
                                 } else {
-                                    Text("Save")
+                                    Text("EditNotesViewModel.Save.Button")
                                 }
                             })
                     }
                     
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
+                        Button("EditNotesViewModel.Cancel.Button") {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }

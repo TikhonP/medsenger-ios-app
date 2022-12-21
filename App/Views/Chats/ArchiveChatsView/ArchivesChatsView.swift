@@ -64,7 +64,7 @@ struct ArchivesChatsView: View {
                         case .doctor:
                             DoctorChatRow(contract: contract)
                         default:
-                            Text("Unknown user role")
+                            EmptyView()
                         }
                     })
                 }
@@ -73,7 +73,7 @@ struct ArchivesChatsView: View {
         .searchableIos16Only(text: query)
         .refreshableIos15Only { await chatsViewModel.getArchiveContracts(presentFailedAlert: true) }
         .listStyle(PlainListStyle())
-        .navigationTitle("Archived Chats")
+        .navigationTitle("ArchivesChatsView.navigationTitle")
         .onAppear {
             chatsViewModel.getArchiveContracts(presentFailedAlert: false)
         }

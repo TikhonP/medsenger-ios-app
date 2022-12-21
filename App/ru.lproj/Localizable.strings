@@ -1,164 +1,422 @@
 /* No comment provided by engineer. */
+"(%@)" = "(%@)";
+
+/* %@ Amazing, %@! */
+"%@ ComplianceView.Amazing %@!" = "%@ Потрясающе, %@!";
+
+/* %@ Good job, %@! */
+"%@ ComplianceView.GoodJob, %@!" = "%@ Хорошая работа, %@!";
+
+/* %@ Go on, %@! */
+"%@ ComplianceView.GoOn %@!" = "%@ Продолжайте, %@!";
+
+/* %@ Great, %@! */
+"%@ ComplianceView.Great, %@!" = "%@ Отлично, %@!";
+
+/* %@ Subpress, %@! */
+"%@ ComplianceView.Subpress %@!" = "%@ Поднажмите, %@!";
+
+/* %@ Wow, %@! */
+"%@ ComplianceView.Wow, %@!" = "%@ Вау, %@!";
+
+/* No comment provided by engineer. */
 "%lld" = "%lld";
 
 /* No comment provided by engineer. */
-"About" = "О сервисе";
+"%lld / %lld" = "%lld / %lld";
 
 /* No comment provided by engineer. */
-"Add attachment" = "Добавить вложение";
+"AddContractView.addPatient.Button" = "Добавить пациента";
 
 /* No comment provided by engineer. */
-"Add Notes" = "Добавить заметку";
+"AddContractView.birthday: %@" = "Дата рождения: %@";
 
 /* No comment provided by engineer. */
-"Add Patient" = "Добавить пациента";
+"AddContractView.birthday.DatePicker" = "Дата рождения";
 
 /* No comment provided by engineer. */
-"Agent action" = "Действие Агента";
+"AddContractView.ClinicPicker" = "Клиника";
+
+/* Contract information */
+"AddContractView.contractData.Header" = "Информация о контракте";
 
 /* No comment provided by engineer. */
-"Agent Actions" = "Действия агента";
+"AddContractView.contractEndDate.DatePicker" = "Окончание контракта";
 
 /* No comment provided by engineer. */
-"All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again." = "Все интеллектуальные агенты будут отключены, и пациент больше не будет получать информационные уведомления и опросники. При необходимости сценарий можно подключить заново.";
+"AddContractView.contractNumber.TextField" = "Номер контракта";
 
 /* No comment provided by engineer. */
-"Apple Health" = "Apple Health";
+"AddContractView.contractType.Picker" = "Тип контракта";
 
 /* No comment provided by engineer. */
-"Apple Health Sync" = "Синхронизация с Apple Health";
+"AddContractView.done.Button" = "Готово";
+
+/* It is necessary to provide an active email */
+"AddContractView.email.Footer" = "Необходимо указать действующий email";
 
 /* No comment provided by engineer. */
-"Archived Chats" = "Архив";
+"AddContractView.findPatient.Button" = "Найти пациента";
+
+/* Choose a clinic for the new patient */
+"AddContractView.institution.Footer" = "Выберите клинику для нового пациента";
+
+/* Institution */
+"AddContractView.institution.Header" = "Учреждение";
+
+/* Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request. */
+"AddContractView.knownPatient.Footer" = "Убедитесь, что это тот человек, для которого вы хотите открыть канал консультирования. Если нет, исправьте email и отправьте запрос повторно.";
+
+/* Patient Found */
+"AddContractView.knownPatient.Header" = "Найден пациент";
 
 /* No comment provided by engineer. */
-"Are you sure you want to disable the monitoring scenario?" = "Вы уверены, что хотите отключить сценарий мониторинга?";
+"AddContractView.navigationTitle" = "Добавить пациента";
+
+/* Patient */
+"AddContractView.patientData.Header" = "Пациент";
 
 /* No comment provided by engineer. */
-"Assign a Monitoring Scenario" = "Назначить сценарий мониторинга";
+"AddContractView.patientEmail.TextField" = "Email пациента";
 
 /* No comment provided by engineer. */
-"Assign scenario" = "Назначить сценарий";
+"AddContractView.patientName.TextField" = "Имя пациента";
 
 /* No comment provided by engineer. */
-"Attachments" = "Вложения";
+"AddContractView.phone.TextField" = "Телефон";
 
 /* No comment provided by engineer. */
-"Automatic message" = "Автоматическое сообщение";
+"AddContractView.responseTime.Picker" = "Время на ответ";
 
 /* No comment provided by engineer. */
-"Birthday" = "Дата рождения";
+"AddContractView.sex.Picker" = "Пол";
 
 /* No comment provided by engineer. */
-"Birthday: %@" = "Дата рождения: %@";
+"AddContractView.videoCalls.Toggle" = "Видеозвонки";
+
+/* Please check email. Contract with provided email already exists. */
+"AddContractViewModel.contractAlreadyExistsAlertMessage" = "Пожалуйста, проверьте email. Контракт с указанным адресом уже существует.";
+
+/* Contract already exists */
+"AddContractViewModel.contractAlreadyExistsAlertTitle" = "Контракт уже существует";
+
+/* Please check contract end date and correct it. */
+"AddContractViewModel.contractAndDateAreOlderThanNowAlertMessage" = "Пожалуйста, проверьте дату окончания контракта и исправьте ее.";
+
+/* Contract end date are older than now! */
+"AddContractViewModel.contractAndDateAreOlderThanNowAlertTitle" = "Дата окончания контракта старше, чем сегодня!";
+
+/* Email is empty! */
+"AddContractViewModel.emailIsEmptyAlertTitle" = "Email не заполнен!";
+
+/* Please fill the email field. */
+"AddContractViewModel.emailIsEmptyMessage" = "Пожалуйста, заполните поле email.";
+
+/* Please check patient email to continue. */
+"AddContractViewModel.invalidEmailAlertMessage" = "Пожалуйста, проверьте email пациента, чтобы продолжить.";
+
+/* Invalid patient email! */
+"AddContractViewModel.invalidEmailAlertTitle" = "Неверный email пациента!";
+
+/* Please provide a name to continue. */
+"AddContractViewModel.nameIsEmptyAlertMessage" = "Укажите имя, чтобы продолжить.";
+
+/* Patient name cannot be empty! */
+"AddContractViewModel.nameIsEmptyAlertTitle" = "Имя пациента не может быть пустым!";
 
 /* No comment provided by engineer. */
-"Browse..." = "Просмотр...";
+"ArchivesChatsView.navigationTitle" = "Архив";
 
 /* No comment provided by engineer. */
-"Call error" = "Ошибка звонка";
+"AttachmentsView.AttachmentsType.Picker" = "Тип вложений";
+
+/* Files */
+"AttachmentsView.files" = "Файлы";
+
+/* Images */
+"AttachmentsView.images" = "Изображения";
+
+/* There is no attachments */
+"AttachmentsView.noAttachments" = "Нет вложений";
+
+/* There is no images */
+"AttachmentsView.noImages" = "Нет изображений";
+
+/* You */
+"AttachmentsView.You" = "Вы";
 
 /* No comment provided by engineer. */
-"Call the Clinic" = "Позвонить в клинику";
+"ChangePasswordView.navigationTitle" = "Изменить пароль";
 
 /* No comment provided by engineer. */
-"Calling..." = "Звонок...";
+"ChangePasswordView.NewPassword.TextField" = "Новый пароль";
+
+/* Password must be more than 6 characters */
+"ChangePasswordView.passwordFields.Footer" = "Пароль должен быть длиннее 6 символов";
 
 /* No comment provided by engineer. */
-"Cancel" = "Отмена";
+"ChangePasswordView.RepeatPassword.TextField" = "Повторите пароль";
 
 /* No comment provided by engineer. */
-"Change password" = "Изменить пароль";
+"ChangePasswordView.Save.Button" = "Сохранить";
+
+/* Password must be more than 6 characters */
+"ChangePasswordViewModel.passwordMustBeMoreThan6charactersAlertTitle" = "Пароль должен быть длиннее 6 символов";
+
+/* Please check that the passwords are the same. */
+"ChangePasswordViewModel.passwordsDoNotMatchAlertMessage" = "Пожалуйста, проверьте, чтобы пароли были одинаковыми.";
+
+/* Passwords do not match! */
+"ChangePasswordViewModel.passwordsDoNotMatchAlertTitle" = "Пароли не совпадают!";
 
 /* No comment provided by engineer. */
-"Change Profile Photo" = "Изменить фото профиля";
+"ChatsView.CallTheClinic.Label" = "Позвонить в клинику";
 
 /* No comment provided by engineer. */
-"Chats" = "Чаты";
+"ChatsView.DismissMessages.Label" = "Погасить сообщения";
 
 /* No comment provided by engineer. */
-"Choose a clinic for the new patient" = "Выберите клинику для нового пациента";
+"ChatsView.EndCounseling.Label" = "Завершить Консультирование";
 
 /* No comment provided by engineer. */
-"Choose a new profile photo" = "Выбрать новое фото профиля";
+"ChatsView.navigationTitle" = "Консультации";
+
+/* The first time you open a chat, all messages are loaded, this may take some time. */
+"ChatView.loadingText" = "При первом открытии чата загружаются все сообщения, это может занять некоторое время.";
+
+/* no connection */
+"ChatView.noConnection" = "нет соединения";
+
+/* offline */
+"ChatView.offline" = "не в сети";
+
+/* online */
+"ChatView.online" = "в сети";
+
+/* Failed to play audio on your device */
+"ChatViewModel.failedToPlayAudioOnYourDeviceAlertTitle" = "Не удалось воспроизвести звук на Вашем устройстве";
+
+/* Failed to setup audio on your device */
+"ChatViewModel.failedToSetupAudioOnYourDeviceAlertTitle" = "Не удалось настроить звук на Вашем устройстве";
+
+/* Zoom action is not supported now */
+"ChatViewModel.zoomActionIsNotSupportedNowAlertTitle" = "Действие Zoom сейчас не поддерживается";
+
+/* Your account has access to both the doctor and the patient role. */
+"ChooseRoleView.chooseRoleLabel" = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пациента.";
+
+/* How do you want to sign in? */
+"ChooseRoleView.chooseRoleQuestion" = "Как вы хотите войти?";
 
 /* No comment provided by engineer. */
-"Choose Photo" = "Выбрать фото";
+"ChooseRoleView.SignInAsDoctor.Button" = "Войти как врач";
 
 /* No comment provided by engineer. */
-"Clinic" = "Клиника";
+"ChooseRoleView.SignInAsPatient.Button" = "Войти как пациент";
 
 /* No comment provided by engineer. */
-"compliance" = "комплаентность";
+"ChooseScenarioView.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
-"Complience: %lld / %lld" = "комплаентность: %lld / %lld";
+"ChooseScenarioView.Filter.Label" = "Фильтр";
 
 /* No comment provided by engineer. */
-"Connecting..." = "Подключение...";
+"ChooseScenarioView.Filter.Picker" = "Фильтр";
 
 /* No comment provided by engineer. */
-"Consilium" = "Консилиум";
+"ChooseScenarioView.navigationTitle" = "Сценарии мониторинга";
+
+/* All assignments for today completed! */
+"ComplianceView.allAssignmentsToday" = "Все задания на сегодня выполнены!";
+
+/* Compliance */
+"ComplianceView.complianceHeader" = "Задания";
+
+/* Tasks for today: %lld */
+"ComplianceView.tasksForToday %lld" = "Задачи на сегодня: %lld";
+
+/* Сегодня Вы выполнили %lld/%lld заданий */
+"ComplianceView.todayYouDidTasks %lld/%lld" = "Сегодня Вы выполнили %lld/%lld заданий";
+
+/* You don't have any appointments from the doctor today. */
+"ComplianceView.youDontHaveAnyAppointmentsToday" = "У вас нет заданий от врача на сегодня.";
+
+/* Doctor: %@ */
+"ConsiliumChatRow.Doctor: %@" = "Врач: %@";
 
 /* No comment provided by engineer. */
-"Consultations" = "Консультации";
+"ConsiliumChatRow.doctorAndPatientPhoto.accessibilityLabel" = "Фото врача и пациента";
+
+/* Monitoring: %@ */
+"ConsiliumChatRow.Monitoring: %@" = "Мониторинг: %@";
 
 /* No comment provided by engineer. */
-"Contract %@. End: %@" = "Контракт %@. Окончание: %@";
+"ConsiliumChatRow.unread.accessibilityLabel %lld" = "Непрочитанных сообщений: %lld";
+
+/* You: %@ */
+"ConsiliumChatRow.you %@" = "Вы: %@";
 
 /* No comment provided by engineer. */
-"Contract already exists" = "Контракт уже существует";
+"ContractDevicesView.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
-"Contract end date" = "Окончание контракта";
+"ContractDevicesView.navigationTitle" = "Управление устройствами";
 
 /* No comment provided by engineer. */
-"Contract information" = "Информация о контракте";
+"ContractDevicesView.Save.Button" = "Сохранить";
+
+/* Actions */
+"ContractView.actions.Header" = "Действия";
 
 /* No comment provided by engineer. */
-"Contract Number" = "Номер контракта";
+"ContractView.AddNotes.label" = "Добавить заметку";
+
+/* Agent action */
+"ContractView.AgentActionPlaceholder" = "Действие Агента";
 
 /* No comment provided by engineer. */
-"Contract type" = "Тип контракта";
+"ContractView.AssignMonitoringScenario.Label" = "Назначить сценарий мониторинга";
 
 /* No comment provided by engineer. */
-"Contract: " = "Контракт:";
+"ContractView.Attachments.label" = "Медиа";
 
 /* No comment provided by engineer. */
-"Copy" = "Скопировать";
+"ContractView.CallTheClinic.label" = "Позвонить в клинику";
+
+/* Consultants */
+"ContractView.Consultants.Header" = "Консультанты";
+
+/* Contract Information */
+"ContractView.ContractInformation.Header" = "Информация о контракте";
+
+/* Contract number */
+"ContractView.contractNumber" = "Номер контракта";
 
 /* No comment provided by engineer. */
-"Devices Control" = "Управление устройствами";
+"ContractView.DevicesControl.Label" = "Управление устройствами";
+
+/* Disable Scenario */
+"ContractView.disableMonitoringAlertButton" = "Отключить сценарий";
+
+/* All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again. */
+"ContractView.disableMonitoringAlertMessage" = "Все интеллектуальные агенты будут отключены, и пациент больше не будет получать информационные уведомления и опросники. При необходимости сценарий можно подключить заново.";
+
+/* Are you sure you want to disable the monitoring scenario? */
+"ContractView.disableMonitoringAlertTitle" = "Вы уверены, что хотите отключить сценарий мониторинга?";
 
 /* No comment provided by engineer. */
-"Disable Scenario" = "Отключить сценарий";
+"ContractView.DisableScenario.Label" = "Отключить сценарий";
 
 /* No comment provided by engineer. */
-"Dismiss Messages" = "Погасить сообщения";
+"ContractView.DismissMessages.label" = "Погасить сообщения";
 
 /* No comment provided by engineer. */
-"Done" = "Готово";
+"ContractView.EditNotes.label" = "Редактировать заметки";
 
 /* No comment provided by engineer. */
-"Edit" = "Изм.";
+"ContractView.EndCounseling.label" = "Завершить консультирование";
+
+/* from %@ to %@ */
+"ContractView.fromDate %@ ContractView.toDate %@" = "C %@ по %@";
 
 /* No comment provided by engineer. */
-"Edit Notes" = "Редактировать заметки";
+"ContractView.InfoMaterials.label" = "Информационные материалы";
+
+/* Monitoring */
+"ContractView.Monitoring.Header" = "Мониторинг";
+
+/* Notes */
+"ContractView.notes.Header" = "Заметки";
+
+/* Relatives and care */
+"ContractView.RelativesAndCare.Header" = "Родственники и опека";
+
+/* done */
+"ContractView.taskForDayDone" = "Выполнено";
+
+/* Tasks for the day */
+"ContractView.tasksForDay.Header" = "Задачи на день";
+
+/* Validity */
+"ContractView.Validity" = "Срок действия";
 
 /* No comment provided by engineer. */
-"Edit personal data" = "Изм. личных данных";
+"ContractView.VideoСall.label" = "Видеозвонки";
+
+/* Complience: %lld / %lld */
+"DoctorChatRow.Complience %lld / %lld" = "Комплаентность: %lld / %lld";
+
+/* Contract %@. End: %@ */
+"DoctorChatRow.Contract %@. End: %@" = "Контракт %@. Окончание: %@";
 
 /* No comment provided by engineer. */
-"Email" = "Email";
+"EditNotesViewModel.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
-"Email is the main identifier for your account and an address for sending notifications" = "Email — основной идентификатор вашего аккаунта и адрес для отправки уведомлений";
+"EditNotesViewModel.NavigationTitle" = "Ред. заметки";
 
 /* No comment provided by engineer. */
-"Email Notifications" = "Уведомления на email";
+"EditNotesViewModel.Save.Button" = "Cохранить";
 
 /* No comment provided by engineer. */
-"End Counseling" = "Завершить Консультирование";
+"EditPersonalDataView.BirthdayDatePicker" = "Дата рождения";
+
+/* Email is the main identifier for your account and an address for sending notifications */
+"EditPersonalDataView.emailFooter" = "Email — основной идентификатор вашего аккаунта и адрес для отправки уведомлений";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.emailTextFieldPlaceholder" = "Email";
+
+/* Write your name and select a photo */
+"EditPersonalDataView.nameAndBirthDayFooter" = "Заполните имя и выберите фотографию";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.nameTextFieldPlaceholder" = "Имя";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationCancelButton" = "Отмена";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationSaveButton" = "Сохранить";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationTitle" = "Изм. личных данных";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.newPhotoButton" = "Новое фото";
+
+/* Phone is optional */
+"EditPersonalDataView.phoneFooter" = "Указывать телефон необязательно";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.phoneTextFieldPlaceholder" = "Телефон";
+
+/* Invalid email! */
+"EditPersonalDataViewModel.invalidEmailAlertTitle" = "Неверный email!";
+
+/* Please provide a name to continue. */
+"EditPersonalDataViewModel.nameCannotBeEmptyAlertMessage" = "Укажите имя, чтобы продолжить.";
+
+/* Name cannot be empty! */
+"EditPersonalDataViewModel.nameCannotBeEmptyAlertTitle" = "Имя не может быть пустым!";
+
+/* Please check if the phone is correct. */
+"EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage" = "Пожалуйста, проверьте номер телефона.";
+
+/* This phone already in use! */
+"EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle" = "Этот телефон уже используется в сервисе!";
+
+/* No archived contracts */
+"EmptyArchiveChatsView.noArchivedContracts" = "Нет архивных контрактов";
+
+/* Your archived contracts will appear here. */
+"EmptyArchiveChatsView.yourContractsWillAppearHere" = "Здесь появятся ваши архивные контракты.";
+
+/* No contracts */
+"EmptyChatsView.noContracts" = "Нет контрактов";
+
+/* Your contracts will appear here. */
+"EmptyChatsView.yourContractsAppearHere" = "Здесь появятся ваши контракты.";
 
 /* No comment provided by engineer. */
 "Ending call..." = "Завершение звонка...";
@@ -170,281 +428,271 @@
 "Enter text here" = "Введите текст";
 
 /* No comment provided by engineer. */
-"Failed to fetch user" = "Не удалось загрузить пользователя";
-
-/* No comment provided by engineer. */
 "Failed to preview voice message" = "Не удалось загрузить аудиосообщение";
 
 /* No comment provided by engineer. */
-"Files" = "Файлы";
+"InfoMaterialsView.navigationTitle" = "Информационные материалы";
 
-/* No comment provided by engineer. */
-"Filter" = "Фильтр";
-
-/* No comment provided by engineer. */
-"Find patient" = "Найти пациента";
-
-/* No comment provided by engineer. */
-"Heart Rate" = "Пульс";
+/* There is no info materials */
+"InfoMaterialsView.noInfoMaterials" = "Нет информационных материалов";
 
-/* No comment provided by engineer. */
-"How do you want to sign in?" = "Как вы хотите войти?";
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"internetOfflineWarningInBottomBar.message" = "Выключите режим полета или подключитесь к Wi-Fi.";
 
-/* No comment provided by engineer. */
-"Images" = "Изображения";
+/* Internet connection not available */
+"internetOfflineWarningInBottomBar.title" = "Подключение к интернету недоступно";
 
-/* No comment provided by engineer. */
-"Incorrect data provided" = "Введены некорректные данные";
+/* Add attachment */
+"MainInputView.addAttachment.ActionSheetTitle" = "Добавить вложение";
 
-/* No comment provided by engineer. */
-"Info Materials" = "Информационные материалы";
+/* Browse... */
+"MainInputView.Browse.Button" = "Просмотр...";
 
-/* No comment provided by engineer. */
-"Institution" = "Учреждение";
+/* Choose Photo */
+"MainInputView.ChoosePhoto.Button" = "Выбрать фото";
 
-/* No comment provided by engineer. */
-"Internet connection not available" = "Подключение к интернету недоступно";
+/* Message input placeholder */
+"MainInputView.Message.TextView" = "Сообщение";
 
-/* No comment provided by engineer. */
-"Invalid email!" = "Неверный email!";
+/* Take Photo */
+"MainInputView.TakePhoto.Button" = "Снять фото";
 
-/* No comment provided by engineer. */
-"Invalid field" = "Неверное значение";
+/* Not Now */
+"MessageInputViewModel.allowMicrophoneAccessAlertCancelButton" = "Не сейчас";
 
-/* No comment provided by engineer. */
-"Invalid password!" = "Неверный пароль!";
+/* Medsenger needs access to your microphone so that you can send voice messages.
 
-/* No comment provided by engineer. */
-"It is necessary to provide an active email" = "Необходимо указать действующий email";
+Please go to your device's settings > Privacy > Microphone and set Medsenger to ON. */
+"MessageInputViewModel.allowMicrophoneAccessAlertMessage" = "Чтобы Вы могли отправлять голосовые сообщения, Medsenger нужен доступ к микрофону.\n\nПожалуйста, включите доступ для Medsenger в настройках устройства > Конфиденциальность > Микрофон.";
 
-/* No comment provided by engineer. */
-"Loading..." = "Загрузка...";
+/* Settings */
+"MessageInputViewModel.allowMicrophoneAccessAlertSettingsButton" = "Настройки";
 
-/* No comment provided by engineer. */
-"Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request." = "Убедитесь, что это тот человек, для которого вы хотите открыть канал консультирования. Если нет, исправьте email и отправьте запрос повторно.";
+/* Please Allow Access */
+"MessageInputViewModel.allowMicrophoneAccessAlertTitle" = "Разрешите доступ";
 
-/* No comment provided by engineer. */
-"Media" = "Медиа";
+/* Failed to add attachment */
+"MessageInputViewModel.failedToAddAttachmentAlertTitle" = "Не удалось добавить вложение";
 
-/* No comment provided by engineer. */
-"Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON." = "Чтобы Вы могли отправлять голосовые сообщения, Medsenger нужен доступ к микрофону.\n\nПожалуйста, включите доступ для Medsenger в настройках устройства > Конфиденциальность > Микрофон.";
+/* Failed to play audio on your device */
+"MessageInputViewModel.failedToPlayAudioOnYourDevice" = "Не удалось воспроизвести звук на вашем устройстве";
 
-/* No comment provided by engineer. */
-"Monitoring" = "Мониторинг";
+/* Failed to prepare audio recording */
+"MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle" = "Не удалось подготовить аудиозапись";
 
-/* No comment provided by engineer. */
-"Monitoring Scenarios" = "Сценарии мониторинга";
+/* Failed to setup audio on your device */
+"MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle" = "Не удалось настроить звук на вашем устройстве";
 
-/* No comment provided by engineer. */
-"Name" = "Имя";
+/* Recording voice message failed. */
+"MessageInputViewModel.recordingMessageFailedAlertTitle" = "Не удалось записать голосовое сообщение.";
 
 /* No comment provided by engineer. */
-"Name cannot be empty!" = "Имя не может быть пустым!";
+"MessageTimeDividerView.Today" = "Сегодня";
 
-/* No comment provided by engineer. */
-"New password" = "Новый пароль";
+/* Automatic message */
+"MessageTitleView.AutomaticMessage" = "Автоматическое сообщение";
 
 /* No comment provided by engineer. */
-"New Photo" = "Новое фото";
+"MessageView.Reply.Button" = "Ответить";
 
 /* No comment provided by engineer. */
-"No archived contracts" = "Нет архивных контрактов";
+"MessageView.Reply.Copy" = "Скопировать";
 
 /* No comment provided by engineer. */
-"No contracts" = "Нет контрактов";
+"PatientChatRow.ClinicLogo.accessibilityLabel" = "Логотип клиники";
 
 /* No comment provided by engineer. */
-"Not Now" = "Не сейчас";
+"PatientChatRow.DoctorPhoto.accessibilityLabel" = "Фотография врача";
 
-/* No comment provided by engineer. */
-"Notes" = "Заметки";
+/* Monitoring: %@ */
+"PatientChatRow.Monitoring %@" = "Мониторинг: %@";
 
 /* No comment provided by engineer. */
-"Notifications" = "Уведомления";
+"PatientChatRow.Unread.accessibilityLabel %lld" = "Непрочитанных сообщений: %lld";
 
-/* No comment provided by engineer. */
-"online" = "в сети";
+/* Please check your input or contact Medsenger support. */
+"processRequestError.IncorrectDataProvidedAlertMessage" = "Проверьте введенные данные или обратитесь в службу поддержки Messenger.";
 
-/* No comment provided by engineer. */
-"Oops! Server error" = "Упс! Ошибка сервера";
+/* Incorrect data provided */
+"processRequestError.incorrectDataProvidedAlertTitle" = "Введены некорректные данные";
 
-/* No comment provided by engineer. */
-"Oxygen Saturation" = "SPO2";
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"processRequestError.internaetConnectionOfflineAlertMessage" = "Выключите режим полета или подключитесь к Wi-Fi.";
 
-/* No comment provided by engineer. */
-"Password" = "Пароль";
+/* The Internet connection appears to be offline */
+"processRequestError.internaetConnectionOfflineAlertTitle" = "Нет подключения к интернету";
 
-/* No comment provided by engineer. */
-"Password must be more than 6 characters" = "Пароль должен быть длиннее 6 символов";
+/* Oops! Server error */
+"processRequestError.serverErrorAlertTitle" = "Упс! Ошибка сервера";
 
-/* No comment provided by engineer. */
-"Passwords do not match!" = "Пароли не совпадают!";
+/* Please check your connection and try again. */
+"processRequestError.timeOutAlertMessage" = "Пожалуйста, проверьте подключение и повторите попытку.";
 
-/* No comment provided by engineer. */
-"Patient" = "Пациент";
+/* The request timed out */
+"processRequestError.timeOutAlertTitle" = "Время запроса истекло";
 
 /* No comment provided by engineer. */
-"Patient Email" = "Email пациента";
+"RecordingVoiceMessageView.Cancel.Button" = "Отмена";
 
-/* No comment provided by engineer. */
-"Patient Found" = "Найден пациент";
+/* Reply %@ */
+"ReplyedMessageView.Reply %@" = "Ответить %@";
 
-/* No comment provided by engineer. */
-"Patient Name" = "Имя пациента";
+/* Assign scenario */
+"ScenarioView.AssignScenario.Button" = "Назначить сценарий";
 
-/* No comment provided by engineer. */
-"Phone" = "Телефон";
+/* Invalid field */
+"ScenarioViewModel.invalidFieldAlertTitle" = "Неверное значение";
 
-/* No comment provided by engineer. */
-"Phone is optional" = "Указывать телефон необязательно";
+/* The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come. */
+"SettingsMainFormView.aboutFooter" = "Сервис medsenger.ru реализует обмен сообщениями между пациентом и его врачом. С его помощью врачи консультируют своих пациентов, отвечая на их вопросы по мере поступления.";
 
-/* No comment provided by engineer. */
-"Please Allow Access" = "Разрешите доступ";
+/* About */
+"SettingsMainFormView.aboutHeader" = "О сервисе";
 
-/* No comment provided by engineer. */
-"Please check email. Contract with provided email already exists." = "Пожалуйста, проверьте email. Контракт с указанным адресом уже существует.";
+/* Birthday */
+"SettingsMainFormView.birthday" = "Дата рождения";
 
-/* No comment provided by engineer. */
-"Please check if the phone is correct." = "Пожалуйста, проверьте номер телефона.";
+/* (Build not found) */
+"SettingsMainFormView.buildNotFound" = "(Сборка не найдена)";
 
-/* No comment provided by engineer. */
-"Please check that the passwords are the same." = "Пожалуйста, проверьте, чтобы пароли были одинаковыми.";
+/* Change your password for strong security */
+"SettingsMainFormView.changePasswordFooter" = "???";
 
 /* No comment provided by engineer. */
-"Please check your connection and try again." = "Пожалуйста, проверьте подключение и повторите попытку.";
+"SettingsMainFormView.changePasswordLabel" = "Изменить пароль";
 
 /* No comment provided by engineer. */
-"Please check your input or contact Medsenger support." = "Проверьте введенные данные или обратитесь в службу поддержки Messenger.";
+"SettingsMainFormView.changeProfilePhotoLabel" = "Изменить фото профиля";
 
-/* No comment provided by engineer. */
-"Please fill both username and password fields." = "Пожалуйста, заполните оба поля: имя пользователя и пароль.";
+/* Your account has access to both the doctor and the patient role. */
+"SettingsMainFormView.changeRoleFooter" = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пациента.";
 
 /* No comment provided by engineer. */
-"Please provide a name to continue." = "Укажите имя, чтобы продолжить.";
+"SettingsMainFormView.emailNotificationsLabel" = "Уведомления на email";
 
-/* No comment provided by engineer. */
-"Provide auth data!" = "Заполните поля";
+/* Push notifications can inform you about new message on your phone */
+"SettingsMainFormView.notificationFooter" = "Уведомления могут информировать вас о новом сообщении на вашем телефоне";
 
-/* No comment provided by engineer. */
-"Push Notifications" = "Уведомления";
+/* Notifications */
+"SettingsMainFormView.notificationHeader" = "Уведомления";
 
 /* No comment provided by engineer. */
-"Push notifications can inform you about new message on your phone" = "Уведомления могут информировать вас о новом сообщении на вашем телефоне";
+"SettingsMainFormView.pushNotificationsLabel" = "Уведомления";
 
 /* No comment provided by engineer. */
-"Refresh" = "Обновить";
+"SettingsMainFormView.showFullPreviewForImages.Footer" = "Если включено, картинки в чате будут отображаться в крупном формате";
 
-/* No comment provided by engineer. */
-"Repeat password" = "Повторите пароль";
+/* Show large image preview */
+"SettingsMainFormView.showFullPreviewForImages.Toggle" = "Крупные картинки в чате";
 
-/* No comment provided by engineer. */
-"Reply" = "Ответить";
+/* Sign Out */
+"SettingsMainFormView.signOutButton" = "Выйти";
 
 /* No comment provided by engineer. */
-"Reply %@" = "Ответить %@";
+"SettingsMainFormView.supportLabel" = "Поддержка";
 
 /* No comment provided by engineer. */
-"Respiratory Rate" = "Частота дыхания";
+"SettingsMainFormView.switchToDoctorButtonLabel" = "Перейти в роль врача";
 
 /* No comment provided by engineer. */
-"Response time" = "Время на ответ";
+"SettingsMainFormView.switchToPatientButtonLabel" = "Перейти в роль пациента";
 
-/* No comment provided by engineer. */
-"Save" = "Сохранить";
+/* Version */
+"SettingsMainFormView.version" = "Версия";
 
-/* No comment provided by engineer. */
-"Settings" = "Настройки";
+/* Version not found */
+"SettingsMainFormView.versionNotFound" = "Версия не найдена";
 
 /* No comment provided by engineer. */
-"Sex" = "Пол";
+"SettingsMainFormView.websiteLabel" = "Сайт";
 
-/* No comment provided by engineer. */
-"Sign In" = "Войти";
+/* Browse... */
+"SettingsProfileImageView.browseButton" = "Просмотр...";
 
-/* No comment provided by engineer. */
-"Sign In as Doctor" = "Войти как врач";
+/* Choose a new profile photo */
+"SettingsProfileImageView.chooseNewProfilePhotoAlertTitle" = "Выбрать новое фото профиля";
 
-/* No comment provided by engineer. */
-"Sign In as Patient" = "Войти как пациент";
+/* Choose Photo */
+"SettingsProfileImageView.choosePhotoButton" = "Выбрать фото";
 
-/* No comment provided by engineer. */
-"Sign Out" = "Выйти";
+/* Take Photo */
+"SettingsProfileImageView.takePhotoButton" = "Снять фото";
 
-/* No comment provided by engineer. */
-"Steps" = "Шаги";
+/* Apple Health */
+"SettingsSyncWithAppleHealthSectionView.appleHealthHeader" = "Apple Health";
 
-/* No comment provided by engineer. */
-"Support" = "Поддержка";
+/* Apple Health Sync */
+"SettingsSyncWithAppleHealthSectionView.appleHealthSyncToggle" = "Синхронизация с Apple Health";
 
-/* No comment provided by engineer. */
-"Switch to Doctor" = "Перейти в роль врача";
+/* Heart Rate */
+"SettingsSyncWithAppleHealthSectionView.heartRate" = "Пульс";
 
-/* No comment provided by engineer. */
-"Switch to Patient" = "Перейти в роль пациента";
+/* Oxygen Saturation */
+"SettingsSyncWithAppleHealthSectionView.oxygenSaturation" = "SPO2";
 
-/* No comment provided by engineer. */
-"Take Photo" = "Снять фото";
+/* Respiratory Rate */
+"SettingsSyncWithAppleHealthSectionView.respiratoryRate" = "Частота дыхания";
 
-/* No comment provided by engineer. */
-"The Internet connection appears to be offline" = "Нет подключения к интернету";
+/* Steps */
+"SettingsSyncWithAppleHealthSectionView.steps" = "Шаги";
 
 /* No comment provided by engineer. */
-"The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come." = "Сервис medsenger.ru реализует обмен сообщениями между пациентом и его врачом. С его помощью врачи консультируют своих пациентов, отвечая на их вопросы по мере поступления.";
+"SettingsView.Done.Button" = "Готово";
 
 /* No comment provided by engineer. */
-"The request timed out" = "Время запроса истекло";
+"SettingsView.Edit.Button" = "Изм.";
 
 /* No comment provided by engineer. */
-"There is no attachments" = "Нет вложений";
+"SettingsView.NavigationTitle" = "Настройки";
 
 /* No comment provided by engineer. */
-"There is no info materials" = "Нет информационных материалов";
+"SignInView.Email.TextField" = "Email";
 
-/* No comment provided by engineer. */
-"This phone already in use!" = "Этот телефон уже используется в сервисе!";
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"SignInView.internetNotAvailableMessage" = "Выключите режим полета или подключитесь к Wi-Fi.";
 
-/* No comment provided by engineer. */
-"Today: %lld / %lld" = "Сегодня: %lld / %lld";
+/* Internet connection not available */
+"SignInView.internetNotAvailableTitle" = "Подключение к интернету недоступно";
 
-/* No comment provided by engineer. */
-"Turn off Airplane Mode or connect to Wi-Fi." = "Выключите режим полета или подключитесь к Wi-Fi.";
+/* Sign In */
+"SignInView.signIn.Button" = "Войти";
 
-/* No comment provided by engineer. */
-"Unknown user role" = "Не известная роль пользователя";
+/* Please fill both username and password fields. */
+"SignInViewModel.fieldsAreEmptyAlertMessage" = "Пожалуйста, заполните оба поля: имя пользователя и пароль.";
 
-/* No comment provided by engineer. */
-"User is not activated!" = "Пользователь не активирован!";
+/* Provide auth data! */
+"SignInViewModel.fieldsAreEmptyAlertTitle" = "Заполните поля";
 
-/* No comment provided by engineer. */
-"User is not found!" = "Пользователь не найден!";
+/* Invalid password! */
+"SignInViewModel.invalidPasswordALertTitle" = "Неверный пароль!";
 
-/* No comment provided by engineer. */
-"Version" = "Версия";
+/* User is not activated! */
+"SignInViewModel.userIsNotActivatedAlertTitle" = "Пользователь не активирован!";
 
-/* No comment provided by engineer. */
-"Version not found" = "Версия не найдена";
+/* User is not found! */
+"SignInViewModel.userIsNotFoundAlertTitle" = "Пользователь не найден!";
 
 /* No comment provided by engineer. */
-"Video Сall" = "Видеозвонок";
+"TextField.Password.TextField" = "Пароль";
 
 /* No comment provided by engineer. */
-"Video Calls" = "Видеозвонки";
+"VideoCallMessageView.CallFromDoctor.Label" = "Звонок от врача";
 
-/* No comment provided by engineer. */
-"Website" = "Сайт";
+/* Call error */
+"VideoCallView.CallError" = "Ошибка звонка";
 
-/* No comment provided by engineer. */
-"Write your name and select a photo" = "Заполните имя и выберите фотографию";
+/* Calling... */
+"WaitingCallView.Calling" = "Звонок...";
 
-/* No comment provided by engineer. */
-"Your account has access to both the doctor and the patient role." = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пациента.";
+/* Connecting... */
+"WaitingCallView.Connecting" = "Подключение...";
 
-/* No comment provided by engineer. */
-"Your account has access to both the doctor and the user role. How do you want to sign in?" = "Ваша учетная запись имеет доступ как к роли врача, так и к роли пользователя. Как вы хотите войти?";
+/* Loading... */
+"WaitingCallView.Loading" = "Загрузка...";
 
 /* No comment provided by engineer. */
-"Your archived contracts will appear here." = "Здесь появятся ваши архивные контракты.";
+"WebView.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
-"Your contracts will appear here." = "Здесь появятся ваши контракты.";
+"WebView.Refresh.Label" = "Обновить";
 

@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 import os.log
 import UIKit
+import SwiftUI
 
 final class ChatViewModel: NSObject, ObservableObject, Alertable {
     private static let logger = Logger(
@@ -87,7 +88,7 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
             actionMessageId = Int(message.id)
             switch actionType {
             case .zoom:
-                presentAlert(title: "Zoom action is not supported now")
+                presentAlert(title: Text("ChatViewModel.zoomActionIsNotSupportedNowAlertTitle", comment: "Zoom action is not supported now"))
             case .url:
                 if let actionLink = message.actionLink {
                     UIApplication.shared.open(actionLink)
@@ -125,7 +126,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
         } catch {
-            presentAlert(title: "Failed to setup audio on your device", .error)
+            presentAlert(title: Text("ChatViewModel.failedToSetupAudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             ChatViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
             return
         }
@@ -133,7 +134,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
         } catch {
-            presentAlert(title: "Failed to play audio on your device", .error)
+            presentAlert(title: Text("ChatViewModel.failedToPlayAudioOnYourDeviceAlertTitle", comment: "Failed to play audio on your device"), .error)
             ChatViewModel.logger.error("startPlaying: Playing voice message failed: \(error.localizedDescription)")
             return
         }

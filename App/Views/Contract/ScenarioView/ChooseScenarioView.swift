@@ -55,24 +55,24 @@ struct ChooseScenarioView: View {
                     Label(scenario.wrappedName, systemImage: scenario.systemNameIcon)
                 })
             }
-            .navigationTitle("Monitoring Scenarios")
+            .navigationTitle("ChooseScenarioView.navigationTitle")
             .navigationBarTitleDisplayMode(.inline)
             .searchableIos16Only(text: query)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
-                        Picker("Filter", selection: $category, content: {
+                        Picker("ChooseScenarioView.Filter.Picker", selection: $category, content: {
                             ForEach(categoryChoices, id: \.self) { category in
                                 Text(category).tag(category)
                             }
                         })
                     } label: {
-                        Label("Filter", systemImage: "line.3.horizontal.decrease.circle")
+                        Label("ChooseScenarioView.Filter.Label", systemImage: "line.3.horizontal.decrease.circle")
                     }
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("ChooseScenarioView.Cancel.Button") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""
@@ -17,8 +18,8 @@ final class SignInViewModel: ObservableObject, Alertable {
     func auth() {
         guard !login.isEmpty, !password.isEmpty else {
             presentAlert(
-                title: "Provide auth data!",
-                message: "Please fill both username and password fields.", .warning)
+                title: Text("SignInViewModel.fieldsAreEmptyAlertTitle", comment: "Provide auth data!"),
+                message: Text("SignInViewModel.fieldsAreEmptyAlertMessage", comment: "Please fill both username and password fields."), .warning)
             return
         }
         showLoader = true
@@ -34,11 +35,11 @@ final class SignInViewModel: ObservableObject, Alertable {
                 case .unknownError:
                     self.presentGlobalAlert()
                 case .userIsNotActivated:
-                    self.presentAlert(title: "User is not activated!", .error)
+                    self.presentAlert(title: Text("SignInViewModel.userIsNotActivatedAlertTitle", comment: "User is not activated!"), .error)
                 case .incorrectData:
-                    self.presentAlert(title: "User is not found!", .error)
+                    self.presentAlert(title: Text("SignInViewModel.userIsNotFoundAlertTitle", comment: "User is not found!"), .error)
                 case .incorrectPassword:
-                    self.presentAlert(title: "Invalid password!", .error)
+                    self.presentAlert(title: Text("SignInViewModel.invalidPasswordALertTitle", comment: "Invalid password!"), .error)
                 }
             }
         }

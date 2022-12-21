@@ -15,13 +15,13 @@ final class EditPersonalDataViewModel: ObservableObject, Alertable {
     
     func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
         guard email.isEmail() else {
-            presentAlert(title: "Invalid email!", .warning)
+            presentAlert(title: Text("EditPersonalDataViewModel.invalidEmailAlertTitle", comment: "Invalid email!"), .warning)
             return
         }
         guard !name.isEmpty else {
             presentAlert(
-                title: "Name cannot be empty!",
-                message: "Please provide a name to continue.", .warning)
+                title: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertTitle", comment: "Name cannot be empty!"),
+                message: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertMessage", comment: "Please provide a name to continue."), .warning)
             return
         }
         showLoading = true
@@ -35,8 +35,8 @@ final class EditPersonalDataViewModel: ObservableObject, Alertable {
                     self?.presentGlobalAlert()
                 case .phoneExists:
                     self?.presentAlert(
-                        title: "This phone already in use!",
-                        message: "Please check if the phone is correct.", .warning)
+                        title: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle", comment: "This phone already in use!"),
+                        message: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage", comment: "Please check if the phone is correct."), .warning)
                 }
             }
         }

@@ -37,7 +37,7 @@ struct VideoCallView: View {
                         CallingView(contract: contract)
                             .environmentObject(videoCallViewModel)
                     default:
-                        Text("Call error")
+                        Text("VideoCallView.CallError", comment: "Call error")
                     }
                 }
                 .onAppear(perform: videoCallViewModel.videoCallViewAppear)

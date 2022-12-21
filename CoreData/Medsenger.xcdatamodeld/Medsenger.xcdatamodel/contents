@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="22A400" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Agent" representedClassName="Agent" syncable="YES" codeGenerationType="category">
         <attribute name="agentDescription" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -298,6 +298,8 @@
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
         <relationship name="lastFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastFetchedMessage" inverseEntity="Contract"/>
         <relationship name="lastGlobalFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastGlobalFetchedMessage" inverseEntity="Contract"/>
+        <relationship name="nextMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="previousMessage" inverseEntity="Message"/>
+        <relationship name="previousMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="nextMessage" inverseEntity="Message"/>
         <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>
         <relationship name="replyToMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="replyedMessages" inverseEntity="Message"/>
         <uniquenessConstraints>

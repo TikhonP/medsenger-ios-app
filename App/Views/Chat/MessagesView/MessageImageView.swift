@@ -13,15 +13,34 @@ struct MessageImageView: View {
     
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
+    @AppStorage(UserDefaults.Keys.showFullPreviewForImagesKey) private var showFullPreviewForImages: Bool = UserDefaults.showFullPreviewForImages
+    
     var body: some View {
+        ZStack {
+            if showFullPreviewForImages {
+                image
+            } else {
+                HStack {
+                    image
+                        .clipShape(Rectangle())
+                        .frame(height: 50)
+                        .cornerRadius(10)
+                    Text(imageAttachment.wrappedName)
+                }
+                .padding(10)
+            }
+        }
+        .onTapGesture {
+            openFullImagePreview()
+        }
+    }
+    
+    var image: some View {
         ZStack {
             if let path = imageAttachment.dataPath, let uiImage = UIImage(contentsOfFile: path.path) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
-                    .onTapGesture {
-                        chatViewModel.quickLookDocumentUrl = path
-                    }
             } else {
                 HStack {
                     Spacer()
@@ -33,7 +52,10 @@ struct MessageImageView: View {
                 }
             }
         }
-//        .frame(width: 200, height: 300)
+    }
+    
+    func openFullImagePreview() {
+        chatViewModel.quickLookDocumentUrl = imageAttachment.dataPath
     }
 }
 

@@ -124,7 +124,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                     fileURL.stopAccessingSecurityScopedResource()
                 }
             } catch {
-                presentAlert(title: "Failed to add attachment")
+                presentAlert(title: Text("MessageInputViewModel.failedToAddAttachmentAlertTitle", comment: "Failed to add attachment"))
                 MessageInputViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
             }
         }
@@ -167,7 +167,7 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
         } catch {
-            presentAlert(title: "Failed to prepare audio recording")
+            presentAlert(title: Text("MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle", comment: "Failed to prepare audio recording"))
             MessageInputViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
             return
         }
@@ -178,7 +178,11 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             DispatchQueue.main.async {
                 guard allowed else {
                     self.presentAlert(
-                        Alert(title: Text("Please Allow Access"), message: Text("Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON."), primaryButton: .cancel(Text("Not Now")), secondaryButton: .default(Text("Settings")) {
+                        Alert(
+                            title: Text("MessageInputViewModel.allowMicrophoneAccessAlertTitle", comment: "Please Allow Access"),
+                            message: Text("MessageInputViewModel.allowMicrophoneAccessAlertMessage", comment: "Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON."),
+                            primaryButton: .cancel(Text("MessageInputViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
+                            secondaryButton: .default(Text("MessageInputViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
                             DispatchQueue.main.async {
                                 if let url = URL(string: UIApplication.openSettingsURLString) {
                                     UIApplication.shared.open(url)
@@ -231,7 +235,7 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
                     self.audioRecorder?.stop()
                     self.audioRecorder = nil
                     self.isRecordingVoiceMessage = false
-                    self.presentAlert(title: "Recording voice message failed.")
+                    self.presentAlert(title: Text("MessageInputViewModel.recordingMessageFailedAlertTitle", comment: "Recording voice message failed."))
                     MessageInputViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
                 }
             }
@@ -267,7 +271,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
         } catch {
-            presentAlert(title: "Failed to setup audio on your device", .error)
+            presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             MessageInputViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
             return
         }
@@ -275,7 +279,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
         } catch {
-            presentAlert(title: "Failed to play audio on your device", .error)
+            presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
             MessageInputViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
             return
         }
