@@ -134,6 +134,7 @@ final class AddContractViewModel: ObservableObject, Alertable {
             DispatchQueue.main.async {
                 self?.submittingAddPatient = false
                 if succeeded {
+                    ChatsViewModel.shared.getContracts(presentFailedAlert: false)
                     completion()
                 } else {
                     self?.presentGlobalAlert()

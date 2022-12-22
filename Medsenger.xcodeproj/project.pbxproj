@@ -23,6 +23,8 @@
 		432442962948D421002476DB /* TextMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442952948D421002476DB /* TextMessageView.swift */; };
 		432442982948D57F002476DB /* MessageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442972948D57F002476DB /* MessageAttachmentView.swift */; };
 		4324429A2948DACC002476DB /* MessageTimeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442992948DACC002476DB /* MessageTimeBadge.swift */; };
+		4334D109295395E600E7816D /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D108295395E600E7816D /* PushNotifications.swift */; };
+		4334D10B2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
 		434092012930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */; };
 		434399F32927E0A7001D7C4F /* View+scrollDismissesKeyboardIos16Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399F22927E0A7001D7C4F /* View+scrollDismissesKeyboardIos16Only.swift */; };
@@ -270,6 +272,8 @@
 		432442952948D421002476DB /* TextMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageView.swift; sourceTree = "<group>"; };
 		432442972948D57F002476DB /* MessageAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentView.swift; sourceTree = "<group>"; };
 		432442992948DACC002476DB /* MessageTimeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeBadge.swift; sourceTree = "<group>"; };
+		4334D108295395E600E7816D /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
+		4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+addTapGestureRecognizer.swift"; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
 		434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsArchiveRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		434399F22927E0A7001D7C4F /* View+scrollDismissesKeyboardIos16Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+scrollDismissesKeyboardIos16Only.swift"; sourceTree = "<group>"; };
@@ -768,6 +772,7 @@
 				43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */,
 				437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */,
 				43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */,
+				4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */,
 			);
 			path = ViewExtensions;
 			sourceTree = "<group>";
@@ -1100,6 +1105,7 @@
 				43EF445929228CD0005DF084 /* Contracts */,
 				43EF444129228B76005DF084 /* Account */,
 				43EF443829228A50005DF084 /* Login */,
+				4334D108295395E600E7816D /* PushNotifications.swift */,
 				43EF443629228A3F005DF084 /* Constants.swift */,
 			);
 			path = MedsengerKit;
@@ -1276,7 +1282,7 @@
 		43EF43E729227F74005DF084 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = "TelePat ltd.";
@@ -1292,7 +1298,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				ru,
 			);
 			mainGroup = 43EF43E629227F74005DF084;
@@ -1362,12 +1367,14 @@
 				437BEB5929435B1D008EF4DE /* Alertable.swift in Sources */,
 				43EF444729228BAB005DF084 /* UploadAvatarResource.swift in Sources */,
 				435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */,
+				4334D109295395E600E7816D /* PushNotifications.swift in Sources */,
 				435D570B293A11200013B0F4 /* FileRequest.swift in Sources */,
 				43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */,
 				4351CE182946858B00DF6830 /* AudioView.swift in Sources */,
 				43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */,
 				437BEB552943549A008EF4DE /* SettingsMainFormView.swift in Sources */,
 				43D505D3293F714A00EE3756 /* Clinic+Wrappers.swift in Sources */,
+				4334D10B2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift in Sources */,
 				43EF449729228EB1005DF084 /* Filename.swift in Sources */,
 				43EF441E2922874A005DF084 /* BotAction+CoreDataClass.swift in Sources */,
 				435D56F72937A8160013B0F4 /* MessageInputView.swift in Sources */,
@@ -1730,6 +1737,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need this so that you can record and share voice messages and videos with sound.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -1767,6 +1775,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need this so that you can record and share voice messages and videos with sound.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;

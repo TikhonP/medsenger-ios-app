@@ -46,7 +46,7 @@ struct CallingView: View {
                         .font(.largeTitle)
                         .padding(.top)
                     if videoCallViewModel.finishingCall {
-                        Text("Ending call...")
+                        Text("CallingView.endingCall", comment: "Ending call...")
                             .padding(.top)
                         Spacer()
                     } else {

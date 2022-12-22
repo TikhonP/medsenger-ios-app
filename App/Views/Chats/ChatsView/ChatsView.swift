@@ -142,6 +142,7 @@ struct ChatsView: View {
             chatsViewModel.initilizeWebsockets()
             chatsViewModel.getContracts(presentFailedAlert: false)
             contentViewModel.markChatAsClosed()
+            PushNotifications.onChatsViewAppear()
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -149,20 +150,26 @@ struct ChatsView: View {
                     if userRole == .doctor {
                         Button(action: {
                             showNewContractModal.toggle()
-                        }, label: { Image(systemName: "square.and.pencil") })
+                        }, label: {
+                            Label("ChatsView.addContractButton.Label", systemImage: "person.badge.plus")
+                        })
                         .id(UUID())
                     }
                     NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
                         ArchivesChatsView(user: user)
                             .environmentObject(chatsViewModel)
-                    }, label: { Image(systemName: "archivebox") })
+                    }, label: {
+                        Label("ChatsView.archiveButton.Label", systemImage: "archivebox")
+                    })
                     .isDetailLink(false)
                 }
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showSettingsModal.toggle() }, label: { Image(systemName: "gear") })
-                    .id(UUID())
+                Button(action: { showSettingsModal.toggle() }, label: {
+                    Label("ChatsView.settingsButton.Label", systemImage: "gear")
+                })
+                .id(UUID())
             }
         }
         .onChange(of: scenePhase) { newPhase in
@@ -172,6 +179,8 @@ struct ChatsView: View {
         }
         .onChange(of: contentViewModel.openChatContractId, perform: { newContractId in
             if let newContractId = newContractId {
+                showSettingsModal = false
+                showNewContractModal = false 
                 chatsNavigationSelection = newContractId
             }
         })

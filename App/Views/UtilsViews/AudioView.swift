@@ -40,7 +40,7 @@ struct AudioView: View {
                     }
                 }
             } else {
-                Text("Failed to preview voice message")
+                Text("AudioView.failedToPreviewVoiceMessage", comment: "Failed to preview voice message")
             }
         }
     }

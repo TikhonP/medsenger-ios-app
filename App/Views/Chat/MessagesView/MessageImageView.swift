@@ -10,9 +10,7 @@ import SwiftUI
 
 struct MessageImageView: View {
     @ObservedObject var imageAttachment: ImageAttachment
-    
     @EnvironmentObject private var chatViewModel: ChatViewModel
-    
     @AppStorage(UserDefaults.Keys.showFullPreviewForImagesKey) private var showFullPreviewForImages: Bool = UserDefaults.showFullPreviewForImages
     
     var body: some View {
@@ -45,6 +43,7 @@ struct MessageImageView: View {
                 HStack {
                     Spacer()
                     ProgressView()
+                        .padding()
                         .onAppear {
                             chatViewModel.fetchImageAttachment(imageAttachment)
                         }

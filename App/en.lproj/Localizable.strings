@@ -1,7 +1,683 @@
-/* 
-  Localizable.strings
-  Medsenger
+/* %@ Amazing, %@! */
+"%@ ComplianceView.Amazing %@!" = "%@ Amazing, %@!";
 
-  Created by Tikhon Petrishchev on 09.12.2022.
-  Copyright © 2022 TelePat ltd. All rights reserved.
-*/
+/* %@ Good job, %@! */
+"%@ ComplianceView.GoodJob, %@!" = "%@ Good job, %@!";
+
+/* %@ Go on, %@! */
+"%@ ComplianceView.GoOn %@!" = "%@ Go on, %@!";
+
+/* %@ Great, %@! */
+"%@ ComplianceView.Great, %@!" = "%@ Great, %@!";
+
+/* %@ Subpress, %@! */
+"%@ ComplianceView.Subpress %@!" = "%@ Come on, %@!";
+
+/* %@ Wow, %@! */
+"%@ ComplianceView.Wow, %@!" = "%@ Wow, %@!";
+
+/* No comment provided by engineer. */
+"AddContractView.addPatient.Button" = "Add Patient";
+
+/* No comment provided by engineer. */
+"AddContractView.birthday: %@" = "Birthdate: %@";
+
+/* No comment provided by engineer. */
+"AddContractView.birthday.DatePicker" = "Birthdate";
+
+/* No comment provided by engineer. */
+"AddContractView.ClinicPicker" = "Clinic";
+
+/* Contract information */
+"AddContractView.contractData.Header" = "Contract information";
+
+/* No comment provided by engineer. */
+"AddContractView.contractEndDate.DatePicker" = "End date";
+
+/* No comment provided by engineer. */
+"AddContractView.contractNumber.TextField" = "Contract number";
+
+/* No comment provided by engineer. */
+"AddContractView.contractType.Picker" = "Contract type";
+
+/* No comment provided by engineer. */
+"AddContractView.done.Button" = "Done";
+
+/* It is necessary to provide an active email */
+"AddContractView.email.Footer" = "It is necessary to provide an active email.";
+
+/* No comment provided by engineer. */
+"AddContractView.findPatient.Button" = "Find Patient";
+
+/* Choose a clinic for the new patient */
+"AddContractView.institution.Footer" = "Choose a clinic for the new patient.";
+
+/* Institution */
+"AddContractView.institution.Header" = "Institution";
+
+/* Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request. */
+"AddContractView.knownPatient.Footer" = "Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request.";
+
+/* Patient Found */
+"AddContractView.knownPatient.Header" = "Patient Found";
+
+/* No comment provided by engineer. */
+"AddContractView.navigationTitle" = "Add Patient";
+
+/* Patient */
+"AddContractView.patientData.Header" = "Patient";
+
+/* No comment provided by engineer. */
+"AddContractView.patientEmail.TextField" = "Patient email";
+
+/* No comment provided by engineer. */
+"AddContractView.patientName.TextField" = "Patient name";
+
+/* No comment provided by engineer. */
+"AddContractView.phone.TextField" = "Phone";
+
+/* No comment provided by engineer. */
+"AddContractView.responseTime.Picker" = "Response time";
+
+/* No comment provided by engineer. */
+"AddContractView.sex.Picker" = "Sex";
+
+/* No comment provided by engineer. */
+"AddContractView.videoCalls.Toggle" = "Video calls";
+
+/* Please check email. Contract with provided email already exists. */
+"AddContractViewModel.contractAlreadyExistsAlertMessage" = "Please check email. Contract with provided email already exists.";
+
+/* Contract already exists */
+"AddContractViewModel.contractAlreadyExistsAlertTitle" = "Contract already exists!";
+
+/* Please check contract end date and correct it. */
+"AddContractViewModel.contractAndDateAreOlderThanNowAlertMessage" = "Please check contract end date and correct it.";
+
+/* Contract end date are older than now! */
+"AddContractViewModel.contractAndDateAreOlderThanNowAlertTitle" = "Contract end date already passed!";
+
+/* Email is empty! */
+"AddContractViewModel.emailIsEmptyAlertTitle" = "Email is empty!";
+
+/* Please fill the email field. */
+"AddContractViewModel.emailIsEmptyMessage" = "Please fill the email field.";
+
+/* Please check patient email to continue. */
+"AddContractViewModel.invalidEmailAlertMessage" = "Please check patient email to continue.";
+
+/* Invalid patient email! */
+"AddContractViewModel.invalidEmailAlertTitle" = "Invalid patient email!";
+
+/* Please provide a name to continue. */
+"AddContractViewModel.nameIsEmptyAlertMessage" = "Please provide a name to continue.";
+
+/* Patient name cannot be empty! */
+"AddContractViewModel.nameIsEmptyAlertTitle" = "Patient name cannot be empty!";
+
+/* No comment provided by engineer. */
+"ArchivesChatsView.navigationTitle" = "Archived Chats";
+
+/* No comment provided by engineer. */
+"AttachmentsView.AttachmentsType.Picker" = "Attachments type";
+
+/* Files */
+"AttachmentsView.files" = "Files";
+
+/* Images */
+"AttachmentsView.images" = "Images";
+
+/* There is no attachments */
+"AttachmentsView.noAttachments" = "There is no attachments";
+
+/* There is no images */
+"AttachmentsView.noImages" = "There is no images";
+
+/* You */
+"AttachmentsView.You" = "You";
+
+/* No comment provided by engineer. */
+"ChangePasswordView.navigationTitle" = "Change Password";
+
+/* No comment provided by engineer. */
+"ChangePasswordView.NewPassword.TextField" = "New password";
+
+/* Password must be more than 6 characters */
+"ChangePasswordView.passwordFields.Footer" = "Password must be more than 6 characters";
+
+/* No comment provided by engineer. */
+"ChangePasswordView.RepeatPassword.TextField" = "Repeat password";
+
+/* No comment provided by engineer. */
+"ChangePasswordView.Save.Button" = "Save";
+
+/* Password must be more than 6 characters */
+"ChangePasswordViewModel.passwordMustBeMoreThan6charactersAlertTitle" = "Password must be more than 6 characters.";
+
+/* Please check that the passwords are the same. */
+"ChangePasswordViewModel.passwordsDoNotMatchAlertMessage" = "Please check that the passwords are the same.";
+
+/* Passwords do not match! */
+"ChangePasswordViewModel.passwordsDoNotMatchAlertTitle" = "Passwords do not match!";
+
+/* No comment provided by engineer. */
+"ChatsView.CallTheClinic.Label" = "Call the Clinic";
+
+/* No comment provided by engineer. */
+"ChatsView.DismissMessages.Label" = "Dismiss Messages";
+
+/* No comment provided by engineer. */
+"ChatsView.EndCounseling.Label" = "End Counseling";
+
+/* No comment provided by engineer. */
+"ChatsView.navigationTitle" = "Counseling";
+
+/* The first time you open a chat, all messages are loaded, this may take some time. */
+"ChatView.loadingText" = "The first time you open a chat, all messages are loaded, this may take some time.";
+
+/* no connection */
+"ChatView.noConnection" = "no connection";
+
+/* offline */
+"ChatView.offline" = "offline";
+
+/* online */
+"ChatView.online" = "online";
+
+/* Failed to play audio on your device */
+"ChatViewModel.failedToPlayAudioOnYourDeviceAlertTitle" = "Failed to play audio on your device!";
+
+/* Failed to setup audio on your device */
+"ChatViewModel.failedToSetupAudioOnYourDeviceAlertTitle" = "Failed to setup audio on your device!";
+
+/* Zoom action is not supported now */
+"ChatViewModel.zoomActionIsNotSupportedNowAlertTitle" = "Zoom action is not supported now!";
+
+/* Your account has access to both the doctor and the patient role. */
+"ChooseRoleView.chooseRoleLabel" = "Your account has access to both the doctor and the patient role.";
+
+/* How do you want to sign in? */
+"ChooseRoleView.chooseRoleQuestion" = "How would you like to sign in?";
+
+/* No comment provided by engineer. */
+"ChooseRoleView.SignInAsDoctor.Button" = "Sign In as Doctor";
+
+/* No comment provided by engineer. */
+"ChooseRoleView.SignInAsPatient.Button" = "Sign In as Patient";
+
+/* No comment provided by engineer. */
+"ChooseScenarioView.Cancel.Button" = "Cancel";
+
+/* No comment provided by engineer. */
+"ChooseScenarioView.Filter.Label" = "Filter";
+
+/* No comment provided by engineer. */
+"ChooseScenarioView.Filter.Picker" = "Filter";
+
+/* No comment provided by engineer. */
+"ChooseScenarioView.navigationTitle" = "Choose Scenario";
+
+/* All assignments for today completed! */
+"ComplianceView.allAssignmentsToday" = "All done for today!";
+
+/* Compliance */
+"ComplianceView.complianceHeader" = "Compliance";
+
+/* Tasks for today: %lld */
+"ComplianceView.tasksForToday %lld" = "Tasks for today: %lld";
+
+/* Сегодня Вы выполнили %lld/%lld заданий */
+"ComplianceView.todayYouDidTasks %lld/%lld" = "Today you have completed %lld/%lld tasks.";
+
+/* You don't have any appointments from the doctor today. */
+"ComplianceView.youDontHaveAnyAppointmentsToday" = "You don't have any tasks from the doctor today.";
+
+/* Doctor: %@ */
+"ConsiliumChatRow.Doctor: %@" = "Doctor: %@";
+
+/* No comment provided by engineer. */
+"ConsiliumChatRow.doctorAndPatientPhoto.accessibilityLabel" = "Doctor and patient photo";
+
+/* Monitoring: %@ */
+"ConsiliumChatRow.Monitoring: %@" = "Monitoring: %@";
+
+/* No comment provided by engineer. */
+"ConsiliumChatRow.unread.accessibilityLabel %lld" = "Unread messages: %lld";
+
+/* You: %@ */
+"ConsiliumChatRow.you %@" = "You: %@";
+
+/* No comment provided by engineer. */
+"ContractDevicesView.Cancel.Button" = "Cancel";
+
+/* No comment provided by engineer. */
+"ContractDevicesView.navigationTitle" = "Devices";
+
+/* No comment provided by engineer. */
+"ContractDevicesView.Save.Button" = "Save";
+
+/* Actions */
+"ContractView.actions.Header" = "Actions";
+
+/* No comment provided by engineer. */
+"ContractView.AddNotes.label" = "Add Notes";
+
+/* Agent action */
+"ContractView.AgentActionPlaceholder" = "Agent action";
+
+/* No comment provided by engineer. */
+"ContractView.AssignMonitoringScenario.Label" = "Assign Monitoring Scenario";
+
+/* No comment provided by engineer. */
+"ContractView.Attachments.label" = "Attachments";
+
+/* No comment provided by engineer. */
+"ContractView.CallTheClinic.label" = "Call the Clinic";
+
+/* Consultants */
+"ContractView.Consultants.Header" = "Consultants";
+
+/* Contract Information */
+"ContractView.ContractInformation.Header" = "Contract Information";
+
+/* Contract number */
+"ContractView.contractNumber" = "Contract number";
+
+/* No comment provided by engineer. */
+"ContractView.DevicesControl.Label" = "Devices Control";
+
+/* Disable Scenario */
+"ContractView.disableMonitoringAlertButton" = "Disable Scenario";
+
+/* All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again. */
+"ContractView.disableMonitoringAlertMessage" = "All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again.";
+
+/* Are you sure you want to disable the monitoring scenario? */
+"ContractView.disableMonitoringAlertTitle" = "Are you sure you want to disable the monitoring scenario?";
+
+/* No comment provided by engineer. */
+"ContractView.DisableScenario.Label" = "Disable Scenario";
+
+/* No comment provided by engineer. */
+"ContractView.DismissMessages.label" = "Dismiss Messages";
+
+/* No comment provided by engineer. */
+"ContractView.EditNotes.label" = "Edit Notes";
+
+/* from %@ to %@ */
+"ContractView.fromDate %@ ContractView.toDate %@" = "from %@ to %@";
+
+/* No comment provided by engineer. */
+"ContractView.InfoMaterials.label" = "Info Materials";
+
+/* Monitoring */
+"ContractView.Monitoring.Header" = "Monitoring";
+
+/* Notes */
+"ContractView.notes.Header" = "Notes";
+
+/* Relatives and care */
+"ContractView.RelativesAndCare.Header" = "Relatives and care";
+
+/* done */
+"ContractView.taskForDayDone" = "done";
+
+/* Tasks for the day */
+"ContractView.tasksForDay.Header" = "Tasks for the day";
+
+/* No comment provided by engineer. */
+"ContractView.VideoСall.label" = "Validity";
+
+/* Complience: %lld / %lld */
+"DoctorChatRow.Complience %lld / %lld" = "Complience: %lld / %lld";
+
+/* Contract %@. End: %@ */
+"DoctorChatRow.Contract %@. End: %@" = "Contract %@. End: %@";
+
+/* No comment provided by engineer. */
+"EditNotesViewModel.Cancel.Button" = "Cancel";
+
+/* No comment provided by engineer. */
+"EditNotesViewModel.NavigationTitle" = "Edit Notes";
+
+/* No comment provided by engineer. */
+"EditNotesViewModel.Save.Button" = "Save";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.BirthdayDatePicker" = "Birthdate";
+
+/* Email is the main identifier for your account and an address for sending notifications */
+"EditPersonalDataView.emailFooter" = "Email is the main identifier for your account and an address for sending notifications.";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.emailTextFieldPlaceholder" = "Email";
+
+/* Write your name and select a photo */
+"EditPersonalDataView.nameAndBirthDayFooter" = "Write your name and select a photo.";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.nameTextFieldPlaceholder" = "Name";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationCancelButton" = "Cancel";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationSaveButton" = "Save";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.navigationTitle" = "Edit Personal Data";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.newPhotoButton" = "New Photo";
+
+/* Phone is optional */
+"EditPersonalDataView.phoneFooter" = "Phone is optional.";
+
+/* No comment provided by engineer. */
+"EditPersonalDataView.phoneTextFieldPlaceholder" = "Phone ";
+
+/* Invalid email! */
+"EditPersonalDataViewModel.invalidEmailAlertTitle" = "Invalid email!";
+
+/* Please provide a name to continue. */
+"EditPersonalDataViewModel.nameCannotBeEmptyAlertMessage" = "Please provide a name to continue.";
+
+/* Name cannot be empty! */
+"EditPersonalDataViewModel.nameCannotBeEmptyAlertTitle" = "Name cannot be empty!";
+
+/* Please check if the phone is correct. */
+"EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage" = "Please check if the phone is correct.";
+
+/* This phone already in use! */
+"EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle" = "This phone is already in use!";
+
+/* No archived contracts */
+"EmptyArchiveChatsView.noArchivedContracts" = "No archived contracts";
+
+/* Your archived contracts will appear here. */
+"EmptyArchiveChatsView.yourContractsWillAppearHere" = "Your archived contracts will appear here.";
+
+/* No contracts */
+"EmptyChatsView.noContracts" = "No contracts";
+
+/* Your contracts will appear here. */
+"EmptyChatsView.yourContractsAppearHere" = "Your contracts will appear here.";
+
+/* No comment provided by engineer. */
+"InfoMaterialsView.navigationTitle" = "Info Materials";
+
+/* There is no info materials */
+"InfoMaterialsView.noInfoMaterials" = "There is no info materials";
+
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"internetOfflineWarningInBottomBar.message" = "Turn off Airplane Mode or connect to Wi-Fi.";
+
+/* Internet connection not available */
+"internetOfflineWarningInBottomBar.title" = "Internet connection not available";
+
+/* Add attachment */
+"MainInputView.addAttachment.ActionSheetTitle" = "Add Attachment";
+
+/* Browse... */
+"MainInputView.Browse.Button" = "Browse...";
+
+/* Choose Photo */
+"MainInputView.ChoosePhoto.Button" = "Choose Photo";
+
+/* Message input placeholder */
+"MainInputView.Message.TextView" = "Message input placeholder";
+
+/* Take Photo */
+"MainInputView.TakePhoto.Button" = "Take Photo";
+
+/* Not Now */
+"MessageInputViewModel.allowMicrophoneAccessAlertCancelButton" = "Not Now";
+
+/* Medsenger needs access to your microphone so that you can send voice messages.
+
+Please go to your device's settings > Privacy > Microphone and set Medsenger to ON. */
+"MessageInputViewModel.allowMicrophoneAccessAlertMessage" = "Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON.";
+
+/* Settings */
+"MessageInputViewModel.allowMicrophoneAccessAlertSettingsButton" = "Settings";
+
+/* Please Allow Access */
+"MessageInputViewModel.allowMicrophoneAccessAlertTitle" = "Please Allow Access";
+
+/* Failed to add attachment */
+"MessageInputViewModel.failedToAddAttachmentAlertTitle" = "Failed to add attachment";
+
+/* Failed to play audio on your device */
+"MessageInputViewModel.failedToPlayAudioOnYourDevice" = "Failed to play audio on your device";
+
+/* Failed to prepare audio recording */
+"MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle" = "Failed to prepare audio recording";
+
+/* Failed to setup audio on your device */
+"MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle" = "Failed to setup audio on your device";
+
+/* Recording voice message failed. */
+"MessageInputViewModel.recordingMessageFailedAlertTitle" = "Recording voice message failed.";
+
+/* No comment provided by engineer. */
+"MessageTimeDividerView.Today" = "Today";
+
+/* Automatic message */
+"MessageTitleView.AutomaticMessage" = "Automatic message";
+
+/* No comment provided by engineer. */
+"MessageView.Reply.Button" = "Reply";
+
+/* No comment provided by engineer. */
+"PatientChatRow.ClinicLogo.accessibilityLabel" = "Clinic Logo";
+
+/* No comment provided by engineer. */
+"PatientChatRow.DoctorPhoto.accessibilityLabel" = "Doctor Photo";
+
+/* Monitoring: %@ */
+"PatientChatRow.Monitoring %@" = "Monitoring: %@";
+
+/* No comment provided by engineer. */
+"PatientChatRow.Unread.accessibilityLabel %lld" = "Unread messages: %lld";
+
+/* Please check your input or contact Medsenger support. */
+"processRequestError.IncorrectDataProvidedAlertMessage" = "Please check your input or contact Medsenger support.";
+
+/* Incorrect data provided */
+"processRequestError.incorrectDataProvidedAlertTitle" = "Incorrect data provided";
+
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"processRequestError.internaetConnectionOfflineAlertMessage" = "Turn off Airplane Mode or connect to Wi-Fi.";
+
+/* The Internet connection appears to be offline */
+"processRequestError.internaetConnectionOfflineAlertTitle" = "The Internet connection appears to be offline";
+
+/* Oops! Server error */
+"processRequestError.serverErrorAlertTitle" = "Oops! Server error";
+
+/* Please check your connection and try again. */
+"processRequestError.timeOutAlertMessage" = "Please check your connection and try again.";
+
+/* The request timed out */
+"processRequestError.timeOutAlertTitle" = "The request timed out";
+
+/* No comment provided by engineer. */
+"RecordingVoiceMessageView.Cancel.Button" = "Cancel";
+
+/* Reply %@ */
+"ReplyedMessageView.Reply %@" = "Reply %@";
+
+/* Assign scenario */
+"ScenarioView.AssignScenario.Button" = "Assign scenario";
+
+/* Invalid field */
+"ScenarioViewModel.invalidFieldAlertTitle" = "Invalid field";
+
+/* The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come. */
+"SettingsMainFormView.aboutFooter" = "The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come.";
+
+/* About */
+"SettingsMainFormView.aboutHeader" = "About";
+
+/* Birthday */
+"SettingsMainFormView.birthday" = "Birthday";
+
+/* (Build not found) */
+"SettingsMainFormView.buildNotFound" = "(Build not found)";
+
+/* Change your password for strong security */
+"SettingsMainFormView.changePasswordFooter" = "Change your password for strong security";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.changePasswordLabel" = "Change Password";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.changeProfilePhotoLabel" = "Change Photo Profile";
+
+/* Your account has access to both the doctor and the patient role. */
+"SettingsMainFormView.changeRoleFooter" = "Your account has access to both the doctor and the patient role.";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.emailNotificationsLabel" = "Email Notifications";
+
+/* Push notifications can inform you about new message on your phone */
+"SettingsMainFormView.notificationFooter" = "Push notifications can inform you about new message on your phone";
+
+/* Notifications */
+"SettingsMainFormView.notificationHeader" = "Notifications";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.pushNotificationsLabel" = "Push Notifications";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.showFullPreviewForImages.Footer" = "If enabled, pictures in the chat will be displayed in large format";
+
+/* Show large image preview */
+"SettingsMainFormView.showFullPreviewForImages.Toggle" = "Show large image preview";
+
+/* Sign Out */
+"SettingsMainFormView.signOutButton" = "Sign Out";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.signOutConfirmationActionSheetTitle" = "Do you want to log out of your account?";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.supportLabel" = "Support";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.switchToDoctorButtonLabel" = "Switch to Doctor";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.switchToPatientButtonLabel" = "Switch to Patient";
+
+/* Version */
+"SettingsMainFormView.version" = "Version";
+
+/* Version not found */
+"SettingsMainFormView.versionNotFound" = "Version not found";
+
+/* No comment provided by engineer. */
+"SettingsMainFormView.websiteLabel" = "Website";
+
+/* Not Now */
+"SettingsMainFormViewModel.allowMicrophoneAccessAlertCancelButton" = "Not Now";
+
+/* Settings */
+"SettingsMainFormViewModel.allowMicrophoneAccessAlertSettingsButton" = "Settings";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.noFcmTokenAlertTitle" = "Notification service loading error";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.notificationPermissionNeededAlertMessage" = "Notifications will help you not to miss important messages from Medsenger\n\nPlease enable notifications for Medsenger in Device Settings > Notifications > Medsenger.";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.notificationPermissionNeededAlertTitle" = "Turn on notifications";
+
+/* Browse... */
+"SettingsProfileImageView.browseButton" = "Browse...";
+
+/* Choose a new profile photo */
+"SettingsProfileImageView.chooseNewProfilePhotoAlertTitle" = "Choose a new profile photo";
+
+/* Choose Photo */
+"SettingsProfileImageView.choosePhotoButton" = "Choose Photo";
+
+/* Take Photo */
+"SettingsProfileImageView.takePhotoButton" = "Take Photo";
+
+/* Apple Health */
+"SettingsSyncWithAppleHealthSectionView.appleHealthHeader" = "Apple Health";
+
+/* Apple Health Sync */
+"SettingsSyncWithAppleHealthSectionView.appleHealthSyncToggle" = "Apple Health Sync";
+
+/* Heart Rate */
+"SettingsSyncWithAppleHealthSectionView.heartRate" = "Heart Rate";
+
+/* Oxygen Saturation */
+"SettingsSyncWithAppleHealthSectionView.oxygenSaturation" = "Oxygen Saturation";
+
+/* Respiratory Rate */
+"SettingsSyncWithAppleHealthSectionView.respiratoryRate" = "Respiratory Rate";
+
+/* Steps */
+"SettingsSyncWithAppleHealthSectionView.steps" = "Steps";
+
+/* No comment provided by engineer. */
+"SettingsView.Done.Button" = "Done";
+
+/* No comment provided by engineer. */
+"SettingsView.Edit.Button" = "Edit";
+
+/* No comment provided by engineer. */
+"SettingsView.NavigationTitle" = "Settings";
+
+/* Turn off Airplane Mode or connect to Wi-Fi. */
+"SignInView.internetNotAvailableMessage" = "Turn off Airplane Mode or connect to Wi-Fi.";
+
+/* Internet connection not available */
+"SignInView.internetNotAvailableTitle" = "Turn off Airplane Mode or connect to Wi-Fi.";
+
+/* Sign In */
+"SignInView.signIn.Button" = "Sign In";
+
+/* Please fill both username and password fields. */
+"SignInViewModel.fieldsAreEmptyAlertMessage" = "Please fill both username and password fields.";
+
+/* Provide auth data! */
+"SignInViewModel.fieldsAreEmptyAlertTitle" = "Provide auth data!";
+
+/* Invalid password! */
+"SignInViewModel.invalidPasswordALertTitle" = "Invalid password!";
+
+/* User is not activated! */
+"SignInViewModel.userIsNotActivatedAlertTitle" = "User is not activated!";
+
+/* User is not found! */
+"SignInViewModel.userIsNotFoundAlertTitle" = "User is not found!";
+
+/* No comment provided by engineer. */
+"TextField.Password.TextField" = "Password";
+
+/* No comment provided by engineer. */
+"VideoCallMessageView.CallFromDoctor.Label" = "Call from Doctor";
+
+/* Call error */
+"VideoCallView.CallError" = "Call error";
+
+/* Calling... */
+"WaitingCallView.Calling" = "Calling...";
+
+/* Connecting... */
+"WaitingCallView.Connecting" = "Connecting...";
+
+/* Loading... */
+"WaitingCallView.Loading" = "Loading...";
+
+/* No comment provided by engineer. */
+"WebView.Cancel.Button" = "Cancel";
+
+/* No comment provided by engineer. */
+"WebView.Refresh.Label" = "Refresh";
+

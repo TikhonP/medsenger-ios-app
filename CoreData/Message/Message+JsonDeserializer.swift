@@ -44,11 +44,13 @@ extension Message {
         
         var sentAsDate: Date? {
             let formatter = DateFormatter.ddMMyyyyAndTime
+            formatter.timeZone = TimeZone(abbreviation: "UTC")
             return formatter.date(from: sent)
         }
         
         var deadlineAsDate: Date? {
             let formatter = DateFormatter.ddMMyyyyAndTime
+            formatter.timeZone = TimeZone(abbreviation: "UTC")
             return formatter.date(from: deadline)
         }
     }

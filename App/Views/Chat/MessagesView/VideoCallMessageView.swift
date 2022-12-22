@@ -18,7 +18,7 @@ struct VideoCallMessageView: View {
             Text(message.wrappedText)
                 .frame(width: 230)
             if let date = message.sent {
-                Text(date, formatter: DateFormatter.HHmm)
+                Text(date, style: .time)
             }
         }
         .padding(.vertical, 10)

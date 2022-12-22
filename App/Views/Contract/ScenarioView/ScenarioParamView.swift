@@ -15,12 +15,12 @@ struct ScenarioParamView: View {
         if param.type == .number || param.type == .text {
             Section(header: Text(param.name), footer: Text(param.description)) {
                 if param.type == .number {
-                    TextField("Enter number here", text: $param.value)
+                    TextField("ScenarioParamView.enterNumberHere.TextField", text: $param.value)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .keyboardType(.numberPad)
                 } else if param.type == .text {
-                    TextField("Enter text here", text: $param.value)
+                    TextField("ScenarioParamView.EnterTextHere.TextField", text: $param.value)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }

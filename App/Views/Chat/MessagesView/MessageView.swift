@@ -136,7 +136,7 @@ struct MessageView: View {
                             Button(action: {
                                 UIPasteboard.general.string = text
                             }, label: {
-                                Label("MessageView.Reply.Copy", systemImage: "doc.on.doc")
+                                Label("MessageView.Copy.Button", systemImage: "doc.on.doc")
                             })
                         }
                     }

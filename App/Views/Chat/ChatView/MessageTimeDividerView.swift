@@ -11,26 +11,14 @@ import SwiftUI
 struct MessageTimeDividerView: View {
     let date: Date
     
-    let ddMMMMFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM"
-        return dateFormatter
-    }()
-    
-    let ddMMMMyyyyFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMMM yyyy"
-        return dateFormatter
-    }()
-    
     var body: some View {
         ZStack {
             if date.isInToday {
                 Text("MessageTimeDividerView.Today")
             } else if date.isInThisYear {
-                Text(date, formatter: ddMMMMFormatter)
+                Text(date, formatter: DateFormatter.ddMMMMFormatter)
             } else {
-                Text(date, formatter: ddMMMMyyyyFormatter)
+                Text(date, formatter: DateFormatter.ddMMMMyyyyFormatter)
             }
         }
         .font(.footnote)

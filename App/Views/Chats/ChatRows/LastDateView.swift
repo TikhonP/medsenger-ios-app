@@ -11,33 +11,15 @@ import SwiftUI
 struct LastDateView: View {
     let date: Date
     
-    let dayOfWeekFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EE"
-        return dateFormatter
-    }()
-    
-    let ddMMFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM"
-        return dateFormatter
-    }()
-    
-    let ddMMYYYYFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        return dateFormatter
-    }()
-    
     var body: some View {
         if date.isInToday {
             Text(date, style: .time)
         } else if date.isInThisWeek {
-            Text(date, formatter: dayOfWeekFormatter)
+            Text(date, formatter: DateFormatter.dayOfWeekFormatter)
         } else if date.isInThisYear {
-            Text(date, formatter: ddMMFormatter)
+            Text(date, formatter: DateFormatter.ddMMFormatter)
         } else {
-            Text(date, formatter: ddMMYYYYFormatter)
+            Text(date, formatter: DateFormatter.ddMMYYYYFormatter)
         }
     }
 }

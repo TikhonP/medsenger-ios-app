@@ -25,17 +25,7 @@ class Account {
         DispatchQueue.global(qos: .background).async {
             PersistenceController.clearDatabase(withUser: false)
             UserDefaults.userRole = role
-            if let fcmToken = UserDefaults.fcmToken {
-                self.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: false) { [weak self] succeeded in
-                    if let fcmToken = UserDefaults.fcmToken {
-                        self?.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: true) { succeeded in
-                            if !succeeded {
-                                UserDefaults.isPushNotificationsOn = false
-                            }
-                        }
-                    }
-                }
-            }
+            PushNotifications.changeRoleFcmToken()
             ChatsViewModel.shared.getContracts(presentFailedAlert: true)
         }
     }
@@ -150,20 +140,24 @@ class Account {
         }
     }
     
+    enum UpdatePushNotificationsAction {
+        case storeToken, removeToken
+    }
+    
     /// Save or delete `fcmToken` from remote server
     /// - Parameters:
     ///   - fcmToken: the `fcmToken`
-    ///   - storeOrRemove: Store or remove token from remote, if true save token, otherwise remove
-    public func updatePushNotifications(fcmToken: String, storeOrRemove: Bool, completion: @escaping APIRequestCompletion) {
+    ///   - action: Store or remove token from remote
+    public func updatePushNotifications(fcmToken: String, action: UpdatePushNotificationsAction, completion: @escaping APIRequestCompletion) {
         DispatchQueue.main.async {
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
-        let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: storeOrRemove)
+        let pushNotificationsResource = PushNotificationsResource(fcmToken: fcmToken, store: action == .storeToken)
         pushNotificationsRequest = APIRequest(pushNotificationsResource)
         pushNotificationsRequest?.execute { result in
             switch result {
             case .success(_):
-                UserDefaults.isPushNotificationsOn = storeOrRemove
+                UserDefaults.isPushNotificationsOn = action == .storeToken
                 completion(true)
             case .failure(let error):
                 processRequestError(error, "store device push notification token")

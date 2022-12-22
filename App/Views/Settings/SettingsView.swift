@@ -10,9 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var settingsViewModel = SettingsViewModel()
-    
     @Environment(\.presentationMode) private var presentationMode
-    
     @FetchRequest(sortDescriptors: [], animation: .default) private var users: FetchedResults<User>
     
     var body: some View {
@@ -26,6 +24,7 @@ struct SettingsView: View {
                             .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
                             .onAppear {
                                 settingsViewModel.updateProfile(presentFailedAlert: false)
+                                PushNotifications.onChatsViewAppear()
                             }
                             .navigationTitle("SettingsView.NavigationTitle")
                             .navigationBarTitleDisplayMode(.inline)

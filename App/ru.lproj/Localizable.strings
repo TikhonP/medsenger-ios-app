@@ -145,6 +145,12 @@
 /* You */
 "AttachmentsView.You" = "Вы";
 
+/* Failed to preview voice message */
+"AudioView.failedToPreviewVoiceMessage" = "Не удалось показать голосовое сообщение";
+
+/* Ending call... */
+"CallingView.endingCall" = "Завершение звонка...";
+
 /* No comment provided by engineer. */
 "ChangePasswordView.navigationTitle" = "Изменить пароль";
 
@@ -419,18 +425,6 @@
 "EmptyChatsView.yourContractsAppearHere" = "Здесь появятся ваши контракты.";
 
 /* No comment provided by engineer. */
-"Ending call..." = "Завершение звонка...";
-
-/* No comment provided by engineer. */
-"Enter number here" = "Введите число";
-
-/* No comment provided by engineer. */
-"Enter text here" = "Введите текст";
-
-/* No comment provided by engineer. */
-"Failed to preview voice message" = "Не удалось загрузить аудиосообщение";
-
-/* No comment provided by engineer. */
 "InfoMaterialsView.navigationTitle" = "Информационные материалы";
 
 /* There is no info materials */
@@ -493,10 +487,10 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 "MessageTitleView.AutomaticMessage" = "Автоматическое сообщение";
 
 /* No comment provided by engineer. */
-"MessageView.Reply.Button" = "Ответить";
+"MessageView.Copy.Button" = "Скопировать";
 
 /* No comment provided by engineer. */
-"MessageView.Reply.Copy" = "Скопировать";
+"MessageView.Reply.Button" = "Ответить";
 
 /* No comment provided by engineer. */
 "PatientChatRow.ClinicLogo.accessibilityLabel" = "Логотип клиники";
@@ -537,6 +531,12 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 /* Reply %@ */
 "ReplyedMessageView.Reply %@" = "Ответить %@";
 
+/* No comment provided by engineer. */
+"ScenarioParamView.enterNumberHere.TextField" = "Введите число";
+
+/* No comment provided by engineer. */
+"ScenarioParamView.EnterTextHere.TextField" = "Введите здесь";
+
 /* Assign scenario */
 "ScenarioView.AssignScenario.Button" = "Назначить сценарий";
 
@@ -556,7 +556,7 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 "SettingsMainFormView.buildNotFound" = "(Сборка не найдена)";
 
 /* Change your password for strong security */
-"SettingsMainFormView.changePasswordFooter" = "???";
+"SettingsMainFormView.changePasswordFooter" = "Вы можете изменить пароль в целях безопасности";
 
 /* No comment provided by engineer. */
 "SettingsMainFormView.changePasswordLabel" = "Изменить пароль";
@@ -589,6 +589,9 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 "SettingsMainFormView.signOutButton" = "Выйти";
 
 /* No comment provided by engineer. */
+"SettingsMainFormView.signOutConfirmationActionSheetTitle" = "Вы хотите выйти из аккаунта?";
+
+/* No comment provided by engineer. */
 "SettingsMainFormView.supportLabel" = "Поддержка";
 
 /* No comment provided by engineer. */
@@ -605,6 +608,21 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* No comment provided by engineer. */
 "SettingsMainFormView.websiteLabel" = "Сайт";
+
+/* Not Now */
+"SettingsMainFormViewModel.allowMicrophoneAccessAlertCancelButton" = "Не сейчас";
+
+/* Settings */
+"SettingsMainFormViewModel.allowMicrophoneAccessAlertSettingsButton" = "Настройки";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.noFcmTokenAlertTitle" = "Ошибка загрузки сервиса уведомлений";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.notificationPermissionNeededAlertMessage" = "Уведомления помогут не пропускать важные сообщения из Medsenger\n\nПожалуйста, включите уведомления для Medsenger в настройках устройства > Уведомления > Medsenger.";
+
+/* No comment provided by engineer. */
+"SettingsMainFormViewModel.notificationPermissionNeededAlertTitle" = "Включите уведомления";
 
 /* Browse... */
 "SettingsProfileImageView.browseButton" = "Просмотр...";

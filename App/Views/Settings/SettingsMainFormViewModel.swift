@@ -7,18 +7,12 @@
 //
 
 import Foundation
-
-fileprivate class MainFormAlerts {
-    
-}
+import SwiftUI
 
 final class SettingsMainFormViewModel: ObservableObject, Alertable {
     @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
     @Published var showEmailNotificationUpdateRequestLoading = false
-    
-    @Published var isPushNotificationOn: Bool = UserDefaults.isPushNotificationsOn
     @Published var showPushNotificationUpdateRequestLoading = false
-    
     @Published var alert: AlertInfo?
     
     func updateEmailNotifications(_ value: Bool) {
@@ -40,20 +34,29 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
     }
     
     func updatePushNotifications(_ value: Bool) {
-        if let fcmToken = UserDefaults.fcmToken {
-            showPushNotificationUpdateRequestLoading = true
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, storeOrRemove: value) { [weak self] succeeded in
-                DispatchQueue.main.async {
-                    self?.showPushNotificationUpdateRequestLoading = false
-                    if !succeeded {
-                        self?.presentGlobalAlert()
-                        UserDefaults.isPushNotificationsOn = false
-                    }
+        showPushNotificationUpdateRequestLoading = true
+        PushNotifications.toggleNotifications(isOn: value) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.showPushNotificationUpdateRequestLoading = false
+                if result == .requestFailed {
+                    self?.presentGlobalAlert()
+                } else if result == .noFcmToken {
+                    self?.presentAlert(title: Text("SettingsMainFormViewModel.noFcmTokenAlertTitle"))
+                } else if result == .notGranted {
+                    self?.presentAlert(Alert(
+                        title: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertTitle"),
+                        message: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertMessage"),
+                        primaryButton: .cancel(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
+                        secondaryButton: .default(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
+                            DispatchQueue.main.async {
+                                if let url = URL(string: UIApplication.openSettingsURLString) {
+                                    UIApplication.shared.open(url)
+                                }
+                            }
+                        })
+                    )
                 }
             }
-        } else {
-            isPushNotificationOn = false
-            UserDefaults.isPushNotificationsOn = false
         }
     }
 }

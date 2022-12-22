@@ -20,16 +20,16 @@ struct AddContractView: View {
                     Section(
                         header: Text("AddContractView.institution.Header", comment: "Institution"),
                         footer: Text("AddContractView.institution.Footer", comment: "Choose a clinic for the new patient")) {
-                        Picker("AddContractView.ClinicPicker", selection: $addContractViewModel.clinicId, content: {
-                            ForEach(clinics) { clinic in
-                                Text(clinic.wrappedName).tag(Int(clinic.id))
-                            }
+                            Picker("AddContractView.ClinicPicker", selection: $addContractViewModel.clinicId, content: {
+                                ForEach(clinics) { clinic in
+                                    Text(clinic.wrappedName).tag(Int(clinic.id))
+                                }
+                            })
+                        }
+                        .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
+                            addContractViewModel.state = .inputClinicAndEmail
+                            addContractViewModel.clinic = Clinic.get(id: clinicId)
                         })
-                    }
-                    .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
-                        addContractViewModel.state = .inputClinicAndEmail
-                        addContractViewModel.clinic = Clinic.get(id: clinicId)
-                    })
                     
                     Section(footer: Text("AddContractView.email.Footer", comment: "It is necessary to provide an active email")) {
                         TextField("AddContractView.patientEmail.TextField", text: $addContractViewModel.patientEmail)
@@ -155,9 +155,9 @@ struct AddContractView: View {
         Section(
             header: Text("AddContractView.knownPatient.Header", comment: "Patient Found"),
             footer: Text("AddContractView.knownPatient.Footer", comment: "Make sure this is the person you want to open the counseling channel for. If not, correct the email and resend the request.")) {
-            Text(addContractViewModel.patientName)
-            Text("AddContractView.birthday: \(addContractViewModel.patientBirthday, formatter: DateFormatter.ddMMyyyy)")
-        }
+                Text(addContractViewModel.patientName)
+                Text("AddContractView.birthday: \(addContractViewModel.patientBirthday, style: .date)")
+            }
     }
 }
 

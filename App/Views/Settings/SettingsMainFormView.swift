@@ -163,8 +163,10 @@ struct SettingsMainFormView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     @AppStorage(UserDefaults.Keys.showFullPreviewForImagesKey) private var showFullPreviewForImages: Bool = UserDefaults.showFullPreviewForImages
+    @AppStorage(UserDefaults.Keys.isPushNotificationsOnKey) private var isPushNotificationsOn: Bool = UserDefaults.isPushNotificationsOn
     
     @State private var showAppBuild = false
+    @State private var showSignout = false
     
     private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     private let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
@@ -228,7 +230,7 @@ struct SettingsMainFormView: View {
                     settingsMainFormViewModel.isEmailNotificationOn = value
                 })
                 
-                Toggle(isOn: $settingsMainFormViewModel.isPushNotificationOn, label: {
+                Toggle(isOn: $isPushNotificationsOn, label: {
                     HStack {
                         Label("SettingsMainFormView.pushNotificationsLabel", systemImage: "bell.badge")
                         if settingsMainFormViewModel.showPushNotificationUpdateRequestLoading {
@@ -237,7 +239,7 @@ struct SettingsMainFormView: View {
                         }
                     }
                 })
-                .onChange(of: settingsMainFormViewModel.isPushNotificationOn, perform: settingsMainFormViewModel.updatePushNotifications)
+                .onChange(of: isPushNotificationsOn, perform: settingsMainFormViewModel.updatePushNotifications)
             }
             .alert(item: $settingsMainFormViewModel.alert) { $0.alert }
             
@@ -313,13 +315,23 @@ struct SettingsMainFormView: View {
             }
             
             Section {
-                Button (action: settingsViewModel.signOut, label: {
+                Button (action: {
+                    showSignout.toggle()
+                }, label: {
                     HStack {
                         Spacer()
                         Text("SettingsMainFormView.signOutButton", comment: "Sign Out")
                             .foregroundColor(.red)
                         Spacer()
                     }
+                })
+                .actionSheet(isPresented: $showSignout, content: {
+                    ActionSheet(title: Text("SettingsMainFormView.signOutConfirmationActionSheetTitle"),
+                                buttons: [
+                                    .destructive(Text("SettingsMainFormView.signOutButton"), action: settingsViewModel.signOut),
+                                    .cancel()
+                                ]
+                    )
                 })
             }
         }
