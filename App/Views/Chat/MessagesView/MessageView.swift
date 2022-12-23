@@ -27,7 +27,13 @@ struct MessageBodyView: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             VStack(alignment: .leading, spacing: 0) {
-                MessageTitleView(message: message)
+                if message.createSeparatorWithPreviousMessage {
+                    MessageTitleView(message: message)
+                } else if !(!imageAttachments.isEmpty && !hasNonImageContent) && !message.isVoiceMessage {
+                    Color.clear
+                        .frame(width: 0, height: 0)
+                        .padding(.top, 10)
+                }
                 
                 // Reply:
                 if let replyedMessage = message.replyToMessage {
@@ -78,7 +84,7 @@ struct MessageBodyView: View {
             }
             .padding(.trailing, addTrailingPadding ? 30 : 0)
             .readSize { size in
-                if imageAttachments.isEmpty, size.height < 49 {
+                if imageAttachments.isEmpty, size.height < 80, !message.isVoiceMessage {
                     addTrailingPadding = true
                 }
             }
@@ -112,7 +118,7 @@ struct MessageView: View {
     
     var body: some View {
         if message.isVideoCallMessageFromDoctor {
-            VideoCallMessageView(message: message)
+            VideoCallMessageView(viewWidth: viewWidth, message: message)
                 .id(Int(message.id))
         } else {
             ZStack(alignment: .trailing) {

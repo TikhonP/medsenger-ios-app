@@ -13,60 +13,64 @@ struct DoctorChatRow: View {
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
     var body: some View {
-        HStack {
-            avatarImage
-                .frame(width: 60, height: 60)
-            
-            VStack(alignment: .leading, spacing: 0) {
+        ZStack(alignment: .topTrailing) {
+            HStack(spacing: 0) {
                 HStack {
-                    Text(contract.wrappedShortName)
-                        .font(.headline)
-                    Spacer()
-                    if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
-                        LastDateView(date: lastFetchedMessageSent)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                HStack {
+                    avatarImage
+                        .frame(width: 60, height: 60)
+                    
                     VStack(alignment: .leading, spacing: 0) {
+                        Text(contract.wrappedShortName)
+                            .font(.headline)
+                            .padding(.trailing, 20)
+                        
                         if let scenarioName = contract.scenarioName {
                             Text(scenarioName)
-                                .font(.caption)
+                                .font(.footnote)
                                 .bold()
                         }
                         if let clinic = contract.clinic {
-                            Text(clinic.wrappedName)
-                                .font(.caption)
+                            Text("DoctorChatRow.contract #\(contract.wrappedNumber) in «\(clinic.wrappedName)»", comment: "Contract #\\(contract.number) in «\\(clinic.wrappedName)»")
+                                .font(.footnote)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.top, 5)
                         }
-                        if let endDate = contract.endDate {
-                            Text("DoctorChatRow.Contract \(contract.wrappedNumber). End: \(endDate, formatter: DateFormatter.ddMMyyyy)", comment: "Contract %@. End: %@")
+                        if let endDate = contract.endDate, let startDate = contract.startDate {
+                            Text("\(startDate, formatter: DateFormatter.ddMMyyyy)–\(endDate, formatter: DateFormatter.ddMMyyyy)")
+                                .foregroundColor(.secondary)
                                 .font(.caption)
+                                .padding(.top, 5)
                         }
                         if (contract.complianceAvailible != 0) {
-                            Text("DoctorChatRow.Complience \(contract.complianceDone) / \(contract.complianceAvailible)", comment: "Complience: %lld / %lld")
-                                .font(.caption)
+                            Text("DoctorChatRow.Complience \(contract.compliencePercentage)%", comment: "Complience: %ld")
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color("medsengerBlue"))
+                                .padding(.top, 5)
                         }
-                        if let text = contract.lastFetchedMessage?.text {
-                            Text(text)
-                                .foregroundColor(.gray)
-                                .lineLimit(1)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.trailing, 40)
+                        if !contract.activated {
+                            Text("DoctorChatRow.notActivatedYet")
+                                .font(.footnote)
+                                .bold()
+                                .foregroundColor(Color("notActivatedColor"))
+                                .padding(.top, 5)
                         }
                     }
-                    Spacer()
-                    if contract.state == .warning || contract.state == .deadlined {
-                        MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .red)
-                    } else if (contract.unread != 0) || (contract.unanswered != 0) {
-                        MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .secondary)
-                    }
+                    .shadow(color: shadowColor, radius:  35)
+                }
+                Spacer()
+                if contract.state == .warning || contract.state == .deadlined {
+                    MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .red.opacity(0.5))
+                } else if (contract.unread != 0) || (contract.unanswered != 0) {
+                    MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .secondary.opacity(0.5))
                 }
             }
+            if let lastMessageTimestamp = contract.lastMessageTimestamp {
+                LastDateView(date: lastMessageTimestamp)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-//        .onAppear {
-//            Messages.shared.fetchLast10Messages(contractId: Int(contract.id))
-//        }
     }
     
     var avatarImage: some View {
@@ -93,10 +97,6 @@ struct DoctorChatRow: View {
         }
     }
     
-//    var consiliumAvatar: some View {
-//        
-//    }
-    
     func badgeView(_ count: Int, color: Color) -> some View {
         Text("\(count)")
             .padding(5)
@@ -106,30 +106,28 @@ struct DoctorChatRow: View {
                     .frame(minWidth: 30)
             )
     }
+    
+    var shadowColor: Color {
+        if !contract.activated {
+            return Color("notActivatedColor")
+        } else if contract.hasWarnings {
+            return Color("MessageWarningColor")
+        } else if contract.hasQuestions {
+            return .gray
+        } else {
+            return .clear
+        }
+    }
 }
 
 #if DEBUG
 struct DoctorChatRow_Previews: PreviewProvider {
-    static var contract1: Contract = {
-        ContractPreviews.contractForPatientChatRowPreview
-    }()
-    
-    static var contract2: Contract = {
-        ContractPreviews.contractForPatientChatRowPreview
-    }()
-    
     static var previews: some View {
-        Group {
-            DoctorChatRow(contract: contract1)
-                .environmentObject(ChatsViewModel())
-                .previewLayout(PreviewLayout.sizeThatFits)
-                .padding()
-            
-            DoctorChatRow(contract: contract2)
-                .environmentObject(ChatsViewModel())
-                .previewLayout(PreviewLayout.sizeThatFits)
-                .padding()
-        }
+        DoctorChatRow(contract: ContractPreviews.contractForDoctorChatRowPreview)
+            .environmentObject(ChatsViewModel())
+            .previewLayout(PreviewLayout.sizeThatFits)
+            .environment(\.locale, .init(identifier: "ru"))
+            .padding()
     }
 }
 #endif

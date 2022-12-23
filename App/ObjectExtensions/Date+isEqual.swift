@@ -29,4 +29,14 @@ extension Date {
     
     var isInTheFuture: Bool { self > Date() }
     var isInThePast: Bool { self < Date() }
+    
+    /// Returns the amount of minutes from another date
+    func minutes(from date: Date) -> Int {
+        return Calendar.current.dateComponents([.minute], from: date, to: self).minute ?? 0
+    }
+    
+    /// Returns the amount of hours from another date
+    func hours(from date: Date) -> Int {
+        return Calendar.current.dateComponents([.hour], from: date, to: self).hour ?? 0
+    }
 }

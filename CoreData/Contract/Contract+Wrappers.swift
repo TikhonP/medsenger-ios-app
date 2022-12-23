@@ -52,6 +52,10 @@ extension Contract {
         doctorName ?? "Unknown doctor name"
     }
     
+    public var wrappedSpeciality: String {
+        (specialty ?? "Unknown specialty").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)
@@ -98,5 +102,11 @@ extension Contract {
             }
         }
         return result
+    }
+}
+
+extension Contract {
+    var compliencePercentage: Int {
+        Int((complianceDone * 100) / complianceAvailible)
     }
 }

@@ -103,6 +103,18 @@ final class ComplianceViewModel: ObservableObject {
             return ""
         }
     }
+    
+    var shadowColor: Color {
+        if let progressLevel = progressLevel {
+            return progressLevel == 100 ? Color(UIColor.systemBackground) : .blue
+        } else {
+            if let level = level {
+                return level <= 1 ? .pink : level <= 4 ? Color(UIColor.systemBackground) : .blue
+            } else {
+                return Color(UIColor.systemBackground)
+            }
+        }
+    }
 }
 
 struct ComplianceView: View {
@@ -116,8 +128,10 @@ struct ComplianceView: View {
     
     var body: some View {
         if complianceViewModel.tasksTotalToday != 0 || complianceViewModel.tasksTotalThisWeek != 0 {
-            Section(header: Text("ComplianceView.complianceHeader", comment: "Compliance")) {
+            Section {
                 VStack(alignment: .leading) {
+                    Text("ComplianceView.complianceHeader", comment: "Compliance")
+                        .font(.headline)
                     if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday == 0) {
                         Text("\(complianceViewModel.emojiPrefix) ComplianceView.Amazing \(user.firstName)!", comment: "%@ Amazing, %@!")
                     } else if (complianceViewModel.tasksCompletedToday != 0), (complianceViewModel.tasksToDoToday != 0) {
@@ -144,6 +158,7 @@ struct ComplianceView: View {
                     
                     ProgressView(value: Float(complianceViewModel.progress) / 100)
                 }
+                .shadow(color: complianceViewModel.shadowColor, radius: 30)
             }
         }
     }

@@ -59,17 +59,23 @@ struct MainInputView: View {
                 .background(Color(UIColor.systemBackground))
                 .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
             
-            if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {
-                Button(action: messageInputViewModel.startRecording, label: {
-                    MessageInputButtonLabel(imageSystemName: "waveform.circle.fill", showProgress: .constant(false))
-                        .foregroundColor(.secondary.opacity(0.7))
-                })
-            } else {
-                Button(action: messageInputViewModel.sendMessage, label: {
-                    MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
-                        .foregroundColor(Color("medsengerBlue"))
-                })
+            ZStack {
+                if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {
+                    Button(action: messageInputViewModel.startRecording, label: {
+                        MessageInputButtonLabel(imageSystemName: "waveform.circle.fill", showProgress: .constant(false))
+                            .foregroundColor(.secondary.opacity(0.7))
+                    })
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
+                } else {
+                    Button(action: messageInputViewModel.sendMessage, label: {
+                        MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
+                            .foregroundColor(Color("medsengerBlue"))
+                    })
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity))
+                }
             }
+            .animation(.spring(), value: messageInputViewModel.message)
+            .animation(.spring(), value: messageInputViewModel.messageAttachments)
         }
     }
 }

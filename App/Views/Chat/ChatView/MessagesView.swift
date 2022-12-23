@@ -108,7 +108,7 @@ struct MessagesView: View {
                 NavigationView {
                     WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true) {
                         if let actionMessageId = chatViewModel.actionMessageId {
-                            Message.markActionMessageAsUsed(id: actionMessageId)
+                            Messages.shared.messageActionUsed(messageId: actionMessageId, completion: { _ in })
                         }
                     }
                 }
@@ -123,16 +123,22 @@ struct MessagesView: View {
                     ScrollViewReader { scrollReader in
                         ChildSizeReader(size: $scrollViewSize) {
                             VStack(spacing: 0) {
-                                
                                 LazyVStack(spacing: 0) {
                                     ForEach(messages) { message in
                                         if message.showMessage {
-                                            if let previousMessageSent = message.previousMessage?.sent, let messageSent = message.sent, !previousMessageSent.isInSameDay(as: messageSent) {
-                                                MessageTimeDividerView(date: messageSent)
-                                                    .padding(.top, 10)
+                                            if let messageSent = message.sent {
+                                                if let previousMessageSent = message.previousMessage?.sent {
+                                                    if !previousMessageSent.isInSameDay(as: messageSent) {
+                                                        MessageTimeDividerView(date: messageSent)
+                                                            .padding(.top, 7)
+                                                    }
+                                                } else {
+                                                    MessageTimeDividerView(date: messageSent)
+                                                        .padding(.top, 7)
+                                                }
                                             }
                                             MessageView(viewWidth: reader.size.width, message: message)
-                                                .padding(.top, 10)
+                                                .padding(.top, message.createSeparatorWithPreviousMessage ? 7 : 3)
                                         }
                                     }
                                 }

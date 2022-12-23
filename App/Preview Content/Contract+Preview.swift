@@ -6,6 +6,7 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+#if DEBUG
 import Foundation
 import CoreData
 import UIKit
@@ -69,6 +70,34 @@ struct ContractPreviews {
         doctorAvatar: getImageData(named: "ДокторРоза"),
         patientAvatar: getImageData(named: "ОмарВасильевич"),
         isConsilium: true,
+        for: context)
+    
+    static let contractForDoctorChatRowPreview = ContractPreviews.createSampleContract(
+        name: "Крементий Алексеевич Матюха",
+        patientName: "Крементий Алексеевич Матюха",
+        doctorName: "Ашот Филипович Жуйвода",
+        specialty: "Ассенизатор",
+        mainDoctor: "Ашот Филипович Жуйвода",
+        archive: false,
+        shortName: "Матюха К.А.",
+        number: "9696",
+        unread: Int.random(in: 0...5),
+        isOnline: Bool.random(),
+        role: "Муравьиный селекционер",
+        activated: Bool.random(),
+        scenarioName: "Полишариковый шок",
+        scenarioDescription: nil,
+        scenarioPreset: nil,
+        lastFetchedMessage: nil,
+        clinic: ClinicPreviews.createSampleClinic(
+            name: "Нижнеусрийское отделение херопрактики",
+            videoEnabled: false,
+            logo: getImageData(named: "НижнеусрийскоеОтделениеХеропрактики"),
+            for: context),
+        avatar: getImageData(named: "КрементийАлексеевичМатюха"),
+        doctorAvatar: nil,
+        patientAvatar: nil,
+        isConsilium: false,
         for: context)
     
     static func getImageData(named: String) -> Data? {
@@ -188,3 +217,4 @@ extension Contract {
         _ = createSampleContract2Archive(for: viewContext)
     }
 }
+#endif

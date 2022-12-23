@@ -136,6 +136,12 @@
 /* You */
 "AttachmentsView.You" = "You";
 
+/* Failed to preview voice message */
+"AudioView.failedToPreviewVoiceMessage" = "Failed to show preview";
+
+/* Ending call... */
+"CallingView.endingCall" = "Ending call...";
+
 /* No comment provided by engineer. */
 "ChangePasswordView.navigationTitle" = "Change Password";
 
@@ -161,6 +167,12 @@
 "ChangePasswordViewModel.passwordsDoNotMatchAlertTitle" = "Passwords do not match!";
 
 /* No comment provided by engineer. */
+"ChatsView.addContractButton.Label" = "Add Patient";
+
+/* No comment provided by engineer. */
+"ChatsView.archiveButton.Label" = "Archive";
+
+/* No comment provided by engineer. */
 "ChatsView.CallTheClinic.Label" = "Call the Clinic";
 
 /* No comment provided by engineer. */
@@ -171,6 +183,9 @@
 
 /* No comment provided by engineer. */
 "ChatsView.navigationTitle" = "Counseling";
+
+/* No comment provided by engineer. */
+"ChatsView.settingsButton.Label" = "Settings";
 
 /* The first time you open a chat, all messages are loaded, this may take some time. */
 "ChatView.loadingText" = "The first time you open a chat, all messages are loaded, this may take some time.";
@@ -304,6 +319,9 @@
 /* No comment provided by engineer. */
 "ContractView.EditNotes.label" = "Edit Notes";
 
+/* No comment provided by engineer. */
+"ContractView.EndCounseling.label" = "End Counseling";
+
 /* from %@ to %@ */
 "ContractView.fromDate %@ ContractView.toDate %@" = "from %@ to %@";
 
@@ -325,14 +343,23 @@
 /* Tasks for the day */
 "ContractView.tasksForDay.Header" = "Tasks for the day";
 
+/* Validity */
+"ContractView.Validity" = "Validity";
+
 /* No comment provided by engineer. */
 "ContractView.VideoСall.label" = "Validity";
 
 /* Complience: %lld / %lld */
 "DoctorChatRow.Complience %lld / %lld" = "Complience: %lld / %lld";
 
+/* Complience: %ld */
+"DoctorChatRow.Complience %lld%%" = "Complience %lld%%";
+
 /* Contract %@. End: %@ */
 "DoctorChatRow.Contract %@. End: %@" = "Contract %@. End: %@";
+
+/* No comment provided by engineer. */
+"DoctorChatRow.notActivatedYet" = "Not activated yet";
 
 /* No comment provided by engineer. */
 "EditNotesViewModel.Cancel.Button" = "Cancel";
@@ -425,7 +452,7 @@
 "MainInputView.ChoosePhoto.Button" = "Choose Photo";
 
 /* Message input placeholder */
-"MainInputView.Message.TextView" = "Message input placeholder";
+"MainInputView.Message.TextView" = "Message";
 
 /* Take Photo */
 "MainInputView.TakePhoto.Button" = "Take Photo";
@@ -464,6 +491,9 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* Automatic message */
 "MessageTitleView.AutomaticMessage" = "Automatic message";
+
+/* No comment provided by engineer. */
+"MessageView.Copy.Button" = "Copy";
 
 /* No comment provided by engineer. */
 "MessageView.Reply.Button" = "Reply";
@@ -506,6 +536,12 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* Reply %@ */
 "ReplyedMessageView.Reply %@" = "Reply %@";
+
+/* No comment provided by engineer. */
+"ScenarioParamView.enterNumberHere.TextField" = "Enter number here";
+
+/* No comment provided by engineer. */
+"ScenarioParamView.EnterTextHere.TextField" = "Enter text here";
 
 /* Assign scenario */
 "ScenarioView.AssignScenario.Button" = "Assign scenario";
@@ -632,6 +668,9 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* No comment provided by engineer. */
 "SettingsView.NavigationTitle" = "Settings";
+
+/* No comment provided by engineer. */
+"SignInView.Email.TextField" = "Email";
 
 /* Turn off Airplane Mode or connect to Wi-Fi. */
 "SignInView.internetNotAvailableMessage" = "Turn off Airplane Mode or connect to Wi-Fi.";

@@ -16,11 +16,20 @@ struct MessageTimeBadge: View {
             Text(date, style: .time)
                 .font(.caption2)
                 .foregroundColor(.secondary)
-                .padding(1)
-                .background(
-                    Color(message.isMessageSent ? "SendedMessageBackgroundColor" : "RecievedMessageBackgroundColor").opacity(0.7))
-                .cornerRadius(7)
-                .padding(6)
+                .shadow(color: backgroundColor, radius: 30)
+                .padding(7)
+        }
+    }
+    
+    var backgroundColor: Color {
+        if message.isAgent, message.isUrgent {
+            return Color("MessageDangerColor")
+        } else if message.isAgent, message.isWarning {
+            return Color("MessageWarningColor")
+        } else if message.isMessageSent {
+            return Color("SendedMessageBackgroundColor")
+        } else {
+            return Color("RecievedMessageBackgroundColor")
         }
     }
 }

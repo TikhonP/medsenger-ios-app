@@ -19,6 +19,7 @@
 		43198021293D260D005F43A8 /* FilePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198020293D260D005F43A8 /* FilePicker.swift */; };
 		43198023293D5107005F43A8 /* NewImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198022293D5107005F43A8 /* NewImagePicker.swift */; };
 		43198025293E3C35005F43A8 /* View+hideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43198024293E3C35005F43A8 /* View+hideKeyboard.swift */; };
+		431D99A42955B38500E0230A /* ConsiliumContractsResourceRequestAsDoctor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431D99A32955B38500E0230A /* ConsiliumContractsResourceRequestAsDoctor.swift */; };
 		432442942948C0AA002476DB /* ReplyPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442932948C0AA002476DB /* ReplyPreviewView.swift */; };
 		432442962948D421002476DB /* TextMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442952948D421002476DB /* TextMessageView.swift */; };
 		432442982948D57F002476DB /* MessageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442972948D57F002476DB /* MessageAttachmentView.swift */; };
@@ -97,7 +98,7 @@
 		437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */; };
 		437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */; };
 		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
-		437F092C2950A2C500478082 /* ConsiliumContractsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */; };
+		437F092C2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */; };
 		43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1662F294131380003E1FB /* ReplyedMessageView.swift */; };
 		43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16631294132670003E1FB /* InputAttachmentsView.swift */; };
 		43A16634294133450003E1FB /* MainInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16633294133450003E1FB /* MainInputView.swift */; };
@@ -119,6 +120,7 @@
 		43C510FA29530F6200C91CE5 /* MessageTimeDividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */; };
 		43C510FC2953137E00C91CE5 /* Date+isEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510FB2953137E00C91CE5 /* Date+isEqual.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
+		43D18CF32955FAD80064D13B /* ActionUserResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D18CF22955FAD80064D13B /* ActionUserResource.swift */; };
 		43D4CFC72951E46200A9C51B /* View+swipeActionsIos15Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */; };
 		43D4CFC92951EB0200A9C51B /* ConsiliumChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4CFC82951EB0200A9C51B /* ConsiliumChatRow.swift */; };
 		43D4CFCC2951EB8900A9C51B /* MessagesBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43D4CFCB2951EB8900A9C51B /* MessagesBadgeView.swift */; };
@@ -268,6 +270,7 @@
 		43198020293D260D005F43A8 /* FilePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePicker.swift; sourceTree = "<group>"; };
 		43198022293D5107005F43A8 /* NewImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewImagePicker.swift; sourceTree = "<group>"; };
 		43198024293E3C35005F43A8 /* View+hideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+hideKeyboard.swift"; sourceTree = "<group>"; };
+		431D99A32955B38500E0230A /* ConsiliumContractsResourceRequestAsDoctor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResourceRequestAsDoctor.swift; sourceTree = "<group>"; };
 		432442932948C0AA002476DB /* ReplyPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyPreviewView.swift; sourceTree = "<group>"; };
 		432442952948D421002476DB /* TextMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageView.swift; sourceTree = "<group>"; };
 		432442972948D57F002476DB /* MessageAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentView.swift; sourceTree = "<group>"; };
@@ -347,7 +350,7 @@
 		437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataViewModel.swift; sourceTree = "<group>"; };
 		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
-		437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResource.swift; sourceTree = "<group>"; };
+		437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResourceRequestAsPatient.swift; sourceTree = "<group>"; };
 		43A1662F294131380003E1FB /* ReplyedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyedMessageView.swift; sourceTree = "<group>"; };
 		43A16631294132670003E1FB /* InputAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAttachmentsView.swift; sourceTree = "<group>"; };
 		43A16633294133450003E1FB /* MainInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInputView.swift; sourceTree = "<group>"; };
@@ -370,6 +373,7 @@
 		43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeDividerView.swift; sourceTree = "<group>"; };
 		43C510FB2953137E00C91CE5 /* Date+isEqual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+isEqual.swift"; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		43D18CF22955FAD80064D13B /* ActionUserResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionUserResource.swift; sourceTree = "<group>"; };
 		43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+swipeActionsIos15Only.swift"; sourceTree = "<group>"; };
 		43D4CFC82951EB0200A9C51B /* ConsiliumChatRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumChatRow.swift; sourceTree = "<group>"; };
 		43D4CFCB2951EB8900A9C51B /* MessagesBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesBadgeView.swift; sourceTree = "<group>"; };
@@ -1153,7 +1157,8 @@
 				43EF445E29228D04005DF084 /* ContractsArchiveRequestAsPatientResource.swift */,
 				43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */,
 				434092002930E06800AC4F5E /* ContractsArchiveRequestAsDoctorResource.swift */,
-				437F092B2950A2C500478082 /* ConsiliumContractsResource.swift */,
+				437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */,
+				431D99A32955B38500E0230A /* ConsiliumContractsResourceRequestAsDoctor.swift */,
 			);
 			path = Contracts;
 			sourceTree = "<group>";
@@ -1183,6 +1188,7 @@
 				43EF447529228E44005DF084 /* Messages.swift */,
 				43EF447729228E59005DF084 /* MessagesResource.swift */,
 				43EF447929228E66005DF084 /* SendMessageResouce.swift */,
+				43D18CF22955FAD80064D13B /* ActionUserResource.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -1299,6 +1305,7 @@
 			knownRegions = (
 				en,
 				ru,
+				Base,
 			);
 			mainGroup = 43EF43E629227F74005DF084;
 			packageReferences = (
@@ -1424,6 +1431,7 @@
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
 				430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */,
 				43A16637294136BB0003E1FB /* TextView.swift in Sources */,
+				43D18CF32955FAD80064D13B /* ActionUserResource.swift in Sources */,
 				43A1664A294222EA0003E1FB /* ScenarioViewModel.swift in Sources */,
 				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
 				43EF448F29228EB1005DF084 /* MultipartFormData+Builder.swift in Sources */,
@@ -1455,6 +1463,7 @@
 				43D4CFCC2951EB8900A9C51B /* MessagesBadgeView.swift in Sources */,
 				4319801B293CB7A6005F43A8 /* NetworkConnectionMonitor.swift in Sources */,
 				432442982948D57F002476DB /* MessageAttachmentView.swift in Sources */,
+				431D99A42955B38500E0230A /* ConsiliumContractsResourceRequestAsDoctor.swift in Sources */,
 				43EF449E29228F11005DF084 /* View+refreshableIos15Only.swift in Sources */,
 				43EF44A329228F60005DF084 /* SettingsView.swift in Sources */,
 				437BEB5329434747008EF4DE /* FullscreenImagePreview.swift in Sources */,
@@ -1485,7 +1494,7 @@
 				43D505EE293F966C00EE3756 /* ClinicScenario+Wrappers.swift in Sources */,
 				43A1663D294163350003E1FB /* RecordingVoiceMessageView.swift in Sources */,
 				43A166412941F3520003E1FB /* ChatViewAttachment.swift in Sources */,
-				437F092C2950A2C500478082 /* ConsiliumContractsResource.swift in Sources */,
+				437F092C2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift in Sources */,
 				435D5701293A0FF40013B0F4 /* NetworkRequestError.swift in Sources */,
 				43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */,
 				43EF443529228A29005DF084 /* NetworkRequest.swift in Sources */,

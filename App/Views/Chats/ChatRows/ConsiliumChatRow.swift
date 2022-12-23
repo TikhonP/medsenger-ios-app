@@ -24,8 +24,8 @@ struct ConsiliumChatRow: View {
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
                     Spacer()
-                    if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
-                        LastDateView(date: lastFetchedMessageSent)
+                    if let lastMessageTimestamp = contract.lastMessageTimestamp {
+                        LastDateView(date: lastMessageTimestamp)
                             .font(.caption)
                     }
                 }

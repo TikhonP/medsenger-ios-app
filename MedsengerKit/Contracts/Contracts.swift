@@ -21,7 +21,8 @@ class Contracts {
     private var contractsRequestAsDoctorRequest: APIRequest<ContractsRequestAsDoctorResource>?
     private var contractsArchiveRequestAsPatientRequest: APIRequest<ContractsArchiveRequestAsPatientResource>?
     private var contractsArchiveRequestAsDoctorRequest: APIRequest<ContractsArchiveRequestAsDoctorResource>?
-    private var consiliumContractsRequest: APIRequest<ConsiliumContractsResource>?
+    private var consiliumContractsRequestRequestAsPatient: APIRequest<ConsiliumContractsResourceRequestAsPatient>?
+    private var consiliumContractsRequestRequestAsDoctor: APIRequest<ConsiliumContractsResourceRequestAsDoctor>?
     private var getImageRequests = [FileRequest]()
     
     /// Fetch user contracts
@@ -35,7 +36,7 @@ class Contracts {
                 switch result {
                 case .success(let data):
                     if let data = data {
-                        Contract.saveFromJson(data, archive: false)
+                        Contract.saveFromJson(data, archive: false, isConsilium: false)
                         completion(true)
                     } else {
                         completion(false)
@@ -52,7 +53,7 @@ class Contracts {
                 switch result {
                 case .success(let data):
                     if let data = data {
-                        Contract.saveFromJson(data, archive: false)
+                        Contract.saveFromJson(data, archive: false, isConsilium: false)
                         completion(true)
                     } else {
                         completion(false)
@@ -79,7 +80,7 @@ class Contracts {
                 switch result {
                 case .success(let data):
                     if let data = data {
-                        Contract.saveFromJson(data, archive: true)
+                        Contract.saveFromJson(data, archive: true, isConsilium: false)
                         completion(true)
                     } else {
                         completion(false)
@@ -96,7 +97,7 @@ class Contracts {
                 switch result {
                 case .success(let data):
                     if let data = data {
-                        Contract.saveFromJson(data, archive: true)
+                        Contract.saveFromJson(data, archive: true, isConsilium: false)
                         completion(true)
                     } else {
                         completion(false)
@@ -114,17 +115,35 @@ class Contracts {
     
     /// Fetch helper contracts
     public func fetchConsiliumContracts() {
-        let consiliumContractsResource = ConsiliumContractsResource()
-        consiliumContractsRequest = APIRequest(consiliumContractsResource)
-        consiliumContractsRequest?.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    Contract.saveFromJson(data, archive: false, isConsilium: true)
+        switch UserDefaults.userRole {
+        case .patient:
+            let consiliumContractsResource = ConsiliumContractsResourceRequestAsPatient()
+            consiliumContractsRequestRequestAsPatient = APIRequest(consiliumContractsResource)
+            consiliumContractsRequestRequestAsPatient?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: false, isConsilium: true)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get consilium contracts request")
                 }
-            case .failure(let error):
-                processRequestError(error, "get consilium contracts request")
             }
+        case .doctor:
+            let consiliumContractsResource = ConsiliumContractsResourceRequestAsDoctor()
+            consiliumContractsRequestRequestAsDoctor = APIRequest(consiliumContractsResource)
+            consiliumContractsRequestRequestAsDoctor?.execute { result in
+                switch result {
+                case .success(let data):
+                    if let data = data {
+                        Contract.saveFromJson(data, archive: false, isConsilium: true)
+                    }
+                case .failure(let error):
+                    processRequestError(error, "get consilium contracts request")
+                }
+            }
+        case .unknown:
+            Contracts.logger.error("Failed to fetch consilium contracts: User role unknown")
         }
     }
     

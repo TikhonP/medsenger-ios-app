@@ -23,7 +23,7 @@ extension Contract {
         let birthday: String
         let email: String?
         let phone: String?
-        //        let diagnosis: String? // ??
+        let diagnosis: String?
         let clinic: Clinic.JsonDecoderRequestAsDoctor
         let mainDoctor: String
         let startDate: String
@@ -62,6 +62,7 @@ extension Contract {
         let last_read_id: Int
         //        let related_contracts
         let is_waiting_for_conclusion: Bool
+        let last_message_timestamp: TimeInterval
         
         var birthdayAsDate: Date? {
             let formatter = DateFormatter.ddMMyyyy
@@ -77,9 +78,13 @@ extension Contract {
             let formatter = DateFormatter.ddMMyyyyAndTimeWithParentheses
             return formatter.date(from: endDate)
         }
+        
+        var lastMessageTimestampAsDate: Date {
+            Date(timeIntervalSince1970: last_message_timestamp)
+        }
     }
     
-    private class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, for context: NSManagedObjectContext) -> Contract {
+    private class func saveFromJson(_ data: JsonDecoderRequestAsDoctor, isConsilium: Bool, for context: NSManagedObjectContext) -> Contract {
         let contract = get(id: data.contract, for: context) ?? Contract(context: context)
 
         contract.id = Int64(data.contract)
@@ -123,6 +128,15 @@ extension Contract {
         contract.hasWarnings = data.has_warnings
         contract.lastReadMessageIdByPatient = Int64(data.last_read_id)
         contract.isWaitingForConclusion = data.is_waiting_for_conclusion
+        contract.isConsilium = isConsilium
+        contract.lastMessageTimestamp = data.lastMessageTimestampAsDate
+        
+        if let complianceAvailible = data.compliance[safe: 0] {
+            contract.complianceAvailible = Int64(complianceAvailible)
+        }
+        if let complianceDone = data.compliance[safe: 1] {
+            contract.complianceDone = Int64(complianceDone)
+        }
         
         contract.sortRating = {
             var sortRating = 0
@@ -147,7 +161,7 @@ extension Contract {
         return contract
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsDoctor], archive: Bool) {
+    class func saveFromJson(_ data: [JsonDecoderRequestAsDoctor], archive: Bool, isConsilium: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
@@ -156,7 +170,8 @@ extension Contract {
             for contractData in data {
                 gotContractIds.append(contractData.contract)
                 
-                let contract = saveFromJson(contractData, for: context)
+                let contract = saveFromJson(contractData, isConsilium: isConsilium, for: context)
+//                PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
                 
                 contract.clinic = Clinic.saveFromJson(contractData.clinic, contract: contract, for: context)
 
@@ -171,7 +186,7 @@ extension Contract {
             }
             
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context)
+                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context, isConsilium: isConsilium)
             }
             
             PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsDoctor")

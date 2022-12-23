@@ -50,6 +50,7 @@ extension Contract {
         let info_url: String?
         //    let public_attachments:
         let scenario: ScenarioResponse?
+        let last_message_timestamp: TimeInterval
         
         var startDateAsDate: Date? {
             let formatter = DateFormatter.ddMMyyyy
@@ -59,6 +60,10 @@ extension Contract {
         var endDateAsDate: Date? {
             let formatter = DateFormatter.ddMMyyyyAndTimeWithParentheses
             return formatter.date(from: endDate)
+        }
+        
+        var lastMessageTimestampAsDate: Date {
+            Date(timeIntervalSince1970: last_message_timestamp)
         }
     }
     
@@ -96,11 +101,12 @@ extension Contract {
         contract.scenarioPreset = data.scenario?.preset
         contract.sortRating = 0
         contract.isConsilium = isConsilium
+        contract.lastMessageTimestamp = data.lastMessageTimestampAsDate
         
         return contract
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool = false) {
+    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool) {
         PersistenceController.shared.container.performBackgroundTask { (context) in
             context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
             
@@ -111,6 +117,7 @@ extension Contract {
                 gotContractIds.append(contractData.contract)
                 
                 let contract = saveFromJson(contractData, for: context, isConsilium: isConsilium)
+//                PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
                 
                 contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
 

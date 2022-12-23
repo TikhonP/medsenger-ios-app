@@ -13,7 +13,7 @@ struct MessageTitleView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
     var body: some View {
-        HStack {
+        VStack(alignment: .leading) {
             Text(message.wrappedAuthor)
                 .font(.caption2)
                 .fontWeight(.bold)

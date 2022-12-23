@@ -58,7 +58,26 @@ public class Message: NSManagedObject, CoreDataIdGetable {
         }
         let resultsArray = Array(results)
         for (index, message) in resultsArray.enumerated() {
-            message.previousMessage = resultsArray[safe: index - 1]
+            var offset = 1
+            while let previousMessage = resultsArray[safe: index - offset] {
+                if previousMessage.showMessage {
+                    message.previousMessage = previousMessage
+                    break
+                } else {
+                    offset += 1
+                }
+            }
         }
+    }
+    
+    func isSameAuthor(as message: Message) -> Bool {
+        message.author == author && message.isMessageSent == isMessageSent && message.authorRole == authorRole
+    }
+    
+    var createSeparatorWithPreviousMessage: Bool {
+        guard let previousMessage = previousMessage, let messageSent = sent, let previousMessageSent = previousMessage.sent else {
+            return true
+        }
+        return !(messageSent.minutes(from: previousMessageSent) < 60 && isSameAuthor(as: previousMessage))
     }
 }

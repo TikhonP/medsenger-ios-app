@@ -6,6 +6,7 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+#if DEBUG
 import Foundation
 import CoreData
 import UIKit
@@ -41,3 +42,4 @@ struct UserPreview {
         return user
     }
 }
+#endif

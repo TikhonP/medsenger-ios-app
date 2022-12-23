@@ -20,6 +20,9 @@
 "%@ ComplianceView.Wow, %@!" = "%@ Вау, %@!";
 
 /* No comment provided by engineer. */
+"%@–%@" = "%@–%@";
+
+/* No comment provided by engineer. */
 "%lld" = "%lld";
 
 /* No comment provided by engineer. */
@@ -176,6 +179,12 @@
 "ChangePasswordViewModel.passwordsDoNotMatchAlertTitle" = "Пароли не совпадают!";
 
 /* No comment provided by engineer. */
+"ChatsView.addContractButton.Label" = "Добавить пациента";
+
+/* No comment provided by engineer. */
+"ChatsView.archiveButton.Label" = "Архив";
+
+/* No comment provided by engineer. */
 "ChatsView.CallTheClinic.Label" = "Позвонить в клинику";
 
 /* No comment provided by engineer. */
@@ -186,6 +195,9 @@
 
 /* No comment provided by engineer. */
 "ChatsView.navigationTitle" = "Консультации";
+
+/* No comment provided by engineer. */
+"ChatsView.settingsButton.Label" = "Настройки";
 
 /* The first time you open a chat, all messages are loaded, this may take some time. */
 "ChatView.loadingText" = "При первом открытии чата загружаются все сообщения, это может занять некоторое время.";
@@ -352,8 +364,17 @@
 /* Complience: %lld / %lld */
 "DoctorChatRow.Complience %lld / %lld" = "Комплаентность: %lld / %lld";
 
+/* Complience: %ld */
+"DoctorChatRow.Complience %lld%%" = "Комплаентность: %lld%%";
+
+/* Contract #\(contract.number) in «\(clinic.wrappedName)» */
+"DoctorChatRow.contract #%@ in «%@»" = "Контракт #%@ в «%@»";
+
 /* Contract %@. End: %@ */
 "DoctorChatRow.Contract %@. End: %@" = "Контракт %@. Окончание: %@";
+
+/* No comment provided by engineer. */
+"DoctorChatRow.notActivatedYet" = "Пока не активирован";
 
 /* No comment provided by engineer. */
 "EditNotesViewModel.Cancel.Button" = "Отмена";
@@ -500,6 +521,9 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* Monitoring: %@ */
 "PatientChatRow.Monitoring %@" = "Мониторинг: %@";
+
+/* %@ в «%@» */
+"PatientChatRow.specialityAnClinic %@ in «%@»" = "%@ в «%@»";
 
 /* No comment provided by engineer. */
 "PatientChatRow.Unread.accessibilityLabel %lld" = "Непрочитанных сообщений: %lld";

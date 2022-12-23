@@ -13,51 +13,60 @@ struct PatientChatRow: View {
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
     var body: some View {
-        HStack {
-            avatarImage
-                .frame(height: 70)
-                .accessibilityLabel("PatientChatRow.DoctorPhoto.accessibilityLabel")
-            
-            VStack(alignment: .leading) {
-                HStack {
-                    Text(contract.wrappedName)
-                        .font(.headline)
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer()
-                    if let lastFetchedMessageSent = contract.lastFetchedMessage?.sent {
-                        LastDateView(date: lastFetchedMessageSent)
-                            .font(.caption)
+        ZStack(alignment: .topTrailing) {
+            HStack(spacing: 0) {
+                VStack(alignment: .leading) {
+                    HStack {
+                        avatarImage
+                            .frame(width: 70)
+                            .accessibilityLabel("PatientChatRow.DoctorPhoto.accessibilityLabel")
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(contract.wrappedName)
+                                .font(.headline)
+                                .accessibilityAddTraits(.isHeader)
+                                .padding(.trailing, 20)
+                            ZStack {
+                                if let clinic = contract.clinic {
+                                    Text("PatientChatRow.specialityAnClinic \(contract.wrappedSpeciality) in «\(clinic.wrappedName)»", comment: "%@ в «%@»")
+                                        .font(.footnote)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                            .padding(.bottom, 10)
+                            if let scenarioName = contract.scenarioName {
+                                Text(scenarioName)
+                                    .font(.footnote)
+                                    .bold()
+                                    .foregroundColor(.secondary)
+                                    .padding(.bottom, 5)
+                            }
+                            if let endDate = contract.endDate, let startDate = contract.startDate {
+                                Text("\(startDate, formatter: DateFormatter.ddMMyyyy)–\(endDate, formatter: DateFormatter.ddMMyyyy)")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                            }
+                        }
                     }
+
+                    clinicLogo
+                        .frame(height: 80)
+                        .accessibilityLabel("PatientChatRow.ClinicLogo.accessibilityLabel")
                 }
                 
-                Text(contract.wrappedRole)
-                    .foregroundColor(.secondary)
-                    .bold()
-                    .padding(.bottom, 5)
+                Spacer()
                 
-                if let scenarioName = contract.scenarioName {
-                    Text("PatientChatRow.Monitoring \(scenarioName)", comment: "Monitoring: %@")
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 5)
+                if (contract.unread != 0) {
+                    MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
+                        .accessibilityLabel("PatientChatRow.Unread.accessibilityLabel \(Int(contract.unread))")
                 }
-                
-                if let clinic = contract.clinic {
-                    Text(clinic.wrappedName)
-                }
-                
-                clinicLogo
-                    .frame(height: 80)
-                    .accessibilityLabel("PatientChatRow.ClinicLogo.accessibilityLabel")
             }
-            
-            Spacer()
-            
-            if (contract.unread != 0) {
-                MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
-                    .accessibilityLabel("PatientChatRow.Unread.accessibilityLabel \(Int(contract.unread))")
+            .animation(.default, value: contract.unread)
+            if let lastMessageTimestamp = contract.lastMessageTimestamp {
+                LastDateView(date: lastMessageTimestamp)
+                    .font(.caption)
             }
         }
-        .animation(.default, value: contract.unread)
     }
     
     var avatarImage: some View {
@@ -98,6 +107,7 @@ struct PatientChatRow_Previews: PreviewProvider {
             .environmentObject(ChatsViewModel())
             .previewLayout(PreviewLayout.sizeThatFits)
             .padding()
+            .environment(\.locale, .init(identifier: "ru"))
     }
 }
 #endif

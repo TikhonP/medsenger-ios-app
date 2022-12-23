@@ -13,6 +13,7 @@ final class Messages {
     
     private var getAllMessagesRequest: APIRequest<MessagesResource>?
     private var sendMessageRequest: APIRequest<SendMessageResouce>?
+    private var actionUsedRequest: APIRequest<ActionUsedResource>?
     private var getAttachmentRequests = [FileRequest]()
     
     /// Fetch messages for contract
@@ -117,6 +118,25 @@ final class Messages {
             case .failure(let error):
                 completion(false)
                 processRequestError(error, "Messages: fetchImageAttachmentImage")
+            }
+        }
+    }
+    
+    /// Mark action message as used
+    /// - Parameters:
+    ///   - messageId: Message Id
+    ///   - completion: Request completion
+    public func messageActionUsed(messageId: Int, completion: @escaping APIRequestCompletion) {
+        let actionUsedResource = ActionUsedResource(messageId: messageId)
+        actionUsedRequest = APIRequest(actionUsedResource)
+        actionUsedRequest?.execute { result in
+            switch result {
+            case .success(_):
+                Message.markActionMessageAsUsed(id: messageId)
+                completion(true)
+            case .failure(let error):
+                completion(false)
+                processRequestError(error, "Messages: messageActionUsed")
             }
         }
     }

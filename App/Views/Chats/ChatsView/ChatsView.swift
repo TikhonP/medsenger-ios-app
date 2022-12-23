@@ -18,8 +18,9 @@ struct ChatsView: View {
     
     @FetchRequest(
         sortDescriptors: [
-            NSSortDescriptor(key: "unread", ascending: false),
-            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
+            //            NSSortDescriptor(key: "unread", ascending: false),
+            NSSortDescriptor(key: "activated", ascending: false),
+            NSSortDescriptor(key: "lastMessageTimestamp", ascending: false),
         ],
         predicate: NSPredicate(format: "archive == NO"),
         animation: .default)
@@ -52,39 +53,41 @@ struct ChatsView: View {
     
     var body: some View {
         ZStack {
-            if contracts.isEmpty {
-                if chatsViewModel.showContractsLoading {
-                    ProgressView()
-                } else {
-                    EmptyChatsView()
-                        .onTapGesture {
-                            chatsViewModel.getContracts(presentFailedAlert: true)
-                        }
+            EmptyView()
+                .alert(item: $chatsViewModel.alert) { $0.alert }
+            
+            List {
+                if userRole == .patient {
+                    ComplianceView(contracts: Array(contracts), user: user)
                 }
-            } else {
-                EmptyView()
-                    .alert(item: $chatsViewModel.alert) { $0.alert }
-                List {
-                    if userRole == .patient {
-                        ComplianceView(contracts: Array(contracts), user: user)
-                    }
-                    
+                
+                
+                ForEach(contracts) { contract in
                     Section {
-                        ForEach(contracts) { contract in
-                            NavigationLink(tag: Int(contract.id), selection: $chatsNavigationSelection, destination: {
-                                ChatView(contract: contract, user: user)
-                            }, label: {
-                                switch userRole {
-                                case .patient:
-                                    ZStack {
-                                        if contract.isConsilium {
-                                            ConsiliumChatRow(contract: contract)
-                                        } else {
-                                            PatientChatRow(contract: contract)
-                                        }
+                        NavigationLink(tag: Int(contract.id), selection: $chatsNavigationSelection, destination: {
+                            ChatView(contract: contract, user: user)
+                        }, label: {
+                            switch userRole {
+                            case .patient:
+                                ZStack {
+                                    if contract.isConsilium {
+                                        ConsiliumChatRow(contract: contract)
+                                    } else {
+                                        PatientChatRow(contract: contract)
                                     }
-                                    .environmentObject(chatsViewModel)
-                                    .contextMenu {
+                                }
+                                .environmentObject(chatsViewModel)
+                                .contextMenu {
+                                    if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
+                                        Button(action: {
+                                            chatsViewModel.callClinic(phone: phoneNumber)
+                                        }, label: {
+                                            Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
+                                        })
+                                    }
+                                }
+                                .swipeActionsIos15Only {
+                                    ZStack {
                                         if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
                                             Button(action: {
                                                 chatsViewModel.callClinic(phone: phoneNumber)
@@ -93,42 +96,70 @@ struct ChatsView: View {
                                             })
                                         }
                                     }
-                                    .swipeActionsIos15Only {
-                                        ZStack {
-                                            if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
-                                                Button(action: {
-                                                    chatsViewModel.callClinic(phone: phoneNumber)
-                                                }, label: {
-                                                    Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
-                                                })
-                                            }
+                                }
+                            case .doctor:
+                                ZStack {
+                                    if contract.isConsilium {
+                                        ConsiliumChatRow(contract: contract)
+                                    } else {
+                                        DoctorChatRow(contract: contract)
+                                    }
+                                }
+                                .environmentObject(chatsViewModel)
+                                .contextMenu {
+                                    if contract.canDecline {
+                                        Button(action: {
+                                            chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                        }, label: {
+                                            Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
+                                        })
+                                    }
+                                    if contract.isWaitingForConclusion {
+                                        Button(action: {
+                                            chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                        }, label: {
+                                            Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
+                                        })
+                                    }
+                                }
+                                .swipeActionsIos15Only {
+                                    ZStack {
+                                        if contract.canDecline {
+                                            Button(action: {
+                                                chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                            }, label: {
+                                                Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
+                                            })
+                                        }
+                                        if contract.isWaitingForConclusion {
+                                            Button(action: {
+                                                chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                            }, label: {
+                                                Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
+                                            })
                                         }
                                     }
-                                case .doctor:
-                                    DoctorChatRow(contract: contract)
-                                        .environmentObject(chatsViewModel)
-                                        .contextMenu {
-                                            if contract.canDecline {
-                                                Button(action: {
-                                                    chatsViewModel.declineMessages(contractId: Int(contract.id))
-                                                }, label: {
-                                                    Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
-                                                })
-                                            }
-                                            if contract.isWaitingForConclusion {
-                                                Button(action: {
-                                                    chatsViewModel.concludeContract(contractId: Int(contract.id))
-                                                }, label: {
-                                                    Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
-                                                })
-                                            }
-                                        }
-                                default:
-                                    EmptyView()
                                 }
-                            })
-                        }
+                            default:
+                                EmptyView()
+                            }
+                        })
+                        
                     }
+                }
+            }
+            
+            if contracts.isEmpty {
+                if chatsViewModel.showContractsLoading {
+                    ProgressView()
+                } else {
+                    EmptyChatsView()
+//                        .onAppear {
+//                            chatsViewModel.getContracts(presentFailedAlert: true)
+//                        }
+                        .onTapGesture {
+                            chatsViewModel.getContracts(presentFailedAlert: true)
+                        }
                 }
             }
         }
@@ -136,7 +167,7 @@ struct ChatsView: View {
         .animation(.default, value: contracts.isEmpty)
         .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
         .searchableIos16Only(text: query)
-        .listStyle(.inset)
+        .listStyle(.plain)
         .navigationTitle("ChatsView.navigationTitle")
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
@@ -180,7 +211,7 @@ struct ChatsView: View {
         .onChange(of: contentViewModel.openChatContractId, perform: { newContractId in
             if let newContractId = newContractId {
                 showSettingsModal = false
-                showNewContractModal = false 
+                showNewContractModal = false
                 chatsNavigationSelection = newContractId
             }
         })
