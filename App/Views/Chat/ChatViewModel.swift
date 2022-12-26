@@ -113,6 +113,8 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
                     self.agentActionName = message.actionName
                     self.showActionWebViewModal = true
                 }
+            case .vc:
+                presentAlert(title: Text("Vido conference is not supported now"))
             }
         }
     }

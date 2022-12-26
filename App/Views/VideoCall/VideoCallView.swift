@@ -27,7 +27,7 @@ struct VideoCallView: View {
         ZStack {
             if let contract = contracts.first {
                 ZStack {
-                    Color(UIColor.systemBackground)
+                    Color.systemBackground
                         .edgesIgnoringSafeArea(.all)
                     switch videoCallViewModel.rtcState {
                     case .new, .checking:

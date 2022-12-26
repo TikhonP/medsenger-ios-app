@@ -29,7 +29,7 @@ struct MessageBodyView: View {
             VStack(alignment: .leading, spacing: 0) {
                 if message.createSeparatorWithPreviousMessage {
                     MessageTitleView(message: message)
-                } else if !(!imageAttachments.isEmpty && !hasNonImageContent) && !message.isVoiceMessage {
+                } else if !(!imageAttachments.isEmpty && !hasNonImageContent) && !message.isVoiceMessage && message.replyToMessage == nil {
                     Color.clear
                         .frame(width: 0, height: 0)
                         .padding(.top, 10)
@@ -37,6 +37,11 @@ struct MessageBodyView: View {
                 
                 // Reply:
                 if let replyedMessage = message.replyToMessage {
+                    if !message.createSeparatorWithPreviousMessage {
+                        Color.clear
+                            .frame(width: 0, height: 0)
+                            .padding(.top, 10)
+                    }
                     ReplyPreviewView(replyedMessage: replyedMessage)
                 }
                 
@@ -114,7 +119,7 @@ struct MessageView: View {
     @State private var dragGestureOffset: CGFloat = .zero
     @State private var isReplying = false
     
-    private let swipeGestureConstant: CGFloat = 70
+    private let swipeGestureConstant: CGFloat = 60
     
     var body: some View {
         if message.isVideoCallMessageFromDoctor {
@@ -131,7 +136,7 @@ struct MessageView: View {
                 MessageBodyView(message: message)
                     .foregroundColor(foregroundColor)
                     .background(backgroundColor)
-                    .cornerRadius(20)
+                    .cornerRadius(15)
                     .contextMenu {
                         Button(action: {
                             messageInputViewModel.replyToMessage = message
@@ -147,6 +152,7 @@ struct MessageView: View {
                         }
                     }
                     .frame(width: viewWidth * 0.7, alignment: message.isMessageSent ? .trailing : .leading)
+                    .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .frame(maxWidth: .infinity, alignment: message.isMessageSent ? .trailing : .leading)
                     .id(Int(message.id))
                     .offset(x: dragGestureOffset)
@@ -159,8 +165,7 @@ struct MessageView: View {
                                 if isDragging {
                                     let translation = value.translation.width
                                     if translation > 0 {
-                                        dragGestureOffset = translation / 10
-                                        isReplying = false
+                                        // No swipe right
                                     } else if -translation < swipeGestureConstant {
                                         isReplying = false
                                         dragGestureOffset = translation
@@ -188,6 +193,11 @@ struct MessageView: View {
                     .onChange(of: isReplying, perform: { newValue in
                         HapticFeedback.shared.play(.light)
                     })
+                    .onAppear {
+                        if !isDragging {
+                            dragGestureOffset = 0
+                        }
+                    }
             }
             .animation(.spring(response: 0.2, dampingFraction: 0.5), value: isReplying)
         }

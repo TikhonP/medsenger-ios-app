@@ -45,10 +45,10 @@ struct InfoMaterialsView: View {
                         Link(name, destination: link)
                     }
                 }
+                .searchableIos15Only(text: query)
             }
         }
         .navigationTitle("InfoMaterialsView.navigationTitle")
-        .searchableIos16Only(text: query)
     }
 }
 

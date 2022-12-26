@@ -24,6 +24,8 @@
 		432442962948D421002476DB /* TextMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442952948D421002476DB /* TextMessageView.swift */; };
 		432442982948D57F002476DB /* MessageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442972948D57F002476DB /* MessageAttachmentView.swift */; };
 		4324429A2948DACC002476DB /* MessageTimeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442992948DACC002476DB /* MessageTimeBadge.swift */; };
+		432CA25529564F9100E91303 /* View+readSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432CA25429564F9100E91303 /* View+readSize.swift */; };
+		432DCDAF2959D9A700B04B90 /* VideoConference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432DCDAE2959D9A700B04B90 /* VideoConference.swift */; };
 		4334D109295395E600E7816D /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D108295395E600E7816D /* PushNotifications.swift */; };
 		4334D10B2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */; };
 		433F2005292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */; };
@@ -75,8 +77,6 @@
 		435F9DA32934C8350094F93C /* LocalVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA22934C8350094F93C /* LocalVideoView.swift */; };
 		435F9DA52934F3A30094F93C /* SaveVideoCallResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */; };
 		435F9DA7293577540094F93C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435F9DA6293577540094F93C /* Logger.swift */; };
-		436AEA45294B55D4000919D8 /* UIScrollViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436AEA44294B55D4000919D8 /* UIScrollViewWrapper.swift */; };
-		436AEA47294B55F1000919D8 /* UIScrollMessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436AEA46294B55F1000919D8 /* UIScrollMessagesView.swift */; };
 		43758B51294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */; };
 		43758B5329429D45008969FF /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43758B5229429D45008969FF /* MotionManager.swift */; };
 		4376163829338781001049E6 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4376163729338781001049E6 /* SessionDescription.swift */; };
@@ -252,11 +252,12 @@
 		43EF44B42922908B005DF084 /* Contract+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44B32922908B005DF084 /* Contract+Preview.swift */; };
 		43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BC2922D427005DF084 /* Message+Preview.swift */; };
 		43EF44BF2923C6A7005DF084 /* Clinic+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */; };
-		43EF44C12923D9A2005DF084 /* View+searchableIos16Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44C02923D9A2005DF084 /* View+searchableIos16Only.swift */; };
+		43EF44C12923D9A2005DF084 /* View+searchableIos15Only.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43EF44C02923D9A2005DF084 /* View+searchableIos15Only.swift */; };
 		43F63C642940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C632940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift */; };
 		43F63C662940E0EF008D1B9F /* EditNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C652940E0EF008D1B9F /* EditNotesView.swift */; };
 		43F63C682940E22E008D1B9F /* UpdateCommentsResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C672940E22E008D1B9F /* UpdateCommentsResource.swift */; };
 		43F63C6A2940ECFE008D1B9F /* RemoveScenarioResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F63C692940ECFE008D1B9F /* RemoveScenarioResource.swift */; };
+		43F99BD12957B038001163ED /* Color+constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43F99BD02957B038001163ED /* Color+constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -275,6 +276,8 @@
 		432442952948D421002476DB /* TextMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageView.swift; sourceTree = "<group>"; };
 		432442972948D57F002476DB /* MessageAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentView.swift; sourceTree = "<group>"; };
 		432442992948DACC002476DB /* MessageTimeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeBadge.swift; sourceTree = "<group>"; };
+		432CA25429564F9100E91303 /* View+readSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+readSize.swift"; sourceTree = "<group>"; };
+		432DCDAE2959D9A700B04B90 /* VideoConference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoConference.swift; sourceTree = "<group>"; };
 		4334D108295395E600E7816D /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+addTapGestureRecognizer.swift"; sourceTree = "<group>"; };
 		433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+AppPrefs.swift"; sourceTree = "<group>"; };
@@ -328,8 +331,6 @@
 		435F9DA22934C8350094F93C /* LocalVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalVideoView.swift; sourceTree = "<group>"; };
 		435F9DA42934F3A30094F93C /* SaveVideoCallResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveVideoCallResource.swift; sourceTree = "<group>"; };
 		435F9DA6293577540094F93C /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
-		436AEA44294B55D4000919D8 /* UIScrollViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewWrapper.swift; sourceTree = "<group>"; };
-		436AEA46294B55F1000919D8 /* UIScrollMessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollMessagesView.swift; sourceTree = "<group>"; };
 		43758B50294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+internetOfflineWarningInBottomBar.swift"; sourceTree = "<group>"; };
 		43758B5229429D45008969FF /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		4376163729338781001049E6 /* SessionDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDescription.swift; sourceTree = "<group>"; };
@@ -511,11 +512,12 @@
 		43EF44B32922908B005DF084 /* Contract+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contract+Preview.swift"; sourceTree = "<group>"; };
 		43EF44BC2922D427005DF084 /* Message+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+Preview.swift"; sourceTree = "<group>"; };
 		43EF44BE2923C6A7005DF084 /* Clinic+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Clinic+Preview.swift"; sourceTree = "<group>"; };
-		43EF44C02923D9A2005DF084 /* View+searchableIos16Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+searchableIos16Only.swift"; sourceTree = "<group>"; };
+		43EF44C02923D9A2005DF084 /* View+searchableIos15Only.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+searchableIos15Only.swift"; sourceTree = "<group>"; };
 		43F63C632940D45F008D1B9F /* ClinicScenarioParamOption+Wrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClinicScenarioParamOption+Wrappers.swift"; sourceTree = "<group>"; };
 		43F63C652940E0EF008D1B9F /* EditNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNotesView.swift; sourceTree = "<group>"; };
 		43F63C672940E22E008D1B9F /* UpdateCommentsResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCommentsResource.swift; sourceTree = "<group>"; };
 		43F63C692940ECFE008D1B9F /* RemoveScenarioResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoveScenarioResource.swift; sourceTree = "<group>"; };
+		43F99BD02957B038001163ED /* Color+constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+constants.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -532,6 +534,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		432DCDAD2959D97A00B04B90 /* VideoConference */ = {
+			isa = PBXGroup;
+			children = (
+				432DCDAE2959D9A700B04B90 /* VideoConference.swift */,
+			);
+			path = VideoConference;
+			sourceTree = "<group>";
+		};
 		435C1812293ADB36009483F6 /* third-party */ = {
 			isa = PBXGroup;
 			children = (
@@ -713,7 +723,6 @@
 				43EF44AD2922900F005DF084 /* ChatView.swift */,
 				430E7D9D29366D9D009C129D /* MessagesView.swift */,
 				43D5057C293F4EA400EE3756 /* ScrollToBottomLabelView.swift */,
-				436AEA46294B55F1000919D8 /* UIScrollMessagesView.swift */,
 				43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */,
 			);
 			path = ChatView;
@@ -769,7 +778,7 @@
 				43EF449B29228F01005DF084 /* Image+Data.swift */,
 				4319801C293CEE9D005F43A8 /* UIImage+fixOrientation.swift */,
 				43EF449D29228F11005DF084 /* View+refreshableIos15Only.swift */,
-				43EF44C02923D9A2005DF084 /* View+searchableIos16Only.swift */,
+				43EF44C02923D9A2005DF084 /* View+searchableIos15Only.swift */,
 				434399F22927E0A7001D7C4F /* View+scrollDismissesKeyboardIos16Only.swift */,
 				43198024293E3C35005F43A8 /* View+hideKeyboard.swift */,
 				43D5057A293F498B00EE3756 /* View+blurEffect.swift */,
@@ -777,6 +786,8 @@
 				437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */,
 				43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */,
 				4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */,
+				432CA25429564F9100E91303 /* View+readSize.swift */,
+				43F99BD02957B038001163ED /* Color+constants.swift */,
 			);
 			path = ViewExtensions;
 			sourceTree = "<group>";
@@ -1100,6 +1111,7 @@
 		43EF443329228A03005DF084 /* MedsengerKit */ = {
 			isa = PBXGroup;
 			children = (
+				432DCDAD2959D97A00B04B90 /* VideoConference */,
 				435D5719293A6AC30013B0F4 /* DoctorActions */,
 				435D56FF293A0FC40013B0F4 /* NetworkRequest */,
 				435D56F8293800040013B0F4 /* HealthKit */,
@@ -1226,7 +1238,6 @@
 				43EF447029228DDF005DF084 /* PasswordFieldView.swift */,
 				4351CE172946858B00DF6830 /* AudioView.swift */,
 				437BEB5829435B1D008EF4DE /* Alertable.swift */,
-				436AEA44294B55D4000919D8 /* UIScrollViewWrapper.swift */,
 			);
 			path = UtilsViews;
 			sourceTree = "<group>";
@@ -1344,7 +1355,7 @@
 				435D572B293A97440013B0F4 /* ClinicScenario+CoreDataClass.swift in Sources */,
 				43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */,
 				43C510FC2953137E00C91CE5 /* Date+isEqual.swift in Sources */,
-				43EF44C12923D9A2005DF084 /* View+searchableIos16Only.swift in Sources */,
+				43EF44C12923D9A2005DF084 /* View+searchableIos15Only.swift in Sources */,
 				435C184E293B8044009483F6 /* WaveformAnalyzer.swift in Sources */,
 				435C185C293BFDF4009483F6 /* MessageImageView.swift in Sources */,
 				43EF4431292289DD005DF084 /* DateFormatter+Formats.swift in Sources */,
@@ -1470,6 +1481,7 @@
 				435D571B293A6AD50013B0F4 /* DoctorActions.swift in Sources */,
 				43D505BD293F631400EE3756 /* AgentTask+JsonDeserializer.swift in Sources */,
 				435C1849293B8044009483F6 /* CircularWaveformRenderer.swift in Sources */,
+				43F99BD12957B038001163ED /* Color+constants.swift in Sources */,
 				43D4CFCE2952037A00A9C51B /* ComplianceView.swift in Sources */,
 				43EF449529228EB1005DF084 /* Name.swift in Sources */,
 				43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */,
@@ -1513,9 +1525,7 @@
 				43EF449929228EB1005DF084 /* MultipartFormData+Part.swift in Sources */,
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
 				43EF440A29228202005DF084 /* PersistenceController.swift in Sources */,
-				436AEA47294B55F1000919D8 /* UIScrollMessagesView.swift in Sources */,
 				43EF44A129228F54005DF084 /* SettingsViewModel.swift in Sources */,
-				436AEA45294B55D4000919D8 /* UIScrollViewWrapper.swift in Sources */,
 				43758B51294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift in Sources */,
 				4376163F293389DD001049E6 /* WebRTCClient.swift in Sources */,
 				43D4CFD62952243700A9C51B /* CoreDataNameStringRemovedCleanable.swift in Sources */,
@@ -1549,6 +1559,7 @@
 				43D5057B293F498B00EE3756 /* View+blurEffect.swift in Sources */,
 				43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */,
 				43D505D9293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift in Sources */,
+				432CA25529564F9100E91303 /* View+readSize.swift in Sources */,
 				437616502933A475001049E6 /* CallingView.swift in Sources */,
 				43D505AF293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift in Sources */,
 				43EF449C29228F01005DF084 /* Image+Data.swift in Sources */,
@@ -1569,6 +1580,7 @@
 				432442942948C0AA002476DB /* ReplyPreviewView.swift in Sources */,
 				437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */,
 				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,
+				432DCDAF2959D9A700B04B90 /* VideoConference.swift in Sources */,
 				43D505C1293F649000EE3756 /* PatientHelper+JsonDeserializer.swift in Sources */,
 				4376164E2933A3C5001049E6 /* WaitingCallView.swift in Sources */,
 				435D5734293AA0C90013B0F4 /* DeviceResource.swift in Sources */,

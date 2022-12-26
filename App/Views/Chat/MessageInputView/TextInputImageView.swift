@@ -27,7 +27,7 @@ struct TextInputAttachmentView: View {
                         Rectangle()
                             .scaledToFit()
                         Image(systemName: "video.fill")
-                            .foregroundColor(Color(UIColor.systemBackground))
+                            .foregroundColor(.systemBackground)
                             .scaledToFit()
                     }
                 case .audio:
@@ -35,7 +35,7 @@ struct TextInputAttachmentView: View {
                         Rectangle()
                             .scaledToFit()
                         Image(systemName: "waveform")
-                            .foregroundColor(Color(UIColor.systemBackground))
+                            .foregroundColor(.systemBackground)
                             .padding(10)
                     }
                 case .file:
@@ -43,7 +43,7 @@ struct TextInputAttachmentView: View {
                         Rectangle()
                             .scaledToFit()
                         Image(systemName: "doc")
-                            .foregroundColor(Color(UIColor.systemBackground))
+                            .foregroundColor(.systemBackground)
                             .padding(10)
                     }
                 }

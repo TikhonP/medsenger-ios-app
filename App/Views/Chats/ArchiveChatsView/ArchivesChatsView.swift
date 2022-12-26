@@ -12,12 +12,11 @@ struct ArchivesChatsView: View {
     @ObservedObject var user: User
     
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
-    @EnvironmentObject private var contentViewModel: ContentViewModel
     @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @FetchRequest(
         sortDescriptors: [
-            //            NSSortDescriptor(key: "lastFetchedMessage.sent", ascending: false),
+            NSSortDescriptor(key: "lastMessageTimestamp", ascending: false),
             NSSortDescriptor(key: "endDate", ascending: false)
         ],
         predicate: NSPredicate(format: "archive == YES"),
@@ -44,35 +43,42 @@ struct ArchivesChatsView: View {
     
     var body: some View {
         ZStack {
+            List(contracts) { contract in
+                NavigationLink(destination: {
+                    ChatView(contract: contract, user: user)
+                }, label: {
+                    switch userRole {
+                    case .patient:
+                        PatientChatRow(contract: contract)
+                    case .doctor:
+                        DoctorChatRow(contract: contract)
+                    default:
+                        EmptyView()
+                    }
+                })
+            }
+            .listStyle(.plain)
+            .searchableIos15Only(text: query)
+            .refreshableIos15Only { await chatsViewModel.getArchiveContracts(presentFailedAlert: true) }
+            
             if contracts.isEmpty {
                 if chatsViewModel.showArchiveContractsLoading {
                     ProgressView()
                 } else {
                     EmptyArchiveChatsView()
+                        .onAppear {
+                            chatsViewModel.showArchiveContractsLoading = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                chatsViewModel.showArchiveContractsLoading = false
+                            }
+                        }
                         .onTapGesture {
                             chatsViewModel.getArchiveContracts(presentFailedAlert: true)
                         }
                 }
-            } else {
-                List(contracts) { contract in
-                    NavigationLink(destination: {
-                        ChatView(contract: contract, user: user)
-                    }, label: {
-                        switch userRole {
-                        case .patient:
-                            PatientChatRow(contract: contract)
-                        case .doctor:
-                            DoctorChatRow(contract: contract)
-                        default:
-                            EmptyView()
-                        }
-                    })
-                }
             }
         }
-        .searchableIos16Only(text: query)
-        .refreshableIos15Only { await chatsViewModel.getArchiveContracts(presentFailedAlert: true) }
-        .listStyle(PlainListStyle())
+        .animation(.default, value: chatsViewModel.showArchiveContractsLoading)
         .navigationTitle("ArchivesChatsView.navigationTitle")
         .onAppear {
             chatsViewModel.getArchiveContracts(presentFailedAlert: false)

@@ -13,61 +13,63 @@ struct ConsiliumChatRow: View {
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
     var body: some View {
-        HStack {
-            consiliumAvators
-                .frame(width: 70)
-                .accessibilityLabel("ConsiliumChatRow.doctorAndPatientPhoto.accessibilityLabel")
-            
-            VStack(alignment: .leading) {
-                HStack {
+        ZStack(alignment: .topTrailing) {
+            HStack {
+                consiliumAvators
+                    .frame(width: 60)
+                    .accessibilityLabel("ConsiliumChatRow.doctorAndPatientPhoto.accessibilityLabel")
+                
+                VStack(alignment: .leading) {
                     Text(contract.wrappedName)
                         .font(.headline)
                         .accessibilityAddTraits(.isHeader)
-                    Spacer()
-                    if let lastMessageTimestamp = contract.lastMessageTimestamp {
-                        LastDateView(date: lastMessageTimestamp)
-                            .font(.caption)
+                    
+                    Text("ConsiliumChatRow.Doctor: \(contract.wrappedDoctorName)", comment: "Doctor: %@")
+                    Text("ConsiliumChatRow.you \(contract.wrappedRole)", comment: "You: %@")
+                        .padding(.bottom, 5)
+                    
+                    if let scenarioName = contract.scenarioName {
+                        Text("ConsiliumChatRow.Monitoring: \(scenarioName)", comment: "Monitoring: %@")
+                            .foregroundColor(.secondary)
+                            .padding(.bottom, 5)
+                    }
+                    
+                    if let clinic = contract.clinic {
+                        Text(clinic.wrappedName)
                     }
                 }
                 
-                Text("ConsiliumChatRow.Doctor: \(contract.wrappedDoctorName)", comment: "Doctor: %@")
-                Text("ConsiliumChatRow.you \(contract.wrappedRole)", comment: "You: %@")
-                    .padding(.bottom, 5)
-
-                if let scenarioName = contract.scenarioName {
-                    Text("ConsiliumChatRow.Monitoring: \(scenarioName)", comment: "Monitoring: %@")
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 5)
-                }
+                Spacer()
                 
-                if let clinic = contract.clinic {
-                    Text(clinic.wrappedName)
+                if (contract.unread != 0) {
+                    MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
+                        .accessibilityLabel("ConsiliumChatRow.unread.accessibilityLabel \(Int(contract.unread))")
                 }
             }
+            .animation(.default, value: contract.unread)
             
-            Spacer()
-            
-            if (contract.unread != 0) {
-                MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
-                    .accessibilityLabel("ConsiliumChatRow.unread.accessibilityLabel \(Int(contract.unread))")
+            if let lastMessageTimestamp = contract.lastMessageTimestamp {
+                LastDateView(date: lastMessageTimestamp)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
-        .animation(.default, value: contract.unread)
     }
     
     var consiliumAvators: some View {
         ZStack {
-            if let patientAvatar = contract.`patientAvatar`, let doctorAvatar = contract.doctorAvatar {
+            if let patientAvatar = contract.patientAvatar, let doctorAvatar = contract.doctorAvatar {
                 Image(data: patientAvatar)?
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
                     .offset(y: -25)
                 Image(data: doctorAvatar)?
                     .resizable()
                     .scaledToFit()
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color(UIColor.systemBackground), lineWidth: 2))
+                    .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
                     .offset(y: 25)
             } else {
                 ProgressView()

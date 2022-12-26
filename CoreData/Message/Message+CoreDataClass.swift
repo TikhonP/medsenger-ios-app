@@ -9,6 +9,11 @@
 import CoreData
 import os.log
 
+let __messagesSortDescriptors = [
+    NSSortDescriptor(key: "sent", ascending: true),
+    NSSortDescriptor(key: "id", ascending: true)
+]
+
 @objc(Message)
 public class Message: NSManagedObject, CoreDataIdGetable {
     
@@ -18,13 +23,13 @@ public class Message: NSManagedObject, CoreDataIdGetable {
     )
     
     public enum ActionType: String {
-        case zoom, url, action
+        case zoom, url, action, vc
     }
     
     public static func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: false)]
+        fetchRequest.sortDescriptors = __messagesSortDescriptors
         fetchRequest.fetchLimit = 1
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getLastMessageForContract")
         return fetchedResults?.first
@@ -33,7 +38,7 @@ public class Message: NSManagedObject, CoreDataIdGetable {
     public static func getFirstMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: true)]
+        fetchRequest.sortDescriptors = __messagesSortDescriptors
         fetchRequest.fetchLimit = 1
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getFirstMessageForContract")
         return fetchedResults?.first
@@ -52,7 +57,7 @@ public class Message: NSManagedObject, CoreDataIdGetable {
     internal static func markNextAndPreviousMessages(for contract: Contract, for context: NSManagedObjectContext) {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sent", ascending: true)]
+        fetchRequest.sortDescriptors = __messagesSortDescriptors
         guard let results = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "get messages for markNextAndPreviousMessages") else {
             return
         }

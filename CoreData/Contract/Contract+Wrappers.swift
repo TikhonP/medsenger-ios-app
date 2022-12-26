@@ -56,6 +56,10 @@ extension Contract {
         (specialty ?? "Unknown specialty").trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
+    public var wrappedMessageDraft: String {
+        messageDraft ?? ""
+    }
+    
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
         return Array(set)

@@ -18,9 +18,9 @@ struct ChatsView: View {
     
     @FetchRequest(
         sortDescriptors: [
-            //            NSSortDescriptor(key: "unread", ascending: false),
             NSSortDescriptor(key: "activated", ascending: false),
             NSSortDescriptor(key: "lastMessageTimestamp", ascending: false),
+            NSSortDescriptor(key: "unread", ascending: false),
         ],
         predicate: NSPredicate(format: "archive == NO"),
         animation: .default)
@@ -53,17 +53,14 @@ struct ChatsView: View {
     
     var body: some View {
         ZStack {
-            EmptyView()
-                .alert(item: $chatsViewModel.alert) { $0.alert }
-            
+            Color.clear.alert(item: $chatsViewModel.alert) { $0.alert }
             List {
                 if userRole == .patient {
                     ComplianceView(contracts: Array(contracts), user: user)
                 }
                 
-                
-                ForEach(contracts) { contract in
-                    Section {
+                Section {
+                    ForEach(contracts) { contract in
                         NavigationLink(tag: Int(contract.id), selection: $chatsNavigationSelection, destination: {
                             ChatView(contract: contract, user: user)
                         }, label: {
@@ -148,15 +145,21 @@ struct ChatsView: View {
                     }
                 }
             }
+            .listStyle(.plain)
+            .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
+            .searchableIos15Only(text: query)
             
             if contracts.isEmpty {
                 if chatsViewModel.showContractsLoading {
                     ProgressView()
                 } else {
                     EmptyChatsView()
-//                        .onAppear {
-//                            chatsViewModel.getContracts(presentFailedAlert: true)
-//                        }
+                        .onAppear {
+                            chatsViewModel.showContractsLoading = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                chatsViewModel.showContractsLoading = false
+                            }
+                        }
                         .onTapGesture {
                             chatsViewModel.getContracts(presentFailedAlert: true)
                         }
@@ -164,15 +167,10 @@ struct ChatsView: View {
             }
         }
         .animation(.default, value: chatsViewModel.showContractsLoading)
-        .animation(.default, value: contracts.isEmpty)
-        .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
-        .searchableIos16Only(text: query)
-        .listStyle(.plain)
         .navigationTitle("ChatsView.navigationTitle")
         .onAppear(perform: {
             chatsViewModel.initilizeWebsockets()
             chatsViewModel.getContracts(presentFailedAlert: false)
-            contentViewModel.markChatAsClosed()
             PushNotifications.onChatsViewAppear()
         })
         .toolbar {
@@ -216,7 +214,7 @@ struct ChatsView: View {
             }
         })
         .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
-        .sheet(isPresented: $showSettingsModal, content: { SettingsView() })
+        .sheet(isPresented: $showSettingsModal, content: { SettingsView(user: user) })
         .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }
 }

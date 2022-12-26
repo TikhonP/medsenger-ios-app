@@ -31,7 +31,7 @@ struct RecordedVoiceMessageView: View {
                                    Image(systemName: "stop.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundColor(.init(UIColor.systemBackground))
+                                        .foregroundColor(.systemBackground)
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
                               })
@@ -40,7 +40,7 @@ struct RecordedVoiceMessageView: View {
                                    Image(systemName: "play.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .foregroundColor(.init(UIColor.systemBackground))
+                                        .foregroundColor(.systemBackground)
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
                               })
@@ -52,16 +52,12 @@ struct RecordedVoiceMessageView: View {
                               isPlaying: $messageInputViewModel.isVoiceMessagePlaying,
                               playingAudioProgress: $messageInputViewModel.playingAudioProgress,
                               mainColor: .gray,
-                              progressColor: .init(UIColor.systemBackground),
+                              progressColor: .systemBackground,
                               width: 2
                          )
                          .padding(.trailing)
                          .padding(.vertical, 10)
                     }
-//                    Text("0:01")
-//                         .padding(.trailing)
-//                         .padding([.vertical, .leading], 10)
-//                         .foregroundColor(Color(UIColor.systemBackground))
                }
                .frame(height: 38)
                .background(colorScheme == .light ? Color.accentColor : Color.white)

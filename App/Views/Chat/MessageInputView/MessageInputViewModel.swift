@@ -25,7 +25,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     
     @Published var alert: AlertInfo?
     
-    @Published var message: String = ""
+    @Published var message: String
     @Published var replyToMessage: Message?
     @Published var messageAttachments = [ChatViewAttachment]()
     @Published var showSendingMessageLoading = false
@@ -39,7 +39,8 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     @Published var totalAudioMessageTime: Double?
     @Published var playingAudioProgress: Double = 0
     
-    init(contractId: Int) {
+    init(contractId: Int, messageDraft: String) {
+        self.message = messageDraft
         self.contractId = contractId
     }
     
@@ -65,6 +66,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                     if succeeded {
                         self?.messageAttachments = []
                         self?.message = ""
+                        self?.saveMessageDraft()
                         self?.replyToMessage = nil
                     } else {
                         self?.presentGlobalAlert()
@@ -157,6 +159,10 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
             }
         }
         return true
+    }
+    
+    func saveMessageDraft() {
+        Contract.saveMessageDraft(id: contractId, messageDraft: message)
     }
 }
 

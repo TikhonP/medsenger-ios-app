@@ -88,6 +88,15 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         }
     }
     
+    public static func saveMessageDraft(id: Int, messageDraft: String) {
+        PersistenceController.shared.container.performBackgroundTask { (context) in
+            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+            let contract = get(id: id, for: context)
+            contract?.messageDraft = messageDraft
+            PersistenceController.save(for: context, detailsForLogging: "Contract save messageDraft")
+        }
+    }
+    
     internal static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: Contract.self)

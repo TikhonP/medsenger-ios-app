@@ -63,7 +63,7 @@ struct SignInView: View {
                     }
                 }
                 .font(.headline)
-                .foregroundColor(Color(UIColor.systemBackground))
+                .foregroundColor(.systemBackground)
                 .padding(.vertical)
                 .padding(.horizontal, 50)
                 .background(Color.accentColor)

@@ -18,7 +18,7 @@ struct PatientChatRow: View {
                 VStack(alignment: .leading) {
                     HStack {
                         avatarImage
-                            .frame(width: 70)
+                            .frame(width: 60)
                             .accessibilityLabel("PatientChatRow.DoctorPhoto.accessibilityLabel")
                         
                         VStack(alignment: .leading, spacing: 0) {
@@ -50,21 +50,22 @@ struct PatientChatRow: View {
                     }
 
                     clinicLogo
-                        .frame(height: 80)
+                        .frame(height: 65)
                         .accessibilityLabel("PatientChatRow.ClinicLogo.accessibilityLabel")
                 }
                 
                 Spacer()
-                
                 if (contract.unread != 0) {
                     MessagesBadgeView(count: Int(contract.unread), color: .accentColor.opacity(0.5))
                         .accessibilityLabel("PatientChatRow.Unread.accessibilityLabel \(Int(contract.unread))")
                 }
             }
             .animation(.default, value: contract.unread)
+            
             if let lastMessageTimestamp = contract.lastMessageTimestamp {
                 LastDateView(date: lastMessageTimestamp)
                     .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
     }

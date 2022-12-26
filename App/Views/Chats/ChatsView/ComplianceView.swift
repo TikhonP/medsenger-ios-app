@@ -106,12 +106,12 @@ final class ComplianceViewModel: ObservableObject {
     
     var shadowColor: Color {
         if let progressLevel = progressLevel {
-            return progressLevel == 100 ? Color(UIColor.systemBackground) : .blue
+            return progressLevel == 100 ? .systemBackground : .blue
         } else {
             if let level = level {
-                return level <= 1 ? .pink : level <= 4 ? Color(UIColor.systemBackground) : .blue
+                return level <= 1 ? .pink : level <= 4 ? .systemBackground : .blue
             } else {
-                return Color(UIColor.systemBackground)
+                return .systemBackground
             }
         }
     }

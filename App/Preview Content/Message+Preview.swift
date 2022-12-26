@@ -6,6 +6,7 @@
 //  Copyright © 2022 TelePat ltd. All rights reserved.
 //
 
+#if DEBUG
 import CoreData
 
 extension Message {
@@ -163,3 +164,4 @@ extension Message {
         return message
     }
 }
+#endif

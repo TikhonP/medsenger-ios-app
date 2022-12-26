@@ -47,7 +47,7 @@ struct SettingsProfileImageView: View {
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
             NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: settingsViewModel.updateAvatarFromImage)
-            .edgesIgnoringSafeArea(.all)
+                .edgesIgnoringSafeArea(.all)
         }
         .fullScreenCover(isPresented: $settingsViewModel.showTakeImageSheet) {
             ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
@@ -216,32 +216,34 @@ struct SettingsMainFormView: View {
             Section(
                 header: Text("SettingsMainFormView.notificationHeader", comment: "Notifications"),
                 footer: Text("SettingsMainFormView.notificationFooter", comment: "Push notifications can inform you about new message on your phone")) {
-                Toggle(isOn: $settingsMainFormViewModel.isEmailNotificationOn, label: {
-                    HStack {
-                        Label("SettingsMainFormView.emailNotificationsLabel", systemImage: "envelope.badge")
-                        if settingsMainFormViewModel.showEmailNotificationUpdateRequestLoading {
-                            ProgressView()
-                                .padding(.leading)
+                    Toggle(isOn: $settingsMainFormViewModel.isEmailNotificationOn, label: {
+                        HStack {
+                            Label("SettingsMainFormView.emailNotificationsLabel", systemImage: "envelope.badge")
+                            if settingsMainFormViewModel.showEmailNotificationUpdateRequestLoading {
+                                ProgressView()
+                                    .padding(.leading)
+                            }
                         }
-                    }
-                })
-                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { settingsMainFormViewModel.updateEmailNotifications($0) }
-                .onChange(of: user.emailNotifications, perform: { value in
-                    settingsMainFormViewModel.isEmailNotificationOn = value
-                })
-                
-                Toggle(isOn: $isPushNotificationsOn, label: {
-                    HStack {
-                        Label("SettingsMainFormView.pushNotificationsLabel", systemImage: "bell.badge")
-                        if settingsMainFormViewModel.showPushNotificationUpdateRequestLoading {
-                            ProgressView()
-                                .padding(.leading)
+                    })
+                    .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { settingsMainFormViewModel.updateEmailNotifications($0) }
+                    .onChange(of: user.emailNotifications, perform: { value in
+                        settingsMainFormViewModel.isEmailNotificationOn = value
+                    })
+                    
+                    Toggle(isOn: $isPushNotificationsOn, label: {
+                        HStack {
+                            Label("SettingsMainFormView.pushNotificationsLabel", systemImage: "bell.badge")
+                            if settingsMainFormViewModel.showPushNotificationUpdateRequestLoading {
+                                ProgressView()
+                                    .padding(.leading)
+                            }
                         }
+                    })
+                    .onTapGesture {
+                        settingsMainFormViewModel.updatePushNotifications(!isPushNotificationsOn)
                     }
-                })
-                .onChange(of: isPushNotificationsOn, perform: settingsMainFormViewModel.updatePushNotifications)
-            }
-            .alert(item: $settingsMainFormViewModel.alert) { $0.alert }
+                }
+                .alert(item: $settingsMainFormViewModel.alert) { $0.alert }
             
             if user.isPatient && user.isDoctor {
                 Section(footer: Text("SettingsMainFormView.changeRoleFooter", comment: "Your account has access to both the doctor and the patient role.")) {
@@ -272,47 +274,47 @@ struct SettingsMainFormView: View {
             Section(
                 header: Text("SettingsMainFormView.aboutHeader", comment: "About"),
                 footer: Text("SettingsMainFormView.aboutFooter", comment: "The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come.")) {
-                HStack {
-                    Text("SettingsMainFormView.version", comment: "Version")
-                    Spacer()
-                    if let appVersion = appVersion {
-                        HStack {
-                            Text(appVersion)
-                            if showAppBuild {
-                                if let appBuild = appBuild {
-                                    Text("(\(appBuild))")
-                                        .foregroundColor(.secondary)
-                                } else {
-                                    Text("SettingsMainFormView.buildNotFound", comment: "(Build not found)")
-                                        .foregroundColor(.secondary)
+                    HStack {
+                        Text("SettingsMainFormView.version", comment: "Version")
+                        Spacer()
+                        if let appVersion = appVersion {
+                            HStack {
+                                Text(appVersion)
+                                if showAppBuild {
+                                    if let appBuild = appBuild {
+                                        Text("(\(appBuild))")
+                                            .foregroundColor(.secondary)
+                                    } else {
+                                        Text("SettingsMainFormView.buildNotFound", comment: "(Build not found)")
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
-                        }
-                        .onTapGesture {
-                            withAnimation {
-                                showAppBuild.toggle()
+                            .onTapGesture {
+                                withAnimation {
+                                    showAppBuild.toggle()
+                                }
                             }
+                        } else {
+                            Text("SettingsMainFormView.versionNotFound", comment: "Version not found")
                         }
-                    } else {
-                        Text("SettingsMainFormView.versionNotFound", comment: "Version not found")
                     }
+                    Button(action: {
+                        if let url = URL(string: "https://medsenger.ru") {
+                            UIApplication.shared.open(url)
+                        }
+                    }, label: {
+                        Label("SettingsMainFormView.websiteLabel", systemImage: "network")
+                    })
+                    Button(action: {
+                        let email = "support@medsenger.ru"
+                        if let url = URL(string: "mailto:\(email)") {
+                            UIApplication.shared.open(url)
+                        }
+                    }, label: {
+                        Label("SettingsMainFormView.supportLabel", systemImage: "envelope")
+                    })
                 }
-                Button(action: {
-                    if let url = URL(string: "https://medsenger.ru") {
-                        UIApplication.shared.open(url)
-                    }
-                }, label: {
-                    Label("SettingsMainFormView.websiteLabel", systemImage: "network")
-                })
-                Button(action: {
-                    let email = "support@medsenger.ru"
-                    if let url = URL(string: "mailto:\(email)") {
-                        UIApplication.shared.open(url)
-                    }
-                }, label: {
-                    Label("SettingsMainFormView.supportLabel", systemImage: "envelope")
-                })
-            }
             
             Section {
                 Button (action: {
@@ -335,6 +337,7 @@ struct SettingsMainFormView: View {
                 })
             }
         }
+        .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
     }
 }
 

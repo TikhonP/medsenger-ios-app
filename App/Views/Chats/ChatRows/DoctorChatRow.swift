@@ -14,50 +14,49 @@ struct DoctorChatRow: View {
     
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            HStack(spacing: 0) {
-                HStack {
-                    avatarImage
-                        .frame(width: 60, height: 60)
+            HStack {
+                avatarImage
+                    .frame(width: 60)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(contract.wrappedShortName)
+                        .font(.headline)
+                        .padding(.trailing, 20)
                     
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(contract.wrappedShortName)
-                            .font(.headline)
-                            .padding(.trailing, 20)
-                        
-                        if let scenarioName = contract.scenarioName {
-                            Text(scenarioName)
-                                .font(.footnote)
-                                .bold()
-                        }
-                        if let clinic = contract.clinic {
-                            Text("DoctorChatRow.contract #\(contract.wrappedNumber) in «\(clinic.wrappedName)»", comment: "Contract #\\(contract.number) in «\\(clinic.wrappedName)»")
-                                .font(.footnote)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding(.top, 5)
-                        }
-                        if let endDate = contract.endDate, let startDate = contract.startDate {
-                            Text("\(startDate, formatter: DateFormatter.ddMMyyyy)–\(endDate, formatter: DateFormatter.ddMMyyyy)")
-                                .foregroundColor(.secondary)
-                                .font(.caption)
-                                .padding(.top, 5)
-                        }
-                        if (contract.complianceAvailible != 0) {
-                            Text("DoctorChatRow.Complience \(contract.compliencePercentage)%", comment: "Complience: %ld")
-                                .font(.footnote)
-                                .bold()
-                                .foregroundColor(Color("medsengerBlue"))
-                                .padding(.top, 5)
-                        }
-                        if !contract.activated {
-                            Text("DoctorChatRow.notActivatedYet")
-                                .font(.footnote)
-                                .bold()
-                                .foregroundColor(Color("notActivatedColor"))
-                                .padding(.top, 5)
-                        }
+                    if let scenarioName = contract.scenarioName {
+                        Text(scenarioName)
+                            .font(.footnote)
+                            .bold()
                     }
-                    .shadow(color: shadowColor, radius:  35)
+                    if let clinic = contract.clinic {
+                        Text("DoctorChatRow.contract #\(contract.wrappedNumber) in «\(clinic.wrappedName)»", comment: "Contract #\\(contract.number) in «\\(clinic.wrappedName)»")
+                            .font(.footnote)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 5)
+                    }
+                    if let endDate = contract.endDate, let startDate = contract.startDate {
+                        Text("\(startDate, formatter: DateFormatter.ddMMyyyy)–\(endDate, formatter: DateFormatter.ddMMyyyy)")
+                            .foregroundColor(.secondary)
+                            .font(.caption)
+                            .padding(.top, 5)
+                    }
+                    if (contract.complianceAvailible != 0) {
+                        Text("DoctorChatRow.Complience \(contract.compliencePercentage)%", comment: "Complience: %ld")
+                            .font(.footnote)
+                            .bold()
+                            .foregroundColor(Color("medsengerBlue"))
+                            .padding(.top, 5)
+                    }
+                    if !contract.activated {
+                        Text("DoctorChatRow.notActivatedYet")
+                            .font(.footnote)
+                            .bold()
+                            .foregroundColor(Color("notActivatedColor"))
+                            .padding(.top, 5)
+                    }
                 }
+                .shadow(color: shadowColor, radius:  30)
+                
                 Spacer()
                 if contract.state == .warning || contract.state == .deadlined {
                     MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .red.opacity(0.5))
@@ -65,6 +64,9 @@ struct DoctorChatRow: View {
                     MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .secondary.opacity(0.5))
                 }
             }
+            .animation(.default, value: contract.unread)
+            .animation(.default, value: contract.state)
+            
             if let lastMessageTimestamp = contract.lastMessageTimestamp {
                 LastDateView(date: lastMessageTimestamp)
                     .font(.caption)
@@ -91,7 +93,7 @@ struct DoctorChatRow: View {
                 Circle()
                     .foregroundColor(.green)
                     .frame(width: 12, height: 12)
-                    .overlay(Circle().stroke(Color(UIColor.systemBackground)))
+                    .overlay(Circle().stroke(Color.systemBackground))
                     .offset(x: -4, y: -4)
             }
         }

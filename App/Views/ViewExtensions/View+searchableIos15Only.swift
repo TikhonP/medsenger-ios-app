@@ -1,5 +1,5 @@
 //
-//  View+searchableIos16Only.swift
+//  View+searchableIos15Only.swift
 //  Medsenger
 //
 //  Created by Tikhon Petrishchev on 15.11.2022.
@@ -8,8 +8,8 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
-fileprivate struct SearchableIos16OnlyModifier: ViewModifier {
+@available(iOS 15.0, *)
+fileprivate struct SearchableIos15OnlyModifier: ViewModifier {
     let text: Binding<String>
     let prompt: Text?
 
@@ -21,9 +21,9 @@ fileprivate struct SearchableIos16OnlyModifier: ViewModifier {
 
 extension View {
     @ViewBuilder
-    func searchableIos16Only(text: Binding<String>, prompt: Text? = nil) -> some View {
-        if #available(iOS 16.0, *) {
-            self.modifier(SearchableIos16OnlyModifier(text: text, prompt: prompt))
+    func searchableIos15Only(text: Binding<String>, prompt: Text? = nil) -> some View {
+        if #available(iOS 15.0, *) {
+            self.modifier(SearchableIos15OnlyModifier(text: text, prompt: prompt))
         } else {
             self
         }

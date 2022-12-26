@@ -77,7 +77,7 @@ struct MessagesView: View {
         _inputViewHeight = inputViewHeight
         _messages = FetchRequest<Message>(
             entity: Message.entity(),
-            sortDescriptors: [NSSortDescriptor(key: "sent", ascending: true)],
+            sortDescriptors: __messagesSortDescriptors,
             predicate: NSPredicate(format: "contract == %@", contract),
             animation: .default
         )

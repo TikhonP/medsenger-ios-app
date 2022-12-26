@@ -9,11 +9,13 @@
 import SwiftUI
 
 struct ChooseScenarioView: View {
+    static let allCategoryName = NSLocalizedString("ChooseScenarioView.allCategory", comment: "En: `All`, Ru: `Все`")
+    
     @ObservedObject var contract: Contract
     @ObservedObject var clinic: Clinic
     
-    @State private var categoryChoices = ["all"]
-    @State private var category: String = "all"
+    @State private var categoryChoices = [allCategoryName]
+    @State private var category: String = allCategoryName
     
     @Environment(\.presentationMode) private var presentationMode
     
@@ -55,9 +57,9 @@ struct ChooseScenarioView: View {
                     Label(scenario.wrappedName, systemImage: scenario.systemNameIcon)
                 })
             }
+            .searchableIos15Only(text: query)
             .navigationTitle("ChooseScenarioView.navigationTitle")
             .navigationBarTitleDisplayMode(.inline)
-            .searchableIos16Only(text: query)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
@@ -78,7 +80,7 @@ struct ChooseScenarioView: View {
                 }
             }
             .onAppear {
-                categoryChoices = ClinicScenario.getScenariosCategories(clinic: clinic) + ["all"]
+                categoryChoices = ClinicScenario.getScenariosCategories(clinic: clinic) + [ChooseScenarioView.allCategoryName]
             }
             .onChange(of: category, perform: { newCategory in
                 if #available(iOS 15.0, *) {
@@ -90,7 +92,7 @@ struct ChooseScenarioView: View {
     
     @available(iOS 15.0, *)
     func updateCategoryFilter(_ category: String) {
-        if category == "all" {
+        if category == ChooseScenarioView.allCategoryName {
             if searchText.isEmpty {
                 scenarios.nsPredicate = NSPredicate(format: "clinic == %@", clinic)
             } else {

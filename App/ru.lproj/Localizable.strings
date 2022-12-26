@@ -232,6 +232,9 @@
 /* No comment provided by engineer. */
 "ChooseRoleView.SignInAsPatient.Button" = "Войти как пациент";
 
+/* En: `All`, Ru: `Все` */
+"ChooseScenarioView.allCategory" = "Все категории";
+
 /* No comment provided by engineer. */
 "ChooseScenarioView.Cancel.Button" = "Отмена";
 
@@ -278,7 +281,7 @@
 "ContractDevicesView.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
-"ContractDevicesView.navigationTitle" = "Управление устройствами";
+"ContractDevicesView.navigationTitle" = "Устройства";
 
 /* No comment provided by engineer. */
 "ContractDevicesView.Save.Button" = "Сохранить";
@@ -407,7 +410,7 @@
 "EditPersonalDataView.navigationSaveButton" = "Сохранить";
 
 /* No comment provided by engineer. */
-"EditPersonalDataView.navigationTitle" = "Изм. личных данных";
+"EditPersonalDataView.navigationTitle" = "Профиль";
 
 /* No comment provided by engineer. */
 "EditPersonalDataView.newPhotoButton" = "Новое фото";

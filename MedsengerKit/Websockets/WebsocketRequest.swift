@@ -44,7 +44,7 @@ extension WebsocketRequest {
     var data: String? {
         do {
             var modelDictionary = model.asDictionary
-        modelDictionary["clientType"] = UserDefaults.userRole.rawValue
+            modelDictionary["clientType"] = UserDefaults.userRole.rawValue
             modelDictionary["clientToken"] = KeyChain.apiToken
             let jsonData = try JSONSerialization.data(withJSONObject: modelDictionary)
             let jsonString = String(data: jsonData, encoding: .utf8)

@@ -134,7 +134,7 @@ struct AttachmentsView: View {
                                             Image(systemName: "photo")
                                                 .resizable()
                                                 .scaledToFit()
-                                                .foregroundColor(.init(UIColor.systemBackground))
+                                                .foregroundColor(.systemBackground)
                                                 .padding(7)
                                         }
                                     }
@@ -156,6 +156,8 @@ struct AttachmentsView: View {
                                 }
                             }
                         }
+                        .listStyle(.plain)
+                        .searchableIos15Only(text: query)
                     }
                 }
                 .transition(.move(edge: .leading))
@@ -180,7 +182,7 @@ struct AttachmentsView: View {
                                                 Image(systemName: attachment.iconAsSystemImageName)
                                                     .resizable()
                                                     .scaledToFit()
-                                                    .foregroundColor(.init(UIColor.systemBackground))
+                                                    .foregroundColor(.systemBackground)
                                                     .padding(7)
                                             }
                                         }
@@ -189,8 +191,8 @@ struct AttachmentsView: View {
                                         
                                         Text(attachment.wrappedName)
                                         
+                                        Spacer()
                                         if let message = attachment.message {
-                                            Spacer()
                                             if message.isMessageSent {
                                                 Text("AttachmentsView.You", comment: "You")
                                                     .foregroundColor(.secondary)
@@ -203,6 +205,8 @@ struct AttachmentsView: View {
                                 }
                             }
                         }
+                        .listStyle(.plain)
+                        .searchableIos15Only(text: query)
                     }
                 }
                 .transition(.move(edge: .trailing))
@@ -217,7 +221,6 @@ struct AttachmentsView: View {
                 .pickerStyle(SegmentedPickerStyle())
             }
         }
-        .searchableIos16Only(text: query)
         .quickLookPreview($attachmentViewModel.quickLookDocumentUrl)
         .animation(.default, value: attachmentsType)
         .alert(item: $attachmentViewModel.alert) { $0.alert }

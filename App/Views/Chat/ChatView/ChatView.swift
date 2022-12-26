@@ -8,24 +8,6 @@
 
 import SwiftUI
 
-extension View {
-    func readSize(onChange: @escaping (CGSize) -> Void) -> some View {
-        background(
-            GeometryReader { geometryProxy in
-                Color.clear
-                    .preference(key: SizePreferenceKey.self, value: geometryProxy.size)
-            }
-        )
-        .onPreferenceChange(SizePreferenceKey.self, perform: onChange)
-    }
-}
-
-fileprivate struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {}
-}
-
-
 struct ChatView: View {
     @ObservedObject private var contract: Contract
     @ObservedObject private var user: User
@@ -38,14 +20,15 @@ struct ChatView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
-    @FocusState private var isTextFocused
-    
     @State private var inputViewHeight: CGFloat = 48.33
     @State private var openContractView = false
     
     init(contract: Contract, user: User) {
         _chatViewModel = StateObject(wrappedValue: ChatViewModel(contractId: Int(contract.id)))
-        _messageInputViewModel = StateObject(wrappedValue: MessageInputViewModel(contractId: Int(contract.id)))
+        _messageInputViewModel = StateObject(
+            wrappedValue: MessageInputViewModel(
+                contractId: Int(contract.id),
+                messageDraft: contract.wrappedMessageDraft))
         self.contract = contract
         self.user = user
     }
@@ -121,12 +104,7 @@ struct ChatView: View {
                 Button(action: {
                     openContractView = true
                 }, label: {
-                    if let image = contract.avatar {
-                        Image(data: image)?
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                    }
+                    userAvatar
                 })
             }
         }
@@ -134,9 +112,39 @@ struct ChatView: View {
             contentViewModel.markChatAsOpened(contractId: Int(contract.id))
             chatViewModel.onChatViewAppear(contract: contract)
         }
-        //        .onDisappear {
-        //            contentViewModel.markChatAsClosed()
-        //        }
+        .onDisappear {
+            contentViewModel.markChatAsClosed()
+        }
+    }
+    
+    var userAvatar: some View {
+        ZStack {
+            if contract.isConsilium {
+                if let patientAvatar = contract.patientAvatar, let doctorAvatar = contract.doctorAvatar {
+                    Image(data: patientAvatar)?
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(Circle())
+                        .frame(width: 40)
+                        .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
+                        .offset(x: -20)
+                    Image(data: doctorAvatar)?
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(Circle())
+                        .frame(width: 40)
+                        .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
+                }
+            } else {
+                if let image = contract.avatar {
+                    Image(data: image)?
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(Circle())
+                        .frame(width: 40)
+                }
+            }
+        }
     }
 }
 

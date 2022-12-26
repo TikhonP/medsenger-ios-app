@@ -20,11 +20,9 @@ struct MessageTitleView: View {
             if message.isAgent {
                 Text("MessageTitleView.AutomaticMessage", comment: "Automatic message")
                     .font(.caption2)
-                    .foregroundColor(.secondary)
             } else {
                 Text(message.wrappedAuthorRole)
                     .font(.caption2)
-                    .foregroundColor(.secondary)
             }
         }
         .padding(.horizontal, 10)

@@ -288,30 +288,49 @@ struct ContractView: View {
             Spacer()
             VStack {
                 ZStack {
-                    if let avatarData = contract.avatar {
-                        Image(data: avatarData)?
-                            .resizable()
-                            .onTapGesture {
-                                
-                                showAvatarImage = true
-                            }
-                            .fullScreenCover(isPresented: $showAvatarImage) {
-                                FullscreenImagePreview(imageData: avatarData)
-                            }
+                    if contract.isConsilium {
+                        if let patientAvatar = contract.patientAvatar, let doctorAvatar = contract.doctorAvatar {
+                            Image(data: patientAvatar)?
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 95)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
+                                .offset(x: -25)
+                            Image(data: doctorAvatar)?
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 95)
+                                .clipShape(Circle())
+                                .overlay(Circle().stroke(Color.systemBackground, lineWidth: 2))
+                                .offset(x: 25)
+                        } else {
+                            ProgressView()
+                        }
                     } else {
-                        ProgressView()
+                        if let avatarData = contract.avatar {
+                            Image(data: avatarData)?
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 95)
+                                .clipShape(Circle())
+                                .onTapGesture {
+                                    
+                                    showAvatarImage = true
+                                }
+                                .fullScreenCover(isPresented: $showAvatarImage) {
+                                    FullscreenImagePreview(imageData: avatarData)
+                                }
+                        } else {
+                            ProgressView()
+                        }
                     }
                 }
-                .frame(width: 95, height: 95)
-                .clipShape(Circle())
-                
                 
                 Text(contract.wrappedName)
                     .font(.title3)
                     .bold()
                     .multilineTextAlignment(.center)
-                
-                
                 
                 HStack {
                     if let role = contract.role, !role.isEmpty {

@@ -54,10 +54,11 @@ struct MainInputView: View {
             }
             .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
             
-            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("MainInputView.Message.TextView", comment: "Message input placeholder"))
-                .padding(.horizontal, 10)
-                .background(Color(UIColor.systemBackground))
-                .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
+            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("MainInputView.Message.TextView", comment: "Message input placeholder"),
+                     onEditingChanged: messageInputViewModel.saveMessageDraft)
+            .padding(.horizontal, 10)
+            .background(Color.systemBackground)
+            .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
             
             ZStack {
                 if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {

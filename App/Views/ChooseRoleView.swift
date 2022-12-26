@@ -23,7 +23,7 @@ struct ChooseRoleView: View {
 
             Button("ChooseRoleView.SignInAsPatient.Button") { Account.shared.changeRole(.patient) }
                 .font(.headline)
-                .foregroundColor(Color(UIColor.systemBackground))
+                .foregroundColor(.systemBackground)
                 .padding(.vertical)
                 .frame(width: 250)
                 .background(Color.accentColor)
@@ -31,7 +31,7 @@ struct ChooseRoleView: View {
             
             Button("ChooseRoleView.SignInAsDoctor.Button") { Account.shared.changeRole(.doctor) }
                 .font(.headline)
-                .foregroundColor(Color(UIColor.systemBackground))
+                .foregroundColor(.systemBackground)
                 .padding(.vertical)
                 .frame(width: 250)
                 .background(Color.accentColor)
