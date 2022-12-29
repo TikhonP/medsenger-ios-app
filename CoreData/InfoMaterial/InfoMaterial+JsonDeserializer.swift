@@ -16,7 +16,7 @@ extension InfoMaterial {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> InfoMaterial {
-        let infoMaterial = get(name: data.name, contract: contract, for: context) ?? InfoMaterial(context: context)
+        let infoMaterial = (try? get(name: data.name, contract: contract, for: context)) ?? InfoMaterial(context: context)
         
         infoMaterial.name = data.name
         infoMaterial.link = data.link

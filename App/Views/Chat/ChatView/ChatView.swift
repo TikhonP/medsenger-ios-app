@@ -110,7 +110,9 @@ struct ChatView: View {
         }
         .onAppear {
             contentViewModel.markChatAsOpened(contractId: Int(contract.id))
-            chatViewModel.onChatViewAppear(contract: contract)
+            Task {
+                await chatViewModel.onChatViewAppear(contract: contract)
+            }
         }
         .onDisappear {
             contentViewModel.markChatAsClosed()

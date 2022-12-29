@@ -106,14 +106,18 @@ struct ChatsView: View {
                                 .contextMenu {
                                     if contract.canDecline {
                                         Button(action: {
-                                            chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                            Task {
+                                                await chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                            }
                                         }, label: {
                                             Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
                                         })
                                     }
                                     if contract.isWaitingForConclusion {
                                         Button(action: {
-                                            chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                            Task {
+                                                await chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                            }
                                         }, label: {
                                             Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
                                         })
@@ -123,14 +127,18 @@ struct ChatsView: View {
                                     ZStack {
                                         if contract.canDecline {
                                             Button(action: {
-                                                chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                                Task {
+                                                    await chatsViewModel.declineMessages(contractId: Int(contract.id))
+                                                }
                                             }, label: {
                                                 Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
                                             })
                                         }
                                         if contract.isWaitingForConclusion {
                                             Button(action: {
-                                                chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                                Task {
+                                                    await chatsViewModel.concludeContract(contractId: Int(contract.id))
+                                                }
                                             }, label: {
                                                 Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
                                             })
@@ -161,7 +169,9 @@ struct ChatsView: View {
                             }
                         }
                         .onTapGesture {
-                            chatsViewModel.getContracts(presentFailedAlert: true)
+                            Task {
+                                await chatsViewModel.getContracts(presentFailedAlert: true)
+                            }
                         }
                 }
             }
@@ -169,9 +179,11 @@ struct ChatsView: View {
         .animation(.default, value: chatsViewModel.showContractsLoading)
         .navigationTitle("ChatsView.navigationTitle")
         .onAppear(perform: {
-            chatsViewModel.initilizeWebsockets()
-            chatsViewModel.getContracts(presentFailedAlert: false)
+            Task {
+                await chatsViewModel.getContracts(presentFailedAlert: false)
+            }
             PushNotifications.onChatsViewAppear()
+            chatsViewModel.initilizeWebsockets()
         })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

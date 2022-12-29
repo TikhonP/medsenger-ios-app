@@ -203,14 +203,18 @@ struct ContractView: View {
             }
             if contract.canDecline {
                 Button(action: {
-                    contractViewModel.declineMessages()
+                    Task {
+                        await contractViewModel.declineMessages()
+                    }
                 }, label: {
                     Label("ContractView.DismissMessages.label", systemImage: "checkmark.message.fill")
                 })
             }
             if contract.isWaitingForConclusion {
                 Button(action: {
-                    contractViewModel.concludeContract()
+                    Task {
+                        await contractViewModel.concludeContract()
+                    }
                 }, label: {
                     Label("ContractView.EndCounseling.label", systemImage: "person.crop.circle.badge.checkmark")
                 })
@@ -236,7 +240,11 @@ struct ContractView: View {
                     ActionSheet(title: Text("ContractView.disableMonitoringAlertTitle", comment: "Are you sure you want to disable the monitoring scenario?"),
                                 message: Text("ContractView.disableMonitoringAlertMessage", comment: "All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
                                 buttons: [
-                                    .destructive(Text("ContractView.disableMonitoringAlertButton", comment: "Disable Scenario"), action: contractViewModel.removeScenario),
+                                    .destructive(Text("ContractView.disableMonitoringAlertButton", comment: "Disable Scenario"), action: {
+                                        Task {
+                                            await contractViewModel.removeScenario()
+                                        }
+                                    }),
                                     .cancel()
                                 ])
                 }

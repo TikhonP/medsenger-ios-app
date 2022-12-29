@@ -73,7 +73,9 @@ struct ArchivesChatsView: View {
                             }
                         }
                         .onTapGesture {
-                            chatsViewModel.getArchiveContracts(presentFailedAlert: true)
+                            Task {
+                                await chatsViewModel.getArchiveContracts(presentFailedAlert: true)
+                            }
                         }
                 }
             }
@@ -81,7 +83,9 @@ struct ArchivesChatsView: View {
         .animation(.default, value: chatsViewModel.showArchiveContractsLoading)
         .navigationTitle("ArchivesChatsView.navigationTitle")
         .onAppear {
-            chatsViewModel.getArchiveContracts(presentFailedAlert: false)
+            Task {
+                await chatsViewModel.getArchiveContracts(presentFailedAlert: false)
+            }
         }
         .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
     }

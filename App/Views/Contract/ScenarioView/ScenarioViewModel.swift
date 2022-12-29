@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class ScenarioViewModel: ObservableObject, Alertable {
     @Published var paramsAsNodes = [ClinicScenarioParamNode]()
     @Published var showSaveLoading = false
@@ -37,19 +38,19 @@ final class ScenarioViewModel: ObservableObject, Alertable {
         return true
     }
     
-    func save(completion: @escaping () -> Void) {
+    func save() async -> Bool {
         guard validateFields() else {
             presentAlert(title: Text("ScenarioViewModel.invalidFieldAlertTitle", comment: "Invalid field"), message: Text(invalidFieldName))
-            return
+            return false
         }
         showSaveLoading = true
-        DoctorActions.shared.addScenario(contractId: contractId, scenarioId: scenarioId, params: paramsAsNodes) { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showSaveLoading = false
-                if succeeded {
-                    completion()
-                }
-            }
+        do {
+            try await DoctorActions.addScenario(contractId: contractId, scenarioId: scenarioId, params: paramsAsNodes)
+            showSaveLoading = false
+            return true
+        } catch {
+            showSaveLoading = false
+            return false
         }
     }
 }

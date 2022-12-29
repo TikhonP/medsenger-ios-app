@@ -22,7 +22,9 @@ struct SettingsView: View {
                 } else {
                     SettingsMainFormView(presentationMode: presentationMode, user: user)
                         .onAppear {
-                            settingsViewModel.updateProfile(presentFailedAlert: false)
+                            Task {
+                                await settingsViewModel.updateProfile(presentFailedAlert: false)
+                            }
                             PushNotifications.onChatsViewAppear()
                         }
                         .navigationTitle("SettingsView.NavigationTitle")

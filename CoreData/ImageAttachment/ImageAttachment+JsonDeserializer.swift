@@ -19,7 +19,7 @@ extension ImageAttachment {
     }
     
     public static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> ImageAttachment {
-        let image = get(id: data.id, for: context) ?? ImageAttachment(context: context)
+        let image = (try? get(id: data.id, for: context)) ?? ImageAttachment(context: context)
         
         image.id = Int64(data.id)
         image.name = data.name

@@ -20,4 +20,6 @@ struct DeactivateMessagesResource: APIResource {
     var options = APIResourceOptions(
         method: .POST
     )
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

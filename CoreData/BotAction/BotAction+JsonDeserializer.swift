@@ -39,7 +39,7 @@ extension BotAction {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> BotAction {
-        let botAction = get(name: data.name, contract: contract, for: context) ?? BotAction(context: context)
+        let botAction = (try? get(name: data.name, contract: contract, for: context)) ?? BotAction(context: context)
         
         botAction.name = data.name
         botAction.link = data.link

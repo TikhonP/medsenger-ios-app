@@ -49,8 +49,12 @@ struct MainInputView: View {
                     .edgesIgnoringSafeArea(.all)
             }
             .sheet(isPresented: $showFilePickerModal) {
-                FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: messageInputViewModel.addFilesAttachments)
-                    .edgesIgnoringSafeArea(.all)
+                FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: { media in
+                    Task {
+                        await messageInputViewModel.addFilesAttachments(media)
+                    }
+                })
+                .edgesIgnoringSafeArea(.all)
             }
             .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
             
@@ -62,13 +66,21 @@ struct MainInputView: View {
             
             ZStack {
                 if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {
-                    Button(action: messageInputViewModel.startRecording, label: {
+                    Button(action: {
+                        Task {
+                            messageInputViewModel.startRecording
+                        }
+                    }, label: {
                         MessageInputButtonLabel(imageSystemName: "waveform.circle.fill", showProgress: .constant(false))
                             .foregroundColor(.secondary.opacity(0.7))
                     })
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
                 } else {
-                    Button(action: messageInputViewModel.sendMessage, label: {
+                    Button(action: {
+                        Task {
+                            await messageInputViewModel.sendMessage()
+                        }
+                    }, label: {
                         MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                             .foregroundColor(Color("medsengerBlue"))
                     })

@@ -413,21 +413,22 @@ extension WebRTCClient: WebsocketsWebRTCDelegate {
 
 extension WebRTCClient {
     func saveVideoCall(contractId: Int, talkStartTime: Date, callStartTime: Date, callEndTime: Date, state: CallState, dismissCall: Bool, completion: (() -> Void)? = nil) {
-        let saveVideoCallResource = SaveVideoCallResource(
-            contractId: contractId, talkStartTime: talkStartTime, callStartTime: callStartTime, callEndTime: callEndTime, state: state, dismissCall: dismissCall)
-        saveVideoCallRequest = APIRequest(saveVideoCallResource)
-        saveVideoCallRequest?.execute { result in
-            switch result {
-            case .success(_):
-                if let completion = completion {
-                    completion()
-                }
-            case .failure(let error):
-                if let completion = completion {
-                    processRequestError(error, "save video call data")
-                    completion()
-                }
-            }
-        }
+        fatalError()
+//        let saveVideoCallResource = SaveVideoCallResource(
+//            contractId: contractId, talkStartTime: talkStartTime, callStartTime: callStartTime, callEndTime: callEndTime, state: state, dismissCall: dismissCall)
+//        saveVideoCallRequest = APIRequest(saveVideoCallResource)
+//        saveVideoCallRequest?.execute { result in
+//            switch result {
+//            case .success(_):
+//                if let completion = completion {
+//                    completion()
+//                }
+//            case .failure(let error):
+//                if let completion = completion {
+//                    processRequestError(error, "save video call data")
+//                    completion()
+//                }
+//            }
+//        }
     }
 }

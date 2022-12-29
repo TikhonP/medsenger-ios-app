@@ -16,4 +16,6 @@ struct RemoveScenarioResource: APIResource {
     var methodPath: String { "/contracts/\(contractId)/remove_scenario" }
     
     internal var options = APIResourceOptions(method: .POST)
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

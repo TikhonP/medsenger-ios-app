@@ -36,7 +36,11 @@ struct RecordedVoiceMessageView: View {
                                         .padding([.vertical, .trailing], 10)
                               })
                          } else {
-                              Button(action: messageInputViewModel.startPlayingRecordedVoiceMessage, label: {
+                              Button(action: {
+                                   Task {
+                                        await messageInputViewModel.startPlayingRecordedVoiceMessage()
+                                   }
+                              }, label: {
                                    Image(systemName: "play.fill")
                                         .resizable()
                                         .scaledToFit()
@@ -63,7 +67,11 @@ struct RecordedVoiceMessageView: View {
                .background(colorScheme == .light ? Color.accentColor : Color.white)
                .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
                
-               Button(action: messageInputViewModel.sendVoiceMessage, label: {
+               Button(action: {
+                    Task {
+                         await messageInputViewModel.sendVoiceMessage()
+                    }
+               }, label: {
                     MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                          .foregroundColor(.accentColor)
                })

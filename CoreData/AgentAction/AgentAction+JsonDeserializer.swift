@@ -40,7 +40,7 @@ extension AgentAction {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentAction {
-        let agentAction = get(name: data.name, contract: contract, for: context) ?? AgentAction(context: context)
+        let agentAction = (try? get(name: data.name, contract: contract, for: context)) ?? AgentAction(context: context)
         
         agentAction.name = data.name
         agentAction.link = data.link

@@ -16,4 +16,9 @@ struct Constants {
     
     static let voiceMessageFileName = "voiceMessage.m4a"
     static let voiceMessageText = "Голосовое сообщение"
+    
+    struct MedsengerErrorStrings {
+        static let incorrectToken = "Incorrect token"
+        static let incorrectData = "Incorrect data"
+    }
 }

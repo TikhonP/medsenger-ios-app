@@ -38,6 +38,7 @@
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
 		4351CE182946858B00DF6830 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE172946858B00DF6830 /* AudioView.swift */; };
 		4351CE1A29468C6300DF6830 /* RecordedVoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */; };
+		4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */; };
 		435C1831293ADD70009483F6 /* String+uniqueFilename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1830293ADD70009483F6 /* String+uniqueFilename.swift */; };
 		435C1838293AEDDB009483F6 /* VoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1837293AEDDB009483F6 /* VoiceMessageView.swift */; };
 		435C1846293B8044009483F6 /* WaveformImageDrawer+iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C183C293B8044009483F6 /* WaveformImageDrawer+iOS.swift */; };
@@ -290,6 +291,7 @@
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
 		4351CE172946858B00DF6830 /* AudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
 		4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = RecordedVoiceMessageView.swift; sourceTree = "<group>"; };
+		4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+crossVersionPerform.swift"; sourceTree = "<group>"; };
 		435C1830293ADD70009483F6 /* String+uniqueFilename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+uniqueFilename.swift"; sourceTree = "<group>"; };
 		435C1837293AEDDB009483F6 /* VoiceMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessageView.swift; sourceTree = "<group>"; };
 		435C183A293B8033009483F6 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -1084,6 +1086,7 @@
 				43D4CFD52952243700A9C51B /* CoreDataNameStringRemovedCleanable.swift */,
 				43D4CFD72952246000A9C51B /* CoreDataIdIntRemovedCleanable.swift */,
 				43D4CFD92952249500A9C51B /* CoreDataErasable.swift */,
+				4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1447,6 +1450,7 @@
 				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
 				43EF448F29228EB1005DF084 /* MultipartFormData+Builder.swift in Sources */,
 				437616452933947A001049E6 /* Config.swift in Sources */,
+				4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift in Sources */,
 				43EF446329228D25005DF084 /* ConcludeContractResource.swift in Sources */,
 				43EF44A729228F83005DF084 /* EditPersonalDataView.swift in Sources */,
 				43EF444D29228C11005DF084 /* String+urlEncoded.swift in Sources */,

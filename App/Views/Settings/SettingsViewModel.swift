@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import os.log
 
+@MainActor
 final class SettingsViewModel: ObservableObject, Alertable {
     
     private static let logger = Logger(
@@ -30,27 +31,29 @@ final class SettingsViewModel: ObservableObject, Alertable {
     
     @Published var alert: AlertInfo?
     
-    func getAvatar() {
-        Account.shared.fetchAvatar()
+    func getAvatar() async {
+        try? await Account.fetchAvatar()
     }
     
-    func signOut() {
-        Login.shared.signOut()
+    nonisolated func signOut() async {
+        try? await Login.signOut()
     }
     
-    func updateProfile(presentFailedAlert: Bool) {
-        Account.shared.updateProfile { [weak self] succeeded in
-            if !succeeded, presentFailedAlert {
-                self?.presentGlobalAlert()
+    func updateProfile(presentFailedAlert: Bool) async {
+        do {
+            try await Account.updateProfile()
+        } catch {
+            if presentFailedAlert {
+                presentGlobalAlert()
             }
         }
     }
     
-    func uploadAvatar(image: ImagePickerMedia) {
-        Account.shared.uploadAvatar(image) { [weak self] succeeded in
-            if !succeeded {
-                self?.presentGlobalAlert()
-            }
+    func uploadAvatar(image: ImagePickerMedia) async {
+        do {
+            try await Account.uploadAvatar(image)
+        } catch {
+            presentGlobalAlert()
         }
     }
     
@@ -72,7 +75,7 @@ final class SettingsViewModel: ObservableObject, Alertable {
         }
     }
     
-    func updateAvatarFromFile(_ urls: [URL]) {
+    func updateAvatarFromFile(_ urls: [URL]) async {
         guard let fileURL = urls.first else {
             return
         }
@@ -80,18 +83,18 @@ final class SettingsViewModel: ObservableObject, Alertable {
             if fileURL.startAccessingSecurityScopedResource() {
                 let data = try Data(contentsOf: fileURL)
                 fileURL.stopAccessingSecurityScopedResource()
-                uploadAvatar(image: ImagePickerMedia(data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .image))
+                await uploadAvatar(image: ImagePickerMedia(data: data, extention: fileURL.pathExtension, realFilename: fileURL.lastPathComponent, type: .image))
             }
         } catch {
             SettingsViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
         }
     }
     
-    func updateAvatarFromImage(_ selectedMedia: ImagePickerMedia?) {
+    func updateAvatarFromImage(_ selectedMedia: ImagePickerMedia?) async {
         guard let selectedMedia = selectedMedia,
               selectedMedia.type == .image else {
             return
         }
-        uploadAvatar(image: selectedMedia)
+        await uploadAvatar(image: selectedMedia)
     }
 }

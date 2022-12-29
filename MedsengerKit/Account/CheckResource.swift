@@ -17,4 +17,6 @@ struct CheckResource: APIResource {
         parseResponse: true,
         dateDecodingStrategy: .secondsSince1970
     )
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

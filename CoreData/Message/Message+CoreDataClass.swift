@@ -44,13 +44,14 @@ public class Message: NSManagedObject, CoreDataIdGetable {
         return fetchedResults?.first
     }
     
-    public static func markActionMessageAsUsed(id: Int) {
-        PersistenceController.shared.container.performBackgroundTask { context in
-            guard let message = get(id: id, for: context), message.actionOnetime else {
-                return
+    public static func markActionMessageAsUsed(id: Int) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        try await context.crossVersionPerform {
+            let message = try get(id: id, for: context)
+            if message.actionOnetime {
+                message.actionUsed = true
+                PersistenceController.save(for: context, detailsForLogging: "markActionMessageAsUsed")
             }
-            message.actionUsed = true
-            PersistenceController.save(for: context, detailsForLogging: "markActionMessageAsUsed")
         }
     }
     

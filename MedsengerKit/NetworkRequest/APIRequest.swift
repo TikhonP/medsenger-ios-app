@@ -8,10 +8,6 @@
 
 import Foundation
 
-/// Standart request completion
-/// - Parameter succeeded: Is request completed success
-typealias APIRequestCompletion = (_ succeeded: Bool) -> Void
-
 /// `medsenger.ru` response base model
 enum Wrapper<T: Decodable> {
     case success(T)
@@ -55,7 +51,7 @@ extension Wrapper: Decodable {
     }
 }
 
-struct ErrorResponse: CustomStringConvertible {
+struct ErrorResponse: CustomStringConvertible, Error {
     let errors: Array<String>
     let errorFields: Array<String>
     
@@ -78,32 +74,36 @@ class APIRequest<Resource: APIResource> {
 }
 
 extension APIRequest: NetworkRequest {
+    public func execute() async throws {
+        if resource.options.parseResponse {
+            fatalError("APIRequest.execute: mthod not supported for parseResponse request. Use APIRequest.executeWithResult.")
+        }
+        let request = createURLRequest(method: resource.options.method, url: resource.url, data: resource.options.httpBody, headers: resource.options.headers)
+        try await load(for: request)
+    }
     
-    internal func decode(_ data: Data) -> Result<Resource.ModelType, DecodeError> {
-        let result: Result<Resource.ModelType, DecodeError>
+    public func executeWithResult() async throws -> Resource.ModelType {
+        if !resource.options.parseResponse {
+            fatalError("APIRequest.executeWithResult: mthod not supported for not parseResponse request. Use APIRequest.execute.")
+        }
+        let request = createURLRequest(method: resource.options.method, url: resource.url, data: resource.options.httpBody, headers: resource.options.headers)
+        return try await loadWithResult(for: request)
+    }
+    
+    internal func decode(_ data: Data) throws -> Resource.ModelType {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
+        decoder.keyDecodingStrategy = resource.options.keyDecodingStrategy
         do {
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = resource.options.dateDecodingStrategy
-            decoder.keyDecodingStrategy = resource.options.keyDecodingStrategy
             let wrapper = try decoder.decode(Wrapper<Resource.ModelType>.self, from: data)
             switch wrapper {
             case .success(let data):
-                result = .success(data)
+                return data
             case .error(let errorResponse):
-                result = .failure(.api(errorResponse))
+                throw DecodeError.api(errorResponse)
             }
-        } catch {
-            result = .failure(.json(error))
+        } catch let error as DecodingError {
+            throw DecodeError.json(error)
         }
-        return result
-    }
-    
-    public func execute(withCompletion completion: @escaping NetworkRequestCompletion<Resource.ModelType>) {
-        _ = load(method: resource.options.method,
-                 url: resource.url,
-                 parseResponse: resource.options.parseResponse,
-                 data: resource.options.httpBody,
-                 headers: resource.options.headers,
-                 withCompletion: completion)
     }
 }

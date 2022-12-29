@@ -57,4 +57,6 @@ struct MessagesResource: APIResource {
             dateDecodingStrategy: .secondsSince1970
         )
     }
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

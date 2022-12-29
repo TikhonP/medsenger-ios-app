@@ -45,7 +45,9 @@ struct MessageImageView: View {
                     ProgressView()
                         .padding()
                         .onAppear {
-                            chatViewModel.fetchImageAttachment(imageAttachment)
+                            Task {
+                                await chatViewModel.fetchImageAttachment(imageAttachment)
+                            }
                         }
                     Spacer()
                 }

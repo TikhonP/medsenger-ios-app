@@ -84,7 +84,11 @@ struct DoctorChatRow: View {
                         .scaledToFit()
                 } else {
                     ProgressView()
-                        .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
+                        .onAppear(perform: {
+                            Task {
+                                await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
+                            }
+                        })
                 }
             }
             .clipShape(Circle())

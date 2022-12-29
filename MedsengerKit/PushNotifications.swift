@@ -37,10 +37,11 @@ final class PushNotifications {
                             UserDefaults.isPushNotificationsOn = false
                             return
                         }
-                        Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .storeToken) { succeeded in
-                            if succeeded {
+                        Task {
+                            do {
+                                try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                                 UserDefaults.isPushNotificationsOn = true
-                            } else {
+                            } catch {
                                 UserDefaults.isPushNotificationsOn = false
                             }
                         }
@@ -73,11 +74,12 @@ final class PushNotifications {
                             PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
                         }
                         if granted {
-                            Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .storeToken) { succeeded in
-                                if succeeded {
+                            Task {
+                                do {
+                                    try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                                     UserDefaults.isPushNotificationsOn = true
                                     completion(.success)
-                                } else {
+                                } catch {
                                     UserDefaults.isPushNotificationsOn = false
                                     completion(.requestFailed)
                                 }
@@ -90,11 +92,12 @@ final class PushNotifications {
                     }
                     return
                 }
-                Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .storeToken) { succeeded in
-                    if succeeded {
+                Task {
+                    do {
+                        try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                         UserDefaults.isPushNotificationsOn = true
                         completion(.success)
-                    } else {
+                    } catch {
                         UserDefaults.isPushNotificationsOn = false
                         completion(.requestFailed)
                     }
@@ -106,11 +109,12 @@ final class PushNotifications {
                 completion(.success)
                 return
             }
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .removeToken) { succeeded in
-                if succeeded {
+            Task {
+                do {
+                    try await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
                     UserDefaults.isPushNotificationsOn = false
                     completion(.success)
-                } else {
+                } catch {
                     UserDefaults.isPushNotificationsOn = true
                     completion(.requestFailed)
                 }
@@ -118,25 +122,35 @@ final class PushNotifications {
         }
     }
     
-    static func changeRoleFcmToken() {
+    static func removeOldFcmToken() async {
         guard let fcmToken = UserDefaults.fcmToken, UserDefaults.isPushNotificationsOn else {
             return
         }
-        Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .removeToken) { _ in
-            guard let fcmToken = UserDefaults.fcmToken else {
-                return
-            }
-            Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .storeToken) { succeeded in
-                UserDefaults.isPushNotificationsOn = succeeded
-            }
+        do {
+            try await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
+            UserDefaults.isPushNotificationsOn = false
+        } catch {
+            UserDefaults.isPushNotificationsOn = true
         }
     }
     
-    static func signOutFcmToken() {
+    static func storeFcmTokenAsNewRole() async {
+        guard let fcmToken = UserDefaults.fcmToken else {
+            return
+        }
+        do {
+            try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
+            UserDefaults.isPushNotificationsOn = true
+        } catch {
+            UserDefaults.isPushNotificationsOn = false
+        }
+    }
+    
+    static func signOutFcmToken() async {
         guard let fcmToken = UserDefaults.fcmToken, UserDefaults.isPushNotificationsOn else {
             return
         }
-        Account.shared.updatePushNotifications(fcmToken: fcmToken, action: .removeToken) { _ in }
+        try? await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
         UserDefaults.isPushNotificationsOn = false
     }
 }

@@ -10,10 +10,13 @@ import CoreData
 
 @objc(Clinic)
 public class Clinic: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
-    public static func saveLogo(id: Int, image: Data) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            let clinic = get(id: id, for: context)
-            clinic?.logo = image
+    public static func saveLogo(id: Int, image: Data) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let clinic = try get(id: id, for: context)
+            clinic.logo = image
             PersistenceController.save(for: context, detailsForLogging: "Clinic save logo")
         }
     }

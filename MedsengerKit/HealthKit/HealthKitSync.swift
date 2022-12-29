@@ -33,15 +33,16 @@ final class HealthKitSync: ObservableObject {
     
     /// Date from start synchronization
     private var healthKitSyncStartDate: Date? {
-        if let lastHealthSync = User.get()?.lastHealthSync {
-            return lastHealthSync
-        } else {
-            // Get the date two weeks ago.
-            let calendar = Calendar.current
-            var components = calendar.dateComponents([.year, .month, .day], from: Date())
-            components.day = components.day! - 14
-            return calendar.date(from: components)
-        }
+        fatalError()
+//        if let lastHealthSync = User.get().lastHealthSync {
+//            return lastHealthSync
+//        } else {
+//            // Get the date two weeks ago.
+//            let calendar = Calendar.current
+//            var components = calendar.dateComponents([.year, .month, .day], from: Date())
+//            components.day = components.day! - 14
+//            return calendar.date(from: components)
+//        }
     }
     
     /// Request and fetch samples with specific type
@@ -98,20 +99,21 @@ final class HealthKitSync: ObservableObject {
     /// Submit HTTP request with samples to medsenger server
     /// - Parameter records: Codable records array to submit
     private func submitHealthRecordsToMedsenger(_ records: [HealthKitRecord]) {
-        let healthRecordsResource = HealthRecordsResource(values: records)
-        let submitHealthRecordsRequest = APIRequest(healthRecordsResource)
-        submitHealthRecordsRequests.append(submitHealthRecordsRequest)
-        submitHealthRecordsRequest.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    User.updateLastHealthSync(lastHealthSync: data.lastHealthSync)
-                    HealthKitSync.logger.info("HealthKitSync submited")
-                }
-            case .failure(let error):
-                processRequestError(error, "submit HealthKit records")
-            }
-        }
+        fatalError()
+//        let healthRecordsResource = HealthRecordsResource(values: records)
+//        let submitHealthRecordsRequest = APIRequest(healthRecordsResource)
+//        submitHealthRecordsRequests.append(submitHealthRecordsRequest)
+//        submitHealthRecordsRequest.execute { result in
+//            switch result {
+//            case .success(let data):
+//                if let data = data {
+//                    User.updateLastHealthSync(lastHealthSync: data.lastHealthSync)
+//                    HealthKitSync.logger.info("HealthKitSync submited")
+//                }
+//            case .failure(let error):
+//                processRequestError(error, "submit HealthKit records")
+//            }
+//        }
     }
     
     /// Create observer query for type

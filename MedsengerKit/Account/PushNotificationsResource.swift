@@ -37,4 +37,6 @@ class PushNotificationsResource: APIResource {
             headers: result.headers
         )
     }()
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

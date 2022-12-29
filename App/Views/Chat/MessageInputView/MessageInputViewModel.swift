@@ -51,55 +51,57 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
         return Int(replyToMessage.id)
     }
     
-    func sendMessage() {
+    func sendMessage() async {
         guard !message.isEmpty || !messageAttachments.isEmpty else {
             return
         }
-        showSendingMessageLoading = true
-        Messages.shared.sendMessage(
-            message,
-            for: contractId,
-            replyToId: replyToId,
-            attachments: messageAttachments) { [weak self] succeeded in
-                DispatchQueue.main.async {
-                    self?.showSendingMessageLoading = false
-                    if succeeded {
-                        self?.messageAttachments = []
-                        self?.message = ""
-                        self?.saveMessageDraft()
-                        self?.replyToMessage = nil
-                    } else {
-                        self?.presentGlobalAlert()
-                    }
-                }
+        await MainActor.run {
+            showSendingMessageLoading = true
+        }
+        do {
+            try await Messages.sendMessage(
+                message,
+                for: contractId,
+                replyToId: replyToId,
+                attachments: messageAttachments)
+            await MainActor.run {
+                showSendingMessageLoading = false
+                messageAttachments = []
+                message = ""
+                saveMessageDraft()
+                replyToMessage = nil
             }
+        } catch {
+            await presentGlobalAlert()
+        }
     }
     
-    func sendVoiceMessage() {
+    func sendVoiceMessage() async {
         guard showRecordedMessage, let recordedMessageUrl = recordedMessageUrl, let data = try? Data(contentsOf: recordedMessageUrl) else {
             return
         }
         let attachment = ChatViewAttachment(data: data, extention: "m4a", realFilename: recordedMessageUrl.lastPathComponent, type: .audio)
-        if isVoiceMessagePlaying {
-            stopPlaying()
-        }
-        showSendingMessageLoading = true
-        Messages.shared.sendMessage(
-            Constants.voiceMessageText,
-            for: contractId,
-            replyToId: replyToId,
-            attachments: [attachment]) { [weak self] succeeded in
-                DispatchQueue.main.async {
-                    self?.showSendingMessageLoading = false
-                    if succeeded {
-                        self?.isRecordingVoiceMessage = false
-                        self?.showRecordedMessage = false
-                        self?.replyToMessage = nil
-                    } else {
-                        self?.presentGlobalAlert()
-                    }
-                }
+        await MainActor.run {
+            if isVoiceMessagePlaying {
+                stopPlaying()
             }
+            showSendingMessageLoading = true
+        }
+        do {
+            try await Messages.sendMessage(
+                Constants.voiceMessageText,
+                for: contractId,
+                replyToId: replyToId,
+                attachments: [attachment])
+            await MainActor.run {
+                showSendingMessageLoading = false
+                self.isRecordingVoiceMessage = false
+                self.showRecordedMessage = false
+                self.replyToMessage = nil
+            }
+        } catch {
+            await presentGlobalAlert()
+        }
     }
     
     func addImagesAttachments(_ selectedMedia: ImagePickerMedia?) {
@@ -116,7 +118,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
         messageAttachments.append(chatViewAttachment)
     }
     
-    func addFilesAttachments(_ urls: [URL]) {
+    func addFilesAttachments(_ urls: [URL]) async {
         for fileURL in urls {
             do {
                 if fileURL.startAccessingSecurityScopedResource() {
@@ -126,7 +128,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                     fileURL.stopAccessingSecurityScopedResource()
                 }
             } catch {
-                presentAlert(title: Text("MessageInputViewModel.failedToAddAttachmentAlertTitle", comment: "Failed to add attachment"))
+                await presentAlert(title: Text("MessageInputViewModel.failedToAddAttachmentAlertTitle", comment: "Failed to add attachment"))
                 MessageInputViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
             }
         }
@@ -162,18 +164,20 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     }
     
     func saveMessageDraft() {
-        Contract.saveMessageDraft(id: contractId, messageDraft: message)
+        Task {
+            try? await Contract.saveMessageDraft(id: contractId, messageDraft: message)
+        }
     }
 }
 
 extension MessageInputViewModel: AVAudioRecorderDelegate {
-    func startRecording() {
+    func startRecording() async {
         let recordingSession = AVAudioSession.sharedInstance()
         do {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
         } catch {
-            presentAlert(title: Text("MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle", comment: "Failed to prepare audio recording"))
+            await presentAlert(title: Text("MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle", comment: "Failed to prepare audio recording"))
             MessageInputViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
             return
         }
@@ -271,13 +275,13 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
 }
 
 extension MessageInputViewModel: AVAudioPlayerDelegate {
-    func startPlaying(_ url: URL, attachmentId: Int? = nil, completion: (() -> Void)? = nil) {
+    func startPlaying(_ url: URL, attachmentId: Int? = nil, completion: (() -> Void)? = nil) async {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
         } catch {
-            presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
+            await presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             MessageInputViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
             return
         }
@@ -285,7 +289,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
         } catch {
-            presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
+            await presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
             MessageInputViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
             return
         }
@@ -321,10 +325,10 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
-    func startPlayingRecordedVoiceMessage() {
+    func startPlayingRecordedVoiceMessage() async {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        startPlaying(voiceMessageFilePath) {
+        await startPlaying(voiceMessageFilePath) {
             self.isVoiceMessagePlaying = true
         }
     }

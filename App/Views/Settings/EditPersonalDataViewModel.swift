@@ -13,32 +13,40 @@ final class EditPersonalDataViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     @Published var showLoading = false
     
-    func saveProfileData(name: String, email: String, phone: String, birthday: Date, completion: @escaping () -> Void) {
+    func saveProfileData(name: String, email: String, phone: String, birthday: Date) async -> Bool {
         guard email.isEmail() else {
-            presentAlert(title: Text("EditPersonalDataViewModel.invalidEmailAlertTitle", comment: "Invalid email!"), .warning)
-            return
+            await presentAlert(title: Text("EditPersonalDataViewModel.invalidEmailAlertTitle", comment: "Invalid email!"), .warning)
+            return false
         }
         guard !name.isEmpty else {
-            presentAlert(
+            await presentAlert(
                 title: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertTitle", comment: "Name cannot be empty!"),
                 message: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertMessage", comment: "Please provide a name to continue."), .warning)
-            return
+            return false
         }
-        showLoading = true
-        Account.shared.saveProfileData(name: name, email: email, phone: phone, birthday: birthday) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.showLoading = false
-                switch result {
-                case .succeess:
-                    completion()
-                case .failure:
-                    self?.presentGlobalAlert()
-                case .phoneExists:
-                    self?.presentAlert(
-                        title: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle", comment: "This phone already in use!"),
-                        message: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage", comment: "Please check if the phone is correct."), .warning)
-                }
+        await MainActor.run {
+            showLoading = true
+        }
+        do {
+            try await Account.saveProfileData(name: name, email: email, phone: phone, birthday: birthday)
+            await MainActor.run {
+                showLoading = false
             }
+            return true
+        } catch is UpdateAccountResource.PhoneExistsError {
+            await MainActor.run {
+                showLoading = false
+                presentAlert(
+                    title: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle", comment: "This phone already in use!"),
+                    message: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage", comment: "Please check if the phone is correct."), .warning)
+            }
+            return false
+        } catch {
+            await MainActor.run {
+                showLoading = false
+                presentGlobalAlert()
+            }
+            return false
         }
     }
 }

@@ -14,6 +14,11 @@ import os.log
 /// Use as placeholder for ``APIResource`` without handling response data
 struct EmptyModel: Decodable {}
 
+struct APIResourceError<T: Error> {
+    let errorString: String
+    let error: T
+}
+
 protocol APIResource {
     
     /// Decodable model type for response JSON decoding
@@ -24,6 +29,8 @@ protocol APIResource {
     
     /// Api resource data
     var options: APIResourceOptions { get }
+    
+    var apiErrors: [APIResourceError<any Error>] { get }
 }
 
 extension APIResource {

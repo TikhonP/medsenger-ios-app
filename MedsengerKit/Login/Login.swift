@@ -9,52 +9,20 @@
 import Foundation
 
 class Login {
-    static let shared = Login()
-    
-    private var request: APIRequest<SignInResource>?
-    private var changePasswordRequest: APIRequest<ChangePasswordResource>?
-    
-    var isSignedIn: Bool { KeyChain.apiToken != nil }
-    
-    enum SignInCompletionCodes {
-        case success, unknownError, userIsNotActivated, incorrectData, incorrectPassword
-    }
+    static var isSignedIn: Bool { KeyChain.apiToken != nil }
     
     /// Sign in into Medsenger account and get api key
     /// - Parameters:
     ///   - login: User login
     ///   - password: User password
-    ///   - completion: Request completion
-    public func signIn(login: String, password: String, completion: @escaping (_ result: SignInCompletionCodes) -> Void) {
+    public static func signIn(login: String, password: String) async throws {
         let resource = SignInResource(email: login, password: password)
-        request = APIRequest(resource)
-        request?.execute { result in
-            switch result {
-            case .success(let data):
-                if let data = data {
-                    KeyChain.apiToken = data.api_token
-                    User.saveUserFromJson(data)
-                    completion(.success)
-                } else {
-                    completion(.unknownError)
-                }
-            case .failure(let requestError):
-                processRequestError(requestError, "sign in")
-                switch requestError {
-                case .api(let errorResponse, _):
-                    if errorResponse.errors.contains("User is not activated") {
-                        completion(.userIsNotActivated)
-                    } else if errorResponse.errors.contains("Incorrect data") {
-                        completion(.incorrectData)
-                    } else if errorResponse.errors.contains("Incorrect password") {
-                        completion(.incorrectPassword)
-                    } else {
-                        completion(.unknownError)
-                    }
-                default:
-                    completion(.unknownError)
-                }
-            }
+        do {
+            let data = try await APIRequest(resource).executeWithResult()
+            KeyChain.apiToken = data.api_token
+            try await User.saveUserFromJson(data)
+        } catch {
+            throw await processRequestError(error, "sign in", apiErrors: resource.apiErrors)
         }
     }
     
@@ -65,39 +33,26 @@ class Login {
     /// Change password for account
     /// - Parameters:
     ///   - newPassword: New password
-    ///   - completion: Request completion
-    public func changePassword(newPassword: String, completion: @escaping APIRequestCompletion) {
+    public static func changePassword(newPassword: String) async throws {
         let changePasswordResource = ChangePasswordResource(newPassword: newPassword)
-        changePasswordRequest = APIRequest(changePasswordResource)
-        changePasswordRequest?.execute { result in
-            switch result {
-            case .success(let data):
-                guard let data = data else {
-                    completion(false)
-                    return
-                }
-                KeyChain.apiToken = data.apiToken
-                completion(true)
-            case .failure(let error):
-                processRequestError(error, "change password")
-                completion(false)
-            }
+        do {
+            let data = try await APIRequest(changePasswordResource).executeWithResult()
+            KeyChain.apiToken = data.apiToken
+        } catch {
+            throw await processRequestError(error, "change password", apiErrors: changePasswordResource.apiErrors)
         }
     }
     
     /// Sign out from account
-    public func signOut() {
-        DispatchQueue.global(qos: .background).async {
-            PushNotifications.signOutFcmToken()
-            KeyChain.apiToken = nil
-            User.delete()
-            UserDefaults.userRole = .unknown
-        }
+    public static func signOut() async throws {
+        _ = await (PushNotifications.signOutFcmToken(), try User.delete())
+        KeyChain.apiToken = nil
+        UserDefaults.userRole = .unknown
     }
     
-    public func deauthIfTokenIsNotExists() {
+    public static func deauthIfTokenIsNotExists() async {
         if !isSignedIn {
-            signOut()
+            try? await signOut()
         }
     }
 }

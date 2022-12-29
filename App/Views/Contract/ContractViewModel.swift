@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+
+@MainActor
 final class ContractViewModel: ObservableObject, Alertable {
     @Published var showRemoveScenarioLoading = false
     @Published var showChooseScenario = false
@@ -20,34 +22,35 @@ final class ContractViewModel: ObservableObject, Alertable {
         self.contractId = contractId
     }
     
-    func declineMessages() {
-        DoctorActions.shared.deactivateMessages(contractId) { [weak self] succeeded in
-            if !succeeded {
-                self?.presentGlobalAlert()
-            }
+    func declineMessages() async {
+        do {
+            try await DoctorActions.deactivateMessages(contractId)
+        } catch {
+            presentGlobalAlert()
         }
     }
     
-    func concludeContract() {
-        DoctorActions.shared.concludeContract(contractId) { [weak self] succeeded in
-            if !succeeded {
-                self?.presentGlobalAlert()
-            }
+    func concludeContract() async {
+        do {
+            try await DoctorActions.concludeContract(contractId)
+        } catch {
+            presentGlobalAlert()
         }
     }
     
-    func removeScenario() {
+    func removeScenario() async {
         showRemoveScenarioLoading = true
-        DoctorActions.shared.removeScenario(contractId: contractId) { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showRemoveScenarioLoading = false
-            }
+        do {
+            try await DoctorActions.removeScenario(contractId: contractId)
+            showRemoveScenarioLoading = false
+        } catch {
+            presentGlobalAlert()
+            showRemoveScenarioLoading = false
         }
     }
     
-    func getContracts() {
-        Contracts.shared.fetchContracts() { _ in }
-        Contracts.shared.fetchConsiliumContracts()
+    func getContracts() async {
+        _ = await (try? Contracts.fetchContracts(), try? Contracts.fetchConsiliumContracts())
     }
     
     func callClinic(phone: String) {

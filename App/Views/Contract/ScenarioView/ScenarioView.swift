@@ -33,8 +33,10 @@ struct ScenarioView: View {
             }
             
             Button(action: {
-                scenarioViewModel.save {
-                    contractViewModel.showChooseScenario = false
+                Task {
+                    if await scenarioViewModel.save() {
+                        contractViewModel.showChooseScenario = false
+                    }
                 }
             }, label: {
                 if scenarioViewModel.showSaveLoading {

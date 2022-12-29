@@ -32,4 +32,6 @@ class NotificationsResource: APIResource {
             headers: formData.headers
         )
     }()
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

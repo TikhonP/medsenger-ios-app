@@ -26,7 +26,11 @@ struct ContentView: View {
                 .navigationViewStyle(.stack)
                 .environmentObject(contentViewModel)
                 .environmentObject(networkConnectionMonitor)
-                .onAppear(perform: Login.shared.deauthIfTokenIsNotExists)
+                .onAppear {
+                    Task {
+                        await Login.deauthIfTokenIsNotExists()
+                    }
+                }
                 .transition(.opacity)
                 .onOpenURL(perform: contentViewModel.processDeeplink)
                 .fullScreenCover(isPresented: $contentViewModel.isCalling) {
@@ -41,7 +45,9 @@ struct ContentView: View {
                 .environmentObject(networkConnectionMonitor)
                 .transition(.opacity)
                 .onAppear(perform: {
-                    PersistenceController.clearDatabase(withUser: true)
+                    Task {
+                        await PersistenceController.clearDatabase(withUser: true)
+                    }
                 })
         }
     }

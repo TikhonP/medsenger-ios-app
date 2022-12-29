@@ -19,7 +19,7 @@ extension Attachment {
     }
     
     public static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> Attachment {
-        let attachment = get(id: data.id, for: context) ?? Attachment(context: context)
+        let attachment = (try? get(id: data.id, for: context)) ?? Attachment(context: context)
         
         attachment.id = Int64(data.id)
         attachment.name = data.name

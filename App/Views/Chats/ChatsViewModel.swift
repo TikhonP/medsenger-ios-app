@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+@MainActor
 final class ChatsViewModel: ObservableObject, Alertable {
     static let shared = ChatsViewModel()
     
@@ -30,60 +31,55 @@ final class ChatsViewModel: ObservableObject, Alertable {
         UIApplication.shared.open(url)
     }
     
-    func initilizeWebsockets() {
+    nonisolated func initilizeWebsockets() {
         Websockets.shared.createUrlSession()
     }
     
-    func getArchiveContracts(presentFailedAlert: Bool) {
-        DispatchQueue.main.async {
-            self.showArchiveContractsLoading = true
-        }
-        Contracts.shared.fetchArchiveContracts { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showArchiveContractsLoading = false
-                if !succeeded, presentFailedAlert {
-                    self?.presentGlobalAlert()
-                }
+    func getArchiveContracts(presentFailedAlert: Bool) async {
+        showArchiveContractsLoading = true
+        do {
+            try await Contracts.fetchArchiveContracts()
+            showArchiveContractsLoading = false
+        } catch {
+            showArchiveContractsLoading = false
+            if presentFailedAlert {
+                self.presentGlobalAlert()
             }
         }
     }
     
-    func getContracts(presentFailedAlert: Bool) {
-        DispatchQueue.main.async {
-            self.showContractsLoading = true
-        }
-        Contracts.shared.fetchConsiliumContracts()
-        Contracts.shared.fetchContracts { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showContractsLoading = false
-                if !succeeded, presentFailedAlert {
-                    self?.presentGlobalAlert()
-                }
-            }
+    func getContracts(presentFailedAlert: Bool) async {
+        showContractsLoading = true
+        do {
+            _ = await (try Contracts.fetchConsiliumContracts(), try Contracts.fetchContracts())
+            showContractsLoading = false
+        } catch {
+            showContractsLoading = false
+            presentGlobalAlert()
         }
     }
     
-    func getContractAvatar(contractId: Int) {
-        Contracts.shared.fetchContractAvatar(contractId)
+    func getContractAvatar(contractId: Int) async {
+        try? await Contracts.fetchContractAvatar(contractId)
     }
     
-    func getClinicLogo(contractId: Int) {
-        Contracts.shared.fetchClinicLogo(contractId)
+    func getClinicLogo(contractId: Int, clinicId: Int) async {
+        try? await Contracts.fetchClinicLogo(contractId: contractId, clinicId: clinicId)
     }
     
-    func declineMessages(contractId: Int) {
-        DoctorActions.shared.deactivateMessages(contractId) { [weak self] succeeded in
-            if !succeeded {
-                self?.presentGlobalAlert()
-            }
+    func declineMessages(contractId: Int) async {
+        do {
+            try await DoctorActions.deactivateMessages(contractId)
+        } catch {
+            presentGlobalAlert()
         }
     }
     
-    func concludeContract(contractId: Int) {
-        DoctorActions.shared.concludeContract(contractId) { [weak self] succeeded in
-            if !succeeded {
-                self?.presentGlobalAlert()
-            }
+    func concludeContract(contractId: Int) async {
+        do {
+            try await DoctorActions.concludeContract(contractId)
+        } catch {
+            presentGlobalAlert()
         }
     }
 }

@@ -20,22 +20,30 @@ struct ChooseRoleView: View {
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .padding(.horizontal, 30)
-
-            Button("ChooseRoleView.SignInAsPatient.Button") { Account.shared.changeRole(.patient) }
-                .font(.headline)
-                .foregroundColor(.systemBackground)
-                .padding(.vertical)
-                .frame(width: 250)
-                .background(Color.accentColor)
-                .clipShape(Capsule())
             
-            Button("ChooseRoleView.SignInAsDoctor.Button") { Account.shared.changeRole(.doctor) }
-                .font(.headline)
-                .foregroundColor(.systemBackground)
-                .padding(.vertical)
-                .frame(width: 250)
-                .background(Color.accentColor)
-                .clipShape(Capsule())
+            Button("ChooseRoleView.SignInAsPatient.Button") {
+                Task {
+                    await Account.changeRole(.patient)
+                }
+            }
+            .font(.headline)
+            .foregroundColor(.systemBackground)
+            .padding(.vertical)
+            .frame(width: 250)
+            .background(Color.accentColor)
+            .clipShape(Capsule())
+            
+            Button("ChooseRoleView.SignInAsDoctor.Button") {
+                Task {
+                    await Account.changeRole(.doctor)
+                }
+            }
+            .font(.headline)
+            .foregroundColor(.systemBackground)
+            .padding(.vertical)
+            .frame(width: 250)
+            .background(Color.accentColor)
+            .clipShape(Capsule())
         }
     }
 }

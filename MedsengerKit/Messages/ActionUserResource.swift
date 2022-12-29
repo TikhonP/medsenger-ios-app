@@ -16,4 +16,6 @@ struct ActionUsedResource: APIResource {
     var methodPath: String { "/used/\(messageId)" }
     
     internal var options = APIResourceOptions(method: .POST)
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

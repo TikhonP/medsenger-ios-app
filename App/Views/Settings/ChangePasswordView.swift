@@ -13,7 +13,7 @@ struct ChangePasswordView: View {
     
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
-    @Environment(\.presentationMode) private var presentationMode
+    @MainActor @Environment(\.presentationMode) private var presentationMode
     
     @State private var password1: String = ""
     @State private var password2: String = ""
@@ -33,8 +33,10 @@ struct ChangePasswordView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2) {
-                        presentationMode.wrappedValue.dismiss()
+                    Task {
+                        if await changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2) {
+                            presentationMode.wrappedValue.dismiss()
+                        }
                     }
                 } label: {
                     if showLoading {

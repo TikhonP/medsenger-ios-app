@@ -38,4 +38,6 @@ class ChangePasswordResource: APIResource {
             keyDecodingStrategy: .convertFromSnakeCase
         )
     }()
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

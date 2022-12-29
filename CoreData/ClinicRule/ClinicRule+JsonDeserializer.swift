@@ -16,7 +16,7 @@ extension ClinicRule {
     }
     
     public static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> ClinicRule {
-        let clinicRule = get(id: data.id, for: context) ?? ClinicRule(context: context)
+        let clinicRule = (try? get(id: data.id, for: context)) ?? ClinicRule(context: context)
         
         clinicRule.id = Int64(data.id)
         clinicRule.name = data.name

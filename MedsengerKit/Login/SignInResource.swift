@@ -49,6 +49,16 @@ struct SignInResource: APIResource {
             addApiKey: false
         )
     }
+    
+    enum SignInError: Error {
+        case userIsNotActivated, incorrectData, incorrectPassword
+    }
+    
+    internal var apiErrors: [APIResourceError<Error>] = [
+        APIResourceError(errorString: "User is not activated", error: SignInError.userIsNotActivated),
+        APIResourceError(errorString: Constants.MedsengerErrorStrings.incorrectData, error: SignInError.incorrectData),
+        APIResourceError(errorString: "Incorrect password", error: SignInError.incorrectPassword)
+    ]
 }
 
 

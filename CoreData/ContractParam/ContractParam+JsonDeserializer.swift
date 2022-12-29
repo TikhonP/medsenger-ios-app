@@ -18,7 +18,7 @@ extension ContractParam {
     }
     
     private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> ContractParam {
-        let contractParam = get(id: data.id, for: context) ?? ContractParam(context: context)
+        let contractParam = (try? get(id: data.id, for: context)) ?? ContractParam(context: context)
         
         contractParam.id = Int64(data.id)
         contractParam.name = data.name

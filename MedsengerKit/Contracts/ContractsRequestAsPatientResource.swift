@@ -20,4 +20,6 @@ struct ContractsRequestAsPatientResource: APIResource {
             URLQueryItem(name: "separate_clinics", value: "true")
         ]
     )
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

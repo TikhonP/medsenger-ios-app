@@ -29,9 +29,14 @@ class FileRequest {
 }
 
 extension FileRequest: NetworkRequest {
-    internal func decode(_ data: Data) -> Result<Data, DecodeError> { return Result<Data, DecodeError>.success(data) }
-    
-    public func execute(withCompletion completion: @escaping NetworkRequestCompletion<Data>) {
-        _ = load(method: .GET, url: url, parseResponse: true, withCompletion: completion)
+    internal func execute() async throws {
+        fatalError("FileRequest.execute is not implemented. Use FileRequest.executeWithResult.")
     }
+    
+    public func executeWithResult() async throws -> Data {
+        let request = createURLRequest(method: .GET, url: url)
+        return try await loadWithResult(for: request)
+    }
+    
+    internal func decode(_ data: Data) -> Data { data }
 }

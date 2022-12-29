@@ -45,7 +45,7 @@ struct AlertInfo: Identifiable {
 protocol Alertable: AnyObject, ObservableObject {
     
     /// Binding varible for alert type
-    var alert: AlertInfo? { get set }
+    @MainActor var alert: AlertInfo? { get set }
 }
 
 extension Alertable {
@@ -54,22 +54,20 @@ extension Alertable {
     /// - Parameters:
     ///   - alertInfo: The ``AlertInfo`` object.
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
-    internal func presentAlert(_ alertInfo: AlertInfo, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        DispatchQueue.main.async {
-            if let feedbackType = feedbackType {
-                HapticFeedback.shared.prepareNotify()
-                HapticFeedback.shared.notify(feedbackType)
-            }
-            self.alert = alertInfo
+    @MainActor internal func presentAlert(_ alertInfo: AlertInfo, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
+        if let feedbackType = feedbackType {
+            HapticFeedback.shared.prepareNotify()
+            HapticFeedback.shared.notify(feedbackType)
         }
+        self.alert = alertInfo
     }
     
     /// Throws an alert with `Alert`
     /// - Parameters:
     ///   - alert: The `Alert` object
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
-    internal func presentAlert(_ alert: Alert, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        self.presentAlert(.init(alert), feedbackType)
+    @MainActor internal func presentAlert(_ alert: Alert, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
+        presentAlert(.init(alert), feedbackType)
     }
     
     /// Throws an alert with one button.
@@ -78,16 +76,16 @@ extension Alertable {
     ///   - message: The message to display in the body of the alert.
     ///   - dismissButton: The button that dismisses the alert.
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
-    internal func presentAlert(title: Text, message: Text? = nil, dismissButton: Alert.Button? = nil, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        self.presentAlert(AlertInfo(title: title, message: message, dismissButton: dismissButton), feedbackType)
+    @MainActor  internal func presentAlert(title: Text, message: Text? = nil, dismissButton: Alert.Button? = nil, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
+        presentAlert(AlertInfo(title: title, message: message, dismissButton: dismissButton), feedbackType)
     }
     
     /// Throws a global alert.
     /// - Parameter feedbackType: Optional feedback type if you need haptic feedback.
-    internal func presentGlobalAlert(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = .error) {
+    @MainActor internal func presentGlobalAlert(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = .error) {
         let result = ContentViewModel.shared.getGlobalAlert()
         if let title = result.title {
-            self.presentAlert(AlertInfo(title: title, message: result.message), feedbackType)
+            presentAlert(AlertInfo(title: title, message: result.message), feedbackType)
         }
     }
 }

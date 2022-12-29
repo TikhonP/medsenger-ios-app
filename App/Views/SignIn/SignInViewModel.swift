@@ -9,13 +9,14 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class SignInViewModel: ObservableObject, Alertable {
     @Published var login: String = ""
     @Published var password: String = ""
     @Published var showLoader = false
     @Published var alert: AlertInfo?
     
-    func auth() {
+    func auth() async {
         guard !login.isEmpty, !password.isEmpty else {
             presentAlert(
                 title: Text("SignInViewModel.fieldsAreEmptyAlertTitle", comment: "Provide auth data!"),
@@ -23,25 +24,21 @@ final class SignInViewModel: ObservableObject, Alertable {
             return
         }
         showLoader = true
-        Login.shared.signIn(login: login, password: password) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else {
-                    return
-                }
-                self.showLoader = false
-                switch result {
-                case .success:
-                    break
-                case .unknownError:
-                    self.presentGlobalAlert()
-                case .userIsNotActivated:
-                    self.presentAlert(title: Text("SignInViewModel.userIsNotActivatedAlertTitle", comment: "User is not activated!"), .error)
-                case .incorrectData:
-                    self.presentAlert(title: Text("SignInViewModel.userIsNotFoundAlertTitle", comment: "User is not found!"), .error)
-                case .incorrectPassword:
-                    self.presentAlert(title: Text("SignInViewModel.invalidPasswordALertTitle", comment: "Invalid password!"), .error)
-                }
-            }
+        do {
+            try await Login.signIn(login: login, password: password)
+            showLoader = false
+        } catch SignInResource.SignInError.userIsNotActivated {
+            showLoader = false
+            presentAlert(title: Text("SignInViewModel.userIsNotActivatedAlertTitle", comment: "User is not activated!"), .error)
+        } catch SignInResource.SignInError.incorrectData {
+            showLoader = false
+            presentAlert(title: Text("SignInViewModel.userIsNotFoundAlertTitle", comment: "User is not found!"), .error)
+        } catch SignInResource.SignInError.incorrectPassword {
+            showLoader = false
+            presentAlert(title: Text("SignInViewModel.invalidPasswordALertTitle", comment: "Invalid password!"), .error)
+        } catch {
+            showLoader = false
+            presentGlobalAlert()
         }
     }
 }

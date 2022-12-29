@@ -24,7 +24,7 @@ extension Clinic {
     }
     
     public static func saveFromJson(_ data: JsonDecoderFromCheck, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
+        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
         
         clinic.name = data.name
         clinic.id = Int64(data.id)
@@ -68,7 +68,7 @@ extension Clinic {
     }
     
     public static func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
+        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name
@@ -111,7 +111,7 @@ extension Clinic {
     }
     
     public static func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = get(id: data.id, for: context) ?? Clinic(context: context)
+        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name

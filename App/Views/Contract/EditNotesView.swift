@@ -8,7 +8,9 @@
 
 import SwiftUI
 
-final class EditNotesViewModel: ObservableObject {
+final class EditNotesViewModel: ObservableObject, Alertable {
+    @Published var alert: AlertInfo?
+    
     @Published var note: String
     @Published var showLoading = false
     
@@ -19,15 +21,22 @@ final class EditNotesViewModel: ObservableObject {
         self.contractId = Int(contract.id)
     }
     
-    func save(completion: @escaping () -> Void) {
-        showLoading = true
-        DoctorActions.shared.updateContractNotes(contractId: contractId, notes: note) { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showLoading = false
-                if succeeded {
-                    completion()
-                }
+    func save() async -> Bool {
+        await MainActor.run {
+            showLoading = true
+        }
+        do {
+            try await DoctorActions.updateContractNotes(contractId: contractId, notes: note)
+            await MainActor.run {
+                showLoading = false
             }
+            return true
+        } catch {
+            await MainActor.run {
+                showLoading = false
+                presentGlobalAlert()
+            }
+            return false
         }
     }
 }
@@ -49,15 +58,20 @@ struct EditNotesView: View {
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            editNotesViewModel.save {
-                                presentationMode.wrappedValue.dismiss()
-                            }}, label: {
-                                if editNotesViewModel.showLoading {
-                                    ProgressView()
-                                } else {
-                                    Text("EditNotesViewModel.Save.Button")
+                            Task {
+                                if await editNotesViewModel.save() {
+                                    await MainActor.run {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
-                            })
+                            }
+                        }, label: {
+                            if editNotesViewModel.showLoading {
+                                ProgressView()
+                            } else {
+                                Text("EditNotesViewModel.Save.Button")
+                            }
+                        })
                     }
                     
                     ToolbarItem(placement: .cancellationAction) {
@@ -66,6 +80,7 @@ struct EditNotesView: View {
                         }
                     }
                 }
+                .alert(item: $editNotesViewModel.alert) { $0.alert }
         }
     }
 }

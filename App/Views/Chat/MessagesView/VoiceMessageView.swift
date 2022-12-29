@@ -32,7 +32,9 @@ struct VoiceMessageView: View {
                         ZStack {
                             if chatViewModel.isAudioMessagePlayingWithId != Int(attachment.id) {
                                 Button(action: {
-                                    chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
+                                    Task {
+                                        await chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
+                                    }
                                 }, label: {
                                     Image(systemName: "play.circle.fill")
                                         .resizable()
@@ -72,7 +74,9 @@ struct VoiceMessageView: View {
                         Spacer()
                     }
                     .onAppear {
-                        chatViewModel.fetchAttachment(attachment)
+                        Task {
+                            await chatViewModel.fetchAttachment(attachment)
+                        }
                     }
                 }
             }

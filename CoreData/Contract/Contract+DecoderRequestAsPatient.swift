@@ -68,7 +68,7 @@ extension Contract {
     }
     
     private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext, isConsilium: Bool) -> Contract {
-        let contract = get(id: data.contract, for: context) ?? Contract(context: context)
+        let contract = (try? get(id: data.contract, for: context)) ?? Contract(context: context)
         
         contract.id = Int64(data.contract)
         contract.name = data.name
@@ -106,9 +106,11 @@ extension Contract {
         return contract
     }
     
-    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+    class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
             
             // Store got contracts to check if some contractes deleted later
             var gotContractIds = [Int]()

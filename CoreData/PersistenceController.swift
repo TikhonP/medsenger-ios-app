@@ -34,6 +34,8 @@ class PersistenceController {
         container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+    
+    struct ObjectNotFoundError: Error {}
 }
 
 extension PersistenceController {
@@ -89,8 +91,11 @@ extension PersistenceController {
     /// Use it for sign out or changing user role
     ///
     /// - Parameter withUser: clear user or not
-    public class func clearDatabase(withUser: Bool) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
+    public class func clearDatabase(withUser: Bool) async {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try? await context.crossVersionPerform {
             Contract.erase(for: context)
             Agent.erase(for: context)
             Clinic.erase(for: context)

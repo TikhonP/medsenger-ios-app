@@ -17,7 +17,7 @@ extension DoctorHelper {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> DoctorHelper {
-        let doctorHelper = get(id: data.id, for: context) ?? DoctorHelper(context: context)
+        let doctorHelper = (try? get(id: data.id, for: context)) ?? DoctorHelper(context: context)
         
         doctorHelper.id = Int64(data.id)
         doctorHelper.name = data.name

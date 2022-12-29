@@ -56,7 +56,7 @@ extension Message {
     }
     
     private static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> Message {
-        let message = get(id: data.id, for: context) ?? Message(context: context)
+        let message = (try? get(id: data.id, for: context)) ?? Message(context: context)
         
         message.id = Int64(data.id)
         
@@ -116,20 +116,18 @@ extension Message {
         
         if let replyToId = data.reply_to_id {
             message.replyToId = Int64(replyToId)
-            message.replyToMessage = Message.get(id: replyToId, for: context)
+            message.replyToMessage = try? Message.get(id: replyToId, for: context)
         }
         
         return message
     }
     
-    public static func saveFromJson(_ data: JsonDeserializer, contractId: Int) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            
-            guard let contract = Contract.get(id: contractId, for: context) else {
-                Message.logger.error("Failed to save messages: Core data failed to fetch contract")
-                return
-            }
+    public static func saveFromJson(_ data: JsonDeserializer, contractId: Int) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try Contract.get(id: contractId, for: context)
             
             let message = saveFromJson(data, for: context)
             
@@ -161,12 +159,12 @@ extension Message {
     /// - Parameters:
     ///   - data: struct decoded from JSON
     ///   - contractId: contract id for messages
-    public static func saveFromJson(_ data: [JsonDeserializer], contractId: Int, completion: (() -> ())? = nil) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            guard let contract = Contract.get(id: contractId, for: context) else {
-                Message.logger.error("Failed to save messages: Core data failed to fetch contract")
-                return
-            }
+    public static func saveFromJson(_ data: [JsonDeserializer], contractId: Int) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try Contract.get(id: contractId, for: context)
             
             var maxMessageId: Int = 0
             
@@ -197,9 +195,6 @@ extension Message {
             }
             markNextAndPreviousMessages(for: contract, for: context)
             PersistenceController.save(for: context, detailsForLogging: "Message from JsonDeserializer")
-            if let completion = completion {
-                completion()
-            }
         }
     }
 }

@@ -58,7 +58,9 @@ struct MessageBodyView: View {
                 // Action link:
                 if message.isAgent, message.actionLink != nil {
                     Button(action: {
-                        chatViewModel.openMessageActionLink(message: message)
+                        Task {
+                            await chatViewModel.openMessageActionLink(message: message)
+                        }
                     }, label: {
                         Label(message.wrappedActionName, systemImage: "bolt.fill")
                             .padding(10)

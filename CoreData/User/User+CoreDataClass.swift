@@ -20,30 +20,30 @@ public class User: NSManagedObject, CoreDataErasable {
     /// Get user form context
     /// - Parameter context: Core Data context
     /// - Returns: optional user instance
-    internal static func get(for context: NSManagedObjectContext) -> User? {
+    internal static func get(for context: NSManagedObjectContext) throws -> User {
         let fetchRequest = User.fetchRequest()
         let objects = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "User all")
-        return objects?.first
-    }
-    
-    /// Get user from any task
-    /// - Returns: optional user instance
-    public static func get() -> User? {
-        let context = PersistenceController.shared.container.viewContext
-        var user: User?
-        context.performAndWait {
-            user = get(for: context)
+        guard let user = objects?.first else {
+            throw PersistenceController.ObjectNotFoundError()
         }
         return user
     }
     
-    public static func delete() {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            guard let user = get(for: context) else {
-                User.logger.error("Delete User failed: Not found")
-                return
-            }
+    /// Get user from any task
+    /// - Returns: optional user instance
+    public static func get() async throws -> User {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        return try await context.crossVersionPerform {
+            try get(for: context)
+        }
+    }
+    
+    public static func delete() async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        try await context.crossVersionPerform {
+            let user = try get(for: context)
             context.delete(user)
             PersistenceController.save(for: context, detailsForLogging: "User delete")
         }
@@ -51,10 +51,11 @@ public class User: NSManagedObject, CoreDataErasable {
     
     /// Save user avatar data object
     /// - Parameter image: avatar data
-    public static func saveAvatar(_ image: Data?) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            guard let user = get(for: context) else { return }
+    public static func saveAvatar(_ image: Data?) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        try await context.crossVersionPerform {
+            let user = try get(for: context)
             user.avatar = image
             PersistenceController.save(for: context, detailsForLogging: "User save avatar")
         }
@@ -62,11 +63,12 @@ public class User: NSManagedObject, CoreDataErasable {
     
     /// Save lastHealthSync param to user model
     /// - Parameter lastHealthSync: date last HealthKit sync
-    public static func updateLastHealthSync(lastHealthSync: Date) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let user = get(for: context)
-            user?.lastHealthSync = lastHealthSync
+    public static func updateLastHealthSync(lastHealthSync: Date) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        try await context.crossVersionPerform {
+            let user = try get(for: context)
+            user.lastHealthSync = lastHealthSync
             PersistenceController.save(for: context, detailsForLogging: "User save lastHealthSync")
         }
     }

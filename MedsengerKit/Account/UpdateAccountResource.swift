@@ -45,4 +45,10 @@ class UpdateAccountResource: APIResource {
             headers: result.headers
         )
     }()
+    
+    struct PhoneExistsError: Error { }
+
+    internal var apiErrors: [APIResourceError<Error>] = [
+        APIResourceError(errorString: "Phone exists", error: PhoneExistsError())
+    ]
 }

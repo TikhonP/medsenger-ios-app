@@ -48,7 +48,7 @@ struct PatientChatRow: View {
                             }
                         }
                     }
-
+                    
                     clinicLogo
                         .frame(height: 65)
                         .accessibilityLabel("PatientChatRow.ClinicLogo.accessibilityLabel")
@@ -78,7 +78,11 @@ struct PatientChatRow: View {
                     .scaledToFit()
             } else {
                 ProgressView()
-                    .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
+                    .onAppear {
+                        Task {
+                            await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
+                        }
+                    }
             }
         }
         .clipShape(Circle())
@@ -93,9 +97,14 @@ struct PatientChatRow: View {
             } else {
                 ProgressView()
                     .padding()
-                    .onAppear(perform: {
-                        chatsViewModel.getClinicLogo(contractId: Int(contract.id))
-                    })
+                    .onAppear {
+                        guard let clinic = contract.clinic else {
+                            return
+                        }
+                        Task {
+                            await chatsViewModel.getClinicLogo(contractId: Int(contract.id), clinicId: Int(clinic.id))
+                        }
+                    }
             }
         }
     }

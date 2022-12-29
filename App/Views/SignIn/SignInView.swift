@@ -54,7 +54,11 @@ struct SignInView: View {
                 )
                 .padding(.horizontal)
             Spacer()
-            Button(action: signInViewModel.auth, label: {
+            Button(action: {
+                Task {
+                    await signInViewModel.auth()
+                }
+            }, label: {
                 ZStack {
                     if signInViewModel.showLoader {
                         ProgressView()

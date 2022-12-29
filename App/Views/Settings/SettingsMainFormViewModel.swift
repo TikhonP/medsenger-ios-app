@@ -9,27 +9,29 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class SettingsMainFormViewModel: ObservableObject, Alertable {
-    @Published var isEmailNotificationOn: Bool = User.get()?.emailNotifications ?? false
+    @Published var isEmailNotificationOn: Bool
     @Published var showEmailNotificationUpdateRequestLoading = false
     @Published var showPushNotificationUpdateRequestLoading = false
+    @Published var showChangeRoleLoading = false
     @Published var alert: AlertInfo?
     
-    func updateEmailNotifications(_ value: Bool) {
-        guard User.get()?.emailNotifications != value else {
+    init(isEmailNotificationOn: Bool) {
+        self.isEmailNotificationOn = isEmailNotificationOn
+    }
+    
+    func updateEmailNotifications(_ value: Bool) async {
+        guard let user = try? await User.get(), user.emailNotifications != value else {
             return
         }
         showEmailNotificationUpdateRequestLoading = true
-        Account.shared.updateEmailNotiofication(isEmailNotificationsOn: value) { [weak self] succeeded in
-            DispatchQueue.main.async {
-                self?.showEmailNotificationUpdateRequestLoading = false
-                if succeeded {
-                    Account.shared.updateProfile { _ in }
-                } else {
-                    self?.presentGlobalAlert()
-                    self?.showEmailNotificationUpdateRequestLoading = !value
-                }
-            }
+        do {
+            try await Account.updateEmailNotiofication(isEmailNotificationsOn: value)
+            showEmailNotificationUpdateRequestLoading = false
+        } catch {
+            showEmailNotificationUpdateRequestLoading = false
+            presentGlobalAlert()
         }
     }
     
@@ -58,5 +60,11 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
                 }
             }
         }
+    }
+    
+    func changeRole(_ role: UserRole) async {
+        showChangeRoleLoading = true
+        await Account.changeRole(role)
+        showChangeRoleLoading = false
     }
 }

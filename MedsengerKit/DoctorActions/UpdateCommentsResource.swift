@@ -31,4 +31,6 @@ class UpdateCommentsResource: APIResource {
             headers: formdata.headers
         )
     }()
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

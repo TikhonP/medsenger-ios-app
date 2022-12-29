@@ -19,7 +19,7 @@ extension ClinicScenario {
     }
     
     private static func saveFromJson(_ data: JsonDeserializer, clinic: Clinic, for context: NSManagedObjectContext) -> ClinicScenario {
-        let clinicScenario = get(id: data.id, for: context) ?? ClinicScenario(context: context)
+        let clinicScenario = (try? get(id: data.id, for: context)) ?? ClinicScenario(context: context)
         
         clinicScenario.id = Int64(data.id)
         clinicScenario.name = data.name

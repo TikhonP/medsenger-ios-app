@@ -37,7 +37,7 @@ final class ContentViewModel: ObservableObject {
     
     /// Get stored alert data
     /// - Returns: tuple with alert title and description
-    public func getGlobalAlert() -> (title: Text?, message: Text?) {
+    @MainActor public func getGlobalAlert() -> (title: Text?, message: Text?) {
         let result = (globalAlertTitle, globalAlertMessage)
         globalAlertTitle = nil
         globalAlertMessage = nil

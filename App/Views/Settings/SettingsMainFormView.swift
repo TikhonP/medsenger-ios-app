@@ -46,18 +46,30 @@ struct SettingsProfileImageView: View {
                         ])
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
-            NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: settingsViewModel.updateAvatarFromImage)
-                .edgesIgnoringSafeArea(.all)
+            NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: { media in
+                Task {
+                    await settingsViewModel.updateAvatarFromImage(media)
+                }
+            })
+            .edgesIgnoringSafeArea(.all)
         }
         .fullScreenCover(isPresented: $settingsViewModel.showTakeImageSheet) {
             ImagePicker(selectedMedia: $settingsViewModel.selectedAvatarImage, sourceType: .camera, mediaTypes: [.image], edit: true)
                 .edgesIgnoringSafeArea(.all)
         }
         .sheet(isPresented: $settingsViewModel.showFilePickerModal) {
-            FilePicker(types: [.image], allowMultiple: false, onPicked: settingsViewModel.updateAvatarFromFile)
-                .edgesIgnoringSafeArea(.all)
+            FilePicker(types: [.image], allowMultiple: false, onPicked: { media in
+                Task {
+                    await settingsViewModel.updateAvatarFromFile(media)
+                }
+            })
+            .edgesIgnoringSafeArea(.all)
         }
-        .onChange(of: settingsViewModel.selectedAvatarImage, perform: settingsViewModel.updateAvatarFromImage)
+        .onChange(of: settingsViewModel.selectedAvatarImage, perform: { newValue in
+            Task {
+                await settingsViewModel.updateAvatarFromImage(newValue)
+            }
+        })
     }
 }
 
@@ -159,7 +171,7 @@ struct SettingsMainFormView: View {
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
     @StateObject private var healthKitSync = HealthKitSync.shared
-    @StateObject private var settingsMainFormViewModel = SettingsMainFormViewModel()
+    @StateObject private var settingsMainFormViewModel: SettingsMainFormViewModel
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     @AppStorage(UserDefaults.Keys.showFullPreviewForImagesKey) private var showFullPreviewForImages: Bool = UserDefaults.showFullPreviewForImages
@@ -171,173 +183,226 @@ struct SettingsMainFormView: View {
     private let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     private let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
     
+    init(presentationMode: Binding<PresentationMode>, user: User) {
+        self.presentationMode = presentationMode
+        self.user = user
+        _settingsMainFormViewModel = StateObject(wrappedValue: SettingsMainFormViewModel(isEmailNotificationOn: user.emailNotifications))
+    }
+    
     var body: some View {
         Form {
-            Section {
-                HStack {
-                    Spacer()
-                    VStack {
-                        SettingsProfileImageView(user: user)
-                        SettingsProfileTextView(user: user)
-                    }
-                    Spacer()
-                }
-            }
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets())
-            
-            Section {
-                Button(action: {
-                    settingsViewModel.showSelectAvatarOptions.toggle()
-                }, label: {
-                    Label("SettingsMainFormView.changeProfilePhotoLabel", systemImage: "camera")
-                })
-            }
-            
-            Section {
-                HStack {
-                    Text("SettingsMainFormView.birthday", comment: "Birthday")
-                    Spacer()
-                    if let birthday = user.birthday {
-                        Text(birthday, style: .date)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            
-            Section(footer: Text("SettingsMainFormView.changePasswordFooter", comment: "Change your password for strong security")) {
-                NavigationLink(destination: {
-                    ChangePasswordView()
-                }, label: {
-                    Label("SettingsMainFormView.changePasswordLabel", systemImage: "person.badge.key")
-                })
-            }
-            
-            Section(
-                header: Text("SettingsMainFormView.notificationHeader", comment: "Notifications"),
-                footer: Text("SettingsMainFormView.notificationFooter", comment: "Push notifications can inform you about new message on your phone")) {
-                    Toggle(isOn: $settingsMainFormViewModel.isEmailNotificationOn, label: {
-                        HStack {
-                            Label("SettingsMainFormView.emailNotificationsLabel", systemImage: "envelope.badge")
-                            if settingsMainFormViewModel.showEmailNotificationUpdateRequestLoading {
-                                ProgressView()
-                                    .padding(.leading)
-                            }
-                        }
-                    })
-                    .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { settingsMainFormViewModel.updateEmailNotifications($0) }
-                    .onChange(of: user.emailNotifications, perform: { value in
-                        settingsMainFormViewModel.isEmailNotificationOn = value
-                    })
-                    
-                    Toggle(isOn: $isPushNotificationsOn, label: {
-                        HStack {
-                            Label("SettingsMainFormView.pushNotificationsLabel", systemImage: "bell.badge")
-                            if settingsMainFormViewModel.showPushNotificationUpdateRequestLoading {
-                                ProgressView()
-                                    .padding(.leading)
-                            }
-                        }
-                    })
-                    .onTapGesture {
-                        settingsMainFormViewModel.updatePushNotifications(!isPushNotificationsOn)
-                    }
-                }
+            profileSection
+            tokeAvartarOhotoSection
+            birthdaySection
+            changePasswordActionSecction
+            notificationsSection
                 .alert(item: $settingsMainFormViewModel.alert) { $0.alert }
             
             if user.isPatient && user.isDoctor {
-                Section(footer: Text("SettingsMainFormView.changeRoleFooter", comment: "Your account has access to both the doctor and the patient role.")) {
-                    if userRole == .patient {
-                        Button("SettingsMainFormView.switchToDoctorButtonLabel", action: {
-                            Account.shared.changeRole(.doctor)
-                            presentationMode.wrappedValue.dismiss()
-                        })
-                    } else if userRole == .doctor {
-                        Button("SettingsMainFormView.switchToPatientButtonLabel", action: {
-                            Account.shared.changeRole(.patient)
-                            presentationMode.wrappedValue.dismiss()
-                        })
-                    }
-                }
+                changeRoleSection
             }
             
-            Section(footer: Text("SettingsMainFormView.showFullPreviewForImages.Footer")) {
-                Toggle(isOn: $showFullPreviewForImages, label: {
-                    Text("SettingsMainFormView.showFullPreviewForImages.Toggle", comment: "Show large image preview")
-                })
-            }
+            showFullImageSecction
             
             if userRole == .patient && healthKitSync.isHealthDataAvailable {
                 SettingsSyncWithAppleHealthSectionView(healthKitSync: healthKitSync)
             }
             
-            Section(
-                header: Text("SettingsMainFormView.aboutHeader", comment: "About"),
-                footer: Text("SettingsMainFormView.aboutFooter", comment: "The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come.")) {
-                    HStack {
-                        Text("SettingsMainFormView.version", comment: "Version")
-                        Spacer()
-                        if let appVersion = appVersion {
-                            HStack {
-                                Text(appVersion)
-                                if showAppBuild {
-                                    if let appBuild = appBuild {
-                                        Text("(\(appBuild))")
-                                            .foregroundColor(.secondary)
-                                    } else {
-                                        Text("SettingsMainFormView.buildNotFound", comment: "(Build not found)")
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                            }
-                            .onTapGesture {
-                                withAnimation {
-                                    showAppBuild.toggle()
-                                }
-                            }
-                        } else {
-                            Text("SettingsMainFormView.versionNotFound", comment: "Version not found")
-                        }
-                    }
-                    Button(action: {
-                        if let url = URL(string: "https://medsenger.ru") {
-                            UIApplication.shared.open(url)
-                        }
-                    }, label: {
-                        Label("SettingsMainFormView.websiteLabel", systemImage: "network")
-                    })
-                    Button(action: {
-                        let email = "support@medsenger.ru"
-                        if let url = URL(string: "mailto:\(email)") {
-                            UIApplication.shared.open(url)
-                        }
-                    }, label: {
-                        Label("SettingsMainFormView.supportLabel", systemImage: "envelope")
-                    })
+            aboutSection
+            signOutActionSection
+        }
+        .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
+    }
+    
+    var profileSection: some View {
+        Section {
+            HStack {
+                Spacer()
+                VStack {
+                    SettingsProfileImageView(user: user)
+                    SettingsProfileTextView(user: user)
                 }
-            
-            Section {
-                Button (action: {
-                    showSignout.toggle()
-                }, label: {
+                Spacer()
+            }
+        }
+        .listRowBackground(Color.clear)
+        .listRowInsets(EdgeInsets())
+    }
+    
+    var tokeAvartarOhotoSection: some View {
+        Section {
+            Button(action: {
+                settingsViewModel.showSelectAvatarOptions.toggle()
+            }, label: {
+                Label("SettingsMainFormView.changeProfilePhotoLabel", systemImage: "camera")
+            })
+        }
+    }
+    
+    var birthdaySection: some View {
+        Section {
+            HStack {
+                Text("SettingsMainFormView.birthday", comment: "Birthday")
+                Spacer()
+                if let birthday = user.birthday {
+                    Text(birthday, style: .date)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+    
+    var changePasswordActionSecction: some View {
+        Section(footer: Text("SettingsMainFormView.changePasswordFooter", comment: "Change your password for strong security")) {
+            NavigationLink(destination: {
+                ChangePasswordView()
+            }, label: {
+                Label("SettingsMainFormView.changePasswordLabel", systemImage: "person.badge.key")
+            })
+        }
+    }
+    
+    var notificationsSection: some View {
+        Section(
+            header: Text("SettingsMainFormView.notificationHeader", comment: "Notifications"),
+            footer: Text("SettingsMainFormView.notificationFooter", comment: "Push notifications can inform you about new message on your phone")) {
+                Toggle(isOn: $settingsMainFormViewModel.isEmailNotificationOn, label: {
                     HStack {
-                        Spacer()
-                        Text("SettingsMainFormView.signOutButton", comment: "Sign Out")
-                            .foregroundColor(.red)
-                        Spacer()
+                        Label("SettingsMainFormView.emailNotificationsLabel", systemImage: "envelope.badge")
+                        if settingsMainFormViewModel.showEmailNotificationUpdateRequestLoading {
+                            ProgressView()
+                                .padding(.leading)
+                        }
                     }
                 })
-                .actionSheet(isPresented: $showSignout, content: {
-                    ActionSheet(title: Text("SettingsMainFormView.signOutConfirmationActionSheetTitle"),
-                                buttons: [
-                                    .destructive(Text("SettingsMainFormView.signOutButton"), action: settingsViewModel.signOut),
-                                    .cancel()
-                                ]
-                    )
+                .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { newValue in
+                    Task {
+                        await settingsMainFormViewModel.updateEmailNotifications(newValue)
+                    }
+                }
+                .onChange(of: user.emailNotifications, perform: { value in
+                    settingsMainFormViewModel.isEmailNotificationOn = value
+                })
+                
+                Toggle(isOn: $isPushNotificationsOn, label: {
+                    HStack {
+                        Label("SettingsMainFormView.pushNotificationsLabel", systemImage: "bell.badge")
+                        if settingsMainFormViewModel.showPushNotificationUpdateRequestLoading {
+                            ProgressView()
+                                .padding(.leading)
+                        }
+                    }
+                })
+                .onTapGesture {
+                    settingsMainFormViewModel.updatePushNotifications(!isPushNotificationsOn)
+                }
+            }
+    }
+    
+    var changeRoleSection: some View {
+        Section(footer: Text("SettingsMainFormView.changeRoleFooter", comment: "Your account has access to both the doctor and the patient role.")) {
+            if settingsMainFormViewModel.showChangeRoleLoading {
+                ProgressView()
+            } else if userRole == .patient {
+                Button("SettingsMainFormView.switchToDoctorButtonLabel", action: {
+                    Task {
+                        await settingsMainFormViewModel.changeRole(.doctor)
+                        await MainActor.run { presentationMode.wrappedValue.dismiss() }
+                    }
+                })
+            } else if userRole == .doctor {
+                Button("SettingsMainFormView.switchToPatientButtonLabel", action: {
+                    Task {
+                        await settingsMainFormViewModel.changeRole(.patient)
+                        await MainActor.run { presentationMode.wrappedValue.dismiss() }
+                    }
                 })
             }
         }
-        .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
+        .animation(.default, value: settingsMainFormViewModel.showChangeRoleLoading)
+        .animation(.default, value: userRole)
+    }
+    
+    var showFullImageSecction: some View {
+        Section(footer: Text("SettingsMainFormView.showFullPreviewForImages.Footer")) {
+            Toggle(isOn: $showFullPreviewForImages, label: {
+                Text("SettingsMainFormView.showFullPreviewForImages.Toggle", comment: "Show large image preview")
+            })
+        }
+    }
+    
+    var aboutSection: some View {
+        Section(
+            header: Text("SettingsMainFormView.aboutHeader", comment: "About"),
+            footer: Text("SettingsMainFormView.aboutFooter", comment: "The medsenger.ru service connects the patient and their doctor. Doctors use it to consult and monitor their patients, answering questions as they come.")) {
+                HStack {
+                    Text("SettingsMainFormView.version", comment: "Version")
+                    Spacer()
+                    if let appVersion = appVersion {
+                        HStack {
+                            Text(appVersion)
+                            if showAppBuild {
+                                if let appBuild = appBuild {
+                                    Text("(\(appBuild))")
+                                        .foregroundColor(.secondary)
+                                } else {
+                                    Text("SettingsMainFormView.buildNotFound", comment: "(Build not found)")
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            withAnimation {
+                                showAppBuild.toggle()
+                            }
+                        }
+                    } else {
+                        Text("SettingsMainFormView.versionNotFound", comment: "Version not found")
+                    }
+                }
+                Button(action: {
+                    if let url = URL(string: "https://medsenger.ru") {
+                        UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    Label("SettingsMainFormView.websiteLabel", systemImage: "network")
+                })
+                Button(action: {
+                    let email = "support@medsenger.ru"
+                    if let url = URL(string: "mailto:\(email)") {
+                        UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    Label("SettingsMainFormView.supportLabel", systemImage: "envelope")
+                })
+            }
+    }
+    
+    var signOutActionSection: some View {
+        Section {
+            Button (action: {
+                showSignout.toggle()
+            }, label: {
+                HStack {
+                    Spacer()
+                    Text("SettingsMainFormView.signOutButton", comment: "Sign Out")
+                        .foregroundColor(.red)
+                    Spacer()
+                }
+            })
+            .actionSheet(isPresented: $showSignout, content: {
+                ActionSheet(title: Text("SettingsMainFormView.signOutConfirmationActionSheetTitle"),
+                            buttons: [
+                                .destructive(Text("SettingsMainFormView.signOutButton"), action: {
+                                    Task {
+                                        await settingsViewModel.signOut()
+                                    }
+                                }),
+                                .cancel()
+                            ]
+                )
+            })
+        }
     }
 }
 

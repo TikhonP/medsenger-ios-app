@@ -80,7 +80,12 @@ struct ChooseScenarioView: View {
                 }
             }
             .onAppear {
-                categoryChoices = ClinicScenario.getScenariosCategories(clinic: clinic) + [ChooseScenarioView.allCategoryName]
+                Task {
+                    let categories = (try? await ClinicScenario.getScenariosCategories(clinic: clinic)) ?? [] + [ChooseScenarioView.allCategoryName]
+                    await MainActor.run {
+                        categoryChoices = categories
+                    }
+                }
             }
             .onChange(of: category, perform: { newCategory in
                 if #available(iOS 15.0, *) {

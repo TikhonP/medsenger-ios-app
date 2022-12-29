@@ -23,6 +23,7 @@ class DeviceNode: ObservableObject, Identifiable {
     }
 }
 
+@MainActor
 final class ContractDevicesViewModel: ObservableObject {
     @Published var devicesAsNodes = [DeviceNode]()
     @Published var showLoading = false
@@ -40,15 +41,15 @@ final class ContractDevicesViewModel: ObservableObject {
         }
     }
     
-    func save(completion: @escaping () -> Void) {
+    func save() async -> Bool {
         showLoading = true
-        DoctorActions.shared.deviceState(devices: devicesAsNodes, contractId: Int(contract.id)) { succeeded in
-            DispatchQueue.main.async {
-                self.showLoading = false
-                if succeeded {
-                    completion()
-                }
-            }
+        do {
+            try await DoctorActions.deviceState(devices: devicesAsNodes, contractId: Int(contract.id))
+            showLoading = false
+            return true
+        } catch {
+            showLoading = false
+            return false
         }
     }
 }
@@ -68,7 +69,7 @@ struct DeviceNodeView: View {
 struct ContractDevicesView: View {
     @ObservedObject var contract: Contract
     
-    @Environment(\.presentationMode) private var presentationMode
+    @MainActor @Environment(\.presentationMode) private var presentationMode
     
     @StateObject private var contractDevicesViewModel: ContractDevicesViewModel
     
@@ -80,7 +81,7 @@ struct ContractDevicesView: View {
     var body: some View {
         NavigationView {
             Form {
-//                Section(), content: {})
+                //                Section(), content: {})
                 ForEach(contractDevicesViewModel.devicesAsNodes) { device in
                     DeviceNodeView(deviceNode: device)
                 }
@@ -90,15 +91,18 @@ struct ContractDevicesView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        contractDevicesViewModel.save {
-                            presentationMode.wrappedValue.dismiss()
-                        }}, label: {
-                            if contractDevicesViewModel.showLoading {
-                                ProgressView()
-                            } else {
-                                Text("ContractDevicesView.Save.Button")
+                        Task {
+                            if await contractDevicesViewModel.save() {
+                                presentationMode.wrappedValue.dismiss()
                             }
-                        })
+                        }
+                    }, label: {
+                        if contractDevicesViewModel.showLoading {
+                            ProgressView()
+                        } else {
+                            Text("ContractDevicesView.Save.Button")
+                        }
+                    })
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {

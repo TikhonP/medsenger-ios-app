@@ -128,7 +128,9 @@ struct UpdateInterfaceWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+        Task {
+            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+        }
     }
 }
 
@@ -138,7 +140,9 @@ struct OnlineListWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Contract.updateOnlineStatusFromList(data.online_contracts)
+        Task {
+            try? await Contract.updateOnlineStatusFromList(data.online_contracts)
+        }
     }
 }
 
@@ -148,10 +152,13 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        if let openedChatContractId = ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
-            Messages.shared.fetchMessages(contractId: data.contract_id) { _ in }
-        } else {
-            ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+        // FIXME: !!!
+        Task {
+            if let openedChatContractId = ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
+                try? await Messages.fetchMessages(contractId: data.contract_id)
+            } else {
+                await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+            }
         }
     }
 }
@@ -164,9 +171,11 @@ struct AllReadWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Contract.updateLastReadMessageIdByPatient(id: data.contract_id, lastReadMessageIdByPatient: data.last_read_id)
-        ChatsViewModel.shared.getContracts(presentFailedAlert: false)
-        Logger.websockets.info("WebsocketResponse: AllReadWebsocketResponse: \(String(describing: data), privacy: .private)")
+        Task {
+            try? await Contract.updateLastReadMessageIdByPatient(id: data.contract_id, lastReadMessageIdByPatient: data.last_read_id)
+            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+            Logger.websockets.info("WebsocketResponse: AllReadWebsocketResponse: \(String(describing: data), privacy: .private)")
+        }
     }
 }
 
@@ -176,8 +185,10 @@ struct UserOnlineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Contract.updateOnlineStatus(id: data.contract_id, isOnline: true)
-        Logger.websockets.info("WebsocketResponse: UserOnlineWebsocketResponse: \(String(describing: data), privacy: .private)")
+        Task {
+            try? await Contract.updateOnlineStatus(id: data.contract_id, isOnline: true)
+            Logger.websockets.info("WebsocketResponse: UserOnlineWebsocketResponse: \(String(describing: data), privacy: .private)")
+        }
     }
 }
 
@@ -187,8 +198,10 @@ struct UserOfflineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Contract.updateOnlineStatus(id: data.contract_id, isOnline: false)
-        Logger.websockets.info("WebsocketResponse: UserOfflineWebsocketResponse: \(String(describing: data), privacy: .private)")
+        Task {
+            try? await Contract.updateOnlineStatus(id: data.contract_id, isOnline: false)
+            Logger.websockets.info("WebsocketResponse: UserOfflineWebsocketResponse: \(String(describing: data), privacy: .private)")
+        }
     }
 }
 

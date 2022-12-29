@@ -35,4 +35,6 @@ struct HealthRecordsResource: APIResource {
             keyDecodingStrategy: .convertFromSnakeCase
         )
     }
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

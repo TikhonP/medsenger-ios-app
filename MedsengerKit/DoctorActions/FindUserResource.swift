@@ -34,4 +34,10 @@ struct FindUserResource: APIResource {
             dateDecodingStrategy: .formatted(DateFormatter.ddMMyyyy)
         )
     }
+    
+    struct ContractExistError: Error { }
+    
+    internal var apiErrors: [APIResourceError<Error>] = [
+        APIResourceError(errorString: "Contract exists", error: ContractExistError())
+    ]
 }

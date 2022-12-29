@@ -19,4 +19,6 @@ struct ConsiliumContractsResourceRequestAsDoctor: APIResource {
             URLQueryItem(name: "with_inactive", value: "true"),
         ]
     )
+    
+    internal var apiErrors: [APIResourceError<Error>] = []
 }

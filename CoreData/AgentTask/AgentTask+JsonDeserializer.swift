@@ -27,7 +27,7 @@ extension AgentTask {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentTask {
-        let agentTask = get(id: data.id, for: context) ?? AgentTask(context: context)
+        let agentTask = (try? get(id: data.id, for: context)) ?? AgentTask(context: context)
         
         agentTask.id = Int64(data.id)
         agentTask.actionLink = data.action_link
@@ -54,7 +54,7 @@ extension AgentTask {
         
         for agentTaskData in data {
             let agentTask = saveFromJson(agentTaskData, contract: contract, for: context)
-            Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, for: context)
+            try? Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, for: context)
             validIds.append(agentTaskData.id)
             agentTasks.append(agentTask)
         }

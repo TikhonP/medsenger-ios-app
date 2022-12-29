@@ -14,7 +14,9 @@ struct MessageAttachmentView: View {
     
     var body: some View {
         Button(action: {
-            chatViewModel.showAttachmentPreview(attachment)
+            Task {
+                await chatViewModel.showAttachmentPreview(attachment)
+            }
         }, label: {
             HStack {
                 ZStack {

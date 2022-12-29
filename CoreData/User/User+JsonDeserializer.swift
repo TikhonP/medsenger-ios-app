@@ -32,7 +32,7 @@ extension User {
     }
     
     private static func saveFromJson(_ data: JsonDecoder, for context: NSManagedObjectContext) -> User {
-        let user = get(for: context) ?? User(context: context)
+        let user = (try? get(for: context)) ?? User(context: context)
         
         user.isDoctor = data.isDoctor
         user.isPatient = data.isPatient
@@ -57,9 +57,10 @@ extension User {
         return user
     }
     
-    public static func saveUserFromJson(_ data: JsonDecoder) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+    public static func saveUserFromJson(_ data: JsonDecoder) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        try await context.crossVersionPerform {
             _ = saveFromJson(data, for: context)
             
             for clinicData in data.clinics {

@@ -74,7 +74,11 @@ struct ConsiliumChatRow: View {
             } else {
                 ProgressView()
                     .padding()
-                    .onAppear(perform: { chatsViewModel.getContractAvatar(contractId: Int(contract.id)) })
+                    .onAppear(perform: {
+                        Task {
+                           await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
+                        }
+                    })
             }
         }
     }

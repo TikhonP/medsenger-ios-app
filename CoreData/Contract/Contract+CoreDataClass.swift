@@ -15,34 +15,40 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         case `default`, doctor, patient
     }
     
-    public static func saveAvatar(id: Int, image: Data, type: AvatarType = .default) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
+    public static func saveAvatar(id: Int, image: Data, type: AvatarType = .default) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
             switch type {
             case .default:
-                contract?.avatar = image
+                contract.avatar = image
             case .doctor:
-                contract?.doctorAvatar = image
+                contract.doctorAvatar = image
             case .patient:
-                contract?.patientAvatar = image
+                contract.patientAvatar = image
             }
             PersistenceController.save(for: context, detailsForLogging: "Contract save avatar")
         }
     }
     
-    public static func updateOnlineStatus(id: Int, isOnline: Bool) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
-            contract?.isOnline = isOnline
+    public static func updateOnlineStatus(id: Int, isOnline: Bool) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
+            contract.isOnline = isOnline
             PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
         }
     }
     
-    public static func updateOnlineStatusFromList(_ onlineIds: [Int]) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+    public static func updateOnlineStatusFromList(_ onlineIds: [Int]) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
             let fetchRequest = Contract.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "archive == NO")
             guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive == NO for updating online status") else {
@@ -55,12 +61,12 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         }
     }
     
-    public static func updateLastAndFirstFetchedMessage(id: Int, updateGlobal: Bool) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            guard let contract = get(id: id, for: context) else {
-                return
-            }
+    public static func updateLastAndFirstFetchedMessage(id: Int, updateGlobal: Bool) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
             let lastMessage = Message.getLastMessageForContract(for: contract, for: context)
             contract.lastFetchedMessage = lastMessage
             if updateGlobal {
@@ -70,29 +76,35 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         }
     }
     
-    public static func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
-            contract?.lastReadMessageIdByPatient = Int64(lastReadMessageIdByPatient)
+    public static func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
+            contract.lastReadMessageIdByPatient = Int64(lastReadMessageIdByPatient)
             PersistenceController.save(for: context, detailsForLogging: "Contract save lastReadMessageIdByPatient")
         }
     }
     
-    public static func updateContractNotes(id: Int, notes: String) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
-            contract?.comments = notes
+    public static func updateContractNotes(id: Int, notes: String) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
+            contract.comments = notes
             PersistenceController.save(for: context, detailsForLogging: "Contract save updateContractNotes")
         }
     }
     
-    public static func saveMessageDraft(id: Int, messageDraft: String) {
-        PersistenceController.shared.container.performBackgroundTask { (context) in
-            context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-            let contract = get(id: id, for: context)
-            contract?.messageDraft = messageDraft
+    public static func saveMessageDraft(id: Int, messageDraft: String) async throws {
+        let context = PersistenceController.shared.container.newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        
+        try await context.crossVersionPerform {
+            let contract = try get(id: id, for: context)
+            contract.messageDraft = messageDraft
             PersistenceController.save(for: context, detailsForLogging: "Contract save messageDraft")
         }
     }

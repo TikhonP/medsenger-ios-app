@@ -18,7 +18,7 @@ extension Agent {
     }
     
     private static func saveFromJson(_ data: JsonDecoderRequestAsPatient, contract: Contract, for context: NSManagedObjectContext) {
-        let agent = get(id: data.id, for: context) ?? Agent(context: context)
+        let agent = (try? get(id: data.id, for: context)) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
         agent.agentDescription = data.description
@@ -44,7 +44,7 @@ extension Agent {
     }
     
     private static func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) {
-        let agent = get(id: data.id, for: context) ?? Agent(context: context)
+        let agent = (try? get(id: data.id, for: context)) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
         agent.agentDescription = data.description
@@ -71,7 +71,7 @@ extension Agent {
     }
     
     private static func saveFromJson(_ data: JsonDecoderFromClinicAsAgent, clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
-        let agent = get(id: data.id, for: context) ?? Agent(context: context)
+        let agent = (try? get(id: data.id, for: context)) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
         agent.agentDescription = data.description
@@ -103,7 +103,7 @@ extension Agent {
     }
     
     private static func saveFromJson(_ data: JsonDecoderFromClinicAsDevice, clinic: Clinic, contract: Contract, for context: NSManagedObjectContext) {
-        let agent = get(id: data.id, for: context) ?? Agent(context: context)
+        let agent = (try? get(id: data.id, for: context)) ?? Agent(context: context)
         
         agent.id = Int64(data.id)
         agent.name = data.name

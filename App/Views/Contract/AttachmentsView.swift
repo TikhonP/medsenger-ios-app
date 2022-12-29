@@ -9,6 +9,7 @@
 import SwiftUI
 import QuickLook
 
+@MainActor
 fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
     @Published var quickLookDocumentUrl: URL?
     
@@ -17,48 +18,48 @@ fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
     
     @Published var alert: AlertInfo?
     
-    func showFilePreview(_ attachment: Attachment) {
+    func showFilePreview(_ attachment: Attachment) async {
         if let dataPath = attachment.dataPath {
             quickLookDocumentUrl =  dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
-            Messages.shared.fetchAttachmentData(attachmentId: Int(attachment.id)) { [weak self] succeeded in
-                if succeeded {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        if let index = self?.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                            self?.loadingAttachmentIds.remove(at: index)
-                        }
-                        guard let dataPath = Attachment.get(id: Int(attachment.id))?.dataPath else {
-                            return
-                        }
-                        self?.quickLookDocumentUrl = dataPath
-                    }
-                } else {
-                    self?.presentGlobalAlert()
+            do {
+                try await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
+                if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
+                    self.loadingAttachmentIds.remove(at: index)
                 }
+                guard let dataPath = try? await Attachment.get(id: Int(attachment.id)).dataPath else {
+                    return
+                }
+                self.quickLookDocumentUrl = dataPath
+            } catch {
+                if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
+                    self.loadingAttachmentIds.remove(at: index)
+                }
+                presentGlobalAlert()
             }
         }
     }
     
-    func showImagePreview(_ image: ImageAttachment) {
+    func showImagePreview(_ image: ImageAttachment) async {
         if let dataPath = image.dataPath {
-            quickLookDocumentUrl = dataPath
+            quickLookDocumentUrl =  dataPath
         } else {
             loadingImageIds.append(Int(image.id))
-            Messages.shared.fetchImageAttachmentImage(imageAttachmentId: Int(image.id)) { [weak self] succeeded in
-                if succeeded {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        if let index = self?.loadingImageIds.firstIndex(of: Int(image.id)) {
-                            self?.loadingImageIds.remove(at: index)
-                        }
-                        guard let dataPath = ImageAttachment.get(id: Int(image.id))?.dataPath else {
-                            return
-                        }
-                        self?.quickLookDocumentUrl = dataPath
-                    }
-                } else {
-                    self?.presentGlobalAlert()
+            do {
+                try await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(image.id))
+                if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
+                    self.loadingImageIds.remove(at: index)
                 }
+                guard let dataPath = try? await ImageAttachment.get(id: Int(image.id)).dataPath else {
+                    return
+                }
+                self.quickLookDocumentUrl = dataPath
+            } catch {
+                if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
+                    self.loadingImageIds.remove(at: index)
+                }
+                self.presentGlobalAlert()
             }
         }
     }
@@ -121,7 +122,9 @@ struct AttachmentsView: View {
                     } else {
                         List(images) { image in
                             Button {
-                                attachmentViewModel.showImagePreview(image)
+                                Task {
+                                    await attachmentViewModel.showImagePreview(image)
+                                }
                             } label: {
                                 HStack {
                                     ZStack {
@@ -169,7 +172,9 @@ struct AttachmentsView: View {
                         List(attachments) { attachment in
                             if let message = attachment.message, !message.isVoiceMessage {
                                 Button {
-                                    attachmentViewModel.showFilePreview(attachment)
+                                    Task {
+                                        await attachmentViewModel.showFilePreview(attachment)
+                                    }
                                 } label: {
                                     HStack {
                                         ZStack {

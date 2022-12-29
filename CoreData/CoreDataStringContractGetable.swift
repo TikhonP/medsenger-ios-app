@@ -22,11 +22,15 @@ extension CoreDataStringContractGetable {
     ///   - contract: Related contract.
     ///   - context: Managed object context.
     /// - Returns: Entity
-    internal static func get(name: String, contract: Contract, for context: NSManagedObjectContext) -> Self? {
+    internal static func get(name: String, contract: Contract, for context: NSManagedObjectContext) throws -> Self {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
         fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
         fetchRequest.fetchLimit = 1
+        fetchRequest.resultType = .managedObjectResultType
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) get by name and contract")
-        return fetchedResults?.first
+        guard let object = fetchedResults?.first else {
+            throw PersistenceController.ObjectNotFoundError()
+        }
+        return object
     }
 }

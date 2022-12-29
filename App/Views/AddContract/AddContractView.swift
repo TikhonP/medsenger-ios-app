@@ -15,71 +15,52 @@ struct AddContractView: View {
     
     var body: some View {
         NavigationView {
-            ZStack {
-                Form {
-                    Section(
-                        header: Text("AddContractView.institution.Header", comment: "Institution"),
-                        footer: Text("AddContractView.institution.Footer", comment: "Choose a clinic for the new patient")) {
-                            Picker("AddContractView.ClinicPicker", selection: $addContractViewModel.clinicId, content: {
-                                ForEach(clinics) { clinic in
-                                    Text(clinic.wrappedName).tag(Int(clinic.id))
-                                }
-                            })
-                        }
-                        .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
-                            addContractViewModel.state = .inputClinicAndEmail
-                            addContractViewModel.clinic = Clinic.get(id: clinicId)
+            Form {
+                intitutionSection
+                emailFooterSection
+                
+                if addContractViewModel.state == .inputClinicAndEmail {
+                    HStack {
+                        Spacer()
+                        Button("AddContractView.findPatient.Button", action: {
+                            Task {
+                                await addContractViewModel.findPatient()
+                            }
                         })
-                    
-                    Section(footer: Text("AddContractView.email.Footer", comment: "It is necessary to provide an active email")) {
-                        TextField("AddContractView.patientEmail.TextField", text: $addContractViewModel.patientEmail)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .textContentType(.emailAddress)
-                            .keyboardType(.emailAddress)
-                            .onChange(of: addContractViewModel.patientEmail, perform: { _ in
-                                addContractViewModel.state = .inputClinicAndEmail
-                            })
+                        Spacer()
                     }
-                    
-                    
-                    if addContractViewModel.state == .inputClinicAndEmail {
-                        HStack {
-                            Spacer()
-                            Button("AddContractView.findPatient.Button", action: addContractViewModel.findPatient)
-                            Spacer()
-                        }
-                    } else if addContractViewModel.state == .fetchingUserFromMedsenger {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
+                } else if addContractViewModel.state == .fetchingUserFromMedsenger {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
                     }
-                    
-                    if addContractViewModel.state == .knownClient {
-                        knownPatient
-                        contractDataForm
-                    } else if addContractViewModel.state == .unknownClient {
-                        patientDataForm
-                        contractDataForm
-                    }
-                    
-                    if addContractViewModel.state != .fetchingUserFromMedsenger && addContractViewModel.state != .inputClinicAndEmail {
-                        Button(action: {
-                            addContractViewModel.addContract {
+                }
+                
+                if addContractViewModel.state == .knownClient {
+                    knownPatient
+                    contractDataForm
+                } else if addContractViewModel.state == .unknownClient {
+                    patientDataForm
+                    contractDataForm
+                }
+                
+                if addContractViewModel.state != .fetchingUserFromMedsenger && addContractViewModel.state != .inputClinicAndEmail {
+                    Button(action: {
+                        Task {
+                            if await addContractViewModel.addContract() {
                                 presentationMode.wrappedValue.dismiss()
                             }
-                        }) {
-                            HStack {
-                                Spacer()
-                                if addContractViewModel.submittingAddPatient {
-                                    ProgressView()
-                                } else {
-                                    Text("AddContractView.addPatient.Button")
-                                }
-                                Spacer()
+                        }
+                    }) {
+                        HStack {
+                            Spacer()
+                            if addContractViewModel.submittingAddPatient {
+                                ProgressView()
+                            } else {
+                                Text("AddContractView.addPatient.Button")
                             }
+                            Spacer()
                         }
                     }
                 }
@@ -107,6 +88,34 @@ struct AddContractView: View {
                 }
             })
         }
+    }
+    
+    var emailFooterSection: some View {
+        Section(footer: Text("AddContractView.email.Footer", comment: "It is necessary to provide an active email")) {
+            TextField("AddContractView.patientEmail.TextField", text: $addContractViewModel.patientEmail)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .textContentType(.emailAddress)
+                .keyboardType(.emailAddress)
+                .onChange(of: addContractViewModel.patientEmail, perform: { _ in
+                    addContractViewModel.state = .inputClinicAndEmail
+                })
+        }
+    }
+    
+    var intitutionSection: some View {
+        Section(
+            header: Text("AddContractView.institution.Header", comment: "Institution"),
+            footer: Text("AddContractView.institution.Footer", comment: "Choose a clinic for the new patient")) {
+                Picker("AddContractView.ClinicPicker", selection: $addContractViewModel.clinicId, content: {
+                    ForEach(clinics) { clinic in
+                        Text(clinic.wrappedName).tag(Int(clinic.id))
+                    }
+                })
+            }
+            .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
+                
+            })
     }
     
     var patientDataForm: some View {

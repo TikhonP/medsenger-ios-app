@@ -108,7 +108,9 @@ struct MessagesView: View {
                 NavigationView {
                     WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true) {
                         if let actionMessageId = chatViewModel.actionMessageId {
-                            Messages.shared.messageActionUsed(messageId: actionMessageId, completion: { _ in })
+                            Task {
+                                try? await Messages.messageActionUsed(messageId: actionMessageId)
+                            }
                         }
                     }
                 }
