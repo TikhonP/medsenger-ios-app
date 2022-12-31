@@ -21,6 +21,7 @@ struct ChatsView: View {
             NSSortDescriptor(key: "activated", ascending: false),
             NSSortDescriptor(key: "lastMessageTimestamp", ascending: false),
             NSSortDescriptor(key: "unread", ascending: false),
+            NSSortDescriptor(key: "id", ascending: false),
         ],
         predicate: NSPredicate(format: "archive == NO"),
         animation: .default)
@@ -162,12 +163,6 @@ struct ChatsView: View {
                     ProgressView()
                 } else {
                     EmptyChatsView()
-                        .onAppear {
-                            chatsViewModel.showContractsLoading = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                chatsViewModel.showContractsLoading = false
-                            }
-                        }
                         .onTapGesture {
                             Task {
                                 await chatsViewModel.getContracts(presentFailedAlert: true)

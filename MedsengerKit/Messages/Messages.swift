@@ -17,15 +17,19 @@ final class Messages {
     ///   - contractId: Contract Id
     public static func fetchMessages(contractId: Int) async throws {
         let messagesResource = await {
-            guard let contract = try? await Contract.get(id: contractId), let lastFetchedMessage = contract.lastFetchedMessage else {
+            let contract = try? await Contract.get(id: contractId)
+            let lastFetchedMessageId = await MainActor.run {
+                contract?.lastFetchedMessage?.id
+            }
+            guard let lastFetchedMessageId = lastFetchedMessageId  else {
                 return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
             }
-            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessage.id), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessageId), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
         }()
         do {
             let data = try await APIRequest(messagesResource).executeWithResult()
             try await Message.saveFromJson(data, contractId: contractId)
-            try await Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: true)
+            try await Contract.updateLastAndFirstFetchedMessage(id: contractId)
         } catch {
             throw await processRequestError(error, "get messages for contract \(contractId)", apiErrors: messagesResource.apiErrors)
         }
@@ -42,7 +46,7 @@ final class Messages {
         do {
             let data = try await APIRequest(sendMessageResource).executeWithResult()
             try await Message.saveFromJson(data, contractId: contractId)
-            try await Contract.updateLastAndFirstFetchedMessage(id: contractId, updateGlobal: false)
+            try await Contract.updateLastAndFirstFetchedMessage(id: contractId)
             Websockets.shared.messageUpdate(contractId: contractId)
         } catch {
             throw await processRequestError(error, "send message for contract \(contractId)", apiErrors: sendMessageResource.apiErrors)
@@ -52,10 +56,10 @@ final class Messages {
     /// Fetch file for message attachment and save it
     /// - Parameters:
     ///   - attachmentId: Attachment Id
-    public static func fetchAttachmentData(attachmentId: Int) async throws {
+    public static func fetchAttachmentData(attachmentId: Int) async throws -> URL {
         do {
             let data = try await FileRequest(path: "/attachments/\(attachmentId)").executeWithResult()
-            try await Attachment.saveFile(id: attachmentId, data: data)
+            return try await Attachment.saveFile(id: attachmentId, data: data)
         } catch {
             throw await processRequestError(error, "Messages: fetchAttachmentData")
         }
@@ -64,10 +68,10 @@ final class Messages {
     /// Fetch image file for message image attachment and save it
     /// - Parameters:
     ///   - imageAttachmentId: Image Attachment Id
-    public static func fetchImageAttachmentImage(imageAttachmentId: Int) async throws {
+    public static func fetchImageAttachmentImage(imageAttachmentId: Int) async throws -> URL {
         do {
             let data = try await FileRequest(path: "/images/\(imageAttachmentId)/real").executeWithResult()
-            try await ImageAttachment.saveFile(id: imageAttachmentId, data: data)
+            return try await ImageAttachment.saveFile(id: imageAttachmentId, data: data)
         } catch {
             throw await processRequestError(error, "Messages: fetchImageAttachmentImage")
         }

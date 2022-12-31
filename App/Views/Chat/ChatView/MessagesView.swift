@@ -171,7 +171,7 @@ struct MessagesView: View {
                             .onAppear {
                                 scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
                                 }
                                 
@@ -195,16 +195,9 @@ struct MessagesView: View {
                                     NotificationCenter.default.removeObserver(keyboardDidHideNotificationObserver)
                                 }
                             }
-                            .onChange(of: contract.lastFetchedMessage, perform: { lastFetchedMessage in
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            .onChange(of: messages.count, perform: { _ in
+                                if !showScrollDownButton {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
-                                }
-                            })
-                            .onChange(of: contract.lastGlobalFetchedMessage, perform: { lastFetchedMessage in
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    if !showScrollDownButton {
-                                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                                    }
                                 }
                             })
                             .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
@@ -227,7 +220,6 @@ struct MessagesView: View {
                         }
                     }
                 }
-                //                .fixFlickering()
                 .coordinateSpace(name: spaceName)
             }
         }

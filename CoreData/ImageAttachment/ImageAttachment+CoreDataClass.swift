@@ -56,13 +56,19 @@ public class ImageAttachment: NSManagedObject, CoreDataIdGetable {
         }
     }
     
-    public static func saveFile(id: Int, data: Data) async throws {
+    struct NoDataPathError: Error { }
+    
+    public static func saveFile(id: Int, data: Data) async throws -> URL {
         let context = PersistenceController.shared.container.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        try await context.crossVersionPerform {
+        return try await context.crossVersionPerform {
             let imageAttachment = try get(id: id, for: context)
             imageAttachment.saveFile(data)
             PersistenceController.save(for: context, detailsForLogging: "ImageAttachment save file")
+            guard let dataPath = imageAttachment.dataPath else {
+                throw NoDataPathError()
+            }
+            return dataPath
         }
     }
 }

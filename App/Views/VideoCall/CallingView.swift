@@ -53,7 +53,9 @@ struct CallingView: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            Button(action: videoCallViewModel.toggleAudio, label: {
+                            Button(action: {
+                                videoCallViewModel.toggleAudio()
+                            }, label: {
                                 if videoCallViewModel.isAudioOn {
                                     Image(systemName: "mic.circle.fill")
                                         .resizable()
@@ -68,7 +70,9 @@ struct CallingView: View {
                                         .padding(.trailing)
                                 }
                             })
-                            Button(action: videoCallViewModel.toggleVideo, label: {
+                            Button(action: {
+                                videoCallViewModel.toggleVideo()
+                            }, label: {
                                 if videoCallViewModel.isVideoOn {
                                     Image(systemName: "video.circle.fill")
                                         .resizable()
@@ -83,7 +87,9 @@ struct CallingView: View {
                                         .padding(.trailing)
                                 }
                             })
-                            Button(action: videoCallViewModel.hangUp, label: {
+                            Button(action: {
+                                videoCallViewModel.hangUp()
+                            }, label: {
                                 Image(systemName: "phone.down.circle.fill")
                                     .resizable()
                                     .frame(width: 50, height: 50)
@@ -97,7 +103,9 @@ struct CallingView: View {
                 }
             }
         }
-        .onAppear(perform: videoCallViewModel.callingViewAppear)
+        .onAppear {
+            videoCallViewModel.callingViewAppear()
+        }
     }
 }
 

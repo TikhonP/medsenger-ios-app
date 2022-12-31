@@ -52,7 +52,9 @@ struct ChatView: View {
             .scrollDismissesKeyboardIos16Only()
             .environmentObject(chatViewModel)
             .environmentObject(messageInputViewModel)
-            .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: messageInputViewModel.addOnDropAttachments)
+            .onDrop(of: allDocumentsTypes, isTargeted: nil, perform: {
+                messageInputViewModel.addOnDropAttachments($0)
+            })
             
             if contract.messagesArray.isEmpty {
                 VStack(alignment: .center) {

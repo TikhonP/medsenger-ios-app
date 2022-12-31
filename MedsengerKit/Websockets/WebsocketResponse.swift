@@ -152,9 +152,8 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        // FIXME: !!!
         Task {
-            if let openedChatContractId = ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
+            if let openedChatContractId = await ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
                 try? await Messages.fetchMessages(contractId: data.contract_id)
             } else {
                 await ChatsViewModel.shared.getContracts(presentFailedAlert: false)

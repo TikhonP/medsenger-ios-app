@@ -17,13 +17,15 @@ struct ArchivesChatsView: View {
     @FetchRequest(
         sortDescriptors: [
             NSSortDescriptor(key: "lastMessageTimestamp", ascending: false),
-            NSSortDescriptor(key: "endDate", ascending: false)
+            NSSortDescriptor(key: "endDate", ascending: false),
+            NSSortDescriptor(key: "unread", ascending: false),
+            NSSortDescriptor(key: "id", ascending: false),
         ],
         predicate: NSPredicate(format: "archive == YES"),
         animation: .default)
     private var contracts: FetchedResults<Contract>
     
-    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
     @State private var searchText = ""
     var query: Binding<String> {
@@ -66,12 +68,6 @@ struct ArchivesChatsView: View {
                     ProgressView()
                 } else {
                     EmptyArchiveChatsView()
-                        .onAppear {
-                            chatsViewModel.showArchiveContractsLoading = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                chatsViewModel.showArchiveContractsLoading = false
-                            }
-                        }
                         .onTapGesture {
                             Task {
                                 await chatsViewModel.getArchiveContracts(presentFailedAlert: true)

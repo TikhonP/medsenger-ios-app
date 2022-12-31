@@ -11,14 +11,6 @@ import UIKit
 
 class Account {
     
-    /// Change user role: patient or doctor
-    /// - Parameter role: The user role
-    public static func changeRole(_ role: UserRole) async {
-        _ = await (PersistenceController.clearDatabase(withUser: false), PushNotifications.removeOldFcmToken())
-        UserDefaults.userRole = role
-        _ = await (PushNotifications.storeFcmTokenAsNewRole(), ChatsViewModel.shared.getContracts(presentFailedAlert: true))
-    }
-    
     /// Fetch user avatar image
     public static func fetchAvatar() async throws {
         do {

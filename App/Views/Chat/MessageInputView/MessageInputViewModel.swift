@@ -11,6 +11,7 @@ import AVFAudio
 import os.log
 import SwiftUI
 
+@MainActor
 final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     
     private static let logger = Logger(
@@ -39,6 +40,9 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     @Published var totalAudioMessageTime: Double?
     @Published var playingAudioProgress: Double = 0
     
+    private var recordingMessageTimer: Timer?
+    private var playingMessageTimer: Timer?
+    
     init(contractId: Int, messageDraft: String) {
         self.message = messageDraft
         self.contractId = contractId
@@ -55,24 +59,20 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
         guard !message.isEmpty || !messageAttachments.isEmpty else {
             return
         }
-        await MainActor.run {
-            showSendingMessageLoading = true
-        }
+        showSendingMessageLoading = true
         do {
             try await Messages.sendMessage(
                 message,
                 for: contractId,
                 replyToId: replyToId,
                 attachments: messageAttachments)
-            await MainActor.run {
-                showSendingMessageLoading = false
-                messageAttachments = []
-                message = ""
-                saveMessageDraft()
-                replyToMessage = nil
-            }
+            showSendingMessageLoading = false
+            messageAttachments = []
+            message = ""
+            saveMessageDraft()
+            replyToMessage = nil
         } catch {
-            await presentGlobalAlert()
+            presentGlobalAlert()
         }
     }
     
@@ -81,12 +81,10 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
             return
         }
         let attachment = ChatViewAttachment(data: data, extention: "m4a", realFilename: recordedMessageUrl.lastPathComponent, type: .audio)
-        await MainActor.run {
-            if isVoiceMessagePlaying {
-                stopPlaying()
-            }
-            showSendingMessageLoading = true
+        if isVoiceMessagePlaying {
+            stopPlaying()
         }
+        showSendingMessageLoading = true
         do {
             try await Messages.sendMessage(
                 Constants.voiceMessageText,
@@ -100,7 +98,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                 self.replyToMessage = nil
             }
         } catch {
-            await presentGlobalAlert()
+            presentGlobalAlert()
         }
     }
     
@@ -128,7 +126,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                     fileURL.stopAccessingSecurityScopedResource()
                 }
             } catch {
-                await presentAlert(title: Text("MessageInputViewModel.failedToAddAttachmentAlertTitle", comment: "Failed to add attachment"))
+                presentAlert(title: Text("MessageInputViewModel.failedToAddAttachmentAlertTitle", comment: "Failed to add attachment"))
                 MessageInputViewModel.logger.error("Failed to load file: \(error.localizedDescription)")
             }
         }
@@ -146,13 +144,13 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                 if let error = error {
                     MessageInputViewModel.logger.error("Failed to load file representation on drop: \(error.localizedDescription)")
                 }
-                guard let url = url else {
+                guard let url = url, let self = self else {
                     return
                 }
                 do {
                     let data = try Data(contentsOf: url)
                     DispatchQueue.main.async {
-                        self?.messageAttachments.append(ChatViewAttachment(
+                        self.messageAttachments.append(ChatViewAttachment(
                             data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
                     }
                 } catch {
@@ -177,7 +175,7 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             try recordingSession.setCategory(.playAndRecord, mode: .default)
             try recordingSession.setActive(true)
         } catch {
-            await presentAlert(title: Text("MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle", comment: "Failed to prepare audio recording"))
+            presentAlert(title: Text("MessageInputViewModel.failedToPrepareAudioRecordingAlertTitle", comment: "Failed to prepare audio recording"))
             MessageInputViewModel.logger.error("Failed to prepare AVAudioSession: \(error.localizedDescription)")
             return
         }
@@ -185,69 +183,69 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             guard let self = self else {
                 return
             }
-            DispatchQueue.main.async {
-                guard allowed else {
-                    self.presentAlert(
-                        Alert(
-                            title: Text("MessageInputViewModel.allowMicrophoneAccessAlertTitle", comment: "Please Allow Access"),
-                            message: Text("MessageInputViewModel.allowMicrophoneAccessAlertMessage", comment: "Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON."),
-                            primaryButton: .cancel(Text("MessageInputViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
-                            secondaryButton: .default(Text("MessageInputViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
+            guard allowed else {
+                self.presentAlert(
+                    Alert(
+                        title: Text("MessageInputViewModel.allowMicrophoneAccessAlertTitle", comment: "Please Allow Access"),
+                        message: Text("MessageInputViewModel.allowMicrophoneAccessAlertMessage", comment: "Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON."),
+                        primaryButton: .cancel(Text("MessageInputViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
+                        secondaryButton: .default(Text("MessageInputViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
                             DispatchQueue.main.async {
                                 if let url = URL(string: UIApplication.openSettingsURLString) {
                                     UIApplication.shared.open(url)
                                 }
                             }
                         })
-                    )
-                    return
+                )
+                return
+            }
+            
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                return
+            }
+            let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
+            self.recordedMessageUrl = voiceMessageFilePath
+            
+            let settings = [
+                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                AVSampleRateKey: 12000,
+                AVNumberOfChannelsKey: 1,
+                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+            ]
+            
+            do {
+                let audioRecorder = try AVAudioRecorder(url: voiceMessageFilePath, settings: settings)
+                self.audioRecorder = audioRecorder
+                if !audioRecorder.prepareToRecord() {
+                    self.isRecordingVoiceMessage = false
+                    //                        self.showRecordingfailedAlert = true
+                    MessageInputViewModel.logger.error("Failed to prepareToRecord audio recording")
                 }
-                
-                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                    return
-                }
-                let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-                self.recordedMessageUrl = voiceMessageFilePath
-                
-                let settings = [
-                    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                    AVSampleRateKey: 12000,
-                    AVNumberOfChannelsKey: 1,
-                    AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-                ]
-                
-                do {
-                    let audioRecorder = try AVAudioRecorder(url: voiceMessageFilePath, settings: settings)
-                    self.audioRecorder = audioRecorder
-                    if !audioRecorder.prepareToRecord() {
-                        self.isRecordingVoiceMessage = false
-//                        self.showRecordingfailedAlert = true
-                        MessageInputViewModel.logger.error("Failed to prepareToRecord audio recording")
+                audioRecorder.delegate = self
+                audioRecorder.record()
+                self.isRecordingVoiceMessage = true
+                self.currentVoiceMessageTime = audioRecorder.currentTime
+                self.recordingMessageTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+                    guard let self = self else {
+                        timer.invalidate()
+                        return
                     }
-                    audioRecorder.delegate = self
-                    audioRecorder.record()
-                    self.isRecordingVoiceMessage = true
-                    self.currentVoiceMessageTime = audioRecorder.currentTime
-                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
-                        guard let self = self else {
-                            timer.invalidate()
-                            return
-                        }
+                    DispatchQueue.main.async {
                         if !self.isRecordingVoiceMessage {
-                            timer.invalidate()
+                            self.recordingMessageTimer?.invalidate()
                         } else {
                             if let currentTime = self.audioRecorder?.currentTime {
                                 self.currentVoiceMessageTime = currentTime
                             }
                         }
                     }
-                } catch {
-                    self.audioRecorder?.stop()
-                    self.audioRecorder = nil
-                    self.isRecordingVoiceMessage = false
-                    self.presentAlert(title: Text("MessageInputViewModel.recordingMessageFailedAlertTitle", comment: "Recording voice message failed."))
-                    MessageInputViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
                 }
+            } catch {
+                self.audioRecorder?.stop()
+                self.audioRecorder = nil
+                self.isRecordingVoiceMessage = false
+                self.presentAlert(title: Text("MessageInputViewModel.recordingMessageFailedAlertTitle", comment: "Recording voice message failed."))
+                MessageInputViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
             }
         }
     }
@@ -281,7 +279,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
             try audioSession.setCategory(.playback)
             try audioSession.setActive(true)
         } catch {
-            await presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
+            presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             MessageInputViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
             return
         }
@@ -289,7 +287,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf : url)
         } catch {
-            await presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
+            presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
             MessageInputViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
             return
         }
@@ -301,16 +299,18 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
             self.playingAudioProgress = currentTime / duration
         }
-        Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+        playingMessageTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
             guard let self = self else {
                 timer.invalidate()
                 return
             }
-            if !self.isVoiceMessagePlaying {
-                timer.invalidate()
-            } else {
-                if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
-                    self.playingAudioProgress = currentTime / duration
+            DispatchQueue.main.async {
+                if !self.isVoiceMessagePlaying {
+                    self.playingMessageTimer?.invalidate()
+                } else {
+                    if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+                        self.playingAudioProgress = currentTime / duration
+                    }
                 }
             }
         }

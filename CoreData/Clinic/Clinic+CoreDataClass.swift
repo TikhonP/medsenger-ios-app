@@ -21,6 +21,10 @@ public class Clinic: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         }
     }
     
+    /// All Objects as array
+    ///
+    /// Be careful! It returns entity which can be used only on main thread.
+    /// - Returns: Array of all clinics
     public static func objectsAll() -> [Clinic] {
         let context = PersistenceController.shared.container.viewContext
         var result = [Clinic]()

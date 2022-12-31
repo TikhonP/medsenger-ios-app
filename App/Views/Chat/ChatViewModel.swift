@@ -54,12 +54,12 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
     }
     
-    nonisolated func fetchAttachment(_ attachment: Attachment) async {
-        try? await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
+    nonisolated func fetchAttachment(_ attachment: Attachment) async -> URL? {
+        return try? await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
     }
     
-    nonisolated func fetchImageAttachment(_ imageAttachment: ImageAttachment) async {
-        try? await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(imageAttachment.id))
+    nonisolated func fetchImageAttachment(_ imageAttachment: ImageAttachment) async -> URL? {
+        return try? await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(imageAttachment.id))
     }
     
     func showAttachmentPreview(_ attachment: Attachment) async {
@@ -67,11 +67,11 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
             quickLookDocumentUrl = dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
-            await fetchAttachment(attachment)
+            let dataPath = await fetchAttachment(attachment)
             if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
                 self.loadingAttachmentIds.remove(at: index)
             }
-            self.quickLookDocumentUrl = try? await Attachment.get(id: Int(attachment.id)).dataPath
+            self.quickLookDocumentUrl = dataPath
         }
     }
     

@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 final class EditNotesViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     
@@ -22,20 +23,14 @@ final class EditNotesViewModel: ObservableObject, Alertable {
     }
     
     func save() async -> Bool {
-        await MainActor.run {
-            showLoading = true
-        }
+        showLoading = true
         do {
             try await DoctorActions.updateContractNotes(contractId: contractId, notes: note)
-            await MainActor.run {
-                showLoading = false
-            }
+            showLoading = false
             return true
         } catch {
-            await MainActor.run {
-                showLoading = false
-                presentGlobalAlert()
-            }
+            showLoading = false
+            presentGlobalAlert()
             return false
         }
     }

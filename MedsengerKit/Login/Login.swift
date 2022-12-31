@@ -43,9 +43,32 @@ class Login {
         }
     }
     
+    private static func clearAllFiles() async throws {
+        let fileManager = FileManager()
+        guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
+            return
+        }
+        let fileNames = try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: [])
+        for fileName in fileNames {
+            do {
+                try fileManager.removeItem(at: fileName)
+            } catch {
+                print("Failed to delete filename: \(fileName)")
+            }
+        }
+    }
+    
+    /// Change user role: patient or doctor
+    /// - Parameter role: The user role
+    public static func changeRole(_ role: UserRole) async {
+        _ = await (PersistenceController.clearDatabase(withUser: false), PushNotifications.removeOldFcmToken(), try? clearAllFiles())
+        UserDefaults.userRole = role
+        _ = await (PushNotifications.storeFcmTokenAsNewRole(), ChatsViewModel.shared.getContracts(presentFailedAlert: true))
+    }
+    
     /// Sign out from account
     public static func signOut() async throws {
-        _ = await (PushNotifications.signOutFcmToken(), try User.delete())
+        _ = await (PushNotifications.signOutFcmToken(), try User.delete(), try? clearAllFiles())
         KeyChain.apiToken = nil
         UserDefaults.userRole = .unknown
     }

@@ -212,6 +212,7 @@ struct SettingsMainFormView: View {
             signOutActionSection
         }
         .refreshableIos15Only { await settingsViewModel.updateProfile(presentFailedAlert: true) }
+        .animation(.default, value: userRole)
     }
     
     var profileSection: some View {
@@ -302,7 +303,11 @@ struct SettingsMainFormView: View {
     var changeRoleSection: some View {
         Section(footer: Text("SettingsMainFormView.changeRoleFooter", comment: "Your account has access to both the doctor and the patient role.")) {
             if settingsMainFormViewModel.showChangeRoleLoading {
-                ProgressView()
+                HStack {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                }
             } else if userRole == .patient {
                 Button("SettingsMainFormView.switchToDoctorButtonLabel", action: {
                     Task {
@@ -320,7 +325,6 @@ struct SettingsMainFormView: View {
             }
         }
         .animation(.default, value: settingsMainFormViewModel.showChangeRoleLoading)
-        .animation(.default, value: userRole)
     }
     
     var showFullImageSecction: some View {

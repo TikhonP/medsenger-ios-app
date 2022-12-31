@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 final class ComplianceViewModel: ObservableObject {
     let contracts: Array<Contract>
     

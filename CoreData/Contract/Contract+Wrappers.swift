@@ -62,7 +62,7 @@ extension Contract {
     
     public var messagesArray: [Message] {
         let set = messages as? Set<Message> ?? []
-        return Array(set)
+        return set.sorted(by: { $0.id > $1.id })
     }
     
     public var infoMaterialsArray: [InfoMaterial] {
@@ -95,7 +95,8 @@ extension Contract {
         return set.sorted(by: { $0.id > $1.id })
     }
     
-    public var devices: [Agent] {
+    /// Be careful! It returns entity which can be used only on main thread.
+    @MainActor public var devices: [Agent] {
         let context = PersistenceController.shared.container.viewContext
         var result = [Agent]()
         context.performAndWait {

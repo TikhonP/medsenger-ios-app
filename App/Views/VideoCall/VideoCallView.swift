@@ -40,7 +40,7 @@ struct VideoCallView: View {
                         Text("VideoCallView.CallError", comment: "Call error")
                     }
                 }
-                .onAppear(perform: videoCallViewModel.videoCallViewAppear)
+                .onAppear { videoCallViewModel.videoCallViewAppear() }
             }
         }
     }

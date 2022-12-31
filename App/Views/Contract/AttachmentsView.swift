@@ -24,12 +24,9 @@ fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
             do {
-                try await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
+                let dataPath = try await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
                 if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
                     self.loadingAttachmentIds.remove(at: index)
-                }
-                guard let dataPath = try? await Attachment.get(id: Int(attachment.id)).dataPath else {
-                    return
                 }
                 self.quickLookDocumentUrl = dataPath
             } catch {
@@ -47,12 +44,9 @@ fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
         } else {
             loadingImageIds.append(Int(image.id))
             do {
-                try await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(image.id))
+                let dataPath = try await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(image.id))
                 if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
                     self.loadingImageIds.remove(at: index)
-                }
-                guard let dataPath = try? await ImageAttachment.get(id: Int(image.id)).dataPath else {
-                    return
                 }
                 self.quickLookDocumentUrl = dataPath
             } catch {

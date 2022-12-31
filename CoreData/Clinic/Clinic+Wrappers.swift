@@ -38,7 +38,8 @@ extension Clinic {
         return Array(set)
     }
     
-    public var devices: [Agent] {
+    /// Be careful! It returns entity which can be used only on main thread.
+    @MainActor public var devices: [Agent] {
         let context = PersistenceController.shared.container.viewContext
         var result = [Agent]()
         context.performAndWait {

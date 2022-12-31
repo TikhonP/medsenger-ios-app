@@ -43,7 +43,9 @@ struct WaitingCallView: View {
             }
             Spacer()
             if videoCallViewModel.isCaller {
-                Button(action: videoCallViewModel.hangUp, label: {
+                Button(action: {
+                    videoCallViewModel.hangUp()
+                }, label: {
                     Image(systemName: "phone.down.circle.fill")
                         .resizable()
                         .frame(width: 50, height: 50)
@@ -54,7 +56,9 @@ struct WaitingCallView: View {
             } else {
                 HStack {
                     Spacer()
-                    Button(action: videoCallViewModel.answer, label: {
+                    Button(action: {
+                        videoCallViewModel.answer()
+                    }, label: {
                         Image(systemName: "phone.circle.fill")
                             .resizable()
                             .frame(width: 50, height: 50)
@@ -63,7 +67,9 @@ struct WaitingCallView: View {
                             .padding(.bottom)
                     })
                     Spacer()
-                    Button(action: videoCallViewModel.dismiss, label: {
+                    Button(action: {
+                        videoCallViewModel.dismiss()
+                    }, label: {
                         Image(systemName: "phone.down.circle.fill")
                             .resizable()
                             .frame(width: 50, height: 50)

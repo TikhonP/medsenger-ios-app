@@ -16,7 +16,7 @@ struct ContractView: View {
     
     @EnvironmentObject private var contentViewModel: ContentViewModel
     
-    @AppStorage(UserDefaults.Keys.userRoleKey) var userRole: UserRole = UserDefaults.userRole
+    @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
     @State private var showDevices = false
     @State private var showEditNotes = false

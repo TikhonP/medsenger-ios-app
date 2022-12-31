@@ -64,7 +64,7 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
     
     func changeRole(_ role: UserRole) async {
         showChangeRoleLoading = true
-        await Account.changeRole(role)
+        await Login.changeRole(role)
         showChangeRoleLoading = false
     }
 }

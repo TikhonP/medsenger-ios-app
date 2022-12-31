@@ -52,58 +52,48 @@ final class AddContractViewModel: ObservableObject, Alertable {
     private let welcomeMessage = "" // FIXME: !!!
     
     func findPatient() async {
-        let clinic = try? await Clinic.get(id: clinicId)
-        await MainActor.run {
-            guard !patientEmail.isEmpty else {
-                presentAlert(
-                    title: Text("AddContractViewModel.emailIsEmptyAlertTitle", comment: "Email is empty!"),
-                    message: Text("AddContractViewModel.emailIsEmptyMessage", comment: "Please fill the email field."), .warning)
-                return
-            }
-            guard patientEmail.isEmail() else {
-                presentAlert(
-                    title: Text("AddContractViewModel.invalidEmailAlertTitle", comment: "Invalid patient email!"),
-                    message: Text("AddContractViewModel.invalidEmailAlertMessage", comment: "Please check patient email to continue."), .warning)
-                return
-            }
-            state = .fetchingUserFromMedsenger
-            self.clinic = clinic
-            if let rule = clinic?.rulesArray.first {
-                clinicRuleId = Int(rule.id)
-            }
-            if let classifier = clinic?.classifiersArray.first {
-                clinicClassifierId = Int(classifier.id)
-            }
+        guard !patientEmail.isEmpty else {
+            presentAlert(
+                title: Text("AddContractViewModel.emailIsEmptyAlertTitle", comment: "Email is empty!"),
+                message: Text("AddContractViewModel.emailIsEmptyMessage", comment: "Please fill the email field."), .warning)
+            return
         }
-        
+        guard patientEmail.isEmail() else {
+            presentAlert(
+                title: Text("AddContractViewModel.invalidEmailAlertTitle", comment: "Invalid patient email!"),
+                message: Text("AddContractViewModel.invalidEmailAlertMessage", comment: "Please check patient email to continue."), .warning)
+            return
+        }
+        state = .fetchingUserFromMedsenger
+        self.clinic = try? await Clinic.get(id: clinicId)
+        if let rule = clinic?.rulesArray.first {
+            clinicRuleId = Int(rule.id)
+        }
+        if let classifier = clinic?.classifiersArray.first {
+            clinicClassifierId = Int(classifier.id)
+        }
         do {
             let data = try await DoctorActions.findUser(clinicId: clinicId, email: patientEmail)
-            await MainActor.run {
-                userExists = data.found
-                patientName = ""
-                patientBirthday = Date()
-                if data.found {
-                    state = .knownClient
-                    if let name = data.name, let birthday = data.birthday {
-                        patientName = name
-                        patientBirthday = birthday
-                    }
-                } else {
-                    state = .unknownClient
+            userExists = data.found
+            patientName = ""
+            patientBirthday = Date()
+            if data.found {
+                state = .knownClient
+                if let name = data.name, let birthday = data.birthday {
+                    patientName = name
+                    patientBirthday = birthday
                 }
+            } else {
+                state = .unknownClient
             }
         } catch is FindUserResource.ContractExistError {
-            await MainActor.run {
-                presentAlert(
-                    title: Text("AddContractViewModel.contractAlreadyExistsAlertTitle", comment: "Contract already exists"),
-                    message: Text("AddContractViewModel.contractAlreadyExistsAlertMessage", comment: "Please check email. Contract with provided email already exists."), .warning)
-                state = .inputClinicAndEmail
-            }
+            presentAlert(
+                title: Text("AddContractViewModel.contractAlreadyExistsAlertTitle", comment: "Contract already exists"),
+                message: Text("AddContractViewModel.contractAlreadyExistsAlertMessage", comment: "Please check email. Contract with provided email already exists."), .warning)
+            state = .inputClinicAndEmail
         } catch {
-            await MainActor.run {
-                state = .inputClinicAndEmail
-                presentGlobalAlert()
-            }
+            state = .inputClinicAndEmail
+            presentGlobalAlert()
         }
     }
     
@@ -123,9 +113,7 @@ final class AddContractViewModel: ObservableObject, Alertable {
         guard let userExists = userExists else {
             return false
         }
-        await MainActor.run {
-            submittingAddPatient = true
-        }
+        submittingAddPatient = true
         let addContractRequestModel = AddContractRequestModel(
             clinic: clinicId,
             email: patientEmail,
@@ -143,15 +131,11 @@ final class AddContractViewModel: ObservableObject, Alertable {
         do {
             try await DoctorActions.addContract(addContractRequestModel)
             await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
-            await MainActor.run {
-                submittingAddPatient = false
-            }
+            submittingAddPatient = false
             return true
         } catch {
-            await MainActor.run {
-                submittingAddPatient = false
-                presentGlobalAlert()
-            }
+            submittingAddPatient = false
+            presentGlobalAlert()
             return false
         }
     }

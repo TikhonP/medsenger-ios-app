@@ -57,11 +57,11 @@ func processRequestError(_ error: Error, _ requestName: String, apiErrors: [APIR
         Logger.urlRequest.error("ProcessRequestError: \(requestName): Request error: \(urlError.localizedDescription)")
         switch urlError.code {
         case .notConnectedToInternet:
-            ContentViewModel.shared.createGlobalAlert(
+            await ContentViewModel.shared.createGlobalAlert(
                 title: Text("processRequestError.internaetConnectionOfflineAlertTitle", comment: "The Internet connection appears to be offline"),
                 message: Text("processRequestError.internaetConnectionOfflineAlertMessage", comment: "Turn off Airplane Mode or connect to Wi-Fi."))
         case .timedOut:
-            ContentViewModel.shared.createGlobalAlert(
+            await ContentViewModel.shared.createGlobalAlert(
                 title: Text("processRequestError.timeOutAlertTitle", comment: "The request timed out"),
                 message: Text("processRequestError.timeOutAlertMessage", comment: "Please check your connection and try again."))
         default:
@@ -77,12 +77,12 @@ func processRequestError(_ error: Error, _ requestName: String, apiErrors: [APIR
             try? await Login.signOut()
             Logger.urlRequest.info("ProcessRequestError: \(requestName): Incorrect token in request, sign out")
         } else if errorData.errors.contains(Constants.MedsengerErrorStrings.incorrectData) {
-            ContentViewModel.shared.createGlobalAlert(
+            await ContentViewModel.shared.createGlobalAlert(
                 title: Text("processRequestError.incorrectDataProvidedAlertTitle", comment: "Incorrect data provided"),
                 message: Text("processRequestError.IncorrectDataProvidedAlertMessage", comment: "Please check your input or contact Medsenger support."))
             Logger.urlRequest.info("ProcessRequestError: \(requestName): Incorrect data: Status code: \(statusCode)")
         } else {
-            ContentViewModel.shared.createGlobalAlert(
+            await ContentViewModel.shared.createGlobalAlert(
                 title: Text("processRequestError.serverErrorAlertTitle", comment: "Oops! Server error"),
                 message: Text(errorData.errors.joined(separator: " ")))
             Logger.urlRequest.error("ProcessRequestError: \(requestName): Api error: \(errorData): Status code: \(statusCode)")

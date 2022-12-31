@@ -31,7 +31,7 @@ public class User: NSManagedObject, CoreDataErasable {
     
     /// Get user from any task
     /// - Returns: optional user instance
-    public static func get() async throws -> User {
+    @MainActor public static func get() async throws -> User {
         let context = PersistenceController.shared.container.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         return try await context.crossVersionPerform {

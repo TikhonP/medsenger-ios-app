@@ -9,6 +9,8 @@
 import SwiftUI
 
 struct ChooseRoleView: View {
+    @MainActor @State private var showLoading = false
+    
     var body: some View {
         VStack {
             Text("ChooseRoleView.chooseRoleLabel", comment: "Your account has access to both the doctor and the patient role.")
@@ -16,35 +18,45 @@ struct ChooseRoleView: View {
                 .font(.callout)
                 .padding(.horizontal, 30)
             
-            Text("ChooseRoleView.chooseRoleQuestion", comment: "How do you want to sign in?")
-                .multilineTextAlignment(.center)
-                .font(.callout)
-                .padding(.horizontal, 30)
-            
-            Button("ChooseRoleView.SignInAsPatient.Button") {
-                Task {
-                    await Account.changeRole(.patient)
+            if showLoading {
+                ProgressView()
+                    .padding()
+            } else {
+                Text("ChooseRoleView.chooseRoleQuestion", comment: "How do you want to sign in?")
+                    .multilineTextAlignment(.center)
+                    .font(.callout)
+                    .padding(.horizontal, 30)
+                
+                Button("ChooseRoleView.SignInAsPatient.Button") {
+                    Task {
+                        showLoading = true
+                        await Login.changeRole(.patient)
+                        showLoading = false
+                    }
                 }
-            }
-            .font(.headline)
-            .foregroundColor(.systemBackground)
-            .padding(.vertical)
-            .frame(width: 250)
-            .background(Color.accentColor)
-            .clipShape(Capsule())
-            
-            Button("ChooseRoleView.SignInAsDoctor.Button") {
-                Task {
-                    await Account.changeRole(.doctor)
+                .font(.headline)
+                .foregroundColor(.systemBackground)
+                .padding(.vertical)
+                .frame(width: 250)
+                .background(Color.accentColor)
+                .clipShape(Capsule())
+                
+                Button("ChooseRoleView.SignInAsDoctor.Button") {
+                    Task {
+                        showLoading = true
+                        await Login.changeRole(.doctor)
+                        showLoading = false
+                    }
                 }
+                .font(.headline)
+                .foregroundColor(.systemBackground)
+                .padding(.vertical)
+                .frame(width: 250)
+                .background(Color.accentColor)
+                .clipShape(Capsule())
             }
-            .font(.headline)
-            .foregroundColor(.systemBackground)
-            .padding(.vertical)
-            .frame(width: 250)
-            .background(Color.accentColor)
-            .clipShape(Capsule())
         }
+        .animation(.default, value: showLoading)
     }
 }
 

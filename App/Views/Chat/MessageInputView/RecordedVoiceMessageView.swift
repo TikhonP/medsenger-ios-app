@@ -27,7 +27,9 @@ struct RecordedVoiceMessageView: View {
                HStack {
                     ZStack {
                          if messageInputViewModel.isVoiceMessagePlaying {
-                              Button(action: messageInputViewModel.stopPlaying, label: {
+                              Button(action: {
+                                   messageInputViewModel.stopPlaying()
+                              }, label: {
                                    Image(systemName: "stop.fill")
                                         .resizable()
                                         .scaledToFit()

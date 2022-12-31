@@ -28,6 +28,7 @@ struct AlertInfo: Identifiable {
 /// Use `alert` when you want to present alert from your view model
 /// First create view model conforming to protocol:
 ///
+///     @MainActor
 ///     final class ContentViewModel: ObservableObject, Alertable {
 ///         @Published var alert: AlertInfo?
 ///     }

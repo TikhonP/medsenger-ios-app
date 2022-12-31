@@ -61,7 +61,7 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
         }
     }
     
-    public static func updateLastAndFirstFetchedMessage(id: Int, updateGlobal: Bool) async throws {
+    public static func updateLastAndFirstFetchedMessage(id: Int) async throws {
         let context = PersistenceController.shared.container.newBackgroundContext()
         context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         
@@ -69,9 +69,6 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
             let contract = try get(id: id, for: context)
             let lastMessage = Message.getLastMessageForContract(for: contract, for: context)
             contract.lastFetchedMessage = lastMessage
-            if updateGlobal {
-                contract.lastGlobalFetchedMessage = lastMessage
-            }
             PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
         }
     }

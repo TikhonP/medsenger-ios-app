@@ -41,8 +41,10 @@ struct MainInputView: View {
                             ])
             }
             .sheet(isPresented: $showSelectPhotosSheet) {
-                NewImagePicker(pickedCompletionHandler: messageInputViewModel.addImagesAttachments)
-                    .edgesIgnoringSafeArea(.all)
+                NewImagePicker(pickedCompletionHandler: {
+                    messageInputViewModel.addImagesAttachments($0)
+                })
+                .edgesIgnoringSafeArea(.all)
             }
             .fullScreenCover(isPresented: $showTakeImageSheet) {
                 ImagePicker(selectedMedia: $selectedMedia, sourceType: .camera, mediaTypes: [.image, .movie], edit: false)
@@ -56,10 +58,14 @@ struct MainInputView: View {
                 })
                 .edgesIgnoringSafeArea(.all)
             }
-            .onChange(of: selectedMedia, perform: messageInputViewModel.addImagesAttachments)
+            .onChange(of: selectedMedia, perform: {
+                messageInputViewModel.addImagesAttachments($0)
+            })
             
             TextView($messageInputViewModel.message, placeholder: NSLocalizedString("MainInputView.Message.TextView", comment: "Message input placeholder"),
-                     onEditingChanged: messageInputViewModel.saveMessageDraft)
+                     onEditingChanged: {
+                messageInputViewModel.saveMessageDraft()
+            })
             .padding(.horizontal, 10)
             .background(Color.systemBackground)
             .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))

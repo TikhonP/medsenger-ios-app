@@ -206,7 +206,6 @@
         <relationship name="doctorHelpers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DoctorHelper" inverseName="contract" inverseEntity="DoctorHelper"/>
         <relationship name="infoMaterials" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InfoMaterial" inverseName="contract" inverseEntity="InfoMaterial"/>
         <relationship name="lastFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="lastFetchContract" inverseEntity="Message"/>
-        <relationship name="lastGlobalFetchedMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="lastGlobalFetchContract" inverseEntity="Message"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="contract" inverseEntity="Message"/>
         <relationship name="params" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ContractParam" inverseName="contract" inverseEntity="ContractParam"/>
         <relationship name="patientHelpers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PatientHelper" inverseName="contract" inverseEntity="PatientHelper"/>
@@ -299,7 +298,6 @@
         <relationship name="contract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="messages" inverseEntity="Contract"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageAttachment" inverseName="message" inverseEntity="ImageAttachment"/>
         <relationship name="lastFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastFetchedMessage" inverseEntity="Contract"/>
-        <relationship name="lastGlobalFetchContract" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contract" inverseName="lastGlobalFetchedMessage" inverseEntity="Contract"/>
         <relationship name="nextMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="previousMessage" inverseEntity="Message"/>
         <relationship name="previousMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Message" inverseName="nextMessage" inverseEntity="Message"/>
         <relationship name="replyedMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="replyToMessage" inverseEntity="Message"/>

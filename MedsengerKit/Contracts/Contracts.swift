@@ -90,7 +90,11 @@ class Contracts {
     /// Fetch avatar for contract
     /// - Parameter contractId: Contract Id
     public static func fetchContractAvatar(_ contractId: Int) async throws {
-        if let contract = try? await Contract.get(id: contractId), contract.isConsilium {
+        let contract = try? await Contract.get(id: contractId)
+        let isConsilium = await MainActor.run {
+            contract?.isConsilium
+        }
+        if let isConsilium = isConsilium, isConsilium {
             async let doctorAvatarRequest = FileRequest(path: "/patients/\(contractId)/photo").executeWithResult()
             async let patientavatarRequest = FileRequest(path: "/doctors/\(contractId)/photo").executeWithResult()
             do {

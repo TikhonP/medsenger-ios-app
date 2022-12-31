@@ -22,6 +22,7 @@ enum CallState: String {
     case `init` = "INIT"
 }
 
+@MainActor
 final class VideoCallViewModel: ObservableObject {
     
     private static let logger = Logger(

@@ -32,7 +32,9 @@ struct ContentView: View {
                     }
                 }
                 .transition(.opacity)
-                .onOpenURL(perform: contentViewModel.processDeeplink)
+                .onOpenURL(perform: {
+                    contentViewModel.processDeeplink($0)
+                })
                 .fullScreenCover(isPresented: $contentViewModel.isCalling) {
                     if let videoCallContractId = contentViewModel.videoCallContractId {
                         VideoCallView(contractId: videoCallContractId, contentViewModel: contentViewModel)

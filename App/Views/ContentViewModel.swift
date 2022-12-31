@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 /// Main app controller with shared property for using all over the app
-final class ContentViewModel: ObservableObject {
+@MainActor final class ContentViewModel: ObservableObject {
     static let shared = ContentViewModel()
     
     init() {
@@ -37,7 +37,7 @@ final class ContentViewModel: ObservableObject {
     
     /// Get stored alert data
     /// - Returns: tuple with alert title and description
-    @MainActor public func getGlobalAlert() -> (title: Text?, message: Text?) {
+    public func getGlobalAlert() -> (title: Text?, message: Text?) {
         let result = (globalAlertTitle, globalAlertMessage)
         globalAlertTitle = nil
         globalAlertMessage = nil
@@ -49,53 +49,41 @@ final class ContentViewModel: ObservableObject {
     ///   - contractId: Contract Id for call.
     ///   - isCaller: Is user caller when opening.
     public func showCall(contractId: Int, isCaller: Bool) {
-        DispatchQueue.main.async {
-            self.videoCallContractId = contractId
-            self.isCaller = isCaller
-            self.isCalling = true
-        }
+        videoCallContractId = contractId
+        self.isCaller = isCaller
+        isCalling = true
     }
     
     /// Stop call and close call modal
     func hideCall() {
-        DispatchQueue.main.async {
-            self.isCalling = false
-        }
+        isCalling = false
     }
     
     /// Mark chat as opened for disable notifications for this chat
     /// - Parameter contractId: Chat contract Id.
     func markChatAsOpened(contractId: Int) {
-        DispatchQueue.main.async {
-            self.openedChatContractId = contractId
-        }
+        openedChatContractId = contractId
     }
     
     /// Mark chat as closed for enabling notifications for any
     func markChatAsClosed() {
-        DispatchQueue.main.async {
-            self.openedChatContractId = nil
-        }
+        openedChatContractId = nil
     }
     
     /// Open chat from deeplink or notification
     /// - Parameter contractId: Chat contract Id
     func openChat(with contractId: Int) {
-        DispatchQueue.main.async {
-            self.openChatContractId = contractId
-        }
+        openChatContractId = contractId
     }
     
     /// Process open app from url
     /// - Parameter url: Url from app opened
     func processDeeplink(_ url: URL) {
-        DispatchQueue.main.async {
-            let paramKey = "c"
-            guard let urlComponents = URLComponents(string: url.absoluteString),
-                  let stringValue = urlComponents.queryItems?.first(where: { $0.name == paramKey })?.value,
-                  let contractId = Int(stringValue) else { return }
-            self.openChat(with: contractId)
-        }
+        let paramKey = "c"
+        guard let urlComponents = URLComponents(string: url.absoluteString),
+              let stringValue = urlComponents.queryItems?.first(where: { $0.name == paramKey })?.value,
+              let contractId = Int(stringValue) else { return }
+        self.openChat(with: contractId)
     }
 }
 

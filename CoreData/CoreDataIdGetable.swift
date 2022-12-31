@@ -24,7 +24,6 @@ extension CoreDataIdGetable {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
         fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
         fetchRequest.fetchLimit = 1
-        fetchRequest.resultType = .managedObjectIDResultType
         let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) get by id")
         guard let object = fetchedResults?.first else {
             throw PersistenceController.ObjectNotFoundError()
@@ -33,10 +32,12 @@ extension CoreDataIdGetable {
     }
     
     /// Get entity by id
+    ///
+    /// Be careful! It returns entity which can be used only on main thread.
     /// - Parameter id: Id of the entity.
     /// - Returns: Entity
-    public static func get(id: Int) async throws -> Self {
-        let context = PersistenceController.shared.container.newBackgroundContext()
+    @MainActor public static func get(id: Int) async throws -> Self {
+        let context = PersistenceController.shared.container.viewContext
         return try await context.crossVersionPerform {
             try get(id: id, for: context)
         }
