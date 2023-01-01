@@ -20,15 +20,15 @@ extension CoreDataStringContractGetable {
     /// - Parameters:
     ///   - name: Name of the entity.
     ///   - contract: Related contract.
-    ///   - context: Managed object context.
+    ///   - moc: Managed object context.
     /// - Returns: Entity
-    internal static func get(name: String, contract: Contract, for context: NSManagedObjectContext) throws -> Self {
+    internal static func get(name: String, contract: Contract, for moc: NSManagedObjectContext) throws -> Self {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
         fetchRequest.predicate = NSPredicate(format: "name == %@ && contract = %@", name, contract)
         fetchRequest.fetchLimit = 1
         fetchRequest.resultType = .managedObjectResultType
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) get by name and contract")
-        guard let object = fetchedResults?.first else {
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "\(Self.self) get by name and contract")
+        guard let object = fetchedResults.first else {
             throw PersistenceController.ObjectNotFoundError()
         }
         return object

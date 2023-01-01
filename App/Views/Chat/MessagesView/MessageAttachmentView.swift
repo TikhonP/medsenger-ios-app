@@ -13,11 +13,11 @@ struct MessageAttachmentView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
     var body: some View {
-        Button(action: {
-            Task {
+        Button {
+            Task(priority: .userInitiated) {
                 await chatViewModel.showAttachmentPreview(attachment)
             }
-        }, label: {
+        } label: {
             HStack {
                 ZStack {
                     Circle()
@@ -39,7 +39,7 @@ struct MessageAttachmentView: View {
                 
             }
             .padding(10)
-        })
+        }
     }
 }
 

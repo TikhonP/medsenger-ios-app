@@ -33,16 +33,15 @@ struct ChangePasswordView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    Task {
-                        if await changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2) {
-                            presentationMode.wrappedValue.dismiss()
-                        }
+                    Task(priority: .userInitiated) {
+                        try await changePasswordViewModel.changePasswordRequest(password1: password1, password2: password2)
+                        presentationMode.wrappedValue.dismiss()
                     }
                 } label: {
                     if showLoading {
                         ProgressView()
                     } else {
-                       Text("ChangePasswordView.Save.Button")
+                        Text("ChangePasswordView.Save.Button")
                     }
                 }
             }

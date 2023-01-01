@@ -16,8 +16,8 @@ extension PatientHelper {
         let role: String
     }
     
-    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> PatientHelper {
-        let patientHelper = (try? get(id: data.id, for: context)) ?? PatientHelper(context: context)
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> PatientHelper {
+        let patientHelper = (try? get(id: data.id, for: moc)) ?? PatientHelper(context: moc)
         
         patientHelper.id = Int64(data.id)
         patientHelper.name = data.name
@@ -27,19 +27,19 @@ extension PatientHelper {
         return patientHelper
     }
     
-    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [PatientHelper] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [PatientHelper] {
         var validIds = [Int]()
         var patientHelpers = [PatientHelper]()
         
         for patientHelperData in data {
-            let patientHelper = saveFromJson(patientHelperData, contract: contract, for: context)
+            let patientHelper = saveFromJson(patientHelperData, contract: contract, for: moc)
             
             validIds.append(patientHelperData.id)
             patientHelpers.append(patientHelper)
         }
         
         if !validIds.isEmpty {
-            cleanRemoved(validIds, contract: contract, for: context)
+            try cleanRemoved(validIds, contract: contract, for: moc)
         }
         
         return patientHelpers

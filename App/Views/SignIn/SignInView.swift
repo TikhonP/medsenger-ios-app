@@ -18,7 +18,7 @@ struct SignInView: View {
             Image("medsengerFullwhite")
                 .resizable()
                 .scaledToFit()
-                .padding()
+                .padding(.horizontal)
             Spacer()
             if !networkConnectionMonitor.isConnected {
                 Image(systemName: "wifi.exclamationmark")
@@ -35,31 +35,30 @@ struct SignInView: View {
                 Spacer()
             }
             TextField("SignInView.Email.TextField", text: $signInViewModel.login)
-                .padding()
+                .padding(10)
                 .textContentType(.username)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
+                .disableAutocorrection(true)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke()
-                        .foregroundColor(.accentColor)
+                        .stroke(Color("medsengerBlue"), lineWidth: 2)
                 )
                 .padding(.horizontal)
             PasswordFieldView(password: $signInViewModel.password, placeholder: "TextField.Password.TextField")
-                .padding()
+                .padding(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke()
-                        .foregroundColor(.accentColor)
+                        .stroke(Color("medsengerBlue"), lineWidth: 2)
                 )
                 .padding(.horizontal)
             Spacer()
-            Button(action: {
-                Task {
+            Button {
+                Task(priority: .userInitiated) {
                     await signInViewModel.auth()
                 }
-            }, label: {
-                ZStack {
+            } label: {
+                Group {
                     if signInViewModel.showLoader {
                         ProgressView()
                     } else {
@@ -68,12 +67,15 @@ struct SignInView: View {
                 }
                 .font(.headline)
                 .foregroundColor(.systemBackground)
-                .padding(.vertical)
-                .padding(.horizontal, 50)
-                .background(Color.accentColor)
-                .clipShape(Capsule())
+                .frame(height: 40)
+                .frame(maxWidth: .infinity)
+                .background(
+                    LinearGradient(colors: [Color("medsengerBlue"), .accentColor], startPoint: .topLeading, endPoint: .bottomTrailing)
+                )
+                .cornerRadius(10)
+                .padding()
                 .animation(.default, value: signInViewModel.showLoader)
-            })
+            }
             Spacer()
         }
         .animation(.default, value: networkConnectionMonitor.isConnected)

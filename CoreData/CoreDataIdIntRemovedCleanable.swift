@@ -20,16 +20,14 @@ extension CoreDataIdIntRemovedCleanable {
     /// - Parameters:
     ///   - validIds: The entities ids that exists in JSON from Medsenger
     ///   - contract: UserDoctorContract contract for data filtering
-    ///   - context: Core Data context
-    internal static func cleanRemoved(_ validIds: [Int], contract: Contract, for context: NSManagedObjectContext) {
+    ///   - moc: Core Data context
+    internal static func cleanRemoved(_ validIds: [Int], contract: Contract, for moc: NSManagedObjectContext) throws {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
-        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) fetch by contract for removing") else {
-            return
-        }
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "\(Self.self) fetch by contract for removing")
         for entity in fetchedResults {
             if !validIds.contains(Int(entity.id)) {
-                context.delete(entity)
+                moc.delete(entity)
             }
         }
     }

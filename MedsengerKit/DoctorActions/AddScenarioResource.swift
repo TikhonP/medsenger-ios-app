@@ -25,20 +25,26 @@ class AddScenarioResource: APIResource {
     
     lazy var textParams: [String: String] = {
         var data: [String: String] = ["id": String(scenarioId)]
-        for param in params {
-            switch param.type {
-            case .checkbox:
-                data[param.code] = String(param.toggleValue)
-            case .number:
-                data[param.code] = param.value
-            case .date:
-                data[param.code] = DateFormatter.ddMMyyyy.string(from: param.dateValue)
-            case .text, .select:
-                data[param.code] = String(param.value)
-            case .currentDate, .hidden, .unknown:
-                continue
+        let group = DispatchGroup()
+        group.enter()
+        DispatchQueue.main.async {
+            for param in self.params {
+                switch param.type {
+                case .checkbox:
+                    data[param.code] = String(param.toggleValue)
+                case .number:
+                    data[param.code] = param.value
+                case .date:
+                    data[param.code] = DateFormatter.ddMMyyyy.string(from: param.dateValue)
+                case .text, .select:
+                    data[param.code] = String(param.value)
+                case .currentDate, .hidden, .unknown:
+                    continue
+                }
             }
+            group.leave()
         }
+        group.wait()
         return data
     }()
     

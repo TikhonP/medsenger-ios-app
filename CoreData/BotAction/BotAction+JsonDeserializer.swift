@@ -38,8 +38,8 @@ extension BotAction {
         }
     }
     
-    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> BotAction {
-        let botAction = (try? get(name: data.name, contract: contract, for: context)) ?? BotAction(context: context)
+    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> BotAction {
+        let botAction = (try? get(name: data.name, contract: contract, for: moc)) ?? BotAction(context: moc)
         
         botAction.name = data.name
         botAction.link = data.link
@@ -51,21 +51,21 @@ extension BotAction {
         return botAction
     }
     
-    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [BotAction] {
+    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [BotAction] {
         
         // Store got AgentActions to check if some contractes deleted later
         var gotNames = [String]()
         var botActions = [BotAction]()
         
         for botActionData in data {
-            let botAction = saveFromJson(botActionData, contract: contract, for: context)
+            let botAction = saveFromJson(botActionData, contract: contract, for: moc)
             
             gotNames.append(botActionData.name)
             botActions.append(botAction)
         }
         
         if !gotNames.isEmpty {
-            cleanRemoved(gotNames, contract: contract, for: context)
+            try cleanRemoved(gotNames, contract: contract, for: moc)
         }
         
         return botActions

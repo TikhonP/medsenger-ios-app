@@ -15,8 +15,8 @@ extension InfoMaterial {
         let link: URL
     }
     
-    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> InfoMaterial {
-        let infoMaterial = (try? get(name: data.name, contract: contract, for: context)) ?? InfoMaterial(context: context)
+    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> InfoMaterial {
+        let infoMaterial = (try? get(name: data.name, contract: contract, for: moc)) ?? InfoMaterial(context: moc)
         
         infoMaterial.name = data.name
         infoMaterial.link = data.link
@@ -25,19 +25,19 @@ extension InfoMaterial {
         return infoMaterial
     }
     
-    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [InfoMaterial] {
+    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [InfoMaterial] {
         var gotNames = [String]()
         var infoMaterials = [InfoMaterial]()
         
         for infoMaterialData in data {
-            let infoMaterial = saveFromJson(infoMaterialData, contract: contract, for: context)
+            let infoMaterial = saveFromJson(infoMaterialData, contract: contract, for: moc)
             
             gotNames.append(infoMaterialData.name)
             infoMaterials.append(infoMaterial)
         }
         
         if !gotNames.isEmpty {
-            cleanRemoved(gotNames, contract: contract, for: context)
+            try cleanRemoved(gotNames, contract: contract, for: moc)
         }
         
         return infoMaterials

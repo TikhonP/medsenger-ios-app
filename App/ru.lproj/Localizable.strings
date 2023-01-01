@@ -38,6 +38,9 @@
 "AddContractView.birthday.DatePicker" = "Дата рождения";
 
 /* No comment provided by engineer. */
+"AddContractView.cancel.Button" = "Отмена";
+
+/* No comment provided by engineer. */
 "AddContractView.ClinicPicker" = "Клиника";
 
 /* Contract information */

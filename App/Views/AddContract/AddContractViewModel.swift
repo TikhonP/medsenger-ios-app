@@ -97,21 +97,26 @@ final class AddContractViewModel: ObservableObject, Alertable {
         }
     }
     
-    func addContract() async -> Bool {
+    enum AddContractError: Error {
+        case nameIsEmpty, contractAndDateAreOlderThanNow,
+             userExistVaribleIsNil, requestError(Error)
+    }
+    
+    func addContract() async throws {
         guard !patientName.isEmpty else {
             presentAlert(
                 title: Text("AddContractViewModel.nameIsEmptyAlertTitle", comment: "Patient name cannot be empty!"),
                 message: Text("AddContractViewModel.nameIsEmptyAlertMessage", comment: "Please provide a name to continue."), .warning)
-            return false
+            throw AddContractError.nameIsEmpty
         }
         guard contractEndDate > Date() else {
             presentAlert(
                 title: Text("AddContractViewModel.contractAndDateAreOlderThanNowAlertTitle", comment: "Contract end date are older than now!"),
                 message: Text("AddContractViewModel.contractAndDateAreOlderThanNowAlertMessage", comment: "Please check contract end date and correct it."), .warning)
-            return false
+            throw AddContractError.contractAndDateAreOlderThanNow
         }
         guard let userExists = userExists else {
-            return false
+            throw AddContractError.userExistVaribleIsNil
         }
         submittingAddPatient = true
         let addContractRequestModel = AddContractRequestModel(
@@ -130,19 +135,18 @@ final class AddContractViewModel: ObservableObject, Alertable {
             number: contractNumber)
         do {
             try await DoctorActions.addContract(addContractRequestModel)
-            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+            try await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
             submittingAddPatient = false
-            return true
         } catch {
             submittingAddPatient = false
             presentGlobalAlert()
-            return false
+            throw AddContractError.requestError(error)
         }
     }
     
     func onChangeClinic(_ newClinic: Clinic) {
         state = .inputClinicAndEmail
-        Task {
+        Task(priority: .background) {
             clinic = try? await Clinic.get(id: clinicId)
         }
     }

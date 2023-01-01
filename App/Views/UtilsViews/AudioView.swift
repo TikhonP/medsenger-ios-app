@@ -18,7 +18,7 @@ struct AudioView: View {
     @State private var imagePreviewSucceded = true
     
     var body: some View {
-        ZStack {
+        Group {
             if imagePreviewSucceded {
                 GeometryReader { reader in
                     image.onAppear{

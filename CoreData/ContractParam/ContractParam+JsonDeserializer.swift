@@ -17,8 +17,8 @@ extension ContractParam {
         let updated_at: Date
     }
     
-    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> ContractParam {
-        let contractParam = (try? get(id: data.id, for: context)) ?? ContractParam(context: context)
+    private class func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> ContractParam {
+        let contractParam = (try? get(id: data.id, for: moc)) ?? ContractParam(context: moc)
         
         contractParam.id = Int64(data.id)
         contractParam.name = data.name
@@ -30,20 +30,20 @@ extension ContractParam {
         return contractParam
     }
     
-    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [ContractParam] {
+    class func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [ContractParam] {
         
         var gotIds = [Int]()
         var contractParams = [ContractParam]()
         
         for contractParamData in data {
-            let contractParam = saveFromJson(contractParamData, contract: contract, for: context)
+            let contractParam = saveFromJson(contractParamData, contract: contract, for: moc)
             
             gotIds.append(contractParamData.id)
             contractParams.append(contractParam)
         }
         
         if !gotIds.isEmpty {
-            cleanRemoved(gotIds, contract: contract, for: context)
+            try cleanRemoved(gotIds, contract: contract, for: moc)
         }
         
         return contractParams

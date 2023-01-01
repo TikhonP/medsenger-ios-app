@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct VoiceMessageView: View {
-    @ObservedObject var message: Message
+    @ObservedObject private var message: Message
     
     @EnvironmentObject private var chatViewModel: ChatViewModel
     
@@ -25,21 +25,21 @@ struct VoiceMessageView: View {
     }
     
     var body: some View {
-        ZStack {
+        Group {
             if let attachment = attachments.first {
                 if let audioFileURL = attachment.dataPath {
                     HStack {
-                        ZStack {
+                        Group {
                             if chatViewModel.isAudioMessagePlayingWithId != Int(attachment.id) {
-                                Button(action: {
-                                    Task {
-                                        await chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
+                                Button {
+                                    Task(priority: .userInitiated) {
+                                        try await chatViewModel.startPlaying(audioFileURL, attachmentId: Int(attachment.id))
                                     }
-                                }, label: {
+                                } label: {
                                     Image(systemName: "play.circle.fill")
                                         .resizable()
                                         .scaledToFit()
-                                })
+                                }
                                 .transition(.scale)
                             } else {
                                 Button(action: {
@@ -74,7 +74,7 @@ struct VoiceMessageView: View {
                         Spacer()
                     }
                     .onAppear {
-                        Task {
+                        Task(priority: .background) {
                             await chatViewModel.fetchAttachment(attachment)
                         }
                     }
@@ -91,9 +91,9 @@ struct VoiceMessageView_Previews: PreviewProvider {
     static let persistence = PersistenceController.preview
     
     static var message: Message = {
-        let context = persistence.container.viewContext
-        let m = Message.getSampleVoiceMessage(for: context)
-        PersistenceController.save(for: context)
+        let moc = persistence.container.viewContext
+        let m = Message.getSampleVoiceMessage(for: moc)
+        try? moc.wrappedSave()
         return m
     }()
     

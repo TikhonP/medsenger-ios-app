@@ -128,8 +128,8 @@ struct UpdateInterfaceWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
-            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+        Task(priority: .medium) {
+            try? await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
         }
     }
 }
@@ -140,7 +140,7 @@ struct OnlineListWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
+        Task(priority: .background) {
             try? await Contract.updateOnlineStatusFromList(data.online_contracts)
         }
     }
@@ -152,11 +152,11 @@ struct NewMessageWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
+        Task(priority: .high) {
             if let openedChatContractId = await ContentViewModel.shared.openedChatContractId, data.contract_id == openedChatContractId {
-                try? await Messages.fetchMessages(contractId: data.contract_id)
+                _ = try? await Messages.fetchMessages(contractId: data.contract_id)
             } else {
-                await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+                try? await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
             }
         }
     }
@@ -170,9 +170,9 @@ struct AllReadWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
+        Task(priority: .background) {
             try? await Contract.updateLastReadMessageIdByPatient(id: data.contract_id, lastReadMessageIdByPatient: data.last_read_id)
-            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+            try? await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
             Logger.websockets.info("WebsocketResponse: AllReadWebsocketResponse: \(String(describing: data), privacy: .private)")
         }
     }
@@ -184,7 +184,7 @@ struct UserOnlineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
+        Task(priority: .background) {
             try? await Contract.updateOnlineStatus(id: data.contract_id, isOnline: true)
             Logger.websockets.info("WebsocketResponse: UserOnlineWebsocketResponse: \(String(describing: data), privacy: .private)")
         }
@@ -197,7 +197,7 @@ struct UserOfflineWebsocketResponse: WebsocketResponse {
     }
     
     func processResponse(_ data: Model) {
-        Task {
+        Task(priority: .background) {
             try? await Contract.updateOnlineStatus(id: data.contract_id, isOnline: false)
             Logger.websockets.info("WebsocketResponse: UserOfflineWebsocketResponse: \(String(describing: data), privacy: .private)")
         }
@@ -262,7 +262,7 @@ struct ErrorConnectionServerWebsocketResponse: WebsocketResponse {
 
 struct SdpWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {
-//        let contract_id: String
+        //        let contract_id: String
         let sdp: SessionDescription
     }
     
@@ -271,7 +271,7 @@ struct SdpWebsocketResponse: WebsocketResponse {
 
 struct IceWebsocketResponse: WebsocketResponse {
     struct Model: Decodable {
-//        let contract_id: String
+        //        let contract_id: String
         let ice: IceCandidate
     }
     

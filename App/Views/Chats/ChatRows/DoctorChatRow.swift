@@ -85,7 +85,7 @@ struct DoctorChatRow: View {
                 } else {
                     ProgressView()
                         .onAppear(perform: {
-                            Task {
+                            Task(priority: .background) {
                                 await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
                             }
                         })

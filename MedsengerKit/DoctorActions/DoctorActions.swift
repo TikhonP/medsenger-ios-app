@@ -68,7 +68,7 @@ final class DoctorActions {
         let deviceResource = DeviceResource(devices: devices, contractId: contractId)
         do {
             try await APIRequest(deviceResource).execute()
-            await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
+            try? await ChatsViewModel.shared.getContracts(presentFailedAlert: false)
         } catch {
             throw await processRequestError(error, "DoctorActions: deviceState", apiErrors: deviceResource.apiErrors)
         }

@@ -11,13 +11,11 @@ import CoreData
 @objc(Clinic)
 public class Clinic: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     public static func saveLogo(id: Int, image: Data) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let clinic = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let clinic = try get(id: id, for: moc)
             clinic.logo = image
-            PersistenceController.save(for: context, detailsForLogging: "Clinic save logo")
+            try moc.wrappedSave(detailsForLogging: "Clinic save logo")
         }
     }
     
@@ -25,12 +23,12 @@ public class Clinic: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     ///
     /// Be careful! It returns entity which can be used only on main thread.
     /// - Returns: Array of all clinics
-    public static func objectsAll() -> [Clinic] {
-        let context = PersistenceController.shared.container.viewContext
+    @MainActor public static func objectsAll() -> [Clinic] {
+        let viewContext = PersistenceController.shared.container.viewContext
         var result = [Clinic]()
-        context.performAndWait {
+        viewContext.performAndWait {
             let fetchRequest = Clinic.fetchRequest()
-            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
+            if let fetchedResults = try? viewContext.wrappedFetch(fetchRequest, detailsForLogging: "Clinic.hasDevices") {
                 result = fetchedResults
             }
         }

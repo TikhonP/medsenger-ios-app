@@ -14,7 +14,7 @@ struct SettingsProfileImageView: View {
     @State private var showAvatarImage = false
     
     var body: some View {
-        ZStack {
+        Group {
             if let avatarData = user.avatar {
                 Image(data: avatarData)?
                     .resizable()
@@ -47,7 +47,7 @@ struct SettingsProfileImageView: View {
         }
         .sheet(isPresented: $settingsViewModel.showSelectPhotosSheet) {
             NewImagePicker(filter: .images, selectionLimit: 1, pickedCompletionHandler: { media in
-                Task {
+                Task(priority: .userInitiated) {
                     await settingsViewModel.updateAvatarFromImage(media)
                 }
             })
@@ -59,14 +59,14 @@ struct SettingsProfileImageView: View {
         }
         .sheet(isPresented: $settingsViewModel.showFilePickerModal) {
             FilePicker(types: [.image], allowMultiple: false, onPicked: { media in
-                Task {
+                Task(priority: .userInitiated) {
                     await settingsViewModel.updateAvatarFromFile(media)
                 }
             })
             .edgesIgnoringSafeArea(.all)
         }
         .onChange(of: settingsViewModel.selectedAvatarImage, perform: { newValue in
-            Task {
+            Task(priority: .userInitiated) {
                 await settingsViewModel.updateAvatarFromImage(newValue)
             }
         })
@@ -164,9 +164,9 @@ struct SettingsSyncWithAppleHealthSectionView: View {
 }
 
 struct SettingsMainFormView: View {
-    var presentationMode: Binding<PresentationMode>
+    private var presentationMode: Binding<PresentationMode>
     
-    @ObservedObject var user: User
+    @ObservedObject private var user: User
     
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     
@@ -277,7 +277,7 @@ struct SettingsMainFormView: View {
                     }
                 })
                 .onChange(of: settingsMainFormViewModel.isEmailNotificationOn) { newValue in
-                    Task {
+                    Task(priority: .userInitiated) {
                         await settingsMainFormViewModel.updateEmailNotifications(newValue)
                     }
                 }
@@ -310,14 +310,14 @@ struct SettingsMainFormView: View {
                 }
             } else if userRole == .patient {
                 Button("SettingsMainFormView.switchToDoctorButtonLabel", action: {
-                    Task {
+                    Task(priority: .userInitiated) {
                         await settingsMainFormViewModel.changeRole(.doctor)
                         await MainActor.run { presentationMode.wrappedValue.dismiss() }
                     }
                 })
             } else if userRole == .doctor {
                 Button("SettingsMainFormView.switchToPatientButtonLabel", action: {
-                    Task {
+                    Task(priority: .userInitiated) {
                         await settingsMainFormViewModel.changeRole(.patient)
                         await MainActor.run { presentationMode.wrappedValue.dismiss() }
                     }
@@ -398,7 +398,7 @@ struct SettingsMainFormView: View {
                 ActionSheet(title: Text("SettingsMainFormView.signOutConfirmationActionSheetTitle"),
                             buttons: [
                                 .destructive(Text("SettingsMainFormView.signOutButton"), action: {
-                                    Task {
+                                    Task(priority: .userInitiated) {
                                         await settingsViewModel.signOut()
                                     }
                                 }),

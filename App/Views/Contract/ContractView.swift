@@ -149,11 +149,11 @@ struct ContractView: View {
             }
             
             if let clinic = contract.clinic, clinic.phonePaid, let phoneNumber = clinic.phone, !phoneNumber.isEmpty {
-                Button(action: {
+                Button {
                     contractViewModel.callClinic(phone: phoneNumber)
-                }, label: {
+                } label: {
                     Label("ContractView.CallTheClinic.label", systemImage: "phone.fill")
-                })
+                }
             }
         }
     }
@@ -180,44 +180,44 @@ struct ContractView: View {
             if !contract.wrappedComments.isEmpty {
                 Text(contract.wrappedComments)
             }
-            Button(action: {
+            Button {
                 showEditNotes.toggle()
-            }, label: {
+            } label: {
                 if contract.wrappedComments.isEmpty {
                     Label("ContractView.AddNotes.label", systemImage: "note.text.badge.plus")
                 } else {
                     Label("ContractView.EditNotes.label", systemImage: "note.text")
                 }
-            })
+            }
         }
     }
     
     var actionsForDoctor: some View {
         Section {
             if contract.video {
-                Button(action: {
+                Button {
                     contentViewModel.showCall(contractId: Int(contract.id), isCaller: true)
-                }, label: {
+                } label: {
                     Label("ContractView.VideoСall.label", systemImage: "video.fill")
-                })
+                }
             }
             if contract.canDecline {
-                Button(action: {
-                    Task {
+                Button {
+                    Task(priority: .userInitiated) {
                         await contractViewModel.declineMessages()
                     }
-                }, label: {
+                } label: {
                     Label("ContractView.DismissMessages.label", systemImage: "checkmark.message.fill")
-                })
+                }
             }
             if contract.isWaitingForConclusion {
-                Button(action: {
-                    Task {
+                Button {
+                    Task(priority: .userInitiated) {
                         await contractViewModel.concludeContract()
                     }
-                }, label: {
+                } label: {
                     Label("ContractView.EndCounseling.label", systemImage: "person.crop.circle.badge.checkmark")
-                })
+                }
             }
         }
         .alert(item: $contractViewModel.alert) { $0.alert }
@@ -241,7 +241,7 @@ struct ContractView: View {
                                 message: Text("ContractView.disableMonitoringAlertMessage", comment: "All intelligent agents will be disabled and the patient will no longer receive information notifications and questionnaires. If necessary, the script can be connected again."),
                                 buttons: [
                                     .destructive(Text("ContractView.disableMonitoringAlertButton", comment: "Disable Scenario"), action: {
-                                        Task {
+                                        Task(priority: .userInitiated) {
                                             await contractViewModel.removeScenario()
                                         }
                                     }),

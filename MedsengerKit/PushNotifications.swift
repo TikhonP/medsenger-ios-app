@@ -23,10 +23,10 @@ final class PushNotifications {
         let center = UNUserNotificationCenter.current()
         center.getNotificationSettings { settings in
             if (((settings.authorizationStatus == .authorized) ||
-                (settings.authorizationStatus == .provisional) ||
+                 (settings.authorizationStatus == .provisional) ||
                  (settings.authorizationStatus == .ephemeral)) &&
-                  !UserDefaults.isPushNotificationsOn) ||
-                   settings.authorizationStatus == .notDetermined {
+                !UserDefaults.isPushNotificationsOn) ||
+                settings.authorizationStatus == .notDetermined {
                 center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
                     if let error = error {
                         PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
@@ -37,7 +37,7 @@ final class PushNotifications {
                             UserDefaults.isPushNotificationsOn = false
                             return
                         }
-                        Task {
+                        Task(priority: .background) {
                             do {
                                 try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                                 UserDefaults.isPushNotificationsOn = true
@@ -74,7 +74,7 @@ final class PushNotifications {
                             PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
                         }
                         if granted {
-                            Task {
+                            Task(priority: .userInitiated) {
                                 do {
                                     try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                                     UserDefaults.isPushNotificationsOn = true
@@ -92,7 +92,7 @@ final class PushNotifications {
                     }
                     return
                 }
-                Task {
+                Task(priority: .userInitiated) {
                     do {
                         try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
                         UserDefaults.isPushNotificationsOn = true
@@ -109,7 +109,7 @@ final class PushNotifications {
                 completion(.success)
                 return
             }
-            Task {
+            Task(priority: .userInitiated) {
                 do {
                     try await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
                     UserDefaults.isPushNotificationsOn = false

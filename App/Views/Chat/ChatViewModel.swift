@@ -49,9 +49,12 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
         self.contractId = contractId
     }
     
-    func onChatViewAppear(contract: Contract) async {
-        try? await Messages.fetchMessages(contractId: contractId)
+    func onChatViewAppear(contract: Contract) {
         UIApplication.shared.applicationIconBadgeNumber -= Int(contract.unread)
+    }
+    
+    func fetchMessages() async throws -> Bool {
+        try await Messages.fetchMessages(contractId: contractId)
     }
     
     nonisolated func fetchAttachment(_ attachment: Attachment) async -> URL? {
@@ -113,7 +116,7 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
 }
 
 extension ChatViewModel: AVAudioPlayerDelegate {
-    func startPlaying(_ url: URL, attachmentId: Int? = nil) async -> Bool {
+    func startPlaying(_ url: URL, attachmentId: Int? = nil) async throws {
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
@@ -122,7 +125,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         } catch {
             presentAlert(title: Text("ChatViewModel.failedToSetupAudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             ChatViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
-            return false
+            throw error
         }
         
         do {
@@ -130,7 +133,7 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         } catch {
             presentAlert(title: Text("ChatViewModel.failedToPlayAudioOnYourDeviceAlertTitle", comment: "Failed to play audio on your device"), .error)
             ChatViewModel.logger.error("startPlaying: Playing voice message failed: \(error.localizedDescription)")
-            return false
+            throw error
         }
         
         audioPlayer?.delegate = self
@@ -141,17 +144,17 @@ extension ChatViewModel: AVAudioPlayerDelegate {
             self.playingAudioProgress = currentTime / duration
         }
         playingProgressTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 timer.invalidate()
                 return
             }
             DispatchQueue.main.async {
-                if self.isAudioMessagePlayingWithId == nil {
-                    self.playingProgressTimer?.invalidate()
+                if strongSelf.isAudioMessagePlayingWithId == nil {
+                    strongSelf.playingProgressTimer?.invalidate()
                 } else {
-                    if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
+                    if let currentTime = strongSelf.audioPlayer?.currentTime, let duration = strongSelf.audioPlayer?.duration {
                         DispatchQueue.main.async {
-                            self.playingAudioProgress = currentTime / duration
+                            strongSelf.playingAudioProgress = currentTime / duration
                         }
                     }
                 }
@@ -160,7 +163,6 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         if let attachmentId = attachmentId {
             isAudioMessagePlayingWithId = attachmentId
         }
-        return true
     }
     
     func stopPlaying() {
@@ -169,10 +171,10 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
-    func startPlayingRecordedVoiceMessage() async {
+    func startPlayingRecordedVoiceMessage() async throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        _ = await startPlaying(voiceMessageFilePath)
+        try await startPlaying(voiceMessageFilePath)
     }
     
     internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {

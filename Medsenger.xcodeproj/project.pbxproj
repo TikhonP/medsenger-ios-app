@@ -24,7 +24,6 @@
 		432442962948D421002476DB /* TextMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442952948D421002476DB /* TextMessageView.swift */; };
 		432442982948D57F002476DB /* MessageAttachmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442972948D57F002476DB /* MessageAttachmentView.swift */; };
 		4324429A2948DACC002476DB /* MessageTimeBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432442992948DACC002476DB /* MessageTimeBadge.swift */; };
-		432CA25529564F9100E91303 /* View+readSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432CA25429564F9100E91303 /* View+readSize.swift */; };
 		432DCDAF2959D9A700B04B90 /* VideoConference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 432DCDAE2959D9A700B04B90 /* VideoConference.swift */; };
 		4334D109295395E600E7816D /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D108295395E600E7816D /* PushNotifications.swift */; };
 		4334D10B2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */; };
@@ -38,7 +37,7 @@
 		434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434399FE29281FE6001D7C4F /* PatientChatRow.swift */; };
 		4351CE182946858B00DF6830 /* AudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE172946858B00DF6830 /* AudioView.swift */; };
 		4351CE1A29468C6300DF6830 /* RecordedVoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */; };
-		4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */; };
+		4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+.swift */; };
 		435C1831293ADD70009483F6 /* String+uniqueFilename.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1830293ADD70009483F6 /* String+uniqueFilename.swift */; };
 		435C1838293AEDDB009483F6 /* VoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C1837293AEDDB009483F6 /* VoiceMessageView.swift */; };
 		435C1846293B8044009483F6 /* WaveformImageDrawer+iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 435C183C293B8044009483F6 /* WaveformImageDrawer+iOS.swift */; };
@@ -96,7 +95,6 @@
 		437BEB552943549A008EF4DE /* SettingsMainFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB542943549A008EF4DE /* SettingsMainFormView.swift */; };
 		437BEB5729435AA6008EF4DE /* String+isEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5629435AA6008EF4DE /* String+isEmail.swift */; };
 		437BEB5929435B1D008EF4DE /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5829435B1D008EF4DE /* Alertable.swift */; };
-		437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */; };
 		437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */; };
 		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
 		437F092C2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */; };
@@ -115,9 +113,11 @@
 		43A18A21292E61E500465281 /* Data+mimeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A20292E61E500465281 /* Data+mimeType.swift */; };
 		43A18A23292E673500465281 /* ContractsRequestAsDoctorResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */; };
 		43A44B852949C8D900980672 /* MessageInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A44B842949C8D900980672 /* MessageInputViewModel.swift */; };
+		43B7BE4A29606A5B00B0E19B /* NSPersistentContainer+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B7BE4929606A5B00B0E19B /* NSPersistentContainer+.swift */; };
 		43B9AB1C29438B210004EEFD /* SettingsMainFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */; };
 		43B9AB20294395BC0004EEFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB1E294395BB0004EEFD /* InfoPlist.strings */; };
 		43B9AB232943A7C10004EEFD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43B9AB252943A7C10004EEFD /* Localizable.strings */; };
+		43BB216A296237C300087C7D /* ReadSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB2169296237C300087C7D /* ReadSize.swift */; };
 		43C510FA29530F6200C91CE5 /* MessageTimeDividerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */; };
 		43C510FC2953137E00C91CE5 /* Date+isEqual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C510FB2953137E00C91CE5 /* Date+isEqual.swift */; };
 		43C9D8512927D5C2003C15B8 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43C9D8502927D5C2003C15B8 /* MessageView.swift */; };
@@ -277,7 +277,6 @@
 		432442952948D421002476DB /* TextMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextMessageView.swift; sourceTree = "<group>"; };
 		432442972948D57F002476DB /* MessageAttachmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAttachmentView.swift; sourceTree = "<group>"; };
 		432442992948DACC002476DB /* MessageTimeBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeBadge.swift; sourceTree = "<group>"; };
-		432CA25429564F9100E91303 /* View+readSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+readSize.swift"; sourceTree = "<group>"; };
 		432DCDAE2959D9A700B04B90 /* VideoConference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoConference.swift; sourceTree = "<group>"; };
 		4334D108295395E600E7816D /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+addTapGestureRecognizer.swift"; sourceTree = "<group>"; };
@@ -291,7 +290,7 @@
 		434399FE29281FE6001D7C4F /* PatientChatRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PatientChatRow.swift; sourceTree = "<group>"; };
 		4351CE172946858B00DF6830 /* AudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioView.swift; sourceTree = "<group>"; };
 		4351CE1929468C6300DF6830 /* RecordedVoiceMessageView.swift */ = {isa = PBXFileReference; indentWidth = 5; lastKnownFileType = sourcecode.swift; path = RecordedVoiceMessageView.swift; sourceTree = "<group>"; };
-		4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+crossVersionPerform.swift"; sourceTree = "<group>"; };
+		4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+.swift"; sourceTree = "<group>"; };
 		435C1830293ADD70009483F6 /* String+uniqueFilename.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+uniqueFilename.swift"; sourceTree = "<group>"; };
 		435C1837293AEDDB009483F6 /* VoiceMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMessageView.swift; sourceTree = "<group>"; };
 		435C183A293B8033009483F6 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -350,7 +349,6 @@
 		437BEB542943549A008EF4DE /* SettingsMainFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainFormView.swift; sourceTree = "<group>"; };
 		437BEB5629435AA6008EF4DE /* String+isEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+isEmail.swift"; sourceTree = "<group>"; };
 		437BEB5829435B1D008EF4DE /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
-		437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataViewModel.swift; sourceTree = "<group>"; };
 		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResourceRequestAsPatient.swift; sourceTree = "<group>"; };
@@ -369,10 +367,12 @@
 		43A18A20292E61E500465281 /* Data+mimeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+mimeType.swift"; sourceTree = "<group>"; };
 		43A18A22292E673500465281 /* ContractsRequestAsDoctorResource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractsRequestAsDoctorResource.swift; sourceTree = "<group>"; };
 		43A44B842949C8D900980672 /* MessageInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputViewModel.swift; sourceTree = "<group>"; };
+		43B7BE4929606A5B00B0E19B /* NSPersistentContainer+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentContainer+.swift"; sourceTree = "<group>"; };
 		43B9AB1B29438B210004EEFD /* SettingsMainFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainFormViewModel.swift; sourceTree = "<group>"; };
 		43B9AB1F294395BC0004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		43B9AB242943A7C10004EEFD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		43B9AB262943A7C40004EEFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		43BB2169296237C300087C7D /* ReadSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadSize.swift; sourceTree = "<group>"; };
 		43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTimeDividerView.swift; sourceTree = "<group>"; };
 		43C510FB2953137E00C91CE5 /* Date+isEqual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+isEqual.swift"; sourceTree = "<group>"; };
 		43C9D8502927D5C2003C15B8 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
@@ -788,8 +788,8 @@
 				437BEB50294346F9008EF4DE /* View+pinchToZoom.swift */,
 				43D4CFC62951E46200A9C51B /* View+swipeActionsIos15Only.swift */,
 				4334D10A2953B03900E7816D /* UIApplication+addTapGestureRecognizer.swift */,
-				432CA25429564F9100E91303 /* View+readSize.swift */,
 				43F99BD02957B038001163ED /* Color+constants.swift */,
+				43BB2169296237C300087C7D /* ReadSize.swift */,
 			);
 			path = ViewExtensions;
 			sourceTree = "<group>";
@@ -1086,7 +1086,8 @@
 				43D4CFD52952243700A9C51B /* CoreDataNameStringRemovedCleanable.swift */,
 				43D4CFD72952246000A9C51B /* CoreDataIdIntRemovedCleanable.swift */,
 				43D4CFD92952249500A9C51B /* CoreDataErasable.swift */,
-				4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift */,
+				4357B746295DDDEA00FB5ABD /* NSManagedObjectContext+.swift */,
+				43B7BE4929606A5B00B0E19B /* NSPersistentContainer+.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1237,7 +1238,6 @@
 				43198022293D5107005F43A8 /* NewImagePicker.swift */,
 				43758B5229429D45008969FF /* MotionManager.swift */,
 				437BEB5229434747008EF4DE /* FullscreenImagePreview.swift */,
-				437BEB5A29435C4F008EF4DE /* HapticFeedback.swift */,
 				43EF447029228DDF005DF084 /* PasswordFieldView.swift */,
 				4351CE172946858B00DF6830 /* AudioView.swift */,
 				437BEB5829435B1D008EF4DE /* Alertable.swift */,
@@ -1437,6 +1437,7 @@
 				43D505D7293F720A00EE3756 /* User+JsonDeserializer.swift in Sources */,
 				43761643293393A3001049E6 /* ConfigExample.swift in Sources */,
 				43EF441429228683005DF084 /* Clinic+CoreDataClass.swift in Sources */,
+				43B7BE4A29606A5B00B0E19B /* NSPersistentContainer+.swift in Sources */,
 				432442962948D421002476DB /* TextMessageView.swift in Sources */,
 				435D571F293A81480013B0F4 /* AddContractResource.swift in Sources */,
 				43EF442A292287E0005DF084 /* Message+CoreDataClass.swift in Sources */,
@@ -1450,7 +1451,7 @@
 				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
 				43EF448F29228EB1005DF084 /* MultipartFormData+Builder.swift in Sources */,
 				437616452933947A001049E6 /* Config.swift in Sources */,
-				4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+crossVersionPerform.swift in Sources */,
+				4357B747295DDDEA00FB5ABD /* NSManagedObjectContext+.swift in Sources */,
 				43EF446329228D25005DF084 /* ConcludeContractResource.swift in Sources */,
 				43EF44A729228F83005DF084 /* EditPersonalDataView.swift in Sources */,
 				43EF444D29228C11005DF084 /* String+urlEncoded.swift in Sources */,
@@ -1535,6 +1536,7 @@
 				43D4CFD62952243700A9C51B /* CoreDataNameStringRemovedCleanable.swift in Sources */,
 				43EF446129228D13005DF084 /* DeactivateMessagesResource.swift in Sources */,
 				434399FF29281FE6001D7C4F /* PatientChatRow.swift in Sources */,
+				43BB216A296237C300087C7D /* ReadSize.swift in Sources */,
 				43EF449329228EB1005DF084 /* Dash.swift in Sources */,
 				43EF44AC29229003005DF084 /* ChatViewModel.swift in Sources */,
 				435D5732293A9EEA0013B0F4 /* ContractDevicesView.swift in Sources */,
@@ -1563,7 +1565,6 @@
 				43D5057B293F498B00EE3756 /* View+blurEffect.swift in Sources */,
 				43EF445629228C9C005DF084 /* DoctorChatRow.swift in Sources */,
 				43D505D9293F726B00EE3756 /* ClinicScenario+JsonDeserializer.swift in Sources */,
-				432CA25529564F9100E91303 /* View+readSize.swift in Sources */,
 				437616502933A475001049E6 /* CallingView.swift in Sources */,
 				43D505AF293F5F2500EE3756 /* ImageAttachment+JsonDeserializer.swift in Sources */,
 				43EF449C29228F01005DF084 /* Image+Data.swift in Sources */,
@@ -1582,7 +1583,6 @@
 				43EF444029228ABC005DF084 /* KeyChain.swift in Sources */,
 				4376163829338781001049E6 /* SessionDescription.swift in Sources */,
 				432442942948C0AA002476DB /* ReplyPreviewView.swift in Sources */,
-				437BEB5B29435C4F008EF4DE /* HapticFeedback.swift in Sources */,
 				4319801F293CFDA9005F43A8 /* TextInputImageView.swift in Sources */,
 				432DCDAF2959D9A700B04B90 /* VideoConference.swift in Sources */,
 				43D505C1293F649000EE3756 /* PatientHelper+JsonDeserializer.swift in Sources */,

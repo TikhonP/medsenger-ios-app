@@ -14,32 +14,35 @@ final class EditPersonalDataViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     @Published var showLoading = false
     
-    func saveProfileData(name: String, email: String, phone: String, birthday: Date) async -> Bool {
+    enum SaveProfileError: Error {
+        case invalidEmail, nameCannotBeEmpty
+    }
+    
+    func saveProfileData(name: String, email: String, phone: String, birthday: Date) async throws {
         guard email.isEmail() else {
             presentAlert(title: Text("EditPersonalDataViewModel.invalidEmailAlertTitle", comment: "Invalid email!"), .warning)
-            return false
+            throw SaveProfileError.invalidEmail
         }
         guard !name.isEmpty else {
             presentAlert(
                 title: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertTitle", comment: "Name cannot be empty!"),
                 message: Text("EditPersonalDataViewModel.nameCannotBeEmptyAlertMessage", comment: "Please provide a name to continue."), .warning)
-            return false
+            throw SaveProfileError.nameCannotBeEmpty
         }
         showLoading = true
         do {
             try await Account.saveProfileData(name: name, email: email, phone: phone, birthday: birthday)
             showLoading = false
-            return true
         } catch is UpdateAccountResource.PhoneExistsError {
             showLoading = false
             presentAlert(
                 title: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertTitle", comment: "This phone already in use!"),
                 message: Text("EditPersonalDataViewModel.thisPhoneAlresdyInUseAlertMessage", comment: "Please check if the phone is correct."), .warning)
-            return false
+            throw UpdateAccountResource.PhoneExistsError()
         } catch {
             showLoading = false
             presentGlobalAlert()
-            return false
+            throw error
         }
     }
 }

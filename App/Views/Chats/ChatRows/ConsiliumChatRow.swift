@@ -75,8 +75,8 @@ struct ConsiliumChatRow: View {
                 ProgressView()
                     .padding()
                     .onAppear(perform: {
-                        Task {
-                           await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
+                        Task(priority: .background) {
+                            await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
                         }
                     })
             }

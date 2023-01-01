@@ -21,8 +21,8 @@ extension ClinicScenarioParam {
         let values: Array<ClinicScenarioParamOption.JsonDeserializer>?
     }
     
-    private static func saveFromJson(_ data: JsonDeserializer, scenario: ClinicScenario, for context: NSManagedObjectContext) {
-        let clinicScenarioParam = get(code: data.code, scenario: scenario, for: context) ?? ClinicScenarioParam(context: context)
+    private static func saveFromJson(_ data: JsonDeserializer, scenario: ClinicScenario, for moc: NSManagedObjectContext) {
+        let clinicScenarioParam = (try? get(code: data.code, scenario: scenario, for: moc)) ?? ClinicScenarioParam(context: moc)
         
         clinicScenarioParam.type = data.type.rawValue
         clinicScenarioParam.code = data.code
@@ -34,13 +34,13 @@ extension ClinicScenarioParam {
         clinicScenarioParam.scenario = scenario
         
         if let values = data.values {
-            ClinicScenarioParamOption.saveFromJson(values, param: clinicScenarioParam, for: context)
+            ClinicScenarioParamOption.saveFromJson(values, param: clinicScenarioParam, for: moc)
         }
     }
     
-    public static func saveFromJson(_ data: [JsonDeserializer], scenario: ClinicScenario, for context: NSManagedObjectContext) {
+    public static func saveFromJson(_ data: [JsonDeserializer], scenario: ClinicScenario, for moc: NSManagedObjectContext) {
         for clinicScenarioParamData in data {
-            saveFromJson(clinicScenarioParamData, scenario: scenario, for: context)
+            saveFromJson(clinicScenarioParamData, scenario: scenario, for: moc)
         }
     }
 }

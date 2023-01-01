@@ -12,7 +12,7 @@ struct MessageTimeDividerView: View {
     let date: Date
     
     var body: some View {
-        ZStack {
+        Group {
             if date.isInToday {
                 Text("MessageTimeDividerView.Today")
             } else if date.isInThisYear {

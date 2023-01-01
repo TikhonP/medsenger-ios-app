@@ -24,7 +24,7 @@ struct VideoCallView: View {
     }
     
     var body: some View {
-        ZStack {
+        Group {
             if let contract = contracts.first {
                 ZStack {
                     Color.systemBackground

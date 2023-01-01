@@ -52,7 +52,7 @@ struct MainInputView: View {
             }
             .sheet(isPresented: $showFilePickerModal) {
                 FilePicker(types: allDocumentsTypes, allowMultiple: true, onPicked: { media in
-                    Task {
+                    Task(priority: .userInitiated) {
                         await messageInputViewModel.addFilesAttachments(media)
                     }
                 })
@@ -70,26 +70,26 @@ struct MainInputView: View {
             .background(Color.systemBackground)
             .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
             
-            ZStack {
+            Group {
                 if messageInputViewModel.message.isEmpty && messageInputViewModel.messageAttachments.isEmpty && !messageInputViewModel.showRecordedMessage {
-                    Button(action: {
-                        Task {
+                    Button {
+                        Task(priority: .userInitiated) {
                             messageInputViewModel.startRecording
                         }
-                    }, label: {
+                    } label: {
                         MessageInputButtonLabel(imageSystemName: "waveform.circle.fill", showProgress: .constant(false))
                             .foregroundColor(.secondary.opacity(0.7))
-                    })
+                    }
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
                 } else {
-                    Button(action: {
-                        Task {
+                    Button {
+                        Task(priority: .userInitiated) {
                             await messageInputViewModel.sendMessage()
                         }
-                    }, label: {
+                    } label: {
                         MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                             .foregroundColor(Color("medsengerBlue"))
-                    })
+                    }
                     .transition(.asymmetric(insertion: .scale, removal: .opacity))
                 }
             }

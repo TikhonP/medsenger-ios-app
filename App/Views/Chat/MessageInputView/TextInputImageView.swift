@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct TextInputAttachmentView: View {
+    let attachment: ChatViewAttachment
+    
     @EnvironmentObject private var chatViewModel: ChatViewModel
     @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
-    let attachment: ChatViewAttachment
-    
     var body: some View {
         ZStack(alignment: .topLeading) {
-            ZStack {
+            Group {
                 switch attachment.type {
                 case .image:
                     Image(data: attachment.data)?

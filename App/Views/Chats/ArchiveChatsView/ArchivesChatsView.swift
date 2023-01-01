@@ -12,7 +12,6 @@ struct ArchivesChatsView: View {
     @ObservedObject var user: User
     
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
-    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @FetchRequest(
         sortDescriptors: [
@@ -69,7 +68,7 @@ struct ArchivesChatsView: View {
                 } else {
                     EmptyArchiveChatsView()
                         .onTapGesture {
-                            Task {
+                            Task(priority: .userInitiated) {
                                 await chatsViewModel.getArchiveContracts(presentFailedAlert: true)
                             }
                         }
@@ -79,11 +78,11 @@ struct ArchivesChatsView: View {
         .animation(.default, value: chatsViewModel.showArchiveContractsLoading)
         .navigationTitle("ArchivesChatsView.navigationTitle")
         .onAppear {
-            Task {
+            Task(priority: .background) {
                 await chatsViewModel.getArchiveContracts(presentFailedAlert: false)
             }
         }
-        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
+        .internetOfflineWarningInBottomBar()
     }
 }
 

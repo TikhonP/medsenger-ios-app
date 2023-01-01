@@ -38,19 +38,23 @@ final class ScenarioViewModel: ObservableObject, Alertable {
         return true
     }
     
-    func save() async -> Bool {
+    enum ScenarioViewModelError: Error {
+        case invalidFieldAlertTitle
+        case requestFailed(_ error: Error)
+    }
+    
+    func save() async throws {
         guard validateFields() else {
             presentAlert(title: Text("ScenarioViewModel.invalidFieldAlertTitle", comment: "Invalid field"), message: Text(invalidFieldName))
-            return false
+            throw ScenarioViewModelError.invalidFieldAlertTitle
         }
         showSaveLoading = true
         do {
             try await DoctorActions.addScenario(contractId: contractId, scenarioId: scenarioId, params: paramsAsNodes)
             showSaveLoading = false
-            return true
         } catch {
             showSaveLoading = false
-            return false
+            throw ScenarioViewModelError.requestFailed(error)
         }
     }
 }

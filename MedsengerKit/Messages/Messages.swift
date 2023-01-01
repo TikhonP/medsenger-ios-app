@@ -13,23 +13,24 @@ final class Messages {
     /// Fetch messages for contract
     ///
     /// When some messages for contract already fetched, it messages from last fetched message
-    /// - Parameters:
-    ///   - contractId: Contract Id
-    public static func fetchMessages(contractId: Int) async throws {
-        let messagesResource = await {
-            let contract = try? await Contract.get(id: contractId)
-            let lastFetchedMessageId = await MainActor.run {
-                contract?.lastFetchedMessage?.id
-            }
+    /// - Parameter contractId: Contract Id
+    /// - Returns: Is first fetch messages for this contract
+    public static func fetchMessages(contractId: Int) async throws -> Bool {
+        let contract = try? await Contract.get(id: contractId)
+        let lastFetchedMessageId = await MainActor.run {
+            contract?.lastFetchedMessage?.id
+        }
+        let messagesResource = {
             guard let lastFetchedMessageId = lastFetchedMessageId  else {
-                return MessagesResource(contractId: contractId, fromMessageId: nil, minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
+                return MessagesResource(contractId: contractId, fromMessageId: nil)
             }
-            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessageId), minId: nil, maxId: nil, desc: true, offset: nil, limit: nil)
+            return MessagesResource(contractId: contractId, fromMessageId: Int(lastFetchedMessageId))
         }()
         do {
             let data = try await APIRequest(messagesResource).executeWithResult()
             try await Message.saveFromJson(data, contractId: contractId)
             try await Contract.updateLastAndFirstFetchedMessage(id: contractId)
+            return lastFetchedMessageId == nil
         } catch {
             throw await processRequestError(error, "get messages for contract \(contractId)", apiErrors: messagesResource.apiErrors)
         }

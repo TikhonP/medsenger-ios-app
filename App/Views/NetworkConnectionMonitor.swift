@@ -11,8 +11,8 @@ import Network
 
 /// An observer that you use to monitor and react to network connect state.
 final class NetworkConnectionMonitor: ObservableObject {
-    @Published private(set) var isConnected = true
-    @Published private(set) var isCellular = false
+    @MainActor @Published private(set) var isConnected = true
+    @MainActor @Published private(set) var isCellular = false
     
     private let nwMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkConnectionMonitor")

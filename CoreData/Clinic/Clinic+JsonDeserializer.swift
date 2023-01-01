@@ -23,8 +23,8 @@ extension Clinic {
         let classifiers: Array<ClinicClassifier.JsonDeserializer>
     }
     
-    public static func saveFromJson(_ data: JsonDecoderFromCheck, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
+    public static func saveFromJson(_ data: JsonDecoderFromCheck, for moc: NSManagedObjectContext) -> Clinic {
+        let clinic = (try? get(id: data.id, for: moc)) ?? Clinic(context: moc)
         
         clinic.name = data.name
         clinic.id = Int64(data.id)
@@ -33,7 +33,7 @@ extension Clinic {
         clinic.delayedContractsEnabled = data.delayed_contracts_enabled
         
         for ruleData in data.rules {
-            let rule = ClinicRule.saveFromJson(ruleData, for: context)
+            let rule = ClinicRule.saveFromJson(ruleData, for: moc)
             
             if !clinic.rulesArray.contains(rule) {
                 clinic.addToRules(rule)
@@ -41,7 +41,7 @@ extension Clinic {
         }
         
         for classifierData in data.classifiers {
-            let classifier = ClinicClassifier.saveFromJson(classifierData, for: context)
+            let classifier = ClinicClassifier.saveFromJson(classifierData, for: moc)
             
             if !clinic.classifiersArray.contains(classifier) {
                 clinic.addToClassifiers(classifier)
@@ -67,8 +67,8 @@ extension Clinic {
         let phone: String
     }
     
-    public static func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
+    public static func saveFromJson(_ data: JsonDecoderRequestAsPatient, for moc: NSManagedObjectContext) -> Clinic {
+        let clinic = (try? get(id: data.id, for: moc)) ?? Clinic(context: moc)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name
@@ -110,8 +110,8 @@ extension Clinic {
         let scenarios: Array<ClinicScenario.JsonDeserializer>
     }
     
-    public static func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for context: NSManagedObjectContext) -> Clinic {
-        let clinic = (try? get(id: data.id, for: context)) ?? Clinic(context: context)
+    public static func saveFromJson(_ data: JsonDecoderRequestAsDoctor, contract: Contract, for moc: NSManagedObjectContext) -> Clinic {
+        let clinic = (try? get(id: data.id, for: moc)) ?? Clinic(context: moc)
         
         clinic.id = Int64(data.id)
         clinic.name = data.name
@@ -129,10 +129,10 @@ extension Clinic {
         clinic.phonePaid = data.phone_paid
         clinic.phone = data.phone
         
-        Agent.saveFromJson(data.agents, clinic: clinic, contract: contract, for: context)
-        Agent.saveFromJson(data.devices, clinic: clinic, contract: contract, for: context)
+        Agent.saveFromJson(data.agents, clinic: clinic, contract: contract, for: moc)
+        Agent.saveFromJson(data.devices, clinic: clinic, contract: contract, for: moc)
         
-        ClinicScenario.saveFromJson(data.scenarios, clinic: clinic, for: context)
+        ClinicScenario.saveFromJson(data.scenarios, clinic: clinic, for: moc)
         
         return clinic
     }

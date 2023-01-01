@@ -26,42 +26,46 @@ public class Message: NSManagedObject, CoreDataIdGetable {
         case zoom, url, action, vc
     }
     
-    public static func getLastMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
+    public static func getLastMessageForContract(for contract: Contract, for moc: NSManagedObjectContext) throws -> Message {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
         fetchRequest.sortDescriptors = __messagesSortDescriptors
         fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getLastMessageForContract")
-        return fetchedResults?.first
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "getLastMessageForContract")
+        guard let messsage = fetchedResults.first else {
+            throw PersistenceController.ObjectNotFoundError()
+        }
+        return messsage
     }
     
-    public static func getFirstMessageForContract(for contract: Contract, for context: NSManagedObjectContext) -> Message? {
+    public static func getFirstMessageForContract(for contract: Contract, for moc: NSManagedObjectContext) throws -> Message {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
         fetchRequest.sortDescriptors = __messagesSortDescriptors
         fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "getFirstMessageForContract")
-        return fetchedResults?.first
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "getFirstMessageForContract")
+        guard let messsage = fetchedResults.first else {
+            throw PersistenceController.ObjectNotFoundError()
+        }
+        return messsage
     }
     
     public static func markActionMessageAsUsed(id: Int) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        try await context.crossVersionPerform {
-            let message = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let message = try get(id: id, for: moc)
             if message.actionOnetime {
                 message.actionUsed = true
-                PersistenceController.save(for: context, detailsForLogging: "markActionMessageAsUsed")
+                try moc.wrappedSave(detailsForLogging: "markActionMessageAsUsed")
             }
         }
     }
     
-    internal static func markNextAndPreviousMessages(for contract: Contract, for context: NSManagedObjectContext) {
+    internal static func markNextAndPreviousMessages(for contract: Contract, for moc: NSManagedObjectContext) throws {
         let fetchRequest = Message.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "contract = %@", contract)
         fetchRequest.sortDescriptors = __messagesSortDescriptors
-        guard let results = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "get messages for markNextAndPreviousMessages") else {
-            return
-        }
+        let results = try moc.wrappedFetch(fetchRequest, detailsForLogging: "get messages for markNextAndPreviousMessages")
         let resultsArray = Array(results)
         for (index, message) in resultsArray.enumerated() {
             var offset = 1

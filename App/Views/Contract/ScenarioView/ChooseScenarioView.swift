@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct ChooseScenarioView: View {
-    static let allCategoryName = NSLocalizedString("ChooseScenarioView.allCategory", comment: "En: `All`, Ru: `Все`")
+    private static let allCategoryName = NSLocalizedString("ChooseScenarioView.allCategory", comment: "En: `All`, Ru: `Все`")
     
-    @ObservedObject var contract: Contract
-    @ObservedObject var clinic: Clinic
+    @ObservedObject private var contract: Contract
+    @ObservedObject private var clinic: Clinic
     
     @State private var categoryChoices = [allCategoryName]
     @State private var category: String = allCategoryName
@@ -80,7 +80,7 @@ struct ChooseScenarioView: View {
                 }
             }
             .onAppear {
-                Task {
+                Task(priority: .userInitiated) {
                     let categories = (try? await ClinicScenario.getScenariosCategories(clinic: clinic)) ?? [] + [ChooseScenarioView.allCategoryName]
                     await MainActor.run {
                         categoryChoices = categories

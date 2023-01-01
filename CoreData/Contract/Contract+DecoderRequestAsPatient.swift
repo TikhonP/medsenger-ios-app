@@ -67,8 +67,8 @@ extension Contract {
         }
     }
     
-    private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for context: NSManagedObjectContext, isConsilium: Bool) -> Contract {
-        let contract = (try? get(id: data.contract, for: context)) ?? Contract(context: context)
+    private class func saveFromJson(_ data: JsonDecoderRequestAsPatient, for moc: NSManagedObjectContext, isConsilium: Bool) -> Contract {
+        let contract = (try? get(id: data.contract, for: moc)) ?? Contract(context: moc)
         
         contract.id = Int64(data.contract)
         contract.name = data.name
@@ -107,10 +107,8 @@ extension Contract {
     }
     
     class func saveFromJson(_ data: [JsonDecoderRequestAsPatient], archive: Bool, isConsilium: Bool) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
             
             // Store got contracts to check if some contractes deleted later
             var gotContractIds = [Int]()
@@ -118,30 +116,30 @@ extension Contract {
             for contractData in data {
                 gotContractIds.append(contractData.contract)
                 
-                let contract = saveFromJson(contractData, for: context, isConsilium: isConsilium)
+                let contract = saveFromJson(contractData, for: moc, isConsilium: isConsilium)
 //                PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
                 
-                contract.clinic = Clinic.saveFromJson(contractData.clinic, for: context)
+                contract.clinic = Clinic.saveFromJson(contractData.clinic, for: moc)
 
-                Agent.saveFromJson(contractData.agents, contract: contract, for: context)
+                Agent.saveFromJson(contractData.agents, contract: contract, for: moc)
                 
-                _ = AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: context)
-                _ = BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: context)
-                _ = AgentTask.saveFromJson(contractData.agent_tasks, contract: contract, for: context)
-                _ = DoctorHelper.saveFromJson(contractData.doctor_helpers, contract: contract, for: context)
-                _ = PatientHelper.saveFromJson(contractData.patient_helpers, contract: contract, for: context)
-                _ = ContractParam.saveFromJson(contractData.params, contract: contract, for: context)
+                _ = try AgentAction.saveFromJson(contractData.agent_actions, contract: contract, for: moc)
+                _ = try BotAction.saveFromJson(contractData.bot_actions, contract: contract, for: moc)
+                _ = try AgentTask.saveFromJson(contractData.agent_tasks, contract: contract, for: moc)
+                _ = try DoctorHelper.saveFromJson(contractData.doctor_helpers, contract: contract, for: moc)
+                _ = try PatientHelper.saveFromJson(contractData.patient_helpers, contract: contract, for: moc)
+                _ = try ContractParam.saveFromJson(contractData.params, contract: contract, for: moc)
                 
                 if let infoMaterialsData = contractData.info_materials {
-                    _ = InfoMaterial.saveFromJson(infoMaterialsData, contract: contract, for: context)
+                    _ = try InfoMaterial.saveFromJson(infoMaterialsData, contract: contract, for: moc)
                 }
             }
                                        
             if !gotContractIds.isEmpty {
-                cleanRemoved(validContractIds: gotContractIds, archive: archive, for: context, isConsilium: isConsilium)
+                try cleanRemoved(validContractIds: gotContractIds, archive: archive, for: moc, isConsilium: isConsilium)
             }
             
-            PersistenceController.save(for: context, detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
+            try moc.wrappedSave(detailsForLogging: "Contract save JsonDecoderRequestAsPatient")
         }
     }
 }

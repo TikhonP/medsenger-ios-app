@@ -61,9 +61,9 @@ class Login {
     /// Change user role: patient or doctor
     /// - Parameter role: The user role
     public static func changeRole(_ role: UserRole) async {
-        _ = await (PersistenceController.clearDatabase(withUser: false), PushNotifications.removeOldFcmToken(), try? clearAllFiles())
+        _ = await (try? PersistenceController.clearDatabase(withUser: false), PushNotifications.removeOldFcmToken(), try? clearAllFiles())
         UserDefaults.userRole = role
-        _ = await (PushNotifications.storeFcmTokenAsNewRole(), ChatsViewModel.shared.getContracts(presentFailedAlert: true))
+        _ = await (PushNotifications.storeFcmTokenAsNewRole(), try? ChatsViewModel.shared.getContracts(presentFailedAlert: true))
     }
     
     /// Sign out from account

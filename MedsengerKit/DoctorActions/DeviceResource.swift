@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import os.log
 
 class DeviceResource: APIResource {
     let devices: [DeviceNode]
@@ -24,9 +23,15 @@ class DeviceResource: APIResource {
     
     lazy var params: [String: String] = {
         var data = [String: String]()
-        for device in devices {
-            data["agent_\(device.id)"] = "\(device.isEnabled)"
+        let group = DispatchGroup()
+        group.enter()
+        DispatchQueue.main.async {
+            for device in self.devices {
+                data["agent_\(device.id)"] = "\(device.isEnabled)"
+            }
+            group.leave()
         }
+        group.wait()
         return data
     }()
     

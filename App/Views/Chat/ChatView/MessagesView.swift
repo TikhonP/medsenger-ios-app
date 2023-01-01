@@ -9,42 +9,18 @@
 import SwiftUI
 import QuickLook
 
-fileprivate struct ChildSizeReader<Content: View>: View {
-    @Binding var size: CGSize
+fileprivate struct ViewOffsetScrollData: Equatable {
+    let viewOffset: CGFloat
+    let scrollViewHeight: CGFloat
     
-    let content: () -> Content
-    var body: some View {
-        ZStack {
-            content().background(
-                GeometryReader { proxy in
-                    Color.clear.preference(
-                        key: SizePreferenceKey.self,
-                        value: proxy.size
-                    )
-                }
-            )
-        }
-        .onPreferenceChange(SizePreferenceKey.self) { preferences in
-            self.size = preferences
-        }
-    }
-}
-
-fileprivate struct SizePreferenceKey: PreferenceKey {
-    typealias Value = CGSize
-    static var defaultValue: Value = .zero
-    
-    static func reduce(value _: inout Value, nextValue: () -> Value) {
-        _ = nextValue()
-    }
+    static var zero = {
+        ViewOffsetScrollData(viewOffset: .zero, scrollViewHeight: .zero)
+    }()
 }
 
 fileprivate struct ViewOffsetKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue = CGFloat.zero
-    static func reduce(value: inout Value, nextValue: () -> Value) {
-        value += nextValue()
-    }
+    static var defaultValue: ViewOffsetScrollData = .zero
+    static func reduce(value: inout ViewOffsetScrollData, nextValue: () -> Value) {}
 }
 
 struct MessagesView: View {
@@ -56,18 +32,16 @@ struct MessagesView: View {
     
     @Binding private var inputViewHeight: CGFloat
     
-    @State private var autoScrollDown = true
     @State private var showScrollDownButton = false
+    @State private var allowScrollToBottom = true
     @State private var scrollToBottom = false
-    
-    @State private var wholeSize: CGSize = .zero
-    @State private var scrollViewSize: CGSize = .zero
     
     @State private var keyboardDidShowNotificationObserver: NSObjectProtocol?
     @State private var keyboardDidHideNotificationObserver: NSObjectProtocol?
     
     private let spaceName = "scroll"
     private let bottomScrollConstant: Double = 50
+    private let doNotScrollToBottomConstant: Double = 150
     
     private let scrollToBottomOffset: CGFloat = 60
     private let scrollViewBottomPadding: CGFloat = 45
@@ -79,15 +53,14 @@ struct MessagesView: View {
             entity: Message.entity(),
             sortDescriptors: __messagesSortDescriptors,
             predicate: NSPredicate(format: "contract == %@", contract),
-            animation: .default
+            animation: .easeIn
         )
-        UIScrollView.appearance().decelerationRate = .fast
     }
     
     var body: some View {
         ZStack(alignment: .bottomTrailing)  {
             scrollView
-            ZStack {
+            Group {
                 if showScrollDownButton {
                     Button(action: {
                         scrollToBottom = true
@@ -99,7 +72,6 @@ struct MessagesView: View {
                     .padding(.bottom, inputViewHeight + 15)
                 }
             }
-            .animation(.spring(response: 0.2, dampingFraction: 0.5), value: showScrollDownButton)
         }
         .animation(.default, value: inputViewHeight)
         .alert(item: $chatViewModel.alert) { $0.alert }
@@ -108,7 +80,7 @@ struct MessagesView: View {
                 NavigationView {
                     WebView(url: agentActionUrl, title: agentActionName, showCloseButton: true) {
                         if let actionMessageId = chatViewModel.actionMessageId {
-                            Task {
+                            Task(priority: .background) {
                                 try? await Messages.messageActionUsed(messageId: actionMessageId)
                             }
                         }
@@ -119,117 +91,125 @@ struct MessagesView: View {
     }
     
     var scrollView: some View {
-        GeometryReader { reader in
-            ChildSizeReader(size: $wholeSize) {
-                ScrollView(showsIndicators: false) {
-                    ScrollViewReader { scrollReader in
-                        ChildSizeReader(size: $scrollViewSize) {
-                            VStack(spacing: 0) {
-                                LazyVStack(spacing: 0) {
-                                    ForEach(messages) { message in
-                                        if message.showMessage {
-                                            if let messageSent = message.sent {
-                                                if let previousMessageSent = message.previousMessage?.sent {
-                                                    if !previousMessageSent.isInSameDay(as: messageSent) {
-                                                        MessageTimeDividerView(date: messageSent)
-                                                            .padding(.top, 7)
-                                                    }
-                                                } else {
-                                                    MessageTimeDividerView(date: messageSent)
-                                                        .padding(.top, 7)
-                                                }
+        GeometryReader { wholeViewProxy in
+            ScrollView(showsIndicators: false) {
+                ScrollViewReader { scrollReader in
+                    VStack(spacing: 0) {
+                        LazyVStack(spacing: 0) {
+                            ForEach(messages) { message in
+                                if message.showMessage {
+                                    if let messageSent = message.sent {
+                                        if let previousMessageSent = message.previousMessage?.sent {
+                                            if !previousMessageSent.isInSameDay(as: messageSent) {
+                                                MessageTimeDividerView(date: messageSent)
+                                                    .padding(.top, 7)
                                             }
-                                            MessageView(viewWidth: reader.size.width, message: message)
-                                                .padding(.top, message.createSeparatorWithPreviousMessage ? 7 : 3)
+                                        } else {
+                                            MessageTimeDividerView(date: messageSent)
+                                                .padding(.top, 7)
                                         }
                                     }
+                                    MessageView(viewWidth: wholeViewProxy.size.width, message: message)
+                                        .padding(.top, message.createSeparatorWithPreviousMessage ? 7 : 3)
                                 }
-                                
-                                Color.clear.id(-1)
-                                    .padding(.bottom, inputViewHeight)
                             }
-                            .padding(.horizontal)
-                            .background(
-                                GeometryReader { proxy in
-                                    Color.clear.preference(
-                                        key: ViewOffsetKey.self,
-                                        value: -1 * proxy.frame(in: .named(spaceName)).origin.y
-                                    )
-                                }
+                        }
+                        
+                        Color.clear.id(-1)
+                            .padding(.bottom, inputViewHeight)
+                    }
+                    .padding(.horizontal)
+                    .background(
+                        GeometryReader { proxy in
+                            Color.clear.preference(
+                                key: ViewOffsetKey.self,
+                                value: ViewOffsetScrollData(
+                                    viewOffset: -1 * proxy.frame(in: .named(spaceName)).origin.y,
+                                    scrollViewHeight: proxy.size.height
+                                )
                             )
-                            .onPreferenceChange(
-                                ViewOffsetKey.self,
-                                perform: { value in
-                                    if value >= (scrollViewSize.height - wholeSize.height) - bottomScrollConstant {
-                                        showScrollDownButton = false
-                                    } else {
-                                        showScrollDownButton = true
-                                    }
-                                }
-                            )
-                            .quickLookPreview($chatViewModel.quickLookDocumentUrl)
-                            .onAppear {
-                                scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
-                                
+                        }
+                    )
+                    .onAppear {
+                        scrollTo(messageID: -1, animation: nil, scrollReader: scrollReader)
+                        
+                        Task(priority: .high) {
+                            let isFirstFetch = try await chatViewModel.fetchMessages()
+                            if isFirstFetch || allowScrollToBottom {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     scrollTo(messageID: -1, scrollReader: scrollReader)
                                 }
-                                
-                                keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
-                                    if !showScrollDownButton {
-                                        scrollTo(messageID: -1, scrollReader: scrollReader)
-                                    }
-                                })
-                                
-                                keyboardDidHideNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: .main, using: { _ in
-                                    if !showScrollDownButton {
-                                        scrollTo(messageID: -1, scrollReader: scrollReader)
-                                    }
-                                })
                             }
-                            .onDisappear {
-                                if let keyboardDidShowNotificationObserver = keyboardDidShowNotificationObserver {
-                                    NotificationCenter.default.removeObserver(keyboardDidShowNotificationObserver)
-                                }
-                                if let keyboardDidHideNotificationObserver = keyboardDidHideNotificationObserver {
-                                    NotificationCenter.default.removeObserver(keyboardDidHideNotificationObserver)
-                                }
+                        }
+                        
+                        keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
+                            if allowScrollToBottom {
+                                scrollTo(messageID: -1, scrollReader: scrollReader)
                             }
-                            .onChange(of: messages.count, perform: { _ in
-                                if !showScrollDownButton {
-                                    scrollTo(messageID: -1, scrollReader: scrollReader)
-                                }
-                            })
-                            .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
-                                if let scrollToMessageId = scrollToMessageId {
-                                    scrollTo(messageID: Int(scrollToMessageId), anchor: .center, scrollReader: scrollReader)
-                                    chatViewModel.scrollToMessageId = nil
-                                }
-                            })
-                            .onChange(of: scrollToBottom, perform: { newValue in
-                                if newValue {
-                                    scrollTo(messageID: -1, scrollReader: scrollReader)
-                                    scrollToBottom = false
-                                }
-                            })
-                            .onChange(of: inputViewHeight, perform: { _ in
-                                if !showScrollDownButton {
-                                    scrollTo(messageID: -1, scrollReader: scrollReader)
-                                }
-                            })
+                        })
+                        
+                        keyboardDidHideNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: .main, using: { _ in
+                            if allowScrollToBottom {
+                                scrollTo(messageID: -1, scrollReader: scrollReader)
+                            }
+                        })
+                    }
+                    .onDisappear {
+                        if let keyboardDidShowNotificationObserver = keyboardDidShowNotificationObserver {
+                            NotificationCenter.default.removeObserver(keyboardDidShowNotificationObserver)
+                        }
+                        if let keyboardDidHideNotificationObserver = keyboardDidHideNotificationObserver {
+                            NotificationCenter.default.removeObserver(keyboardDidHideNotificationObserver)
                         }
                     }
+                    .onChange(of: messages.count, perform: { _ in
+                        if allowScrollToBottom {
+                            scrollTo(messageID: -1, scrollReader: scrollReader)
+                        }
+                    })
+                    .onChange(of: chatViewModel.scrollToMessageId, perform: { scrollToMessageId in
+                        if let scrollToMessageId = scrollToMessageId {
+                            scrollTo(messageID: Int(scrollToMessageId), anchor: .center, scrollReader: scrollReader)
+                            chatViewModel.scrollToMessageId = nil
+                        }
+                    })
+                    .onChange(of: scrollToBottom, perform: { newValue in
+                        if newValue {
+                            scrollTo(messageID: -1, scrollReader: scrollReader)
+                            scrollToBottom = false
+                        }
+                    })
+                    .onChange(of: inputViewHeight, perform: { _ in
+                        if allowScrollToBottom {
+                            scrollTo(messageID: -1, scrollReader: scrollReader)
+                        }
+                    })
                 }
-                .coordinateSpace(name: spaceName)
             }
+            .coordinateSpace(name: spaceName)
+            .onPreferenceChange(
+                ViewOffsetKey.self,
+                perform: { value in
+                    withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
+                        if value.viewOffset >= (value.scrollViewHeight - wholeViewProxy.size.height) - bottomScrollConstant {
+                            showScrollDownButton = false
+                        } else {
+                            showScrollDownButton = true
+                        }
+                    }
+                    if value.viewOffset >= (value.scrollViewHeight - wholeViewProxy.size.height) - doNotScrollToBottomConstant {
+                        allowScrollToBottom = true
+                    } else {
+                        allowScrollToBottom = false
+                    }
+                }
+            )
         }
     }
     
-    func scrollTo(messageID: Int, anchor: UnitPoint? = .bottom, animation: Animation? = .easeIn, scrollReader: ScrollViewProxy) {
-        DispatchQueue.main.async {
-            withAnimation(animation) {
-                scrollReader.scrollTo(messageID, anchor: anchor)
-            }
+    @MainActor func scrollTo(messageID: Int, anchor: UnitPoint? = .bottom, animation: Animation? = .easeIn, scrollReader: ScrollViewProxy) {
+        withAnimation(animation) {
+            scrollReader.scrollTo(messageID, anchor: anchor)
         }
     }
 }

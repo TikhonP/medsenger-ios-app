@@ -24,7 +24,7 @@ extension PersistenceController {
 //        _ = User.createSampleUser(for: viewContext)
         Contract.createSampleContracts(for: viewContext)
         
-        PersistenceController.save(for: viewContext)
+        try? viewContext.wrappedSave()
     }
 }
 #endif

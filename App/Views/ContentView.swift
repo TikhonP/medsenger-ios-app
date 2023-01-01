@@ -27,7 +27,7 @@ struct ContentView: View {
                 .environmentObject(contentViewModel)
                 .environmentObject(networkConnectionMonitor)
                 .onAppear {
-                    Task {
+                    Task(priority: .background) {
                         await Login.deauthIfTokenIsNotExists()
                     }
                 }
@@ -47,8 +47,8 @@ struct ContentView: View {
                 .environmentObject(networkConnectionMonitor)
                 .transition(.opacity)
                 .onAppear(perform: {
-                    Task {
-                        await PersistenceController.clearDatabase(withUser: true)
+                    Task(priority: .background) {
+                        try? await PersistenceController.clearDatabase(withUser: true)
                     }
                 })
         }

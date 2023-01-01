@@ -36,7 +36,7 @@ struct InfoMaterialsView: View {
     }
     
     var body: some View {
-        ZStack {
+        Group {
             if infoMaterials.isEmpty {
                 Text("InfoMaterialsView.noInfoMaterials", comment: "There is no info materials")
             } else {

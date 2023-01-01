@@ -14,14 +14,12 @@ protocol CoreDataErasable: NSManagedObject {}
 extension CoreDataErasable {
     
     /// Earse all entities
-    /// - Parameter context: Core Data context
-    internal static func erase(for context: NSManagedObjectContext) {
+    /// - Parameter moc: Core Data context
+    internal static func erase(for moc: NSManagedObjectContext) throws {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
-        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) earse") else {
-            return
-        }
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "\(Self.self) earse")
         for entity in fetchedResults {
-            context.delete(entity)
+            moc.delete(entity)
         }
     }
 }

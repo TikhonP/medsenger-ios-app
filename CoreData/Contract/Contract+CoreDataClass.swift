@@ -16,11 +16,9 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     }
     
     public static func saveAvatar(id: Int, image: Data, type: AvatarType = .default) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
             switch type {
             case .default:
                 contract.avatar = image
@@ -29,80 +27,66 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
             case .patient:
                 contract.patientAvatar = image
             }
-            PersistenceController.save(for: context, detailsForLogging: "Contract save avatar")
+            try moc.wrappedSave(detailsForLogging: "Contract save avatar")
         }
     }
     
     public static func updateOnlineStatus(id: Int, isOnline: Bool) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
             contract.isOnline = isOnline
-            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
+            try moc.wrappedSave(detailsForLogging: "Contract save online status")
         }
     }
     
     public static func updateOnlineStatusFromList(_ onlineIds: [Int]) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
             let fetchRequest = Contract.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "archive == NO")
-            guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive == NO for updating online status") else {
-                return
-            }
+            let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "Contract fetch by archive == NO for updating online status")
             for contract in fetchedResults {
                 contract.isOnline = onlineIds.contains(Int(contract.id))
             }
-            PersistenceController.save(for: context, detailsForLogging: "Contract save online status")
+            try moc.wrappedSave(detailsForLogging: "Contract save online status")
         }
     }
     
     public static func updateLastAndFirstFetchedMessage(id: Int) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
-            let lastMessage = Message.getLastMessageForContract(for: contract, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
+            let lastMessage = try Message.getLastMessageForContract(for: contract, for: moc)
             contract.lastFetchedMessage = lastMessage
-            PersistenceController.save(for: context, detailsForLogging: "Contract save lastFetchedMessage")
+            try moc.wrappedSave(detailsForLogging: "Contract save lastFetchedMessage")
         }
     }
     
     public static func updateLastReadMessageIdByPatient(id: Int, lastReadMessageIdByPatient: Int) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
             contract.lastReadMessageIdByPatient = Int64(lastReadMessageIdByPatient)
-            PersistenceController.save(for: context, detailsForLogging: "Contract save lastReadMessageIdByPatient")
+            try moc.wrappedSave(detailsForLogging: "Contract save lastReadMessageIdByPatient")
         }
     }
     
     public static func updateContractNotes(id: Int, notes: String) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
             contract.comments = notes
-            PersistenceController.save(for: context, detailsForLogging: "Contract save updateContractNotes")
+            try moc.wrappedSave(detailsForLogging: "Contract save updateContractNotes")
         }
     }
     
     public static func saveMessageDraft(id: Int, messageDraft: String) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try get(id: id, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try get(id: id, for: moc)
             contract.messageDraft = messageDraft
-            PersistenceController.save(for: context, detailsForLogging: "Contract save messageDraft")
+            try moc.wrappedSave(detailsForLogging: "Contract save messageDraft")
         }
     }
     
@@ -115,16 +99,13 @@ public class Contract: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
     /// - Parameters:
     ///   - validContractIds: The contract ids that exists in JSON from Medsenger
     ///   - context: Core Data context
-    internal class func cleanRemoved(validContractIds: [Int], archive: Bool, for context: NSManagedObjectContext, isConsilium: Bool = false) {
+    internal class func cleanRemoved(validContractIds: [Int], archive: Bool, for moc: NSManagedObjectContext, isConsilium: Bool = false) throws {
         let fetchRequest = Contract.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "archive == %@ AND isConsilium == %@", NSNumber(value: archive), NSNumber(value: isConsilium))
-        guard let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Contract fetch by archive for removing") else {
-            return
-        }
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "Contract fetch by archive for removing")
         for contract in fetchedResults {
             if !validContractIds.contains(Int(contract.id)) {
-                context.delete(contract)
-                Contract.logger.debug("Contract removed")
+                moc.delete(contract)
             }
         }
     }

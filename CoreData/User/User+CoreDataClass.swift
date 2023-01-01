@@ -18,12 +18,12 @@ public class User: NSManagedObject, CoreDataErasable {
     )
     
     /// Get user form context
-    /// - Parameter context: Core Data context
+    /// - Parameter moc: Core Data context
     /// - Returns: optional user instance
-    internal static func get(for context: NSManagedObjectContext) throws -> User {
+    internal static func get(for moc: NSManagedObjectContext) throws -> User {
         let fetchRequest = User.fetchRequest()
-        let objects = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "User all")
-        guard let user = objects?.first else {
+        let objects = try moc.wrappedFetch(fetchRequest, detailsForLogging: "User all")
+        guard let user = objects.first else {
             throw PersistenceController.ObjectNotFoundError()
         }
         return user
@@ -32,44 +32,40 @@ public class User: NSManagedObject, CoreDataErasable {
     /// Get user from any task
     /// - Returns: optional user instance
     @MainActor public static func get() async throws -> User {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        return try await context.crossVersionPerform {
-            try get(for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        return try await moc.crossVersionPerform {
+            try get(for: moc)
         }
     }
     
     public static func delete() async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        try await context.crossVersionPerform {
-            let user = try get(for: context)
-            context.delete(user)
-            PersistenceController.save(for: context, detailsForLogging: "User delete")
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let user = try get(for: moc)
+            moc.delete(user)
+            try moc.wrappedSave(detailsForLogging: "User delete")
         }
     }
     
     /// Save user avatar data object
     /// - Parameter image: avatar data
     public static func saveAvatar(_ image: Data?) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        try await context.crossVersionPerform {
-            let user = try get(for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let user = try get(for: moc)
             user.avatar = image
-            PersistenceController.save(for: context, detailsForLogging: "User save avatar")
+            try moc.wrappedSave(detailsForLogging: "User save avatar")
         }
     }
     
     /// Save lastHealthSync param to user model
     /// - Parameter lastHealthSync: date last HealthKit sync
     public static func updateLastHealthSync(lastHealthSync: Date) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        try await context.crossVersionPerform {
-            let user = try get(for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let user = try get(for: moc)
             user.lastHealthSync = lastHealthSync
-            PersistenceController.save(for: context, detailsForLogging: "User save lastHealthSync")
+            try moc.wrappedSave(detailsForLogging: "User save lastHealthSync")
         }
     }
 }

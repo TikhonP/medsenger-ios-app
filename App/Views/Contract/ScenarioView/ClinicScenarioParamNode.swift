@@ -8,6 +8,7 @@
 
 import Foundation
 
+@MainActor
 class ClinicScenarioParamNode: ObservableObject, Identifiable {
     @Published var value: String
     @Published var toggleValue: Bool = false

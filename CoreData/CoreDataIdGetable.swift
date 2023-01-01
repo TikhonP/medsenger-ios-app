@@ -18,14 +18,14 @@ extension CoreDataIdGetable {
     /// Get entity by id in the managed context
     /// - Parameters:
     ///   - id: Id of the entity.
-    ///   - context: Managed object context.
+    ///   - moc: Managed object context.
     /// - Returns: Entity
-    internal static func get(id: Int, for context: NSManagedObjectContext) throws -> Self {
+    internal static func get(id: Int, for moc: NSManagedObjectContext) throws -> Self {
         let fetchRequest = NSFetchRequest<Self>(entityName: String(describing: Self.self))
         fetchRequest.predicate = NSPredicate(format: "id == %ld", id)
         fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "\(Self.self) get by id")
-        guard let object = fetchedResults?.first else {
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "\(Self.self) get by id")
+        guard let object = fetchedResults.first else {
             throw PersistenceController.ObjectNotFoundError()
         }
         return object
@@ -37,9 +37,9 @@ extension CoreDataIdGetable {
     /// - Parameter id: Id of the entity.
     /// - Returns: Entity
     @MainActor public static func get(id: Int) async throws -> Self {
-        let context = PersistenceController.shared.container.viewContext
-        return try await context.crossVersionPerform {
-            try get(id: id, for: context)
+        let viewContext = PersistenceController.shared.container.viewContext
+        return try await viewContext.crossVersionPerform {
+            try get(id: id, for: viewContext)
         }
     }
 }

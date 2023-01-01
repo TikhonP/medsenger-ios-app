@@ -93,9 +93,8 @@ final class WebRTCClient: NSObject {
                 WebRTCClient.logger.error("startCall: No sdp")
                 return
             }
-            
-            guard let self = self else { return }
-            self.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
+            guard let strongSelf = self else { return }
+            strongSelf.peerConnection.setLocalDescription(sdp, completionHandler: { (error) in
                 if let error = error {
                     WebRTCClient.logger.error("WebRTCClient: setLocalDescription error: \(error.localizedDescription)")
                     if let failureCompletion = failureCompletion {
@@ -103,7 +102,7 @@ final class WebRTCClient: NSObject {
                     }
                     return
                 }
-                Websockets.shared.sendSdp(contractId: self.contractId, rtcSdp: sdp)
+                Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: sdp)
             })
         }
     }
@@ -115,16 +114,16 @@ final class WebRTCClient: NSObject {
     
     func stopAudioSession() {
         audioQueue.async { [weak self] in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
-            self.rtcAudioSession.lockForConfiguration()
+            strongSelf.rtcAudioSession.lockForConfiguration()
             do {
-                try self.rtcAudioSession.setActive(false)
+                try strongSelf.rtcAudioSession.setActive(false)
             } catch {
                 WebRTCClient.logger.error("WebRTCClient: Error disabling AudioSession: \(error.localizedDescription)")
             }
-            self.rtcAudioSession.unlockForConfiguration()
+            strongSelf.rtcAudioSession.unlockForConfiguration()
         }
     }
     
@@ -329,37 +328,37 @@ extension WebRTCClient {
     // Fallback to the default playing device: headphones/bluetooth/ear speaker
     func speakerOff() {
         audioQueue.async { [weak self] in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
             
-            self.rtcAudioSession.lockForConfiguration()
+            strongSelf.rtcAudioSession.lockForConfiguration()
             do {
-                try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
-                try self.rtcAudioSession.overrideOutputAudioPort(.none)
+                try strongSelf.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+                try strongSelf.rtcAudioSession.overrideOutputAudioPort(.none)
             } catch let error {
                 WebRTCClient.logger.error("Error setting AVAudioSession category: \(error)")
             }
-            self.rtcAudioSession.unlockForConfiguration()
+            strongSelf.rtcAudioSession.unlockForConfiguration()
         }
     }
     
     // Force speaker
     func speakerOn() {
         audioQueue.async { [weak self] in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
             
-            self.rtcAudioSession.lockForConfiguration()
+            strongSelf.rtcAudioSession.lockForConfiguration()
             do {
-                try self.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
-                try self.rtcAudioSession.overrideOutputAudioPort(.speaker)
-                try self.rtcAudioSession.setActive(true)
+                try strongSelf.rtcAudioSession.setCategory(AVAudioSession.Category.playAndRecord.rawValue)
+                try strongSelf.rtcAudioSession.overrideOutputAudioPort(.speaker)
+                try strongSelf.rtcAudioSession.setActive(true)
             } catch let error {
                 WebRTCClient.logger.error("Couldn't force audio to speaker: \(error)")
             }
-            self.rtcAudioSession.unlockForConfiguration()
+            strongSelf.rtcAudioSession.unlockForConfiguration()
         }
     }
     
@@ -382,16 +381,16 @@ extension WebRTCClient: RTCDataChannelDelegate {
 extension WebRTCClient: WebsocketsWebRTCDelegate {
     func signalClient(_ websockets: Websockets, didReceiveRemoteSdp remoteSdp: RTCSessionDescription) {
         peerConnection.setRemoteDescription(remoteSdp) { [weak self] (error) in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
             if let error = error {
                 WebRTCClient.logger.error("WebRTCClient: didReceiveRemoteSdp error: \(error.localizedDescription)")
-                Websockets.shared.invalidStream(contractId: self.contractId)
+                Websockets.shared.invalidStream(contractId: strongSelf.contractId)
             } else {
                 if remoteSdp.type == .offer {
-                    self.answer { (localSdp) in
-                        Websockets.shared.sendSdp(contractId: self.contractId, rtcSdp: localSdp)
+                    strongSelf.answer { (localSdp) in
+                        Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: localSdp)
                     }
                 }
             }
@@ -400,12 +399,12 @@ extension WebRTCClient: WebsocketsWebRTCDelegate {
     
     func signalClient(_ websockets: Websockets, didReceiveCandidate remoteCandidate: RTCIceCandidate) {
         peerConnection.add(remoteCandidate) { [weak self] (error) in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
             if let error = error {
                 WebRTCClient.logger.error("WebRTCClient: didReceiveCandidate error: \(error.localizedDescription)")
-                Websockets.shared.invalidIce(contractId: self.contractId)
+                Websockets.shared.invalidIce(contractId: strongSelf.contractId)
             }
         }
     }

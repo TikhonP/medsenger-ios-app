@@ -14,7 +14,7 @@ struct MessageImageView: View {
     @AppStorage(UserDefaults.Keys.showFullPreviewForImagesKey) private var showFullPreviewForImages: Bool = UserDefaults.showFullPreviewForImages
     
     var body: some View {
-        ZStack {
+        Group {
             if showFullPreviewForImages {
                 image
             } else {
@@ -34,7 +34,7 @@ struct MessageImageView: View {
     }
     
     var image: some View {
-        ZStack {
+        Group {
             if let path = imageAttachment.dataPath, let uiImage = UIImage(contentsOfFile: path.path) {
                 Image(uiImage: uiImage)
                     .resizable()
@@ -45,7 +45,7 @@ struct MessageImageView: View {
                     ProgressView()
                         .padding()
                         .onAppear {
-                            Task {
+                            Task(priority: .background) {
                                 await chatViewModel.fetchImageAttachment(imageAttachment)
                             }
                         }

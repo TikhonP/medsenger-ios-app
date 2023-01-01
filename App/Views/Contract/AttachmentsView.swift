@@ -12,27 +12,21 @@ import QuickLook
 @MainActor
 fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
     @Published var quickLookDocumentUrl: URL?
-    
-    @Published var loadingAttachmentIds = [Int]()
-    @Published var loadingImageIds = [Int]()
-    
+    @Published var loadingAttachmentId: Int?
+    @Published var loadingImageId: Int?
     @Published var alert: AlertInfo?
     
     func showFilePreview(_ attachment: Attachment) async {
         if let dataPath = attachment.dataPath {
             quickLookDocumentUrl =  dataPath
         } else {
-            loadingAttachmentIds.append(Int(attachment.id))
+            loadingAttachmentId = Int(attachment.id)
             do {
                 let dataPath = try await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
-                if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                    self.loadingAttachmentIds.remove(at: index)
-                }
-                self.quickLookDocumentUrl = dataPath
+                loadingAttachmentId = nil
+                quickLookDocumentUrl = dataPath
             } catch {
-                if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
-                    self.loadingAttachmentIds.remove(at: index)
-                }
+                loadingAttachmentId = nil
                 presentGlobalAlert()
             }
         }
@@ -42,18 +36,14 @@ fileprivate final class AttachmentViewModel: ObservableObject, Alertable {
         if let dataPath = image.dataPath {
             quickLookDocumentUrl =  dataPath
         } else {
-            loadingImageIds.append(Int(image.id))
+            loadingImageId = Int(image.id)
             do {
                 let dataPath = try await Messages.fetchImageAttachmentImage(imageAttachmentId: Int(image.id))
-                if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
-                    self.loadingImageIds.remove(at: index)
-                }
-                self.quickLookDocumentUrl = dataPath
+                loadingImageId = nil
+                quickLookDocumentUrl = dataPath
             } catch {
-                if let index = self.loadingImageIds.firstIndex(of: Int(image.id)) {
-                    self.loadingImageIds.remove(at: index)
-                }
-                self.presentGlobalAlert()
+                loadingImageId = nil
+                presentGlobalAlert()
             }
         }
     }
@@ -107,16 +97,16 @@ struct AttachmentsView: View {
     }
     
     var body: some View {
-        ZStack {
+        Group {
             switch attachmentsType {
             case .images:
-                ZStack {
+                Group {
                     if images.isEmpty {
                         Text("AttachmentsView.noImages", comment: "There is no images")
                     } else {
                         List(images) { image in
                             Button {
-                                Task {
+                                Task(priority: .userInitiated) {
                                     await attachmentViewModel.showImagePreview(image)
                                 }
                             } label: {
@@ -124,7 +114,7 @@ struct AttachmentsView: View {
                                     ZStack {
                                         Circle()
                                             .foregroundColor(.accentColor)
-                                        if attachmentViewModel.loadingImageIds.contains(Int(image.id)) {
+                                        if attachmentViewModel.loadingImageId == Int(image.id) {
                                             ProgressView()
                                                 .padding(7)
                                         } else {
@@ -136,7 +126,7 @@ struct AttachmentsView: View {
                                         }
                                     }
                                     .frame(height: 30)
-                                    .animation(.default, value: attachmentViewModel.loadingImageIds)
+                                    .animation(.default, value: attachmentViewModel.loadingImageId)
                                     
                                     Text(image.wrappedName)
                                     
@@ -159,14 +149,14 @@ struct AttachmentsView: View {
                 }
                 .transition(.move(edge: .leading))
             case.files:
-                ZStack {
+                Group {
                     if attachments.isEmpty {
                         Text("AttachmentsView.noAttachments", comment: "There is no attachments")
                     } else {
                         List(attachments) { attachment in
                             if let message = attachment.message, !message.isVoiceMessage {
                                 Button {
-                                    Task {
+                                    Task(priority: .userInitiated) {
                                         await attachmentViewModel.showFilePreview(attachment)
                                     }
                                 } label: {
@@ -174,7 +164,7 @@ struct AttachmentsView: View {
                                         ZStack {
                                             Circle()
                                                 .foregroundColor(.accentColor)
-                                            if attachmentViewModel.loadingAttachmentIds.contains(Int(attachment.id)) {
+                                            if attachmentViewModel.loadingAttachmentId == Int(attachment.id) {
                                                 ProgressView()
                                                     .padding(7)
                                             } else {
@@ -186,7 +176,7 @@ struct AttachmentsView: View {
                                             }
                                         }
                                         .frame(height: 30)
-                                        .animation(.default, value: attachmentViewModel.loadingAttachmentIds)
+                                        .animation(.default, value: attachmentViewModel.loadingAttachmentId)
                                         
                                         Text(attachment.wrappedName)
                                         

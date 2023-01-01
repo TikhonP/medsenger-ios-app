@@ -16,7 +16,7 @@ struct WaitingCallView: View {
     var body: some View {
         VStack {
             Spacer()
-            ZStack {
+            Group {
                 if let avatarData = contract.avatar {
                     Image(data: avatarData)?
                         .resizable()

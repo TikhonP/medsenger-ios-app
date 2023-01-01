@@ -13,7 +13,7 @@ class PersistenceController {
     
     static let shared = PersistenceController()
     
-    private static let logger = Logger(
+    static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: String(describing: PersistenceController.self)
     )
@@ -40,69 +40,21 @@ class PersistenceController {
 
 extension PersistenceController {
     
-    /// Save persistence store
-    /// - Parameters:
-    ///   - context: Managed object context
-    ///   - detailsForLogging: if error appears while saving provide object that saved for logging and debugging
-    public class func save(for context: NSManagedObjectContext, detailsForLogging: String? = nil) {
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch let nserror as NSError {
-                var errorDescription = ""
-                if let detailsForLogging = detailsForLogging {
-                    errorDescription = "Core Data: Failed to save model `\(detailsForLogging)`: \(nserror.localizedDescription)"
-                } else {
-                    errorDescription = "Core Data: Failed to save model: \(nserror.localizedDescription)"
-                }
-                if let detailed = nserror.userInfo["NSDetailedErrors"] as? NSMutableArray {
-                    for nserror in detailed {
-                        if let nserror = nserror as? NSError, let entity = nserror.userInfo["NSValidationErrorObject"] {
-                            errorDescription += "\nCore Data: Detailed: \(nserror.localizedDescription) Entity: `\(type(of: entity))`."
-                        }
-                    }
-                }
-                PersistenceController.logger.error("\(errorDescription)")
-            }
-        }
-    }
-    
-    /// Perform fetch request with errors catching
-    /// - Parameters:
-    ///   - request: The fetch request that specifies the search criteria.
-    ///   - context: Managed object context
-    ///   - detailsForLogging: if error appears while fetching provide object that saved for logging and debugging
-    /// - Returns: Returns an array of items of the specified type that meet the fetch request’s critieria nil value returned if error
-    public class func fetch<T>(_ request: NSFetchRequest<T>, for context: NSManagedObjectContext, detailsForLogging: String? = nil) -> [T]? where T : NSFetchRequestResult {
-        do {
-            return try context.fetch(request)
-        } catch let nserror as NSError {
-            if let detailsForLogging = detailsForLogging {
-                PersistenceController.logger.error("Core Data: Failed to perform fetch request `\(detailsForLogging)`: \(nserror.localizedDescription)")
-            } else {
-                PersistenceController.logger.error("Core Data: Failed to perform fetch request: \(nserror.localizedDescription)")
-            }
-            return nil
-        }
-    }
-    
     /// Clear database with optional clearing user
     ///
     /// Use it for sign out or changing user role
     ///
     /// - Parameter withUser: clear user or not
-    public class func clearDatabase(withUser: Bool) async {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try? await context.crossVersionPerform {
-            Contract.erase(for: context)
-            Agent.erase(for: context)
-            Clinic.erase(for: context)
+    public class func clearDatabase(withUser: Bool) async throws {
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            try? Contract.erase(for: moc)
+            try? Agent.erase(for: moc)
+            try? Clinic.erase(for: moc)
             if withUser {
-                User.erase(for: context)
+                try? User.erase(for: moc)
             }
-            PersistenceController.save(for: context, detailsForLogging: "PersistenceController: clearDatabase withUser: \(withUser)")
+            try moc.wrappedSave(detailsForLogging: "PersistenceController: clearDatabase withUser: \(withUser)")
         }
     }
 }

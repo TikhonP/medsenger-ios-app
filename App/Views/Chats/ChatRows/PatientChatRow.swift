@@ -79,7 +79,7 @@ struct PatientChatRow: View {
             } else {
                 ProgressView()
                     .onAppear {
-                        Task {
+                        Task(priority: .background) {
                             await chatsViewModel.getContractAvatar(contractId: Int(contract.id))
                         }
                     }
@@ -101,7 +101,7 @@ struct PatientChatRow: View {
                         guard let clinic = contract.clinic else {
                             return
                         }
-                        Task {
+                        Task(priority: .background) {
                             await chatsViewModel.getClinicLogo(contractId: Int(contract.id), clinicId: Int(clinic.id))
                         }
                     }

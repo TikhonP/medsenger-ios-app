@@ -80,10 +80,9 @@ struct EditPersonalDataView: View {
                     ProgressView()
                 } else {
                     Button("EditPersonalDataView.navigationSaveButton", action: {
-                        Task {
-                            if await editPersonalDataViewModel.saveProfileData(name: name, email: email, phone: phone, birthday: birthday) {
-                                settingsViewModel.showEditProfileData.toggle()
-                            }
+                        Task(priority: .userInitiated) {
+                            try await editPersonalDataViewModel.saveProfileData(name: name, email: email, phone: phone, birthday: birthday)
+                            settingsViewModel.showEditProfileData.toggle()
                         }
                     })
                 }

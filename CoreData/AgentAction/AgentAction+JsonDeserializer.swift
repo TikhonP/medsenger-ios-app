@@ -39,8 +39,8 @@ extension AgentAction {
         }
     }
     
-    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentAction {
-        let agentAction = (try? get(name: data.name, contract: contract, for: context)) ?? AgentAction(context: context)
+    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> AgentAction {
+        let agentAction = (try? get(name: data.name, contract: contract, for: moc)) ?? AgentAction(context: moc)
         
         agentAction.name = data.name
         agentAction.link = data.link
@@ -52,21 +52,21 @@ extension AgentAction {
         return agentAction
     }
     
-    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [AgentAction] {
+    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [AgentAction] {
         
         // Store got AgentActions to check if some contractes deleted later
         var validNames = [String]()
         var agentActions = [AgentAction]()
         
         for agentActionData in data {
-            let agentAction = saveFromJson(agentActionData, contract: contract, for: context)
+            let agentAction = saveFromJson(agentActionData, contract: contract, for: moc)
             
             agentActions.append(agentAction)
             validNames.append(agentActionData.name)
         }
         
         if !validNames.isEmpty {
-            cleanRemoved(validNames, contract: contract, for: context)
+            try cleanRemoved(validNames, contract: contract, for: moc)
         }
         
         return agentActions

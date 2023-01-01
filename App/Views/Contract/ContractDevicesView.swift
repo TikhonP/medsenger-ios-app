@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 class DeviceNode: ObservableObject, Identifiable {
     @Published var isEnabled: Bool
     
@@ -28,7 +29,7 @@ final class ContractDevicesViewModel: ObservableObject {
     @Published var devicesAsNodes = [DeviceNode]()
     @Published var showLoading = false
     
-    let contract: Contract
+    private let contract: Contract
     
     init(contract: Contract) {
         self.contract = contract
@@ -37,19 +38,19 @@ final class ContractDevicesViewModel: ObservableObject {
         }
         let contractDevices = contract.devices
         for device in clinic.devices {
-            devicesAsNodes.append(DeviceNode(device, isEnabled: contractDevices.contains(device)))
+            devicesAsNodes.append(
+                DeviceNode(device, isEnabled: contractDevices.contains(device)))
         }
     }
     
-    func save() async -> Bool {
+    func save() async throws {
         showLoading = true
         do {
             try await DoctorActions.deviceState(devices: devicesAsNodes, contractId: Int(contract.id))
             showLoading = false
-            return true
         } catch {
             showLoading = false
-            return false
+            throw error
         }
     }
 }
@@ -67,7 +68,7 @@ struct DeviceNodeView: View {
 }
 
 struct ContractDevicesView: View {
-    @ObservedObject var contract: Contract
+    @ObservedObject private var contract: Contract
     
     @MainActor @Environment(\.presentationMode) private var presentationMode
     
@@ -81,7 +82,6 @@ struct ContractDevicesView: View {
     var body: some View {
         NavigationView {
             Form {
-                //                Section(), content: {})
                 ForEach(contractDevicesViewModel.devicesAsNodes) { device in
                     DeviceNodeView(deviceNode: device)
                 }
@@ -90,19 +90,18 @@ struct ContractDevicesView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
-                        Task {
-                            if await contractDevicesViewModel.save() {
-                                presentationMode.wrappedValue.dismiss()
-                            }
+                    Button {
+                        Task(priority: .userInitiated) {
+                            try await contractDevicesViewModel.save()
+                            presentationMode.wrappedValue.dismiss()
                         }
-                    }, label: {
+                    } label: {
                         if contractDevicesViewModel.showLoading {
                             ProgressView()
                         } else {
                             Text("ContractDevicesView.Save.Button")
                         }
-                    })
+                    }
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {

@@ -10,46 +10,46 @@ import SwiftUI
 
 struct RecordedVoiceMessageView: View {
      @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
-     @Environment(\.colorScheme) var colorScheme
+     @Environment(\.colorScheme) private var colorScheme
      
      var body: some View {
           HStack {
-               Button(action: {
+               Button {
                     messageInputViewModel.showRecordedMessage = false
-               }, label: {
+               } label: {
                     Image(systemName: "trash")
                          .resizable()
                          .scaledToFit()
                          .frame(height: 25)
                          .foregroundColor(colorScheme == .light ? .accentColor : .primary)
-               })
+               }
                
                HStack {
-                    ZStack {
+                    Group {
                          if messageInputViewModel.isVoiceMessagePlaying {
-                              Button(action: {
+                              Button {
                                    messageInputViewModel.stopPlaying()
-                              }, label: {
+                              } label: {
                                    Image(systemName: "stop.fill")
                                         .resizable()
                                         .scaledToFit()
                                         .foregroundColor(.systemBackground)
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
-                              })
+                              }
                          } else {
-                              Button(action: {
-                                   Task {
+                              Button {
+                                   Task(priority: .userInitiated) {
                                         await messageInputViewModel.startPlayingRecordedVoiceMessage()
                                    }
-                              }, label: {
+                              } label: {
                                    Image(systemName: "play.fill")
                                         .resizable()
                                         .scaledToFit()
                                         .foregroundColor(.systemBackground)
                                         .padding(.leading)
                                         .padding([.vertical, .trailing], 10)
-                              })
+                              }
                          }
                     }
                     if let recordedMessageUrl = messageInputViewModel.recordedMessageUrl {
@@ -69,14 +69,14 @@ struct RecordedVoiceMessageView: View {
                .background(colorScheme == .light ? Color.accentColor : Color.white)
                .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
                
-               Button(action: {
-                    Task {
+               Button {
+                    Task(priority: .userInitiated) {
                          await messageInputViewModel.sendVoiceMessage()
                     }
-               }, label: {
+               } label: {
                     MessageInputButtonLabel(imageSystemName: "arrow.up.circle.fill", showProgress: $messageInputViewModel.showSendingMessageLoading)
                          .foregroundColor(.accentColor)
-               })
+               }
           }
      }
 }

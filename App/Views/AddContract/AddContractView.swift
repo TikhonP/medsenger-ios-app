@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AddContractView: View {
     @StateObject private var addContractViewModel = AddContractViewModel()
-    @Environment(\.presentationMode) private var presentationMode
+    @MainActor @Environment(\.presentationMode) private var presentationMode
     @FetchRequest(sortDescriptors: [], animation: .default) private var clinics: FetchedResults<Clinic>
     
     var body: some View {
@@ -23,7 +23,7 @@ struct AddContractView: View {
                     HStack {
                         Spacer()
                         Button("AddContractView.findPatient.Button", action: {
-                            Task {
+                            Task(priority: .userInitiated) {
                                 await addContractViewModel.findPatient()
                             }
                         })
@@ -46,13 +46,12 @@ struct AddContractView: View {
                 }
                 
                 if addContractViewModel.state != .fetchingUserFromMedsenger && addContractViewModel.state != .inputClinicAndEmail {
-                    Button(action: {
-                        Task {
-                            if await addContractViewModel.addContract() {
-                                presentationMode.wrappedValue.dismiss()
-                            }
+                    Button {
+                        Task(priority: .userInitiated) {
+                            try await addContractViewModel.addContract()
+                            presentationMode.wrappedValue.dismiss()
                         }
-                    }) {
+                    } label: {
                         HStack {
                             Spacer()
                             if addContractViewModel.submittingAddPatient {
@@ -70,8 +69,8 @@ struct AddContractView: View {
             .navigationTitle("AddContractView.navigationTitle")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("AddContractView.done.Button") {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("AddContractView.cancel.Button") {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }

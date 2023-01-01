@@ -14,24 +14,29 @@ final class ChangePasswordViewModel: ObservableObject, Alertable {
     @Published var alert: AlertInfo?
     @Published var showLoading = false
     
-    func changePasswordRequest(password1: String, password2: String) async -> Bool {
+    enum ChangePasswordRequestError: Error {
+        case passwordsDoNotMatch, passwordMustBeMoreThan6characters, request(Error)
+    }
+    
+    func changePasswordRequest(password1: String, password2: String) async throws {
         guard password1.count > 6 else {
+            presentAlert(title: Text("ChangePasswordViewModel.passwordMustBeMoreThan6charactersAlertTitle", comment: "Password must be more than 6 characters"), .warning)
+            throw ChangePasswordRequestError.passwordMustBeMoreThan6characters
+        }
+        guard password1 == password2 else {
             presentAlert(
                 title: Text("ChangePasswordViewModel.passwordsDoNotMatchAlertTitle", comment: "Passwords do not match!"),
                 message: Text("ChangePasswordViewModel.passwordsDoNotMatchAlertMessage", comment: "Please check that the passwords are the same."), .warning)
-            return false
-        }
-        guard password1 == password2 else {
-            presentAlert(title: Text("ChangePasswordViewModel.passwordMustBeMoreThan6charactersAlertTitle", comment: "Password must be more than 6 characters"), .warning)
-            return false
+            throw ChangePasswordRequestError.passwordsDoNotMatch
         }
         showLoading = true
         do {
             try await Login.changePassword(newPassword: password1)
-            return true
+            showLoading = false
         } catch {
             presentGlobalAlert()
-            return false
+            showLoading = false
+            throw ChangePasswordRequestError.request(error)
         }
     }
 }

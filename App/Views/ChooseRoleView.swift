@@ -28,7 +28,7 @@ struct ChooseRoleView: View {
                     .padding(.horizontal, 30)
                 
                 Button("ChooseRoleView.SignInAsPatient.Button") {
-                    Task {
+                    Task(priority: .userInitiated) {
                         showLoading = true
                         await Login.changeRole(.patient)
                         showLoading = false
@@ -42,7 +42,7 @@ struct ChooseRoleView: View {
                 .clipShape(Capsule())
                 
                 Button("ChooseRoleView.SignInAsDoctor.Button") {
-                    Task {
+                    Task(priority: .userInitiated) {
                         showLoading = true
                         await Login.changeRole(.doctor)
                         showLoading = false

@@ -22,7 +22,7 @@ struct SettingsView: View {
                 } else {
                     SettingsMainFormView(presentationMode: presentationMode, user: user)
                         .onAppear {
-                            Task {
+                            Task(priority: .background) {
                                 await settingsViewModel.updateProfile(presentFailedAlert: false)
                             }
                             PushNotifications.onChatsViewAppear()
@@ -44,6 +44,7 @@ struct SettingsView: View {
                 }
             }
             .animation(.default, value: settingsViewModel.showEditProfileData)
+            .internetOfflineWarningInBottomBar()
         }
         .environmentObject(settingsViewModel)
     }

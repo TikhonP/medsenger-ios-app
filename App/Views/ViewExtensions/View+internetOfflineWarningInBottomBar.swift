@@ -8,12 +8,13 @@
 
 import SwiftUI
 
-extension View {
-    @ViewBuilder
-    func internetOfflineWarningInBottomBar(networkMonitor: NetworkConnectionMonitor) -> some View {
-        self.toolbar {
+fileprivate struct InternetOfflineWarningInBottomBarModifier: ViewModifier {
+    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
+    
+    func body(content: Content) -> some View {
+        content.toolbar {
             ToolbarItem(placement: .bottomBar) {
-                if !networkMonitor.isConnected {
+                if !networkConnectionMonitor.isConnected {
                     VStack {
                         HStack {
                             Image(systemName: "wifi.exclamationmark")
@@ -26,5 +27,12 @@ extension View {
                 }
             }
         }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func internetOfflineWarningInBottomBar() -> some View {
+        self.modifier(InternetOfflineWarningInBottomBarModifier())
     }
 }

@@ -14,7 +14,7 @@ struct MessageInputButtonLabel: View {
     private let height: CGFloat = 38
     
     var body: some View {
-        ZStack {
+        Group {
             if showProgress {
                 ZStack {
                     Circle()

@@ -390,7 +390,6 @@ struct WebView: View {
     let showCloseButton: Bool
     let onCloseSucces: (() -> Void)?
     
-    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     @StateObject private var webViewStateModel: WebViewStateModel = WebViewStateModel()
     @Environment(\.presentationMode) private var presentationMode
     
@@ -446,6 +445,6 @@ struct WebView: View {
                 })
             }
         }
-        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
+        .internetOfflineWarningInBottomBar()
     }
 }

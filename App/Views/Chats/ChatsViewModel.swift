@@ -48,7 +48,7 @@ final class ChatsViewModel: ObservableObject, Alertable {
         }
     }
     
-    func getContracts(presentFailedAlert: Bool) async {
+    func getContracts(presentFailedAlert: Bool) async throws {
         showContractsLoading = true
         do {
             _ = await (try Contracts.fetchConsiliumContracts(), try Contracts.fetchContracts())
@@ -56,6 +56,7 @@ final class ChatsViewModel: ObservableObject, Alertable {
         } catch {
             showContractsLoading = false
             presentGlobalAlert()
+            throw error
         }
     }
     

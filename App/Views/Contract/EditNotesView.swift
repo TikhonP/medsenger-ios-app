@@ -22,23 +22,22 @@ final class EditNotesViewModel: ObservableObject, Alertable {
         self.contractId = Int(contract.id)
     }
     
-    func save() async -> Bool {
+    func save() async throws {
         showLoading = true
         do {
             try await DoctorActions.updateContractNotes(contractId: contractId, notes: note)
             showLoading = false
-            return true
         } catch {
             showLoading = false
             presentGlobalAlert()
-            return false
+            throw error
         }
     }
 }
 
 struct EditNotesView: View {
     @StateObject private var editNotesViewModel: EditNotesViewModel
-    @Environment(\.presentationMode) private var presentationMode
+    @MainActor @Environment(\.presentationMode) private var presentationMode
     
     init(contract: Contract) {
         _editNotesViewModel = StateObject(wrappedValue: EditNotesViewModel(contract: contract))
@@ -52,21 +51,18 @@ struct EditNotesView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            Task {
-                                if await editNotesViewModel.save() {
-                                    await MainActor.run {
-                                        presentationMode.wrappedValue.dismiss()
-                                    }
-                                }
+                        Button {
+                            Task(priority: .userInitiated) {
+                                try await editNotesViewModel.save()
+                                presentationMode.wrappedValue.dismiss()
                             }
-                        }, label: {
+                        } label: {
                             if editNotesViewModel.showLoading {
                                 ProgressView()
                             } else {
                                 Text("EditNotesViewModel.Save.Button")
                             }
-                        })
+                        }
                     }
                     
                     ToolbarItem(placement: .cancellationAction) {

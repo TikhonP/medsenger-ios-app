@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ScenarioView: View {
-    @ObservedObject var scenario: ClinicScenario
+    @ObservedObject private var scenario: ClinicScenario
     @StateObject private var scenarioViewModel: ScenarioViewModel
     @EnvironmentObject private var contractViewModel: ContractViewModel
     
@@ -32,19 +32,18 @@ struct ScenarioView: View {
                 }
             }
             
-            Button(action: {
-                Task {
-                    if await scenarioViewModel.save() {
-                        contractViewModel.showChooseScenario = false
-                    }
+            Button {
+                Task(priority: .userInitiated) {
+                    try await scenarioViewModel.save()
+                    contractViewModel.showChooseScenario = false
                 }
-            }, label: {
+            } label: {
                 if scenarioViewModel.showSaveLoading {
                     ProgressView()
                 } else {
                     Text("ScenarioView.AssignScenario.Button", comment: "Assign scenario")
                 }
-            })
+            }
         }
         .scrollDismissesKeyboardIos16Only()
         .navigationTitle(scenario.wrappedName)

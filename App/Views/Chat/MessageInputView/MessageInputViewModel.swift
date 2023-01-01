@@ -144,13 +144,13 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                 if let error = error {
                     MessageInputViewModel.logger.error("Failed to load file representation on drop: \(error.localizedDescription)")
                 }
-                guard let url = url, let self = self else {
+                guard let url = url, let strongSelf = self else {
                     return
                 }
                 do {
                     let data = try Data(contentsOf: url)
                     DispatchQueue.main.async {
-                        self.messageAttachments.append(ChatViewAttachment(
+                        strongSelf.messageAttachments.append(ChatViewAttachment(
                             data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
                     }
                 } catch {
@@ -162,7 +162,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
     }
     
     func saveMessageDraft() {
-        Task {
+        Task(priority: .background) {
             try? await Contract.saveMessageDraft(id: contractId, messageDraft: message)
         }
     }
@@ -180,11 +180,11 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             return
         }
         recordingSession.requestRecordPermission() { [weak self] allowed in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 return
             }
             guard allowed else {
-                self.presentAlert(
+                strongSelf.presentAlert(
                     Alert(
                         title: Text("MessageInputViewModel.allowMicrophoneAccessAlertTitle", comment: "Please Allow Access"),
                         message: Text("MessageInputViewModel.allowMicrophoneAccessAlertMessage", comment: "Medsenger needs access to your microphone so that you can send voice messages.\n\nPlease go to your device's settings > Privacy > Microphone and set Medsenger to ON."),
@@ -204,7 +204,7 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
                 return
             }
             let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-            self.recordedMessageUrl = voiceMessageFilePath
+            strongSelf.recordedMessageUrl = voiceMessageFilePath
             
             let settings = [
                 AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -215,36 +215,36 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
             
             do {
                 let audioRecorder = try AVAudioRecorder(url: voiceMessageFilePath, settings: settings)
-                self.audioRecorder = audioRecorder
+                strongSelf.audioRecorder = audioRecorder
                 if !audioRecorder.prepareToRecord() {
-                    self.isRecordingVoiceMessage = false
+                    strongSelf.isRecordingVoiceMessage = false
                     //                        self.showRecordingfailedAlert = true
                     MessageInputViewModel.logger.error("Failed to prepareToRecord audio recording")
                 }
                 audioRecorder.delegate = self
                 audioRecorder.record()
-                self.isRecordingVoiceMessage = true
-                self.currentVoiceMessageTime = audioRecorder.currentTime
-                self.recordingMessageTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
-                    guard let self = self else {
+                strongSelf.isRecordingVoiceMessage = true
+                strongSelf.currentVoiceMessageTime = audioRecorder.currentTime
+                strongSelf.recordingMessageTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
+                    guard let strongSelf = self else {
                         timer.invalidate()
                         return
                     }
                     DispatchQueue.main.async {
-                        if !self.isRecordingVoiceMessage {
-                            self.recordingMessageTimer?.invalidate()
+                        if !strongSelf.isRecordingVoiceMessage {
+                            strongSelf.recordingMessageTimer?.invalidate()
                         } else {
-                            if let currentTime = self.audioRecorder?.currentTime {
-                                self.currentVoiceMessageTime = currentTime
+                            if let currentTime = strongSelf.audioRecorder?.currentTime {
+                                strongSelf.currentVoiceMessageTime = currentTime
                             }
                         }
                     }
                 }
             } catch {
-                self.audioRecorder?.stop()
-                self.audioRecorder = nil
-                self.isRecordingVoiceMessage = false
-                self.presentAlert(title: Text("MessageInputViewModel.recordingMessageFailedAlertTitle", comment: "Recording voice message failed."))
+                strongSelf.audioRecorder?.stop()
+                strongSelf.audioRecorder = nil
+                strongSelf.isRecordingVoiceMessage = false
+                strongSelf.presentAlert(title: Text("MessageInputViewModel.recordingMessageFailedAlertTitle", comment: "Recording voice message failed."))
                 MessageInputViewModel.logger.error("Failed to start audio recording: \(error.localizedDescription)")
             }
         }
@@ -300,16 +300,16 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
             self.playingAudioProgress = currentTime / duration
         }
         playingMessageTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { [weak self] timer in
-            guard let self = self else {
+            guard let strongSelf = self else {
                 timer.invalidate()
                 return
             }
             DispatchQueue.main.async {
-                if !self.isVoiceMessagePlaying {
-                    self.playingMessageTimer?.invalidate()
+                if !strongSelf.isVoiceMessagePlaying {
+                    strongSelf.playingMessageTimer?.invalidate()
                 } else {
-                    if let currentTime = self.audioPlayer?.currentTime, let duration = self.audioPlayer?.duration {
-                        self.playingAudioProgress = currentTime / duration
+                    if let currentTime = strongSelf.audioPlayer?.currentTime, let duration = strongSelf.audioPlayer?.duration {
+                        strongSelf.playingAudioProgress = currentTime / duration
                     }
                 }
             }

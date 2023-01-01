@@ -30,6 +30,7 @@ struct ReplyedMessageView: View {
                 if let contract = message.contract {
                     Text("ReplyedMessageView.Reply \(contract.wrappedShortName)", comment: "Reply %@")
                         .bold()
+                        .lineLimit(1)
                 }
                 Text(message.wrappedText)
                     .lineLimit(1)

@@ -10,8 +10,8 @@ import CoreData
 
 @objc(Agent)
 public class Agent: NSManagedObject, CoreDataIdGetable, CoreDataErasable {
-    public static func addToAgentTasks(value: AgentTask, agentID: Int, for context: NSManagedObjectContext) throws {
-        let agent = try get(id: agentID, for: context)
+    public static func addToAgentTasks(value: AgentTask, agentID: Int, for moc: NSManagedObjectContext) throws {
+        let agent = try get(id: agentID, for: moc)
         if let isExist = agent.agentTasks?.contains(value), !isExist {
             agent.addToAgentTasks(value)
         }

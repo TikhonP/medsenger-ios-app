@@ -57,8 +57,9 @@ extension Alertable {
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
     @MainActor internal func presentAlert(_ alertInfo: AlertInfo, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
         if let feedbackType = feedbackType {
-            HapticFeedback.shared.prepareNotify()
-            HapticFeedback.shared.notify(feedbackType)
+            let feedbackGenerator = UINotificationFeedbackGenerator()
+            feedbackGenerator.prepare()
+            feedbackGenerator.notificationOccurred(feedbackType)
         }
         self.alert = alertInfo
     }
@@ -68,7 +69,7 @@ extension Alertable {
     ///   - alert: The `Alert` object
     ///   - feedbackType: Optional feedback type if you need haptic feedback.
     @MainActor internal func presentAlert(_ alert: Alert, _ feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil) {
-        presentAlert(.init(alert), feedbackType)
+        presentAlert(AlertInfo(alert), feedbackType)
     }
     
     /// Throws an alert with one button.

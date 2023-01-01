@@ -57,17 +57,17 @@ struct MessageBodyView: View {
                 
                 // Action link:
                 if message.isAgent, message.actionLink != nil {
-                    Button(action: {
-                        Task {
+                    Button {
+                        Task(priority: .userInitiated) {
                             await chatViewModel.openMessageActionLink(message: message)
                         }
-                    }, label: {
+                    } label: {
                         Label(message.wrappedActionName, systemImage: "bolt.fill")
                             .padding(10)
                             .background(Color("medsengerBlue"))
                             .cornerRadius(15)
                             .padding(10)
-                    })
+                    }
                 }
                 
                 // Attachments
@@ -90,7 +90,7 @@ struct MessageBodyView: View {
                 }
             }
             .padding(.trailing, addTrailingPadding ? 30 : 0)
-            .readSize { size in
+            .readMessageSize { size in
                 if imageAttachments.isEmpty, size.height < 80, !message.isVoiceMessage {
                     addTrailingPadding = true
                 }
@@ -120,9 +120,10 @@ struct MessageView: View {
     @GestureState private var isDragging = false
     @State private var dragGestureOffset: CGFloat = .zero
     @State private var isReplying = false
+    @State private var feedbackGenerator: UISelectionFeedbackGenerator?
     
     private let swipeGestureConstant: CGFloat = 60
-    
+
     var body: some View {
         if message.isVideoCallMessageFromDoctor {
             VideoCallMessageView(viewWidth: viewWidth, message: message)
@@ -177,7 +178,8 @@ struct MessageView: View {
                                     }
                                 }
                             })
-                            .onEnded({ value in
+                            .onEnded({ _ in
+                                feedbackGenerator = nil
                                 if isReplying {
                                     messageInputViewModel.replyToMessage = message
                                     isReplying = false
@@ -188,12 +190,16 @@ struct MessageView: View {
                             })
                     )
                     .onChange(of: isDragging, perform: { newValue in
-                        if newValue, isDragging {
-                            HapticFeedback.shared.preparePlay()
+                        if newValue {
+                            feedbackGenerator = UISelectionFeedbackGenerator()
+                            feedbackGenerator?.prepare()
                         }
                     })
-                    .onChange(of: isReplying, perform: { newValue in
-                        HapticFeedback.shared.play(.light)
+                    .onChange(of: isReplying, perform: { _ in
+                        if isDragging {
+                            feedbackGenerator?.selectionChanged()
+                            feedbackGenerator?.prepare()
+                        }
                     })
                     .onAppear {
                         if !isDragging {

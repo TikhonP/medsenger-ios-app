@@ -44,10 +44,9 @@ struct ChatView: View {
             
             ZStack(alignment: .bottom) {
                 MessagesView(contract: contract, inputViewHeight: $inputViewHeight)
+                    .quickLookPreview($chatViewModel.quickLookDocumentUrl)
                 MessageInputView()
-                    .readSize { size in
-                        inputViewHeight = size.height
-                    }
+                    .readMessagesInputSize { inputViewHeight = $0.height }
             }
             .scrollDismissesKeyboardIos16Only()
             .environmentObject(chatViewModel)
@@ -76,7 +75,7 @@ struct ChatView: View {
                         Text(contract.wrappedShortName)
                             .foregroundColor(.primary)
                             .bold()
-                        ZStack {
+                        Group {
                             if networkConnectionMonitor.isConnected {
                                 if userRole == .patient {
                                     Text(contract.wrappedRole)
@@ -111,10 +110,8 @@ struct ChatView: View {
             }
         }
         .onAppear {
+            chatViewModel.onChatViewAppear(contract: contract)
             contentViewModel.markChatAsOpened(contractId: Int(contract.id))
-            Task {
-                await chatViewModel.onChatViewAppear(contract: contract)
-            }
         }
         .onDisappear {
             contentViewModel.markChatAsClosed()

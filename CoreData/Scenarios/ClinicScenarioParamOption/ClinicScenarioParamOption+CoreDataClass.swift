@@ -12,11 +12,14 @@ import CoreData
 
 @objc(ClinicScenarioParamOption)
 public class ClinicScenarioParamOption: NSManagedObject {
-    internal static func get(code: String, param: ClinicScenarioParam, for context: NSManagedObjectContext) -> ClinicScenarioParamOption? {
+    internal static func get(code: String, param: ClinicScenarioParam, for moc: NSManagedObjectContext) throws -> ClinicScenarioParamOption {
         let fetchRequest = ClinicScenarioParamOption.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "code == %@ AND param == %@", code, param)
         fetchRequest.fetchLimit = 1
-        let fetchedResults = PersistenceController.fetch(fetchRequest, for: context)
-        return fetchedResults?.first
+        let fetchedResults = try moc.wrappedFetch(fetchRequest, detailsForLogging: "ClinicScenarioParamOption.get")
+        guard let clinicScenarioParamOption = fetchedResults.first else {
+            throw PersistenceController.ObjectNotFoundError()
+        }
+        return clinicScenarioParamOption
     }
 }

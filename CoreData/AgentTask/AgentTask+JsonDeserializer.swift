@@ -26,8 +26,8 @@ extension AgentTask {
         let agent_id: Int
     }
     
-    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for context: NSManagedObjectContext) -> AgentTask {
-        let agentTask = (try? get(id: data.id, for: context)) ?? AgentTask(context: context)
+    private static func saveFromJson(_ data: JsonDecoder, contract: Contract, for moc: NSManagedObjectContext) -> AgentTask {
+        let agentTask = (try? get(id: data.id, for: moc)) ?? AgentTask(context: moc)
         
         agentTask.id = Int64(data.id)
         agentTask.actionLink = data.action_link
@@ -46,21 +46,21 @@ extension AgentTask {
         return agentTask
     }
     
-    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for context: NSManagedObjectContext) -> [AgentTask] {
+    public static func saveFromJson(_ data: [JsonDecoder], contract: Contract, for moc: NSManagedObjectContext) throws -> [AgentTask] {
         
         // Store got AgentActions to check if some contractes deleted later
         var validIds = [Int]()
         var agentTasks = [AgentTask]()
         
         for agentTaskData in data {
-            let agentTask = saveFromJson(agentTaskData, contract: contract, for: context)
-            try? Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, for: context)
+            let agentTask = saveFromJson(agentTaskData, contract: contract, for: moc)
+            try? Agent.addToAgentTasks(value: agentTask, agentID: agentTaskData.id, for: moc)
             validIds.append(agentTaskData.id)
             agentTasks.append(agentTask)
         }
         
         if !validIds.isEmpty {
-            cleanRemoved(validIds, contract: contract, for: context)
+            try cleanRemoved(validIds, contract: contract, for: moc)
         }
         
         return agentTasks

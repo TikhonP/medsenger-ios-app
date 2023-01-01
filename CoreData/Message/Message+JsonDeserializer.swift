@@ -55,8 +55,8 @@ extension Message {
         }
     }
     
-    private static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> Message {
-        let message = (try? get(id: data.id, for: context)) ?? Message(context: context)
+    private static func saveFromJson(_ data: JsonDeserializer, for moc: NSManagedObjectContext) -> Message {
+        let message = (try? get(id: data.id, for: moc)) ?? Message(context: moc)
         
         message.id = Int64(data.id)
         
@@ -116,30 +116,28 @@ extension Message {
         
         if let replyToId = data.reply_to_id {
             message.replyToId = Int64(replyToId)
-            message.replyToMessage = try? Message.get(id: replyToId, for: context)
+            message.replyToMessage = try? Message.get(id: replyToId, for: moc)
         }
         
         return message
     }
     
     public static func saveFromJson(_ data: JsonDeserializer, contractId: Int) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try Contract.get(id: contractId, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try Contract.get(id: contractId, for: moc)
             
-            let message = saveFromJson(data, for: context)
+            let message = saveFromJson(data, for: moc)
             
             for attachmentData in data.attachments {
-                let attachment = Attachment.saveFromJson(attachmentData, for: context)
+                let attachment = Attachment.saveFromJson(attachmentData, for: moc)
                 if !message.attachmentsArray.contains(attachment) {
                     message.addToAttachments(attachment)
                 }
             }
             
             for imageData in data.images {
-                let image = ImageAttachment.saveFromJson(imageData, for: context)
+                let image = ImageAttachment.saveFromJson(imageData, for: moc)
                 if !message.imagesArray.contains(image) {
                     message.addToImages(image)
                 }
@@ -149,9 +147,8 @@ extension Message {
                 contract.addToMessages(message)
             }
             
-            markNextAndPreviousMessages(for: contract, for: context)
-            
-            PersistenceController.save(for: context, detailsForLogging: "save message from json")
+            try markNextAndPreviousMessages(for: contract, for: moc)
+            try moc.wrappedSave(detailsForLogging: "save message from json")
         }
     }
     
@@ -160,26 +157,24 @@ extension Message {
     ///   - data: struct decoded from JSON
     ///   - contractId: contract id for messages
     public static func saveFromJson(_ data: [JsonDeserializer], contractId: Int) async throws {
-        let context = PersistenceController.shared.container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
-        try await context.crossVersionPerform {
-            let contract = try Contract.get(id: contractId, for: context)
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        try await moc.crossVersionPerform {
+            let contract = try Contract.get(id: contractId, for: moc)
             
             var maxMessageId: Int = 0
             
             for messageData in data {
-                let message = saveFromJson(messageData, for: context)
+                let message = saveFromJson(messageData, for: moc)
                 
                 for attachmentData in messageData.attachments {
-                    let attachment = Attachment.saveFromJson(attachmentData, for: context)
+                    let attachment = Attachment.saveFromJson(attachmentData, for: moc)
                     if !message.attachmentsArray.contains(attachment) {
                         message.addToAttachments(attachment)
                     }
                 }
                 
                 for imageData in messageData.images {
-                    let image = ImageAttachment.saveFromJson(imageData, for: context)
+                    let image = ImageAttachment.saveFromJson(imageData, for: moc)
                     if !message.imagesArray.contains(image) {
                         message.addToImages(image)
                     }
@@ -193,8 +188,8 @@ extension Message {
                     maxMessageId = messageData.id
                 }
             }
-            markNextAndPreviousMessages(for: contract, for: context)
-            PersistenceController.save(for: context, detailsForLogging: "Message from JsonDeserializer")
+            try markNextAndPreviousMessages(for: contract, for: moc)
+            try moc.wrappedSave(detailsForLogging: "Message from JsonDeserializer")
         }
     }
 }

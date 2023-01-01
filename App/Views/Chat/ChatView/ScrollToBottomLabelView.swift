@@ -22,7 +22,6 @@ struct ScrollToBottomLabelView: View {
             .overlay(
                 Circle().stroke(.gray, lineWidth: 0.2)
             )
-        
     }
 }
 

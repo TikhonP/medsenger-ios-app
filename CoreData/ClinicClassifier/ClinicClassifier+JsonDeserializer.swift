@@ -15,8 +15,8 @@ extension ClinicClassifier {
         let name: String
     }
     
-    public static func saveFromJson(_ data: JsonDeserializer, for context: NSManagedObjectContext) -> ClinicClassifier {
-        let clinicClassifier = (try? get(id: data.id, for: context)) ?? ClinicClassifier(context: context)
+    public static func saveFromJson(_ data: JsonDeserializer, for moc: NSManagedObjectContext) -> ClinicClassifier {
+        let clinicClassifier = (try? get(id: data.id, for: moc)) ?? ClinicClassifier(context: moc)
         
         clinicClassifier.id = Int64(data.id)
         clinicClassifier.name = data.name

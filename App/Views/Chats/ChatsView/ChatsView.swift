@@ -14,7 +14,6 @@ struct ChatsView: View {
     @StateObject private var chatsViewModel = ChatsViewModel.shared
     
     @EnvironmentObject private var contentViewModel: ContentViewModel
-    @EnvironmentObject private var networkConnectionMonitor: NetworkConnectionMonitor
     
     @FetchRequest(
         sortDescriptors: [
@@ -67,7 +66,7 @@ struct ChatsView: View {
                         }, label: {
                             switch userRole {
                             case .patient:
-                                ZStack {
+                                Group {
                                     if contract.isConsilium {
                                         ConsiliumChatRow(contract: contract)
                                     } else {
@@ -77,26 +76,26 @@ struct ChatsView: View {
                                 .environmentObject(chatsViewModel)
                                 .contextMenu {
                                     if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
-                                        Button(action: {
+                                        Button {
                                             chatsViewModel.callClinic(phone: phoneNumber)
-                                        }, label: {
+                                        } label: {
                                             Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
-                                        })
+                                        }
                                     }
                                 }
                                 .swipeActionsIos15Only {
                                     ZStack {
                                         if let phoneNumber = chatsViewModel.canCallClinicPhone(contract: contract) {
-                                            Button(action: {
+                                            Button {
                                                 chatsViewModel.callClinic(phone: phoneNumber)
-                                            }, label: {
+                                            } label: {
                                                 Label("ChatsView.CallTheClinic.Label", systemImage: "phone.fill")
-                                            })
+                                            }
                                         }
                                     }
                                 }
                             case .doctor:
-                                ZStack {
+                                Group {
                                     if contract.isConsilium {
                                         ConsiliumChatRow(contract: contract)
                                     } else {
@@ -106,43 +105,43 @@ struct ChatsView: View {
                                 .environmentObject(chatsViewModel)
                                 .contextMenu {
                                     if contract.canDecline {
-                                        Button(action: {
-                                            Task {
+                                        Button {
+                                            Task(priority: .userInitiated) {
                                                 await chatsViewModel.declineMessages(contractId: Int(contract.id))
                                             }
-                                        }, label: {
+                                        } label: {
                                             Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
-                                        })
+                                        }
                                     }
                                     if contract.isWaitingForConclusion {
-                                        Button(action: {
-                                            Task {
+                                        Button {
+                                            Task(priority: .userInitiated) {
                                                 await chatsViewModel.concludeContract(contractId: Int(contract.id))
                                             }
-                                        }, label: {
+                                        } label: {
                                             Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
-                                        })
+                                        }
                                     }
                                 }
                                 .swipeActionsIos15Only {
-                                    ZStack {
+                                    Group {
                                         if contract.canDecline {
-                                            Button(action: {
-                                                Task {
+                                            Button {
+                                                Task(priority: .userInitiated) {
                                                     await chatsViewModel.declineMessages(contractId: Int(contract.id))
                                                 }
-                                            }, label: {
+                                            } label: {
                                                 Label("ChatsView.DismissMessages.Label", systemImage: "checkmark.message.fill")
-                                            })
+                                            }
                                         }
                                         if contract.isWaitingForConclusion {
-                                            Button(action: {
-                                                Task {
+                                            Button {
+                                                Task(priority: .userInitiated) {
                                                     await chatsViewModel.concludeContract(contractId: Int(contract.id))
                                                 }
-                                            }, label: {
+                                            } label: {
                                                 Label("ChatsView.EndCounseling.Label", systemImage: "person.crop.circle.badge.checkmark")
-                                            })
+                                            }
                                         }
                                     }
                                 }
@@ -154,41 +153,42 @@ struct ChatsView: View {
                     }
                 }
             }
-            .listStyle(.plain)
-            .refreshableIos15Only { await chatsViewModel.getContracts(presentFailedAlert: true) }
-            .searchableIos15Only(text: query)
             
             if contracts.isEmpty {
                 if chatsViewModel.showContractsLoading {
                     ProgressView()
+                        .scaleEffect(1.5)
                 } else {
                     EmptyChatsView()
                         .onTapGesture {
-                            Task {
-                                await chatsViewModel.getContracts(presentFailedAlert: true)
+                            Task(priority: .userInitiated) {
+                                try await chatsViewModel.getContracts(presentFailedAlert: true)
                             }
                         }
                 }
             }
         }
+        .listStyle(.plain)
+        .refreshableIos15Only { try? await chatsViewModel.getContracts(presentFailedAlert: true) }
+        .searchableIos15Only(text: query)
         .animation(.default, value: chatsViewModel.showContractsLoading)
         .navigationTitle("ChatsView.navigationTitle")
-        .onAppear(perform: {
-            Task {
-                await chatsViewModel.getContracts(presentFailedAlert: false)
+        .onAppear {
+            Task(priority: .background) {
+                try await chatsViewModel.getContracts(presentFailedAlert: false)
             }
             PushNotifications.onChatsViewAppear()
             chatsViewModel.initilizeWebsockets()
-        })
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack {
                     if userRole == .doctor {
-                        Button(action: {
+                        Button {
                             showNewContractModal.toggle()
-                        }, label: {
+                        } label: {
                             Label("ChatsView.addContractButton.Label", systemImage: "person.badge.plus")
-                        })
+                        }
                         .id(UUID())
                     }
                     NavigationLink(tag: -1, selection: $chatsNavigationSelection, destination: {
@@ -202,9 +202,11 @@ struct ChatsView: View {
             }
             
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: { showSettingsModal.toggle() }, label: {
+                Button {
+                    showSettingsModal.toggle()
+                } label: {
                     Label("ChatsView.settingsButton.Label", systemImage: "gear")
-                })
+                }
                 .id(UUID())
             }
         }
@@ -213,16 +215,16 @@ struct ChatsView: View {
                 Websockets.shared.createUrlSession()
             }
         }
-        .onChange(of: contentViewModel.openChatContractId, perform: { newContractId in
+        .onChange(of: contentViewModel.openChatContractId) { newContractId in
             if let newContractId = newContractId {
                 showSettingsModal = false
                 showNewContractModal = false
                 chatsNavigationSelection = newContractId
             }
-        })
+        }
         .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
         .sheet(isPresented: $showSettingsModal, content: { SettingsView(user: user) })
-        .internetOfflineWarningInBottomBar(networkMonitor: networkConnectionMonitor)
+        .internetOfflineWarningInBottomBar()
     }
 }
 

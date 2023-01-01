@@ -40,12 +40,12 @@ extension Clinic {
     
     /// Be careful! It returns entity which can be used only on main thread.
     @MainActor public var devices: [Agent] {
-        let context = PersistenceController.shared.container.viewContext
+        let viewContext = PersistenceController.shared.container.viewContext
         var result = [Agent]()
-        context.performAndWait {
+        viewContext.performAndWait {
             let fetchRequest = Agent.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "clinics CONTAINS %@ AND isDevice == YES", self)
-            if let fetchedResults = PersistenceController.fetch(fetchRequest, for: context, detailsForLogging: "Clinic.hasDevices") {
+            if let fetchedResults = try? viewContext.wrappedFetch(fetchRequest, detailsForLogging: "Clinic.hasDevices") {
                 result = fetchedResults
             }
         }
