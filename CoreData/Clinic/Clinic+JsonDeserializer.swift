@@ -12,7 +12,7 @@ import CoreData
 // MARK: - Check JSON data logic
 
 extension Clinic {
-    public struct JsonDecoderFromCheck: Decodable {
+    public struct JsonDecoderFromCheck: Decodable, Sendable {
         let name: String
         let id: Int
         let video_enabled: Bool

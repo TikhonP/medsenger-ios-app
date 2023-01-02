@@ -55,24 +55,25 @@ import SwiftUI
     }
     
     /// Stop call and close call modal
-    func hideCall() {
+    public func hideCall() {
         isCalling = false
     }
     
     /// Mark chat as opened for disable notifications for this chat
     /// - Parameter contractId: Chat contract Id.
-    func markChatAsOpened(contractId: Int) {
+    public func markChatAsOpened(contractId: Int) {
         openedChatContractId = contractId
+        openChatContractId = nil
     }
     
     /// Mark chat as closed for enabling notifications for any
-    func markChatAsClosed() {
+    public func markChatAsClosed() {
         openedChatContractId = nil
     }
     
     /// Open chat from deeplink or notification
     /// - Parameter contractId: Chat contract Id
-    func openChat(with contractId: Int) {
+    public func openChat(with contractId: Int) {
         openChatContractId = contractId
     }
     
@@ -83,16 +84,20 @@ import SwiftUI
         guard let urlComponents = URLComponents(string: url.absoluteString),
               let stringValue = urlComponents.queryItems?.first(where: { $0.name == paramKey })?.value,
               let contractId = Int(stringValue) else { return }
-        self.openChat(with: contractId)
+        openChat(with: contractId)
     }
 }
 
 extension ContentViewModel: WebsocketsContentViewModelDelegate {
-    func signalClient(_ websockets: Websockets, callWithContractId contractId: Int) {
-        showCall(contractId: contractId, isCaller: false)
+    nonisolated func signalClient(_ websockets: Websockets, callWithContractId contractId: Int) {
+        DispatchQueue.main.async {
+            self.showCall(contractId: contractId, isCaller: false)
+        }
     }
     
-    func signalClient(_ websockets: Websockets, callContinuedWithContractId contractId: Int) {
-        showCall(contractId: contractId, isCaller: false)
+    nonisolated func signalClient(_ websockets: Websockets, callContinuedWithContractId contractId: Int) {
+        DispatchQueue.main.async {
+            self.showCall(contractId: contractId, isCaller: false)
+        }
     }
 }

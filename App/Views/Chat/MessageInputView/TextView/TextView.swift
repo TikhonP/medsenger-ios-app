@@ -55,7 +55,11 @@ public struct TextView: View {
     ) {
         _text = Binding(
             get: { NSAttributedString(string: text.wrappedValue) },
-            set: { text.wrappedValue = $0.string }
+            set: { newValue in
+                DispatchQueue.main.async {
+                    text.wrappedValue = newValue.string
+                }
+            }
         )
         
         _isEmpty = Binding(

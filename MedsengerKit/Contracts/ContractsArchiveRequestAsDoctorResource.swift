@@ -17,5 +17,5 @@ struct ContractsArchiveRequestAsDoctorResource: APIResource {
         parseResponse: true
     )
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

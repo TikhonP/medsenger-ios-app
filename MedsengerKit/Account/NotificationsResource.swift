@@ -9,7 +9,7 @@
 import Foundation
 import os.log
 
-class NotificationsResource: APIResource {
+struct NotificationsResource: APIResource {
     let emailNotify: Bool
     
     init(emailNotify: Bool) {
@@ -20,18 +20,18 @@ class NotificationsResource: APIResource {
 
     let methodPath = "/notifications"
     
-    lazy var params: [String: String] = {
+    var params: [String: String] {
         ["emailNotify": emailNotify ? "on" : "off"]
-    }()
+    }
     
-    lazy var options: APIResourceOptions = {
+    var options: APIResourceOptions {
         let formData = multipartFormData(textParams: params)
         return APIResourceOptions(
             method: .POST,
             httpBody: formData.httpBody,
             headers: formData.headers
         )
-    }()
+    }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

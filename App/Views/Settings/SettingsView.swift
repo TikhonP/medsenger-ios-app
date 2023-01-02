@@ -23,9 +23,8 @@ struct SettingsView: View {
                     SettingsMainFormView(presentationMode: presentationMode, user: user)
                         .onAppear {
                             Task(priority: .background) {
-                                await settingsViewModel.updateProfile(presentFailedAlert: false)
+                                await (settingsViewModel.updateProfile(presentFailedAlert: false), PushNotifications.onChatsViewAppear())
                             }
-                            PushNotifications.onChatsViewAppear()
                         }
                         .navigationTitle("SettingsView.NavigationTitle")
                         .navigationBarTitleDisplayMode(.inline)

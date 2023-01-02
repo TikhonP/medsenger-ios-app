@@ -13,7 +13,7 @@ fileprivate struct ViewOffsetScrollData: Equatable {
     let viewOffset: CGFloat
     let scrollViewHeight: CGFloat
     
-    static var zero = {
+    static let zero = {
         ViewOffsetScrollData(viewOffset: .zero, scrollViewHeight: .zero)
     }()
 }
@@ -143,14 +143,18 @@ struct MessagesView: View {
                         }
                         
                         keyboardDidShowNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { _ in
-                            if allowScrollToBottom {
-                                scrollTo(messageID: -1, scrollReader: scrollReader)
+                            DispatchQueue.main.async {
+                                if allowScrollToBottom {
+                                    scrollTo(messageID: -1, scrollReader: scrollReader)
+                                }
                             }
                         })
                         
                         keyboardDidHideNotificationObserver = NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidHideNotification, object: nil, queue: .main, using: { _ in
-                            if allowScrollToBottom {
-                                scrollTo(messageID: -1, scrollReader: scrollReader)
+                            DispatchQueue.main.async {
+                                if allowScrollToBottom {
+                                    scrollTo(messageID: -1, scrollReader: scrollReader)
+                                }
                             }
                         })
                     }

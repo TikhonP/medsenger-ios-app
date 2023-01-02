@@ -81,7 +81,7 @@ struct ChooseScenarioView: View {
             }
             .onAppear {
                 Task(priority: .userInitiated) {
-                    let categories = (try? await ClinicScenario.getScenariosCategories(clinic: clinic)) ?? [] + [ChooseScenarioView.allCategoryName]
+                    let categories = (try? await ClinicScenario.getScenariosCategories(clinicId: clinic.id)) ?? [] + [ChooseScenarioView.allCategoryName]
                     await MainActor.run {
                         categoryChoices = categories
                     }

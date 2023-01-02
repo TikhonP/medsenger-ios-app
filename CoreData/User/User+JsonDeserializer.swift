@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 extension User {
-    public struct JsonDecoder: Decodable {
+    public struct JsonDecoder: Decodable, Sendable {
         let api_token: String?
         let isDoctor: Bool
         let isPatient: Bool

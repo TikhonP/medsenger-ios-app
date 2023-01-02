@@ -74,7 +74,7 @@ struct AddContractRequestModel: Encodable {
     }
 }
 
-class AddContractResource: APIResource {
+struct AddContractResource: APIResource {
     let addContractRequestModel: AddContractRequestModel
     
     init(addContractRequestModel: AddContractRequestModel) {
@@ -85,14 +85,14 @@ class AddContractResource: APIResource {
     
     internal var methodPath = "/add_contract"
     
-    lazy var options: APIResourceOptions = {
+    internal var options: APIResourceOptions {
         let formData = multipartFormData(textParams: addContractRequestModel.params)
         return APIResourceOptions(
             method: .POST,
             httpBody: formData.httpBody,
             headers: formData.headers
         )
-    }()
+    }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

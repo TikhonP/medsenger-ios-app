@@ -75,7 +75,7 @@ struct VoiceMessageView: View {
                     }
                     .onAppear {
                         Task(priority: .background) {
-                            await chatViewModel.fetchAttachment(attachment)
+                            await chatViewModel.fetchAttachment(attachmentId: Int(attachment.id))
                         }
                     }
                 }

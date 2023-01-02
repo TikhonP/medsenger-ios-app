@@ -10,7 +10,7 @@ import Foundation
 import os.log
 
 /// Send message to chat
-class SendMessageResouce: APIResource {
+struct SendMessageResouce: APIResource {
     let text: String
     let contractID: Int
     let replyToId: Int?
@@ -25,15 +25,15 @@ class SendMessageResouce: APIResource {
         self.attachments = attachments
     }
     
-    lazy var params: [String: String] = {
+    var params: [String: String] {
         var params = ["text": text]
         if let replyToId = replyToId {
             params["reply_to_id"] = String(replyToId)
         }
         return params
-    }()
+    }
     
-    lazy var files: [MultipartFormData.Part] = {
+    var files: [MultipartFormData.Part] {
         var files = [MultipartFormData.Part]()
         for (index, attachment) in attachments.enumerated() {
             files.append(
@@ -48,13 +48,13 @@ class SendMessageResouce: APIResource {
             )
         }
         return files
-    }()
+    }
     
     typealias ModelType = Message.JsonDeserializer
     
-    lazy var methodPath: String = { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }()
+    var methodPath: String { "/\(UserDefaults.userRole.clientsForNetworkRequest)/\(contractID)/messages" }
     
-    lazy var options: APIResourceOptions = {
+    var options: APIResourceOptions {
         let result = multipartFormData(textParams: params, files: files)
         return APIResourceOptions(
             parseResponse: true,
@@ -63,7 +63,7 @@ class SendMessageResouce: APIResource {
             headers: result.headers,
             dateDecodingStrategy: .secondsSince1970
         )
-    }()
+    }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

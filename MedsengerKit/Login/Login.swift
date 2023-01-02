@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Login {
     static var isSignedIn: Bool { KeyChain.apiToken != nil }
@@ -15,8 +16,13 @@ class Login {
     /// - Parameters:
     ///   - login: User login
     ///   - password: User password
-    public static func signIn(login: String, password: String) async throws {
-        let resource = SignInResource(email: login, password: password)
+    @MainActor public static func signIn(login: String, password: String) async throws {
+        let resource = SignInResource(
+            email: login,
+            password: password,
+            uuid: UIDevice.current.identifierForVendor?.uuidString,
+            platform: UIDevice.current.systemVersion,
+            model: UIDevice.current.model)
         do {
             let data = try await APIRequest(resource).executeWithResult()
             KeyChain.apiToken = data.api_token

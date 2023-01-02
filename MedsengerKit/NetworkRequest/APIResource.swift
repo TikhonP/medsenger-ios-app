@@ -19,7 +19,7 @@ struct APIResourceError<T: Error> {
     let error: T
 }
 
-protocol APIResource {
+protocol APIResource: Sendable {
     
     /// Decodable model type for response JSON decoding
     associatedtype ModelType: Decodable

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class DeviceResource: APIResource {
+struct DeviceResource: APIResource {
     let devices: [DeviceNode]
     let contractId: Int
     
@@ -19,9 +19,9 @@ class DeviceResource: APIResource {
     
     typealias ModelType = EmptyModel
     
-    lazy var methodPath: String = { "/contracts/\(contractId)/agents" }()
+    var methodPath: String { "/contracts/\(contractId)/agents" }
     
-    lazy var params: [String: String] = {
+    var params: [String: String] {
         var data = [String: String]()
         let group = DispatchGroup()
         group.enter()
@@ -33,16 +33,16 @@ class DeviceResource: APIResource {
         }
         group.wait()
         return data
-    }()
+    }
     
-    lazy var options: APIResourceOptions = {
+    var options: APIResourceOptions {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             method: .POST,
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }()
+    }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

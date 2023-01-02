@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ChangePasswordResource: APIResource {
+struct ChangePasswordResource: APIResource {
     let newPassword: String
     
     init(newPassword: String) {
@@ -21,14 +21,14 @@ class ChangePasswordResource: APIResource {
     
     typealias ModelType = ResponseModel
     
-    lazy var params: [String: String] = {
+    var params: [String: String] {
         ["password": newPassword,
          "password_confirmation": newPassword]
-    }()
+    }
     
     var methodPath = "/password"
     
-    lazy var options: APIResourceOptions = {
+    var options: APIResourceOptions {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             parseResponse: true,
@@ -37,7 +37,7 @@ class ChangePasswordResource: APIResource {
             headers: result.headers,
             keyDecodingStrategy: .convertFromSnakeCase
         )
-    }()
+    }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

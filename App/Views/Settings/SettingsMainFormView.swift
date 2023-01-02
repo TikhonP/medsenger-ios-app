@@ -295,7 +295,9 @@ struct SettingsMainFormView: View {
                     }
                 })
                 .onTapGesture {
-                    settingsMainFormViewModel.updatePushNotifications(!isPushNotificationsOn)
+                    Task(priority:. userInitiated) {
+                        await settingsMainFormViewModel.updatePushNotifications(!isPushNotificationsOn)
+                    }
                 }
             }
     }

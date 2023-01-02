@@ -18,5 +18,5 @@ struct CheckResource: APIResource {
         dateDecodingStrategy: .secondsSince1970
     )
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

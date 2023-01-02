@@ -31,8 +31,7 @@ fileprivate struct InternetOfflineWarningInBottomBarModifier: ViewModifier {
 }
 
 extension View {
-    @ViewBuilder
-    func internetOfflineWarningInBottomBar() -> some View {
+    @MainActor @ViewBuilder func internetOfflineWarningInBottomBar() -> some View {
         self.modifier(InternetOfflineWarningInBottomBarModifier())
     }
 }

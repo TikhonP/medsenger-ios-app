@@ -75,18 +75,20 @@ class APIRequest<Resource: APIResource> {
 
 extension APIRequest: NetworkRequest {
     public func execute() async throws {
-        if resource.options.parseResponse {
+        let options = resource.options
+        if options.parseResponse {
             fatalError("APIRequest.execute: mthod not supported for parseResponse request. Use APIRequest.executeWithResult.")
         }
-        let request = createURLRequest(method: resource.options.method, url: resource.url, data: resource.options.httpBody, headers: resource.options.headers)
+        let request = createURLRequest(method: options.method, url: resource.url, data: options.httpBody, headers: options.headers)
         try await load(for: request)
     }
     
     public func executeWithResult() async throws -> Resource.ModelType {
-        if !resource.options.parseResponse {
+        let options = resource.options
+        if !options.parseResponse {
             fatalError("APIRequest.executeWithResult: mthod not supported for not parseResponse request. Use APIRequest.execute.")
         }
-        let request = createURLRequest(method: resource.options.method, url: resource.url, data: resource.options.httpBody, headers: resource.options.headers)
+        let request = createURLRequest(method: options.method, url: resource.url, data: options.httpBody, headers: options.headers)
         return try await loadWithResult(for: request)
     }
     

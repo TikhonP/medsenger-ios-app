@@ -10,7 +10,7 @@ import Foundation
 import UniformTypeIdentifiers
 import os.log
 
-class ChatViewAttachment: Identifiable, Equatable {
+struct ChatViewAttachment: Identifiable, Equatable {
     enum ChatViewAttachmentType: String {
         case image, video, audio, file
     }
@@ -52,7 +52,7 @@ class ChatViewAttachment: Identifiable, Equatable {
         realFilename ?? randomFilename
     }
     
-    func saveToFile() -> URL? {
+    mutating func saveToFile() -> URL? {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
             return nil
         }
@@ -77,13 +77,14 @@ class ChatViewAttachment: Identifiable, Equatable {
         }
     }
     
-    deinit {
-        if let fileUrl = savedUrl {
-            do {
-                try FileManager.default.removeItem(at: fileUrl)
-            } catch {
-                Logger.defaultLogger.error("Failed to remove file preview: \(error.localizedDescription)")
-            }
-        }
-    }
+    // FIXME: !!!
+//    deinit {
+//        if let fileUrl = savedUrl {
+//            do {
+//                try FileManager.default.removeItem(at: fileUrl)
+//            } catch {
+//                Logger.defaultLogger.error("Failed to remove file preview: \(error.localizedDescription)")
+//            }
+//        }
+//    }
 }

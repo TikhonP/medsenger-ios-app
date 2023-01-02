@@ -19,105 +19,97 @@ final class PushNotifications {
         category: String(describing: PushNotifications.self)
     )
     
-    static func onChatsViewAppear() {
+    static func onChatsViewAppear() async {
         let center = UNUserNotificationCenter.current()
-        center.getNotificationSettings { settings in
-            if (((settings.authorizationStatus == .authorized) ||
-                 (settings.authorizationStatus == .provisional) ||
-                 (settings.authorizationStatus == .ephemeral)) &&
-                !UserDefaults.isPushNotificationsOn) ||
-                settings.authorizationStatus == .notDetermined {
-                center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                    if let error = error {
-                        PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
-                    }
-                    if granted {
-                        guard let fcmToken = UserDefaults.fcmToken else {
-                            PushNotifications.logger.error("No fcm token")
-                            UserDefaults.isPushNotificationsOn = false
-                            return
-                        }
-                        Task(priority: .background) {
-                            do {
-                                try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
-                                UserDefaults.isPushNotificationsOn = true
-                            } catch {
-                                UserDefaults.isPushNotificationsOn = false
-                            }
-                        }
-                    } else {
+        let settings = await center.notificationSettings()
+        
+        if (((settings.authorizationStatus == .authorized) ||
+             (settings.authorizationStatus == .provisional) ||
+             (settings.authorizationStatus == .ephemeral)) &&
+            !UserDefaults.isPushNotificationsOn) ||
+            settings.authorizationStatus == .notDetermined {
+            
+            do {
+                let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
+                if granted {
+                    guard let fcmToken = UserDefaults.fcmToken else {
+                        PushNotifications.logger.error("No fcm token")
                         UserDefaults.isPushNotificationsOn = false
-                        PushNotifications.logger.notice("Failed authorize push notifications")
+                        return
                     }
+                    do {
+                        try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
+                        UserDefaults.isPushNotificationsOn = true
+                    } catch {
+                        UserDefaults.isPushNotificationsOn = false
+                    }
+                } else {
+                    UserDefaults.isPushNotificationsOn = false
+                    PushNotifications.logger.notice("Failed authorize push notifications")
                 }
+            } catch {
+                PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
             }
         }
     }
     
-    enum ToggleNotificationsResult {
-        case success, notGranted, requestFailed, noFcmToken
+    enum ToggleNotificationsError: Error {
+        case notGranted, noFcmToken
     }
     
-    static func toggleNotifications(isOn: Bool, completion: @escaping (_ result: ToggleNotificationsResult) -> Void) {
+    static func toggleNotifications(isOn: Bool) async throws {
         if isOn {
             guard let fcmToken = UserDefaults.fcmToken else {
                 UserDefaults.isPushNotificationsOn = false
-                completion(.noFcmToken)
+                throw ToggleNotificationsError.noFcmToken
+            }
+            
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+            
+            guard (settings.authorizationStatus == .authorized) ||
+                    (settings.authorizationStatus == .provisional) else {
+                
+                do {
+                    let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
+                    if granted {
+                        do {
+                            try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
+                            UserDefaults.isPushNotificationsOn = true
+                        } catch {
+                            UserDefaults.isPushNotificationsOn = false
+                            throw error
+                        }
+                    } else {
+                        UserDefaults.isPushNotificationsOn = false
+                        PushNotifications.logger.notice("Failed authorize push notifications")
+                        throw ToggleNotificationsError.notGranted
+                    }
+                } catch {
+                    PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
+                    throw error
+                }
+                
                 return
             }
-            let center = UNUserNotificationCenter.current()
-            center.getNotificationSettings { settings in
-                guard (settings.authorizationStatus == .authorized) ||
-                        (settings.authorizationStatus == .provisional) else {
-                    center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                        if let error = error {
-                            PushNotifications.logger.error("Error requesting push notifications authorization: \(error.localizedDescription)")
-                        }
-                        if granted {
-                            Task(priority: .userInitiated) {
-                                do {
-                                    try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
-                                    UserDefaults.isPushNotificationsOn = true
-                                    completion(.success)
-                                } catch {
-                                    UserDefaults.isPushNotificationsOn = false
-                                    completion(.requestFailed)
-                                }
-                            }
-                        } else {
-                            UserDefaults.isPushNotificationsOn = false
-                            PushNotifications.logger.notice("Failed authorize push notifications")
-                            completion(.notGranted)
-                        }
-                    }
-                    return
-                }
-                Task(priority: .userInitiated) {
-                    do {
-                        try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
-                        UserDefaults.isPushNotificationsOn = true
-                        completion(.success)
-                    } catch {
-                        UserDefaults.isPushNotificationsOn = false
-                        completion(.requestFailed)
-                    }
-                }
+            do {
+                try await Account.updatePushNotifications(fcmToken: fcmToken, action: .storeToken)
+                UserDefaults.isPushNotificationsOn = true
+            } catch {
+                UserDefaults.isPushNotificationsOn = false
+                throw error
             }
         } else {
             guard let fcmToken = UserDefaults.fcmToken else {
                 UserDefaults.isPushNotificationsOn = false
-                completion(.success)
                 return
             }
-            Task(priority: .userInitiated) {
-                do {
-                    try await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
-                    UserDefaults.isPushNotificationsOn = false
-                    completion(.success)
-                } catch {
-                    UserDefaults.isPushNotificationsOn = true
-                    completion(.requestFailed)
-                }
+            do {
+                try await Account.updatePushNotifications(fcmToken: fcmToken, action: .removeToken)
+                UserDefaults.isPushNotificationsOn = false
+            } catch {
+                UserDefaults.isPushNotificationsOn = true
+                throw error
             }
         }
     }
@@ -156,7 +148,7 @@ final class PushNotifications {
 }
 
 extension AppDelegate: MessagingDelegate {
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         UserDefaults.fcmToken = fcmToken
     }
 }

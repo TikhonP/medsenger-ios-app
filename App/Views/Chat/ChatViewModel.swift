@@ -57,8 +57,8 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
         try await Messages.fetchMessages(contractId: contractId)
     }
     
-    nonisolated func fetchAttachment(_ attachment: Attachment) async -> URL? {
-        return try? await Messages.fetchAttachmentData(attachmentId: Int(attachment.id))
+    nonisolated func fetchAttachment(attachmentId: Int) async -> URL? {
+        return try? await Messages.fetchAttachmentData(attachmentId: attachmentId)
     }
     
     nonisolated func fetchImageAttachment(_ imageAttachment: ImageAttachment) async -> URL? {
@@ -70,7 +70,7 @@ final class ChatViewModel: NSObject, ObservableObject, Alertable {
             quickLookDocumentUrl = dataPath
         } else {
             loadingAttachmentIds.append(Int(attachment.id))
-            let dataPath = await fetchAttachment(attachment)
+            let dataPath = await fetchAttachment(attachmentId: Int(attachment.id))
             if let index = self.loadingAttachmentIds.firstIndex(of: Int(attachment.id)) {
                 self.loadingAttachmentIds.remove(at: index)
             }
@@ -177,23 +177,25 @@ extension ChatViewModel: AVAudioPlayerDelegate {
         try await startPlaying(voiceMessageFilePath)
     }
     
-    internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        do {
-            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        } catch {
-            ChatViewModel.logger.error("audioPlayerDidFinishPlaying: Failed to setActive(false): \(error.localizedDescription)")
-        }
+    nonisolated internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
+            do {
+                try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            } catch {
+                ChatViewModel.logger.error("audioPlayerDidFinishPlaying: Failed to setActive(false): \(error.localizedDescription)")
+            }
             self.isAudioMessagePlayingWithId = nil
         }
     }
     
-    internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        if let error = error {
-            ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur: \(error.localizedDescription)")
-        } else {
-            ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
-        }
+    nonisolated internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        DispatchQueue.main.async {
+            if let error = error {
+                ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur: \(error.localizedDescription)")
+            } else {
+                ChatViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
+            }
+        }
     }
 }

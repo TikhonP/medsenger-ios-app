@@ -7,16 +7,18 @@
 //
 
 import Foundation
-import SwiftUI
 
-struct LoginData {
+struct SignInResource: APIResource {
     let email: String
     let password: String
-    
-    let uuid = UIDevice.current.identifierForVendor?.uuidString
+    let uuid: String?
     let manufacturer = "Apple"
-    let platform = UIDevice.current.systemVersion
-    let model = UIDevice.current.model
+    let platform: String
+    let model: String
+
+    typealias ModelType = User.JsonDecoder
+
+    var methodPath = "/auth"
     
     var queryItems: [URLQueryItem] {
         [
@@ -28,20 +30,11 @@ struct LoginData {
             URLQueryItem(name: "model", value: model),
         ]
     }
-}
-
-struct SignInResource: APIResource {
-    let email: String
-    let password: String
-
-    typealias ModelType = User.JsonDecoder
-
-    var methodPath = "/auth"
     
     var options: APIResourceOptions {
         APIResourceOptions(
             parseResponse: true,
-            params: LoginData(email: email, password: password).queryItems,
+            params: queryItems,
             headers: [
                 "Cache-Control": "no-store; no-cache; must-revalidate"
             ],
@@ -54,7 +47,7 @@ struct SignInResource: APIResource {
         case userIsNotActivated, incorrectData, incorrectPassword
     }
     
-    internal var apiErrors: [APIResourceError<Error>] = [
+    internal let apiErrors: [APIResourceError<Error>] = [
         APIResourceError(errorString: "User is not activated", error: SignInError.userIsNotActivated),
         APIResourceError(errorString: Constants.MedsengerErrorStrings.incorrectData, error: SignInError.incorrectData),
         APIResourceError(errorString: "Incorrect password", error: SignInError.incorrectPassword)

@@ -13,6 +13,7 @@ struct ContentView: View {
     @StateObject private var networkConnectionMonitor = NetworkConnectionMonitor()
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     @FetchRequest(sortDescriptors: [], animation: .default) private var users: FetchedResults<User>
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         if let user = users.first {
@@ -20,18 +21,32 @@ struct ContentView: View {
                 ChooseRoleView()
                     .transition(.opacity)
             } else {
-                NavigationView {
-                    ChatsView(user: user)
+                Group {
+                    if #available(iOS 16.0, *) {
+                        NavigationStack {
+                            ChatsView(user: user)
+                        }
+                    } else {
+                        NavigationView {
+                            ChatsView(user: user)
+                        }
+                        .navigationViewStyle(.stack)
+                    }
                 }
-                .navigationViewStyle(.stack)
+                .transition(.opacity)
                 .environmentObject(contentViewModel)
                 .environmentObject(networkConnectionMonitor)
                 .onAppear {
                     Task(priority: .background) {
-                        await Login.deauthIfTokenIsNotExists()
+                        await (Login.deauthIfTokenIsNotExists(), PushNotifications.onChatsViewAppear())
+                    }
+                    Websockets.shared.createUrlSession()
+                }
+                .onChange(of: scenePhase) { newPhase in
+                    if scenePhase == .inactive {
+                        Websockets.shared.createUrlSession()
                     }
                 }
-                .transition(.opacity)
                 .onOpenURL(perform: {
                     contentViewModel.processDeeplink($0)
                 })

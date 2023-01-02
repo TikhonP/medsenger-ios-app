@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct TextInputAttachmentView: View {
-    let attachment: ChatViewAttachment
+    @State var attachment: ChatViewAttachment
     
     @EnvironmentObject private var chatViewModel: ChatViewModel
     @EnvironmentObject private var messageInputViewModel: MessageInputViewModel

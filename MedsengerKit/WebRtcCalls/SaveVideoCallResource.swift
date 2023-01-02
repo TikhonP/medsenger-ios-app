@@ -33,5 +33,5 @@ struct SaveVideoCallResource: APIResource {
         )
     }
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

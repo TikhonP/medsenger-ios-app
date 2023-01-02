@@ -72,6 +72,7 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
             saveMessageDraft()
             replyToMessage = nil
         } catch {
+            showSendingMessageLoading = false
             presentGlobalAlert()
         }
     }
@@ -91,13 +92,12 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
                 for: contractId,
                 replyToId: replyToId,
                 attachments: [attachment])
-            await MainActor.run {
-                showSendingMessageLoading = false
-                self.isRecordingVoiceMessage = false
-                self.showRecordedMessage = false
-                self.replyToMessage = nil
-            }
+            showSendingMessageLoading = false
+            self.isRecordingVoiceMessage = false
+            self.showRecordedMessage = false
+            self.replyToMessage = nil
         } catch {
+            showSendingMessageLoading = false
             presentGlobalAlert()
         }
     }
@@ -132,33 +132,26 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
         }
     }
     
-    func addOnDropAttachments(_ providers: [NSItemProvider]) -> Bool {
+    enum AddOnDropAttachmentsError: Error {
+        case providersIsEmpty
+    }
+    
+    func addOnDropAttachments(_ providers: [NSItemProvider]) async throws {
         guard !providers.isEmpty else {
-            return false
+            throw AddOnDropAttachmentsError.providersIsEmpty
         }
         for itemProvider in providers {
             guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
                 continue
             }
-            itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] url, error in
-                if let error = error {
-                    MessageInputViewModel.logger.error("Failed to load file representation on drop: \(error.localizedDescription)")
-                }
-                guard let url = url, let strongSelf = self else {
-                    return
-                }
-                do {
-                    let data = try Data(contentsOf: url)
-                    DispatchQueue.main.async {
-                        strongSelf.messageAttachments.append(ChatViewAttachment(
-                            data: data, extention: url.pathExtension, realFilename: url.lastPathComponent, type: .file))
-                    }
-                } catch {
-                    MessageInputViewModel.logger.error("Failed to load data from file on drop: \(error.localizedDescription)")
-                }
-            }
+            
+            let (data, url) = try await itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier)
+            
+            messageAttachments.append(
+                ChatViewAttachment(
+                    data: data, extention: url.pathExtension,
+                    realFilename: url.lastPathComponent, type: .file))
         }
-        return true
     }
     
     func saveMessageDraft() {
@@ -260,14 +253,16 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
         }
     }
     
-    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        if let error = error {
-            MessageInputViewModel.logger.error("audioRecorderEncodeErrorDidOccur: \(error.localizedDescription)")
+    nonisolated func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
+        DispatchQueue.main.async {
+            if let error = error {
+                MessageInputViewModel.logger.error("audioRecorderEncodeErrorDidOccur: \(error.localizedDescription)")
+            }
+            try? AVAudioSession.sharedInstance().setActive(false)
         }
-        try? AVAudioSession.sharedInstance().setActive(false)
     }
     
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
+    nonisolated func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         try? AVAudioSession.sharedInstance().setActive(false)
     }
 }
@@ -333,18 +328,20 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         }
     }
     
-    internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    nonisolated internal func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async {
             self.isVoiceMessagePlaying = false
         }
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
     
-    internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        if let error = error {
-            MessageInputViewModel.logger.error("audioPlayerDecodeErrorDidOccur: \(error.localizedDescription)")
-        } else {
-            MessageInputViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
+    nonisolated internal func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        DispatchQueue.main.async {
+            if let error = error {
+                MessageInputViewModel.logger.error("audioPlayerDecodeErrorDidOccur: \(error.localizedDescription)")
+            } else {
+                MessageInputViewModel.logger.error("audioPlayerDecodeErrorDidOccur")
+            }
         }
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }

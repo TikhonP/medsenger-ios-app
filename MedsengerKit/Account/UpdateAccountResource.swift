@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UpdateAccountResource: APIResource {
+struct UpdateAccountResource: APIResource {
     let name: String
     let email: String
     let phone: String
@@ -27,16 +27,16 @@ class UpdateAccountResource: APIResource {
         return DateFormatter.ddMMyyyy.string(from: birthday)
     }
     
-    lazy var params: [String: String] = {
+    var params: [String: String] {
         ["name": name,
          "email": email,
          "phone": phone,
          "birthday": birthdayAsString]
-    }()
+    }
     
     var methodPath = "/account"
     
-    lazy var options: APIResourceOptions = {
+    var options: APIResourceOptions {
         let result = multipartFormData(textParams: params)
         return APIResourceOptions(
             parseResponse: false,
@@ -44,11 +44,11 @@ class UpdateAccountResource: APIResource {
             httpBody: result.httpBody,
             headers: result.headers
         )
-    }()
+    }
     
     struct PhoneExistsError: Error { }
 
-    internal var apiErrors: [APIResourceError<Error>] = [
+    internal let apiErrors: [APIResourceError<Error>] = [
         APIResourceError(errorString: "Phone exists", error: PhoneExistsError())
     ]
 }

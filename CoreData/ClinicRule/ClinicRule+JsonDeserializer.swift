@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 extension ClinicRule {
-    public struct JsonDeserializer: Decodable {
+    public struct JsonDeserializer: Decodable, Sendable {
         let id: Int
         let name: String
     }

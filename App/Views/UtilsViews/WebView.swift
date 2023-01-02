@@ -226,92 +226,109 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         }
     }
     
-    public func webView(
+    nonisolated public func webView(
         _ webView: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        handleForbiddenHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
+        DispatchQueue.main.async {
+            self.handleForbiddenHosts(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler)
+        }
     }
     
-    public func webView(
+    nonisolated public func webView(
         _ webView: WKWebView,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        
-        if let credential = credential {
-            let authenticationMethod = challenge.protectionSpace.authenticationMethod
-            if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
-                completionHandler(.useCredential, credential)
-                action?(.didRecieveAuthChallenge(webView, challenge, .useCredential, credential))
-            } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
-                completionHandler(.performDefaultHandling, nil)
-                action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
+        DispatchQueue.main.async {
+            if let credential = self.credential {
+                let authenticationMethod = challenge.protectionSpace.authenticationMethod
+                if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
+                    completionHandler(.useCredential, credential)
+                    self.action?(.didRecieveAuthChallenge(webView, challenge, .useCredential, credential))
+                } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                    completionHandler(.performDefaultHandling, nil)
+                    self.action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
+                } else {
+                    completionHandler(.cancelAuthenticationChallenge, nil)
+                    self.action?(.didRecieveAuthChallenge(webView, challenge, .cancelAuthenticationChallenge, nil))
+                }
             } else {
-                completionHandler(.cancelAuthenticationChallenge, nil)
-                action?(.didRecieveAuthChallenge(webView, challenge, .cancelAuthenticationChallenge, nil))
+                completionHandler(.performDefaultHandling, nil)
+                self.action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
             }
-        } else {
-            completionHandler(.performDefaultHandling, nil)
-            action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
         }
     }
     
-    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-        webViewStateModel.loading = true
-        action?(.didStartProvisionalNavigation(webView, navigation))
+    nonisolated public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        DispatchQueue.main.async {
+            self.webViewStateModel.loading = true
+            self.action?(.didStartProvisionalNavigation(webView, navigation))
+        }
     }
     
-    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        action?(.didReceiveServerRedirectForProvisionalNavigation(webView, navigation))
+    nonisolated public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        DispatchQueue.main.async {
+            self.action?(.didReceiveServerRedirectForProvisionalNavigation(webView, navigation))
+        }
     }
     
-    public func webView(
+    nonisolated public func webView(
         _ webView: WKWebView,
         didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: Error
     ) {
-        webViewStateModel.loading = false
-        webViewStateModel.canGoBack = webView.canGoBack
-        webViewStateModel.canGoForward = webView.canGoForward
-        action?(.didFailProvisionalNavigation(webView, navigation, error))
-    }
-    
-    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        action?(.didCommit(webView, navigation))
-    }
-    
-    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webViewStateModel.loading = false
-        webViewStateModel.canGoBack = webView.canGoBack
-        webViewStateModel.canGoForward = webView.canGoForward
-        if let title = title {
-            webViewStateModel.pageTitle = title
-        } else {
-            if let title = webView.title {
-                webViewStateModel.pageTitle = title
-            }
+        DispatchQueue.main.async {
+            self.webViewStateModel.loading = false
+            self.webViewStateModel.canGoBack = webView.canGoBack
+            self.webViewStateModel.canGoForward = webView.canGoForward
+            self.action?(.didFailProvisionalNavigation(webView, navigation, error))
         }
-        action?(.didFinish(webView, navigation))
     }
     
-    public func webView(
+    nonisolated public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        DispatchQueue.main.async {
+            self.action?(.didCommit(webView, navigation))
+        }
+    }
+    
+    nonisolated public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        DispatchQueue.main.async {
+            self.webViewStateModel.loading = false
+            self.webViewStateModel.canGoBack = webView.canGoBack
+            self.webViewStateModel.canGoForward = webView.canGoForward
+            if let title = self.title {
+                self.webViewStateModel.pageTitle = title
+            } else {
+                if let title = webView.title {
+                    self.webViewStateModel.pageTitle = title
+                }
+            }
+            self.action?(.didFinish(webView, navigation))
+        }
+    }
+    
+    nonisolated public func webView(
         _ webView: WKWebView,
         didFail navigation: WKNavigation!,
         withError error: Error
     ) {
-        webViewStateModel.loading = false
-        webViewStateModel.canGoBack = webView.canGoBack
-        webViewStateModel.canGoForward = webView.canGoForward
-        action?(.didFail(webView, navigation, error))
+        DispatchQueue.main.async {
+            self.webViewStateModel.loading = false
+            self.webViewStateModel.canGoBack = webView.canGoBack
+            self.webViewStateModel.canGoForward = webView.canGoForward
+            self.action?(.didFail(webView, navigation, error))
+        }
     }
 }
 
 @available(iOS 13.0, *)
 extension WebViewWrapper.Coordinator: WKScriptMessageHandler {
-    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        action?(.didReceiveScriptMessage(userContentController, message))
+    nonisolated public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        DispatchQueue.main.async {
+            self.action?(.didReceiveScriptMessage(userContentController, message))
+        }
     }
 }
 

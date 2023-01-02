@@ -28,8 +28,6 @@ struct ChatsView: View {
     
     @AppStorage(UserDefaults.Keys.userRoleKey) private var userRole: UserRole = UserDefaults.userRole
     
-    @Environment(\.scenePhase) private var scenePhase
-    
     @State private var showSettingsModal: Bool = false
     @State private var showNewContractModal: Bool = false
     
@@ -174,11 +172,10 @@ struct ChatsView: View {
         .animation(.default, value: chatsViewModel.showContractsLoading)
         .navigationTitle("ChatsView.navigationTitle")
         .onAppear {
+            openChat(contractId: contentViewModel.openChatContractId)
             Task(priority: .background) {
                 try await chatsViewModel.getContracts(presentFailedAlert: false)
             }
-            PushNotifications.onChatsViewAppear()
-            chatsViewModel.initilizeWebsockets()
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -210,21 +207,18 @@ struct ChatsView: View {
                 .id(UUID())
             }
         }
-        .onChange(of: scenePhase) { newPhase in
-            if scenePhase == .inactive {
-                Websockets.shared.createUrlSession()
-            }
-        }
-        .onChange(of: contentViewModel.openChatContractId) { newContractId in
-            if let newContractId = newContractId {
-                showSettingsModal = false
-                showNewContractModal = false
-                chatsNavigationSelection = newContractId
-            }
-        }
+        .onChange(of: contentViewModel.openChatContractId, perform: openChat)
         .sheet(isPresented: $showNewContractModal, content: { AddContractView() })
         .sheet(isPresented: $showSettingsModal, content: { SettingsView(user: user) })
         .internetOfflineWarningInBottomBar()
+    }
+    
+    func openChat(contractId: Int?) {
+        if let contractId = contractId {
+            showSettingsModal = false
+            showNewContractModal = false
+            chatsNavigationSelection = contractId
+        }
     }
 }
 

@@ -17,5 +17,5 @@ struct RemoveScenarioResource: APIResource {
     
     internal var options = APIResourceOptions(method: .POST)
     
-    internal var apiErrors: [APIResourceError<Error>] = []
+    internal let apiErrors: [APIResourceError<Error>] = []
 }

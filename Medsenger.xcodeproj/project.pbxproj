@@ -98,6 +98,7 @@
 		437BEB5D29437C29008EF4DE /* EditPersonalDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */; };
 		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
 		437F092C2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */; };
+		4389FE7B2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4389FE7A2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift */; };
 		43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1662F294131380003E1FB /* ReplyedMessageView.swift */; };
 		43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16631294132670003E1FB /* InputAttachmentsView.swift */; };
 		43A16634294133450003E1FB /* MainInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16633294133450003E1FB /* MainInputView.swift */; };
@@ -352,6 +353,7 @@
 		437BEB5C29437C29008EF4DE /* EditPersonalDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPersonalDataViewModel.swift; sourceTree = "<group>"; };
 		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResourceRequestAsPatient.swift; sourceTree = "<group>"; };
+		4389FE7A2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+loadFileRepresentation.swift"; sourceTree = "<group>"; };
 		43A1662F294131380003E1FB /* ReplyedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyedMessageView.swift; sourceTree = "<group>"; };
 		43A16631294132670003E1FB /* InputAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAttachmentsView.swift; sourceTree = "<group>"; };
 		43A16633294133450003E1FB /* MainInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInputView.swift; sourceTree = "<group>"; };
@@ -760,6 +762,7 @@
 				433F2004292FC9FA00A622B1 /* UserDefaults+AppPrefs.swift */,
 				435F9DA6293577540094F93C /* Logger.swift */,
 				43C510FB2953137E00C91CE5 /* Date+isEqual.swift */,
+				4389FE7A2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift */,
 			);
 			path = ObjectExtensions;
 			sourceTree = "<group>";
@@ -1380,6 +1383,7 @@
 				437BEB5729435AA6008EF4DE /* String+isEmail.swift in Sources */,
 				43EF44A929228FB9005DF084 /* ChangePasswordView.swift in Sources */,
 				4376164A29339876001049E6 /* VideoCallViewModel.swift in Sources */,
+				4389FE7B2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift in Sources */,
 				435D56FC2938009F0013B0F4 /* HealthKitRecord.swift in Sources */,
 				435C184A293B8044009483F6 /* LinearWaveformRenderer.swift in Sources */,
 				435C1851293BCBEB009483F6 /* EmptyChatsView.swift in Sources */,
@@ -1774,6 +1778,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1812,6 +1817,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = ru.medsenger.patient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -35,30 +35,31 @@ final class SettingsMainFormViewModel: ObservableObject, Alertable {
         }
     }
     
-    func updatePushNotifications(_ value: Bool) {
+    func updatePushNotifications(_ value: Bool) async {
         showPushNotificationUpdateRequestLoading = true
-        PushNotifications.toggleNotifications(isOn: value) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.showPushNotificationUpdateRequestLoading = false
-                if result == .requestFailed {
-                    self?.presentGlobalAlert()
-                } else if result == .noFcmToken {
-                    self?.presentAlert(title: Text("SettingsMainFormViewModel.noFcmTokenAlertTitle"))
-                } else if result == .notGranted {
-                    self?.presentAlert(Alert(
-                        title: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertTitle"),
-                        message: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertMessage"),
-                        primaryButton: .cancel(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
-                        secondaryButton: .default(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
-                            DispatchQueue.main.async {
-                                if let url = URL(string: UIApplication.openSettingsURLString) {
-                                    UIApplication.shared.open(url)
-                                }
-                            }
-                        })
-                    )
-                }
-            }
+        do {
+            try await PushNotifications.toggleNotifications(isOn: value)
+            showPushNotificationUpdateRequestLoading = false
+        } catch PushNotifications.ToggleNotificationsError.noFcmToken {
+            showPushNotificationUpdateRequestLoading = false
+            presentAlert(title: Text("SettingsMainFormViewModel.noFcmTokenAlertTitle"))
+        } catch PushNotifications.ToggleNotificationsError.notGranted {
+            showPushNotificationUpdateRequestLoading = false
+            presentAlert(Alert(
+                title: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertTitle"),
+                message: Text("SettingsMainFormViewModel.notificationPermissionNeededAlertMessage"),
+                primaryButton: .cancel(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertCancelButton", comment: "Not Now")),
+                secondaryButton: .default(Text("SettingsMainFormViewModel.allowMicrophoneAccessAlertSettingsButton", comment: "Settings")) {
+                    DispatchQueue.main.async {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                })
+            )
+        } catch {
+            showPushNotificationUpdateRequestLoading = false
+            presentGlobalAlert()
         }
     }
     

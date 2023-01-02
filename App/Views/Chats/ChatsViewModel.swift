@@ -31,10 +31,6 @@ final class ChatsViewModel: ObservableObject, Alertable {
         UIApplication.shared.open(url)
     }
     
-    nonisolated func initilizeWebsockets() {
-        Websockets.shared.createUrlSession()
-    }
-    
     func getArchiveContracts(presentFailedAlert: Bool) async {
         showArchiveContractsLoading = true
         do {

@@ -12,12 +12,12 @@ import CoreData
 
 @objc(ClinicScenario)
 public class ClinicScenario: NSManagedObject, CoreDataIdGetable {
-    public static func getScenariosCategories(clinic: Clinic) async throws -> [String] {
+    public static func getScenariosCategories(clinicId: Int64) async throws -> [String] {
         let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
         
         let scenarios = try await moc.crossVersionPerform {
             let fetchRequest = ClinicScenario.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "clinic == %@", clinic)
+            fetchRequest.predicate = NSPredicate(format: "clinic.id == %i", clinicId)
             return try moc.wrappedFetch(fetchRequest, detailsForLogging: "ClinicScenario.getScenariosCategories")
         }
         
