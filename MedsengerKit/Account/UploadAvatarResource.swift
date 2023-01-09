@@ -10,10 +10,6 @@ import Foundation
 
 struct UploadAvatarResource: APIResource {
     let image: ImagePickerMedia
-
-    init(image: ImagePickerMedia) {
-        self.image = image
-    }
     
     typealias ModelType = User.JsonDecoder
     
@@ -39,5 +35,5 @@ struct UploadAvatarResource: APIResource {
         )
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

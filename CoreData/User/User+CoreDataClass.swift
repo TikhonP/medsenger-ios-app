@@ -38,6 +38,15 @@ public class User: NSManagedObject, CoreDataErasable {
         }
     }
     
+    public static func getLastHelthSync() -> Date? {
+        let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
+        var lastHealthSync: Date?
+        moc.performAndWait {
+            lastHealthSync = try? get(for: moc).lastHealthSync
+        }
+        return lastHealthSync
+    }
+    
     public static func delete() async throws {
         let moc = PersistenceController.shared.container.wrappedNewBackgroundContext()
         try await moc.crossVersionPerform {

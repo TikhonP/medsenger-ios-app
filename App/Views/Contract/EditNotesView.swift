@@ -72,6 +72,15 @@ struct EditNotesView: View {
                     }
                 }
                 .alert(item: $editNotesViewModel.alert) { $0.alert }
+                .overlay(
+                    Text("EditNotesView.placeholder")
+                        .foregroundColor(Color(.placeholderText))
+                        .padding(.leading)
+                        .padding(.leading, 4)
+                        .padding(.top, 9)
+                        .opacity(editNotesViewModel.note.isEmpty ? 1 : 0),
+                    alignment: .topLeading
+                )
         }
     }
 }

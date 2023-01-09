@@ -12,10 +12,6 @@ import os.log
 struct NotificationsResource: APIResource {
     let emailNotify: Bool
     
-    init(emailNotify: Bool) {
-        self.emailNotify = emailNotify
-    }
-    
     typealias ModelType = EmptyModel
 
     let methodPath = "/notifications"
@@ -33,5 +29,5 @@ struct NotificationsResource: APIResource {
         )
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

@@ -11,11 +11,7 @@ import Foundation
 struct ChangePasswordResource: APIResource {
     let newPassword: String
     
-    init(newPassword: String) {
-        self.newPassword = newPassword
-    }
-    
-    struct ResponseModel: Decodable {
+    struct ResponseModel: Decodable, Sendable {
         let apiToken: String
     }
     
@@ -26,7 +22,7 @@ struct ChangePasswordResource: APIResource {
          "password_confirmation": newPassword]
     }
     
-    var methodPath = "/password"
+    let methodPath = "/password"
     
     var options: APIResourceOptions {
         let result = multipartFormData(textParams: params)
@@ -39,5 +35,5 @@ struct ChangePasswordResource: APIResource {
         )
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

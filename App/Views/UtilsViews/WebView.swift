@@ -11,7 +11,7 @@ import WebKit
 import os.log
 
 @available(iOS 13.0, *)
-public struct LoadingView<Content>: View where Content: View {
+fileprivate struct LoadingView<Content>: View where Content: View {
     
     @Binding var isShowing: Bool
     var content: () -> Content
@@ -30,14 +30,14 @@ public struct LoadingView<Content>: View where Content: View {
     }
 }
 
-public enum WebViewData {
+fileprivate enum WebViewData {
     case url(URL)
     case request(URLRequest)
     case html(String, URL?)
 }
 
 @available(iOS 13.0, *)
-struct WebViewWrapper : UIViewRepresentable {
+fileprivate struct WebViewWrapper : UIViewRepresentable {
     
     @ObservedObject var webViewStateModel: WebViewStateModel
     let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
@@ -125,7 +125,7 @@ struct WebViewWrapper : UIViewRepresentable {
         
         @ObservedObject var webViewStateModel: WebViewStateModel
         let title: String?
-        let action: ((_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
+        let action: (@MainActor (_ navigationAction: WebPresenterView.NavigationAction) -> Void)?
         let allowedHosts: [String]?
         let forbiddenHosts: [String]?
         let credential: URLCredential?
@@ -236,28 +236,26 @@ extension WebViewWrapper.Coordinator: WKNavigationDelegate {
         }
     }
     
-    nonisolated public func webView(
+    public func webView(
         _ webView: WKWebView,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        DispatchQueue.main.async {
-            if let credential = self.credential {
-                let authenticationMethod = challenge.protectionSpace.authenticationMethod
-                if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
-                    completionHandler(.useCredential, credential)
-                    self.action?(.didRecieveAuthChallenge(webView, challenge, .useCredential, credential))
-                } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
-                    completionHandler(.performDefaultHandling, nil)
-                    self.action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
-                } else {
-                    completionHandler(.cancelAuthenticationChallenge, nil)
-                    self.action?(.didRecieveAuthChallenge(webView, challenge, .cancelAuthenticationChallenge, nil))
-                }
-            } else {
+        let authenticationMethod = challenge.protectionSpace.authenticationMethod
+        if let credential = self.credential {
+            if authenticationMethod == NSURLAuthenticationMethodDefault || authenticationMethod == NSURLAuthenticationMethodHTTPBasic || authenticationMethod == NSURLAuthenticationMethodHTTPDigest {
+                completionHandler(.useCredential, credential)
+                self.action?(.didRecieveAuthChallenge(webView, challenge, .useCredential, credential))
+            } else if authenticationMethod == NSURLAuthenticationMethodServerTrust {
                 completionHandler(.performDefaultHandling, nil)
                 self.action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
+            } else {
+                completionHandler(.cancelAuthenticationChallenge, nil)
+                self.action?(.didRecieveAuthChallenge(webView, challenge, .cancelAuthenticationChallenge, nil))
             }
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+            self.action?(.didRecieveAuthChallenge(webView, challenge, .performDefaultHandling, nil))
         }
     }
     
@@ -333,7 +331,7 @@ extension WebViewWrapper.Coordinator: WKScriptMessageHandler {
 }
 
 @available(iOS 13.0, *)
-class WebViewStateModel: ObservableObject {
+fileprivate class WebViewStateModel: ObservableObject {
     @Published var pageTitle: String = "Loading..."
     @Published var loading: Bool = false
     @Published var canGoBack: Bool = false
@@ -344,7 +342,7 @@ class WebViewStateModel: ObservableObject {
 }
 
 @available(iOS 13.0, *)
-public struct WebPresenterView: View {
+fileprivate struct WebPresenterView: View {
     public enum NavigationAction {
         case decidePolicy(WKWebView, WKNavigationAction, WKNavigationActionPolicy) //mandatory
         case didRecieveAuthChallenge(WKWebView, URLAuthenticationChallenge, URLSession.AuthChallengeDisposition, URLCredential?) //mandatory

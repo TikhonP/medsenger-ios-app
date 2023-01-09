@@ -47,7 +47,7 @@ struct SignInResource: APIResource {
         case userIsNotActivated, incorrectData, incorrectPassword
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = [
+    let apiErrors: [APIResourceError<Error>] = [
         APIResourceError(errorString: "User is not activated", error: SignInError.userIsNotActivated),
         APIResourceError(errorString: Constants.MedsengerErrorStrings.incorrectData, error: SignInError.incorrectData),
         APIResourceError(errorString: "Incorrect password", error: SignInError.incorrectPassword)

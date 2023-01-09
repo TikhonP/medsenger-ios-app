@@ -32,8 +32,6 @@ struct ChatViewAttachment: Identifiable, Equatable {
         self.type = type
     }
     
-    private var savedUrl: URL?
-    
     var mimeType: String {
         if let mimeType = UTType(filenameExtension: extention)?.preferredMIMEType {
             return mimeType
@@ -52,12 +50,11 @@ struct ChatViewAttachment: Identifiable, Equatable {
         realFilename ?? randomFilename
     }
     
-    mutating func saveToFile() -> URL? {
+    func saveToFile() -> URL? {
         guard let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last else {
             return nil
         }
         let fileUrl = URL(fileURLWithPath: String.uniqueFilename(), relativeTo: directory).appendingPathExtension(extention)
-        savedUrl = fileUrl
         if FileManager.default.fileExists(atPath: fileUrl.path) {
             if let fileHandle = FileHandle(forWritingAtPath: fileUrl.path) {
                 fileHandle.seekToEndOfFile()
@@ -76,15 +73,4 @@ struct ChatViewAttachment: Identifiable, Equatable {
             }
         }
     }
-    
-    // FIXME: !!!
-//    deinit {
-//        if let fileUrl = savedUrl {
-//            do {
-//                try FileManager.default.removeItem(at: fileUrl)
-//            } catch {
-//                Logger.defaultLogger.error("Failed to remove file preview: \(error.localizedDescription)")
-//            }
-//        }
-//    }
 }

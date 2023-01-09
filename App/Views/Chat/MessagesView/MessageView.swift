@@ -90,6 +90,7 @@ struct MessageBodyView: View {
                 }
             }
             .padding(.trailing, addTrailingPadding ? 30 : 0)
+            .padding(.bottom, addTrailingPadding ? 0 : 10)
             .readMessageSize { size in
                 if imageAttachments.isEmpty, size.height < 80, !message.isVoiceMessage {
                     addTrailingPadding = true

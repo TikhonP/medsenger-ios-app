@@ -14,13 +14,6 @@ struct UpdateAccountResource: APIResource {
     let phone: String
     let birthday: Date
     
-    init(name: String, email: String, phone: String, birthday: Date) {
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.birthday = birthday
-    }
-    
     typealias ModelType = User.JsonDecoder
     
     var birthdayAsString: String {
@@ -34,7 +27,7 @@ struct UpdateAccountResource: APIResource {
          "birthday": birthdayAsString]
     }
     
-    var methodPath = "/account"
+    let methodPath = "/account"
     
     var options: APIResourceOptions {
         let result = multipartFormData(textParams: params)
@@ -48,7 +41,7 @@ struct UpdateAccountResource: APIResource {
     
     struct PhoneExistsError: Error { }
 
-    internal let apiErrors: [APIResourceError<Error>] = [
+    let apiErrors: [APIResourceError<Error>] = [
         APIResourceError(errorString: "Phone exists", error: PhoneExistsError())
     ]
 }

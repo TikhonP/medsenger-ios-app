@@ -37,7 +37,7 @@ struct FindUserResource: APIResource {
     
     struct ContractExistError: Error { }
     
-    internal let apiErrors: [APIResourceError<Error>] = [
+    let apiErrors: [APIResourceError<Error>] = [
         APIResourceError(errorString: "Contract exists", error: ContractExistError())
     ]
 }

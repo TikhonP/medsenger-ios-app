@@ -12,7 +12,7 @@ extension NSItemProvider {
     struct EmptyURLError: Error {}
     
     /// Asynchronously writes a copy of the provided, typed data to a temporary file, returning a file data
-    func loadFileRepresentation(forTypeIdentifier typeIdentifier: String) async throws -> (Data, URL) {
+    func loadFileRepresentation(forTypeIdentifier typeIdentifier: String) async throws -> (data: Data, filename: String, fileExtention: String) {
         try await withCheckedThrowingContinuation { continuation in
             loadFileRepresentation(forTypeIdentifier: typeIdentifier) { url, error in
                 if let error = error {
@@ -25,7 +25,9 @@ extension NSItemProvider {
                 }
                 do {
                     let data = try Data(contentsOf: url)
-                    continuation.resume(returning: (data, url))
+                    continuation.resume(
+                        returning: (data, url.lastPathComponent, url.pathExtension)
+                    )
                 } catch {
                     continuation.resume(throwing: error)
                 }

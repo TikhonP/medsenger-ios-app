@@ -48,7 +48,7 @@ final class Messages {
             let data = try await APIRequest(sendMessageResource).executeWithResult()
             try await Message.saveFromJson(data, contractId: contractId)
             try await Contract.updateLastAndFirstFetchedMessage(id: contractId)
-            Websockets.shared.messageUpdate(contractId: contractId)
+            try await Websockets.shared.messageUpdate(contractId: contractId)
         } catch {
             throw await processRequestError(error, "send message for contract \(contractId)", apiErrors: sendMessageResource.apiErrors)
         }

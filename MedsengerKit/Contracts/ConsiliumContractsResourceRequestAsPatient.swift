@@ -21,5 +21,5 @@ struct ConsiliumContractsResourceRequestAsPatient: APIResource {
         ]
     )
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

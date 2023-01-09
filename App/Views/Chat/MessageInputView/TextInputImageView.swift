@@ -14,6 +14,8 @@ struct TextInputAttachmentView: View {
     @EnvironmentObject private var chatViewModel: ChatViewModel
     @EnvironmentObject private var messageInputViewModel: MessageInputViewModel
     
+    @State private var attachmentPreviewingUrl: URL?
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             Group {
@@ -51,6 +53,11 @@ struct TextInputAttachmentView: View {
             .onTapGesture {
                 if let url = attachment.saveToFile() {
                     chatViewModel.quickLookDocumentUrl = url
+                }
+            }
+            .onChange(of: chatViewModel.quickLookDocumentUrl) { newValue in
+                if newValue == nil, let attachmentPreviewingUrl = attachmentPreviewingUrl {
+                    messageInputViewModel.removeFile(attachmentPreviewingUrl)
                 }
             }
             

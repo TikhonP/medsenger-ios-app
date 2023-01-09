@@ -99,11 +99,10 @@
 		437BEB5F29437D69008EF4DE /* ChangePasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */; };
 		437F092C2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */; };
 		4389FE7B2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4389FE7A2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift */; };
+		439CA514296C2A2100B78E56 /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439CA513296C2A2100B78E56 /* TextView.swift */; };
 		43A16630294131380003E1FB /* ReplyedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1662F294131380003E1FB /* ReplyedMessageView.swift */; };
 		43A16632294132670003E1FB /* InputAttachmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16631294132670003E1FB /* InputAttachmentsView.swift */; };
 		43A16634294133450003E1FB /* MainInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16633294133450003E1FB /* MainInputView.swift */; };
-		43A16637294136BB0003E1FB /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16636294136BB0003E1FB /* TextView.swift */; };
-		43A16639294137040003E1FB /* TextViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A16638294137040003E1FB /* TextViewRepresentable.swift */; };
 		43A1663B294158640003E1FB /* MessageInputButtonLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1663A294158640003E1FB /* MessageInputButtonLabel.swift */; };
 		43A1663D294163350003E1FB /* RecordingVoiceMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A1663C294163350003E1FB /* RecordingVoiceMessageView.swift */; };
 		43A166412941F3520003E1FB /* ChatViewAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43A166402941F3520003E1FB /* ChatViewAttachment.swift */; };
@@ -354,11 +353,10 @@
 		437BEB5E29437D69008EF4DE /* ChangePasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewModel.swift; sourceTree = "<group>"; };
 		437F092B2950A2C500478082 /* ConsiliumContractsResourceRequestAsPatient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsiliumContractsResourceRequestAsPatient.swift; sourceTree = "<group>"; };
 		4389FE7A2962F9520041DF40 /* NSItemProvider+loadFileRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSItemProvider+loadFileRepresentation.swift"; sourceTree = "<group>"; };
+		439CA513296C2A2100B78E56 /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		43A1662F294131380003E1FB /* ReplyedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplyedMessageView.swift; sourceTree = "<group>"; };
 		43A16631294132670003E1FB /* InputAttachmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAttachmentsView.swift; sourceTree = "<group>"; };
 		43A16633294133450003E1FB /* MainInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInputView.swift; sourceTree = "<group>"; };
-		43A16636294136BB0003E1FB /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
-		43A16638294137040003E1FB /* TextViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRepresentable.swift; sourceTree = "<group>"; };
 		43A1663A294158640003E1FB /* MessageInputButtonLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputButtonLabel.swift; sourceTree = "<group>"; };
 		43A1663C294163350003E1FB /* RecordingVoiceMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingVoiceMessageView.swift; sourceTree = "<group>"; };
 		43A166402941F3520003E1FB /* ChatViewAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewAttachment.swift; sourceTree = "<group>"; };
@@ -689,7 +687,7 @@
 			isa = PBXGroup;
 			children = (
 				43A44B842949C8D900980672 /* MessageInputViewModel.swift */,
-				43A16635294136740003E1FB /* TextView */,
+				439CA513296C2A2100B78E56 /* TextView.swift */,
 				435D56F62937A8160013B0F4 /* MessageInputView.swift */,
 				4319801E293CFDA9005F43A8 /* TextInputImageView.swift */,
 				43A1662F294131380003E1FB /* ReplyedMessageView.swift */,
@@ -730,15 +728,6 @@
 				43C510F929530F6200C91CE5 /* MessageTimeDividerView.swift */,
 			);
 			path = ChatView;
-			sourceTree = "<group>";
-		};
-		43A16635294136740003E1FB /* TextView */ = {
-			isa = PBXGroup;
-			children = (
-				43A16636294136BB0003E1FB /* TextView.swift */,
-				43A16638294137040003E1FB /* TextViewRepresentable.swift */,
-			);
-			path = TextView;
 			sourceTree = "<group>";
 		};
 		43A16646294222B90003E1FB /* ScenarioView */ = {
@@ -1449,7 +1438,6 @@
 				43D50582293F561000EE3756 /* Contract+DecoderRequestAsPatient.swift in Sources */,
 				43EF446A29228D73005DF084 /* WebsocketResponse.swift in Sources */,
 				430E7D9E29366D9D009C129D /* MessagesView.swift in Sources */,
-				43A16637294136BB0003E1FB /* TextView.swift in Sources */,
 				43D18CF32955FAD80064D13B /* ActionUserResource.swift in Sources */,
 				43A1664A294222EA0003E1FB /* ScenarioViewModel.swift in Sources */,
 				430E7D9A293645BA009C129D /* PushNotificationsResource.swift in Sources */,
@@ -1467,7 +1455,6 @@
 				435D5716293A65080013B0F4 /* AddContractView.swift in Sources */,
 				43D505B7293F615A00EE3756 /* AgentAction+Wrappers.swift in Sources */,
 				43EF44BD2922D427005DF084 /* Message+Preview.swift in Sources */,
-				43A16639294137040003E1FB /* TextViewRepresentable.swift in Sources */,
 				43D4CFE229525EE700A9C51B /* PatientHelper+wrappers.swift in Sources */,
 				43D50599293F5A7100EE3756 /* ClinicClassifier+Wrappers.swift in Sources */,
 				43D505BF293F639800EE3756 /* InfoMaterial+JsonDeserializer.swift in Sources */,
@@ -1535,6 +1522,7 @@
 				43EF43F329227F74005DF084 /* App.swift in Sources */,
 				43EF440A29228202005DF084 /* PersistenceController.swift in Sources */,
 				43EF44A129228F54005DF084 /* SettingsViewModel.swift in Sources */,
+				439CA514296C2A2100B78E56 /* TextView.swift in Sources */,
 				43758B51294299E7008969FF /* View+internetOfflineWarningInBottomBar.swift in Sources */,
 				4376163F293389DD001049E6 /* WebRTCClient.swift in Sources */,
 				43D4CFD62952243700A9C51B /* CoreDataNameStringRemovedCleanable.swift in Sources */,

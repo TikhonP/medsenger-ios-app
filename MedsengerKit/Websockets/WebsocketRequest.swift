@@ -41,14 +41,14 @@ protocol WebsocketRequest {
 }
 
 extension WebsocketRequest {
-    var data: String? {
+    var data: Data? {
         do {
             var modelDictionary = model.asDictionary
             modelDictionary["clientType"] = UserDefaults.userRole.rawValue
             modelDictionary["clientToken"] = KeyChain.apiToken
             let jsonData = try JSONSerialization.data(withJSONObject: modelDictionary)
-            let jsonString = String(data: jsonData, encoding: .utf8)
-            return jsonString
+//            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonData
         } catch {
             Logger.websockets.error("Error with encodeing to JSON data for websockets: \(error.localizedDescription)")
             return nil

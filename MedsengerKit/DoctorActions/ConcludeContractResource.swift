@@ -21,5 +21,5 @@ struct ConcludeContractResource: APIResource {
         method: .POST
     )
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

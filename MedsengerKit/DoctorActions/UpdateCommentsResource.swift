@@ -12,11 +12,6 @@ struct UpdateCommentsResource: APIResource {
     let contractId: Int
     let comment: String
     
-    init(contractId: Int, comment: String) {
-        self.contractId = contractId
-        self.comment = comment
-    }
-    
     typealias ModelType = EmptyModel
     
     var methodPath: String { "/comments/\(contractId)" }
@@ -32,5 +27,5 @@ struct UpdateCommentsResource: APIResource {
         )
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

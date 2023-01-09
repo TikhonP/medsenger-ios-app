@@ -17,6 +17,12 @@ struct MainInputView: View {
     @State private var showSelectPhotosSheet = false
     @State private var showTakeImageSheet = false
     
+    @State private var calculatedHeight: CGFloat = .zero
+    @State private var isScrollingEnabled = false
+    @State private var clearText = false
+    
+    private static let maxHeightConstant: CGFloat = 250
+    
     var body: some View {
         HStack(alignment: .bottom) {
             Button(action: {
@@ -62,11 +68,29 @@ struct MainInputView: View {
                 messageInputViewModel.addImagesAttachments($0)
             })
             
-            TextView($messageInputViewModel.message, placeholder: NSLocalizedString("MainInputView.Message.TextView", comment: "Message input placeholder"),
-                     onEditingChanged: {
+            UIKitTextViewRepresentable(text: $messageInputViewModel.message, calculatedHeight: $calculatedHeight, clearText: $clearText, isScrollingEnabled: isScrollingEnabled, onEditingChanged: {
                 messageInputViewModel.saveMessageDraft()
             })
-            .padding(.horizontal, 10)
+            .frame(height: isScrollingEnabled ? MainInputView.maxHeightConstant : calculatedHeight)
+            .background(
+                Text("MainInputView.Message.TextView", comment: "Message input placeholder")
+                    .foregroundColor(Color(.placeholderText))
+                    .padding(.leading, 14)
+                    .opacity(messageInputViewModel.message.isEmpty ? 1 : 0),
+                alignment: .leading
+            )
+            .onChange(of: calculatedHeight) { newValue in
+                if newValue < MainInputView.maxHeightConstant {
+                    isScrollingEnabled = false
+                } else {
+                    isScrollingEnabled = true
+                }
+            }
+            .onChange(of: messageInputViewModel.message, perform: { newValue in
+                if newValue.isEmpty {
+                    clearText = true
+                }
+            })
             .background(Color.systemBackground)
             .clipShape(RoundedRectangle(cornerSize: .init(width: 20, height: 20)))
             

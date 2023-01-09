@@ -102,7 +102,9 @@ final class WebRTCClient: NSObject {
                     }
                     return
                 }
-                Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: sdp)
+                Task {
+                    try await Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: sdp)
+                }
             })
         }
     }
@@ -278,7 +280,9 @@ extension WebRTCClient: RTCPeerConnectionDelegate {
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didGenerate candidate: RTCIceCandidate) {
-        Websockets.shared.sendIce(contractId: contractId, rtcIceCandidate: candidate)
+        Task {
+            try await Websockets.shared.sendIce(contractId: contractId, rtcIceCandidate: candidate)
+        }
     }
     
     func peerConnection(_ peerConnection: RTCPeerConnection, didRemove candidates: [RTCIceCandidate]) {
@@ -386,11 +390,15 @@ extension WebRTCClient: WebsocketsWebRTCDelegate {
             }
             if let error = error {
                 WebRTCClient.logger.error("WebRTCClient: didReceiveRemoteSdp error: \(error.localizedDescription)")
-                Websockets.shared.invalidStream(contractId: strongSelf.contractId)
+                Task {
+                    try await Websockets.shared.invalidStream(contractId: strongSelf.contractId)
+                }
             } else {
                 if remoteSdp.type == .offer {
                     strongSelf.answer { (localSdp) in
-                        Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: localSdp)
+                        Task {
+                            try await Websockets.shared.sendSdp(contractId: strongSelf.contractId, rtcSdp: localSdp)
+                        }
                     }
                 }
             }
@@ -404,7 +412,9 @@ extension WebRTCClient: WebsocketsWebRTCDelegate {
             }
             if let error = error {
                 WebRTCClient.logger.error("WebRTCClient: didReceiveCandidate error: \(error.localizedDescription)")
-                Websockets.shared.invalidIce(contractId: strongSelf.contractId)
+                Task {
+                    try await Websockets.shared.invalidIce(contractId: strongSelf.contractId)
+                }
             }
         }
     }

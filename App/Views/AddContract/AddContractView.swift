@@ -86,6 +86,9 @@ struct AddContractView: View {
                     hideKeyboard()
                 }
             })
+            .onAppear {
+                print("Clinics: \(clinics)")
+            }
         }
     }
     
@@ -112,9 +115,9 @@ struct AddContractView: View {
                     }
                 })
             }
-            .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
-                
-            })
+//            .onChange(of: addContractViewModel.clinicId, perform: { clinicId in
+//
+//            })
     }
     
     var patientDataForm: some View {

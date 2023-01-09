@@ -62,7 +62,9 @@ final class VideoCallViewModel: ObservableObject {
     func videoCallViewAppear() {
         callStartTime = Date()
         if let isCaller = contentViewModel?.isCaller, isCaller {
-            Websockets.shared.makeCall(contractId: contractId)
+            Task {
+                try await Websockets.shared.makeCall(contractId: contractId)
+            }
         }
     }
     
@@ -71,7 +73,9 @@ final class VideoCallViewModel: ObservableObject {
     }
     
     func answer() {
-        Websockets.shared.answer(contractId: contractId)
+        Task {
+            try await Websockets.shared.answer(contractId: contractId)
+        }
     }
     
     func dismiss() {
@@ -81,7 +85,9 @@ final class VideoCallViewModel: ObservableObject {
     }
     
     func hangUp() {
-        Websockets.shared.hangUp(contractId: contractId)
+        Task {
+            try await Websockets.shared.hangUp(contractId: contractId)
+        }
         stopCall()
     }
     
@@ -145,13 +151,17 @@ extension VideoCallViewModel: WebsocketsCallDelegate {
     
     func signalClient(_ websockets: Websockets, errorOffline data: String?) {
         state = .patientOffline
-        Websockets.shared.hangUp(contractId: contractId)
+        Task {
+            try await Websockets.shared.hangUp(contractId: contractId)
+        }
         stopCall()
     }
     
     func signalClient(_ websockets: Websockets, errorConnection data: String?) {
         state = .disconnect
-        Websockets.shared.hangUp(contractId: contractId)
+        Task {
+            try await Websockets.shared.hangUp(contractId: contractId)
+        }
         stopCall()
     }
 }

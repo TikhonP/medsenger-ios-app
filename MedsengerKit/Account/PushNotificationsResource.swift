@@ -14,10 +14,6 @@ struct PushNotificationsResource: APIResource {
     /// Store or remove token from remote, if true save token, otherwise remove
     let store: Bool
     
-    init(fcmToken: String, store: Bool) {
-        self.fcmToken = fcmToken
-        self.store = store
-    }
     
     typealias ModelType = EmptyModel
     
@@ -38,5 +34,5 @@ struct PushNotificationsResource: APIResource {
         )
     }
     
-    internal let apiErrors: [APIResourceError<Error>] = []
+    let apiErrors: [APIResourceError<Error>] = []
 }

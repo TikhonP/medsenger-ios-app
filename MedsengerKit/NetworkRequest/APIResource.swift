@@ -22,7 +22,7 @@ struct APIResourceError<T: Error> {
 protocol APIResource: Sendable {
     
     /// Decodable model type for response JSON decoding
-    associatedtype ModelType: Decodable
+    associatedtype ModelType: Decodable, Sendable
     
     /// Path of the resource without query items and base host
     var methodPath: String { get }
@@ -30,13 +30,13 @@ protocol APIResource: Sendable {
     /// Api resource data
     var options: APIResourceOptions { get }
     
-    var apiErrors: [APIResourceError<any Error>] { get }
+    var apiErrors: [APIResourceError<Error>] { get }
 }
 
 extension APIResource {
     
     /// Computed final url
-    var url: URL {
+    internal var url: URL {
         var components = URLComponents(string: Constants.medsengerApiUrl)!
         components.path = components.path + methodPath
         var queryItems = options.params

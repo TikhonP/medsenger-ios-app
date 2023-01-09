@@ -12,6 +12,8 @@ struct ConsiliumChatRow: View {
     @ObservedObject var contract: Contract
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
+    @State private var timeBadgeWidth: CGFloat = .zero
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack {
@@ -22,6 +24,7 @@ struct ConsiliumChatRow: View {
                 VStack(alignment: .leading) {
                     Text(contract.wrappedName)
                         .font(.headline)
+                        .padding(.trailing, timeBadgeWidth)
                         .accessibilityAddTraits(.isHeader)
                     
                     Text("ConsiliumChatRow.Doctor: \(contract.wrappedDoctorName)", comment: "Doctor: %@")
@@ -49,7 +52,7 @@ struct ConsiliumChatRow: View {
             .animation(.default, value: contract.unread)
             
             if let lastMessageTimestamp = contract.lastMessageTimestamp {
-                LastDateView(date: lastMessageTimestamp)
+                LastDateView(date: lastMessageTimestamp, width: $timeBadgeWidth)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

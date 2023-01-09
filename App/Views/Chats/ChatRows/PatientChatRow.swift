@@ -12,6 +12,8 @@ struct PatientChatRow: View {
     @ObservedObject var contract: Contract
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
+    @State private var timeBadgeWidth: CGFloat = .zero
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack(spacing: 0) {
@@ -24,8 +26,9 @@ struct PatientChatRow: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text(contract.wrappedName)
                                 .font(.headline)
+                                .padding(.trailing, timeBadgeWidth)
                                 .accessibilityAddTraits(.isHeader)
-                                .padding(.trailing, 20)
+                                
                             ZStack {
                                 if let clinic = contract.clinic {
                                     Text("PatientChatRow.specialityAnClinic \(contract.wrappedSpeciality) in «\(clinic.wrappedName)»", comment: "%@ в «%@»")
@@ -63,7 +66,7 @@ struct PatientChatRow: View {
             .animation(.default, value: contract.unread)
             
             if let lastMessageTimestamp = contract.lastMessageTimestamp {
-                LastDateView(date: lastMessageTimestamp)
+                LastDateView(date: lastMessageTimestamp, width: $timeBadgeWidth)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

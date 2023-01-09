@@ -144,19 +144,28 @@ final class MessageInputViewModel: NSObject, ObservableObject, Alertable {
             guard let typeIdentifier = itemProvider.registeredTypeIdentifiers.first else {
                 continue
             }
-            
-            let (data, url) = try await itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier)
-            
+            let (data, filename, fileExtention) = try await itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier)
             messageAttachments.append(
                 ChatViewAttachment(
-                    data: data, extention: url.pathExtension,
-                    realFilename: url.lastPathComponent, type: .file))
+                    data: data,
+                    extention: fileExtention,
+                    realFilename: filename,
+                    type: .file)
+            )
         }
     }
     
     func saveMessageDraft() {
         Task(priority: .background) {
             try? await Contract.saveMessageDraft(id: contractId, messageDraft: message)
+        }
+    }
+    
+    func removeFile(_ url: URL) {
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            Logger.defaultLogger.error("Failed to remove file preview: \(error.localizedDescription)")
         }
     }
 }
@@ -268,7 +277,7 @@ extension MessageInputViewModel: AVAudioRecorderDelegate {
 }
 
 extension MessageInputViewModel: AVAudioPlayerDelegate {
-    func startPlaying(_ url: URL, attachmentId: Int? = nil, completion: (() -> Void)? = nil) async {
+    func startPlaying(_ url: URL, attachmentId: Int? = nil) async throws {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback)
@@ -276,7 +285,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         } catch {
             presentAlert(title: Text("MessageInputViewModel.failedToSetupaudioOnYourDeviceAlertTitle", comment: "Failed to setup audio on your device"), .error)
             MessageInputViewModel.logger.error("startPlaying: Failed: \(error.localizedDescription)")
-            return
+            throw error
         }
         
         do {
@@ -284,7 +293,7 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
         } catch {
             presentAlert(title: Text("MessageInputViewModel.failedToPlayAudioOnYourDevice", comment: "Failed to play audio on your device"), .error)
             MessageInputViewModel.logger.error("Playing voice message failed: \(error.localizedDescription)")
-            return
+            throw error
         }
         
         audioPlayer?.delegate = self
@@ -309,9 +318,6 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
                 }
             }
         }
-        if let completion = completion {
-            completion()
-        }
     }
     
     func stopPlaying() {
@@ -323,8 +329,11 @@ extension MessageInputViewModel: AVAudioPlayerDelegate {
     func startPlayingRecordedVoiceMessage() async {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let voiceMessageFilePath = documentsDirectory.appendingPathComponent(Constants.voiceMessageFileName)
-        await startPlaying(voiceMessageFilePath) {
+        do {
+            try await startPlaying(voiceMessageFilePath)
             self.isVoiceMessagePlaying = true
+        } catch {
+            
         }
     }
     

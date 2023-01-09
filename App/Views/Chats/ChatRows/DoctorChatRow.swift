@@ -12,6 +12,8 @@ struct DoctorChatRow: View {
     @ObservedObject var contract: Contract
     @EnvironmentObject private var chatsViewModel: ChatsViewModel
     
+    @State private var timeBadgeWidth: CGFloat = .zero
+    
     var body: some View {
         ZStack(alignment: .topTrailing) {
             HStack {
@@ -21,7 +23,8 @@ struct DoctorChatRow: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(contract.wrappedShortName)
                         .font(.headline)
-                        .padding(.trailing, 20)
+                        .padding(.trailing, timeBadgeWidth)
+                        .accessibilityAddTraits(.isHeader)
                     
                     if let scenarioName = contract.scenarioName {
                         Text(scenarioName)
@@ -60,15 +63,17 @@ struct DoctorChatRow: View {
                 Spacer()
                 if contract.state == .warning || contract.state == .deadlined {
                     MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .red.opacity(0.5))
+                        .accessibilityLabel("ConsiliumChatRow.unread.accessibilityLabel \(Int(contract.unread))")
                 } else if (contract.unread != 0) || (contract.unanswered != 0) {
                     MessagesBadgeView(count: max(Int(contract.unread), Int(contract.unanswered)), color: .secondary.opacity(0.5))
+                        .accessibilityLabel("ConsiliumChatRow.unread.accessibilityLabel \(Int(contract.unread))")
                 }
             }
             .animation(.default, value: contract.unread)
             .animation(.default, value: contract.state)
             
             if let lastMessageTimestamp = contract.lastMessageTimestamp {
-                LastDateView(date: lastMessageTimestamp)
+                LastDateView(date: lastMessageTimestamp, width: $timeBadgeWidth)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

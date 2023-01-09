@@ -41,25 +41,16 @@ class Websockets: NSObject {
     
     // MARK: - Private methods
     
-    private func ping() {
-        webSocket?.sendPing { error in
-            if let error = error {
-                Logger.websockets.error("Websocket ping error: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    private func send(_ request: some WebsocketRequest) {
-        ping()
+    private func send(_ request: some WebsocketRequest) async throws {
         guard let message = request.data else {
             Logger.websockets.error("Webscokets: send: request data is nil")
             return
         }
-        webSocket?.send(.string(message), completionHandler: { error in
-            if let error = error {
-                Logger.websockets.error("Websocket send error: \(error.localizedDescription)")
-            }
-        })
+        do {
+            try await webSocket?.send(.data(message))
+        } catch {
+            Logger.websockets.error("Websocket send error: \(error.localizedDescription)")
+        }
     }
     
     private func processWebsocketResponse(_ websocketResponse: some WebsocketResponse, _ data: String, responseStatus: WebsocketResponseStatus) {
@@ -126,42 +117,17 @@ class Websockets: NSObject {
         }
     }
     
-    private func receive() {
-        webSocket?.receive(completionHandler: { [weak self] result in
-            self?.receiveCompletion(result)
-            if let isConnected = self?.isConnected, isConnected {
-                self?.receive()
+    private func receive() async {
+        guard let webSocket = webSocket else {
+            return
+        }
+        do {
+            let message = try await webSocket.receive()
+            await receiveCompletion(message)
+            if isConnected {
+                await receive()
             }
-        })
-    }
-    
-    private func receiveCompletion(_ result: Result<URLSessionWebSocketTask.Message, Error>) {
-        switch result {
-        case .success(let message):
-            switch message {
-            case .data(let data):
-                Logger.websockets.notice("Websocket received data: \(data)")
-            case .string(let string):
-                if string == "ping" {
-                    webSocket?.send(.string("pong"), completionHandler: { error in
-                        if let error = error {
-                            Logger.websockets.error("Websocket send pong error: \(error.localizedDescription)")
-                        }
-                    })
-                } else {
-                    do {
-                        let decoder = JSONDecoder()
-                        let status = try decoder.decode(WebsocketResponseStatusModel.self, from: Data(string.utf8))
-                        let websocketResponse = WebsocketResponseStatus.getWebsocketResponse(status.mType)
-                        processWebsocketResponse(websocketResponse, string, responseStatus: status.mType)
-                    } catch {
-                        Logger.websockets.error("Websocket received: Decoding status error: \(error.localizedDescription) Data: \(string)")
-                    }
-                }
-            @unknown default:
-                Logger.websockets.notice("Websocket received: Unknown message")
-            }
-        case .failure(let error as NSError):
+        } catch let error as NSError {
             switch error.code {
             case 53: // Software caused connection abort
                 Logger.websockets.notice("Websocket receive connection aborted")
@@ -170,6 +136,32 @@ class Websockets: NSObject {
             default:
                 Logger.websockets.error("Websocket receive error: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    private func receiveCompletion(_ message: URLSessionWebSocketTask.Message) async {
+        switch message {
+        case .data(let data):
+            Logger.websockets.notice("Websocket received data: \(data)")
+        case .string(let string):
+            if string == "ping" {
+                do {
+                    try await webSocket?.send(.string("pong"))
+                } catch {
+                    Logger.websockets.error("Websocket send pong error: \(error.localizedDescription)")
+                }
+            } else {
+                do {
+                    let decoder = JSONDecoder()
+                    let status = try decoder.decode(WebsocketResponseStatusModel.self, from: Data(string.utf8))
+                    let websocketResponse = WebsocketResponseStatus.getWebsocketResponse(status.mType)
+                    processWebsocketResponse(websocketResponse, string, responseStatus: status.mType)
+                } catch {
+                    Logger.websockets.error("Websocket received: Decoding status error: \(error.localizedDescription) Data: \(string)")
+                }
+            }
+        @unknown default:
+            Logger.websockets.notice("Websocket received: Unknown message")
         }
     }
     
@@ -184,9 +176,9 @@ extension Websockets: URLSessionWebSocketDelegate {
     internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
         Logger.websockets.debug("Websockets: Connection established")
         isConnected = true
-        ping()
-        receive()
-        send(IAmWebsocketRequest())
+        Task(priority: .background) {
+            try await (send(IAmWebsocketRequest()), receive())
+        }
     }
     
     internal func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
@@ -231,37 +223,37 @@ extension Websockets {
         }
     }
     
-    public func messageUpdate(contractId: Int) {
-        send(MessageUpdateWebsocketRequest(contractId: contractId))
+    public func messageUpdate(contractId: Int) async throws {
+        try await send(MessageUpdateWebsocketRequest(contractId: contractId))
     }
     
-    public func sendIce(contractId: Int, rtcIceCandidate: RTCIceCandidate) {
-        send(IceWebsocketRequest(
+    public func sendIce(contractId: Int, rtcIceCandidate: RTCIceCandidate) async throws {
+        try await send(IceWebsocketRequest(
             contractId: contractId, rtcIceCandidate: rtcIceCandidate))
     }
     
-    public func sendSdp(contractId: Int, rtcSdp: RTCSessionDescription) {
-        send(SdpWebsocketRequest(
+    public func sendSdp(contractId: Int, rtcSdp: RTCSessionDescription) async throws {
+        try await send(SdpWebsocketRequest(
             contractId: contractId, rtcSdp: rtcSdp))
     }
     
-    public func hangUp(contractId: Int) {
-        send(HangUpWebsocketRequest(contractId: contractId))
+    public func hangUp(contractId: Int) async throws {
+        try await send(HangUpWebsocketRequest(contractId: contractId))
     }
     
-    public func makeCall(contractId: Int) {
-        send(CallWebsocketRequest(contractId: contractId))
+    public func makeCall(contractId: Int) async throws {
+        try await send(CallWebsocketRequest(contractId: contractId))
     }
     
-    public func invalidIce(contractId: Int) {
-        send(InvalidIceWebsocketRequest(contractId: contractId))
+    public func invalidIce(contractId: Int) async throws {
+        try await send(InvalidIceWebsocketRequest(contractId: contractId))
     }
     
-    public func invalidStream(contractId: Int) {
-        send(InvalidStreamWebsocketRequest(contractId: contractId))
+    public func invalidStream(contractId: Int) async throws {
+        try await send(InvalidStreamWebsocketRequest(contractId: contractId))
     }
     
-    public func answer(contractId: Int) {
-        send(AnswerWebsocketRequest(contractId: contractId))
+    public func answer(contractId: Int) async throws {
+        try await send(AnswerWebsocketRequest(contractId: contractId))
     }
 }

@@ -383,6 +383,9 @@
 "DoctorChatRow.notActivatedYet" = "Пока не активирован";
 
 /* No comment provided by engineer. */
+"EditNotesView.placeholder" = "Введите здесь заметки по контракту";
+
+/* No comment provided by engineer. */
 "EditNotesViewModel.Cancel.Button" = "Отмена";
 
 /* No comment provided by engineer. */
@@ -728,6 +731,9 @@ Please go to your device's settings > Privacy > Microphone and set Medsenger to 
 
 /* Call error */
 "VideoCallView.CallError" = "Ошибка звонка";
+
+/* No comment provided by engineer. */
+"Vido conference is not supported now" = "Видео конференция сейчас не поддреживается";
 
 /* Calling... */
 "WaitingCallView.Calling" = "Звонок...";
